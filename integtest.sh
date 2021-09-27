@@ -73,12 +73,6 @@ then
   PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 fi
 
-git clone https://github.com/opensearch-project/opensearch-dashboards-functional-test.git
-
-cd opensearch-dashboards-functional-test
-
-npm install
-
 if [ $SECURITY_ENABLED == "true" ]
 then
    echo "run security enabled tests"
