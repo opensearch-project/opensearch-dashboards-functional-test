@@ -79,7 +79,7 @@ cd opensearch-dashboards-functional-test
 
 npm install
 
-if [ $SECURITY_ENABLED ]
+if [ $SECURITY_ENABLED == "true" ]
 then
    echo "run security enabled tests"
    npx cypress run --spec "cypress/integration/security-enabled/*.js"
