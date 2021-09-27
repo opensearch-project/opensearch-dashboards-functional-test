@@ -73,6 +73,8 @@ then
   PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 fi
 
+npm install
+
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
