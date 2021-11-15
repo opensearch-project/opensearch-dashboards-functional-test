@@ -12,7 +12,7 @@ import { TestFixtureHandler, CommonUI, DashboardPage, MiscUtils } from '@opensea
  * 8) Test adding another pie graph to the dashboard and applying a filter to both graphs
  */
 
-const testFixtureHandler = new TestFixtureHandler(cy)
+const testFixtureHandler = new TestFixtureHandler(cy, Cypress.env('openSearchUrl'))
 const commonUI = new CommonUI(cy)
 const dashboardPage = new DashboardPage(cy)
 const miscUtils = new MiscUtils(cy)

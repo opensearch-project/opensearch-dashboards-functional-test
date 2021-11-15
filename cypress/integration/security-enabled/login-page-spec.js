@@ -4,13 +4,13 @@ const loginPage = new LoginPage(cy);
 
 describe('login into security enabled cluster', () => {
     beforeEach(() => {
-        cy.visit('localhost:5601');
+        cy.visit('/');
     })
 
     it('type user name and password to login', () => {
-        loginPage.enterUserName('admin')
+        loginPage.enterUserName(Cypress.env('userName'))
 
-        loginPage.enterPassword('admin')
+        loginPage.enterPassword(Cypress.env('password'))
 
         loginPage.submit()
 
