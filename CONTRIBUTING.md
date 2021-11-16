@@ -1,4 +1,6 @@
 - [Contributing to OpenSearch](#contributing-to-opensearch)
+- [Developer Guide](#developer-guide)
+  - [Run Tests](#run-tests)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
   - [Bug Reports](#bug-reports)
@@ -12,6 +14,33 @@
 ## Contributing to OpenSearch
 
 OpenSearch is a community project that is built and maintained by people just like **you**. We're glad you're interested in helping out. There are several different ways you can do it, but before we talk about that, let's talk about how to get started.
+
+## Developer Guide
+
+### Run Tests
+
+You can run the cypress tests by cli: 
+
+```
+$ npx cypress run --spec "cypress/integration/security-disabled/*.js"
+```
+
+By default, it uses headless mode (hide the broswer) You can turn on the brower display by: 
+
+```
+$ npx cypress run --spec "cypress/integration/security-disabled/*.js --headed"
+```
+
+You can also manually trigger the test via browser UI by: 
+
+```
+$ npx cypress open
+```
+
+And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
+```
+$ npx cypress run --spec "cypress/integration/security-disabled/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
+```
 
 ## First Things First
 
