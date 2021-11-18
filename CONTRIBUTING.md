@@ -1,5 +1,6 @@
 - [Contributing to OpenSearch](#contributing-to-opensearch)
 - [Developer Guide](#developer-guide)
+  - [Install Dependencies](#install-dependencies)
   - [Run Tests](#run-tests)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
@@ -17,6 +18,28 @@ OpenSearch is a community project that is built and maintained by people just li
 
 ## Developer Guide
 
+### Install Dependencies
+
+#### opensearch-dashboards-test-library
+
+opensearch-dashboards-test-library is the test utility library used by this project, it is already a published package in NPM. You can import the lastest  version by installing from NPM registry
+
+```
+"@opensearch-dashboards-test/opensearch-dashboards-test-library": "^1.0.1"
+```
+
+You can aslo import from the git repository target branch to use the development code directly
+
+```
+"@opensearch-dashboards-test/opensearch-dashboards-test-library": "opensearch-project/opensearch-dashboards-test-library#main"
+```
+
+You need to delete the package from the node_modules folder and run npm install again, to reflect the change.
+
+```
+$ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library && npm install opensearch-project/opensearch-dashboards-test-library#main
+```
+
 ### Run Tests
 
 You can run the cypress tests by cli: 
@@ -25,7 +48,7 @@ You can run the cypress tests by cli:
 $ npx cypress run --spec "cypress/integration/security-disabled/*.js"
 ```
 
-By default, it uses headless mode (hide the broswer) You can turn on the brower display by: 
+By default, it uses headless mode (hide the broswer) You can turn on the browser display by: 
 
 ```
 $ npx cypress run --spec "cypress/integration/security-disabled/*.js --headed"
