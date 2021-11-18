@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/opensearch-project/opensearch-dashboards-functional-test",
   "dependencies": {
-    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "^1.0.3"
+    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "opensearch-project/opensearch-dashboards-test-library#main"
   },
   "devDependencies": {
     "cypress": "^6.9.1",
