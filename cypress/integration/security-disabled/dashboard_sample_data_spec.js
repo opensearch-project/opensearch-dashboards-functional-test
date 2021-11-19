@@ -2,14 +2,9 @@ import { TestFixtureHandler, CommonUI, DashboardPage, MiscUtils } from '@opensea
 
 /**
  * dashboard_sample_data test suite description:
- * 1) Create a new dashboard, and populate it with visualizations
- * 2) Set a filter that excludes all data, and check the visualizations for proper updates
- * 3) Set the existing filter to be pinned, re-check the visualizations
- * 4) Remove the filter, and check the visualizations for proper updates
- * 5) Create a new dashboard, and populate it with a pie graph
- * 6) Apply different filters to the pie graph and check the pie graph for proper updates
- * 7) Remove all filters and ensure that the pie graph reverts to its original format
- * 8) Test adding another pie graph to the dashboard and applying a filter to both graphs
+ * 1) Visit the home page of opensearchdashboard, check key UI elements display
+ * 2) add sample data of eCommerce, flights, web logs from tutorial page
+ * 3) check each sample data dashboard key UI elements display
  */
 
 const testFixtureHandler = new TestFixtureHandler(cy, Cypress.env('openSearchUrl'))
