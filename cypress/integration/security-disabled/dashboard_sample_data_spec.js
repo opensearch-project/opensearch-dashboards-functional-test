@@ -1,0 +1,109 @@
+import { TestFixtureHandler, CommonUI, DashboardPage, MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library'
+
+/**
+ * dashboard_sample_data test suite description:
+ * 1) Create a new dashboard, and populate it with visualizations
+ * 2) Set a filter that excludes all data, and check the visualizations for proper updates
+ * 3) Set the existing filter to be pinned, re-check the visualizations
+ * 4) Remove the filter, and check the visualizations for proper updates
+ * 5) Create a new dashboard, and populate it with a pie graph
+ * 6) Apply different filters to the pie graph and check the pie graph for proper updates
+ * 7) Remove all filters and ensure that the pie graph reverts to its original format
+ * 8) Test adding another pie graph to the dashboard and applying a filter to both graphs
+ */
+
+const testFixtureHandler = new TestFixtureHandler(cy, Cypress.env('openSearchUrl'))
+const commonUI = new CommonUI(cy)
+const dashboardPage = new DashboardPage(cy)
+const miscUtils = new MiscUtils(cy)
+describe('dashboard sample data validation', () => {
+    before(() => {
+
+    })
+
+    after(() => {
+
+    })
+
+    describe('checking home page', () => {
+        before(() => {
+            // Go to the home page
+            miscUtils.visitPage('app/home#')
+        })
+
+        after(() => {
+
+        })
+
+        it('checking opensearch_dashboards_overview display', () => {
+            // Check that opensearch_dashboards_overview is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/opensearch_dashboards_overview"]', 1)
+        })
+
+        it('checking tutorial_directory display', () => {
+            // Check that tutorial_directory is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/home#/tutorial_directory"]', 2)
+        })
+
+        it('checking management display', () => {
+            // Check that management is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/management"]', 1)
+        })
+
+        it('checking dev_tools display', () => {
+            // Check that dev_tools is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/dev_tools#/console"]', 2)
+        })
+
+        it('settings display', () => {
+            // Check that settings is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/management/opensearch-dashboards/settings#defaultRoute"]', 1)
+        })
+
+        it('checking feature_directory display', () => {
+            // Check that feature_directory is visable
+            commonUI.checkElementExists('a[href="/_dashboards/app/home#/feature_directory"]', 1)
+        })
+
+        it('checking navigation display', () => {
+            // Check that navigation is visable
+            commonUI.checkElementExists('button[data-test-subj="toggleNavButton"]', 1)
+        })
+
+        it('checking Help menu display', () => {
+            // Check that Help menu is visable
+            commonUI.checkElementExists('button[aria-label="Help menu"]', 1)
+        })
+
+    })
+
+    describe('adding sample data', () => {
+        before(() => {
+            miscUtils.addSampleData()
+        })
+
+        after(() => {
+            miscUtils.removeSampleData()
+        })
+
+        it('checking ecommerce dashboards displayed', () => {
+            miscUtils.viewData('ecommerce')
+            commonUI.checkElementContainsValue('span[title="\[eCommerce\] Revenue Dashboard"]', 1, '\\[eCommerce\\] Revenue Dashboard')
+            commonUI.checkElementContainsValue('div[data-test-subj="markdownBody"] > h3', 1, 'Sample eCommerce Data')
+        })
+
+        it('checking flights dashboards displayed', () => {
+            miscUtils.viewData('flights')
+            commonUI.checkElementContainsValue('span[title="\[Flights\] Global Flight Dashboard"]', 1, '\\[Flights\\] Global Flight Dashboard')
+            commonUI.checkElementContainsValue('div[data-test-subj="markdownBody"] > h3', 1, 'Sample Flight data')
+        })
+
+        it('checking web logs dashboards displayed', () => {
+            miscUtils.viewData('logs')
+            commonUI.checkElementContainsValue('span[title="\[Logs\] Web Traffic"]', 1, '\\[Logs\\] Web Traffic')
+            commonUI.checkElementContainsValue('div[data-test-subj="markdownBody"] > h3', 1, 'Sample Logs Data')
+        })
+
+    })
+
+})

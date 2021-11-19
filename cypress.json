@@ -1,12 +1,12 @@
 {
   "defaultCommandTimeout": 10000,
-  "baseUrl": "http://localhost:5601",
+  "baseUrl": "https://search-tengh-staging-osd-11-x64-01-l7zlsfsvhn2wgtzqns2322zy5q.us-west-2.es-staging.amazonaws.com/_dashboards",
   "reporter": "cypress-multi-reporters",
   "reporterOptions": {
     "configFile": "reporter-config.json"
   },
   "env": {
-    "openSearchUrl": "http://localhost:9200",
+    "openSearchUrl": "openSearchUrl=https://search-tengh-staging-osd-11-x64-01-l7zlsfsvhn2wgtzqns2322zy5q.us-west-2.es-staging.amazonaws.com",
     "userName": "admin",
     "password": "admin"
   }
