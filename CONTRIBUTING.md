@@ -45,13 +45,13 @@ $ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library &
 You can run the cypress tests by cli: 
 
 ```
-$ npx cypress run --spec "cypress/integration/security-disabled/*.js"
+$ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js"
 ```
 
 By default, it uses headless mode (hide the broswer) You can turn on the browser display by: 
 
 ```
-$ npx cypress run --spec "cypress/integration/security-disabled/*.js --headed"
+$ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js --headed"
 ```
 
 You can also manually trigger the test via browser UI by: 
@@ -62,7 +62,7 @@ $ npx cypress open
 
 And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
 ```
-$ npx cypress run --spec "cypress/integration/security-disabled/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
+$ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
 ```
 
 ## First Things First
