@@ -1,4 +1,4 @@
-import { TestFixtureHandler, CommonUI, DashboardPage, MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library'
+import { CommonUI, MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library'
 
 /**
  * dashboard_sample_data test suite description:
@@ -7,10 +7,12 @@ import { TestFixtureHandler, CommonUI, DashboardPage, MiscUtils } from '@opensea
  * 3) check each sample data dashboard key UI elements display
  */
 
-const testFixtureHandler = new TestFixtureHandler(cy, Cypress.env('openSearchUrl'))
 const commonUI = new CommonUI(cy)
-const dashboardPage = new DashboardPage(cy)
 const miscUtils = new MiscUtils(cy)
+const baseURL = new URL(Cypress.config().baseUrl)
+// remove trailing slash
+const path = baseURL.pathname.replace(/\/$/, "") 
+
 describe('dashboard sample data validation', () => {
     before(() => {
 
@@ -32,32 +34,32 @@ describe('dashboard sample data validation', () => {
 
         it('checking opensearch_dashboards_overview display', () => {
             // Check that opensearch_dashboards_overview is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/opensearch_dashboards_overview"]', 1)
+            commonUI.checkElementExists(`a[href="${path}/app/opensearch_dashboards_overview"]`, 1)
         })
 
         it('checking tutorial_directory display', () => {
             // Check that tutorial_directory is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/home#/tutorial_directory"]', 2)
+            commonUI.checkElementExists(`a[href="${path}/app/home#/tutorial_directory"]`, 2)
         })
 
         it('checking management display', () => {
             // Check that management is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/management"]', 1)
+            commonUI.checkElementExists(`a[href="${path}/app/management"]`, 1)
         })
 
         it('checking dev_tools display', () => {
             // Check that dev_tools is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/dev_tools#/console"]', 2)
+            commonUI.checkElementExists(`a[href="${path}/app/dev_tools#/console"]`, 2)
         })
 
         it('settings display', () => {
             // Check that settings is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/management/opensearch-dashboards/settings#defaultRoute"]', 1)
+            commonUI.checkElementExists(`a[href="${path}/app/management/opensearch-dashboards/settings#defaultRoute"]`, 1)
         })
 
         it('checking feature_directory display', () => {
             // Check that feature_directory is visable
-            commonUI.checkElementExists('a[href="/_dashboards/app/home#/feature_directory"]', 1)
+            commonUI.checkElementExists(`a[href="${path}/app/home#/feature_directory"]`, 1)
         })
 
         it('checking navigation display', () => {
