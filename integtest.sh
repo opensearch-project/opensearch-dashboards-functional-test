@@ -78,7 +78,7 @@ npm install
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
-   npx cypress run --spec "cypress/integration/bundle-opensearch-dashboards/*.js"
+   npx cypress run --spec "cypress/integration/*/with-security/*.js"
 else
-   npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js"
+   npx cypress run --spec "cypress/integration/*/without-security/*.js"
 fi
