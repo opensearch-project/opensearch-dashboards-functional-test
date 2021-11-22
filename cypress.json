@@ -1,10 +1,12 @@
 {
-  "defaultCommandTimeout": 10000,
+  "defaultCommandTimeout": 60000,
   "baseUrl": "http://localhost:5601",
   "reporter": "cypress-multi-reporters",
   "reporterOptions": {
     "configFile": "reporter-config.json"
   },
+  "viewportWidth": 2000,
+  "viewportHeight": 1320,
   "env": {
     "openSearchUrl": "http://localhost:9200",
     "userName": "admin",
