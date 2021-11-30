@@ -1,5 +1,5 @@
 {
-  "defaultCommandTimeout": 60000,
+  "defaultCommandTimeout": 120000,
   "baseUrl": "http://localhost:5601",
   "reporter": "cypress-multi-reporters",
   "reporterOptions": {
