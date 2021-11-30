@@ -76,7 +76,7 @@ describe('dashboard sample data validation', () => {
 
     describe('adding sample data', () => {
         before(() => {
-            miscUtils.addSampleData()
+            miscUtils.addSampleData(120000)
         })
 
         after(() => {
