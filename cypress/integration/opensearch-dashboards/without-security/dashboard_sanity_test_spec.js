@@ -26,10 +26,12 @@ describe('dashboard sample data validation', () => {
         before(() => {
             // Go to the home page
             miscUtils.visitPage('app/home#')
+            cy.window().then(win => win.localStorage.setItem('home:welcome:show', false))
+            cy.reload(true)
         })
 
         after(() => {
-
+            cy.window().then(win => win.localStorage.removeItem('home:welcome:show'))
         })
 
         it('checking opensearch_dashboards_overview display', () => {
@@ -76,7 +78,7 @@ describe('dashboard sample data validation', () => {
 
     describe('adding sample data', () => {
         before(() => {
-            miscUtils.addSampleData(120000)
+            miscUtils.addSampleData()
         })
 
         after(() => {
