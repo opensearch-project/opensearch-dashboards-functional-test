@@ -72,15 +72,8 @@ jobs:
           working-directory: monterey-test
           command: yarn run cypress run --browser chrome --headless --spec 'cypress/integration/*/with-security/*.js' 
           wait-on: 'http://localhost:5601'
-      # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v1
-        if: failure()
-        with:
-          name: cypress-screenshots
-          path: monterey-test/cypress/screenshots
-      # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos
-          path: monterey-test/cypress/videos
+          name: cypress-results
+          path: monterey-test/cypress/results/

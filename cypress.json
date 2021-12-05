@@ -11,5 +11,7 @@
     "openSearchUrl": "http://localhost:9200",
     "userName": "admin",
     "password": "admin"
-  }
+  },
+  "screenshotsFolder": "cypress/results/screenshots",
+  "videosFolder": "cypress/results/videos"
 }
