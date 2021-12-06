@@ -76,65 +76,6 @@ describe('dashboard sample data validation', () => {
 
     })
 
-    describe('checking Visualize', () => {
-        before(() => {
-            // Go to the Visualize page
-            miscUtils.visitPage('app/visualize#/')
-        })
-
-        after(() => {
-
-        })
-
-        it('checking visualizations list display', () => {
-            commonUI.checkElementExists('div[data-test-subj="itemsInMemTable"]', 1)
-        })
-
-        it('checking search bar display', () => {
-            commonUI.checkElementExists('input[placeholder="Search..."]', 1)
-        })
-
-        it('checking create visualization button display', () => {
-            commonUI.checkElementExists('button[data-test-subj="newItemButton"]', 1)
-        })
-    })
-
-    describe('checking discover', () => {
-        before(() => {
-            // Go to the Discover page
-            miscUtils.visitPage('app/discover#/')
-        })
-
-        after(() => {
-
-        })
-
-        it('checking save query button display', () => {
-            commonUI.checkElementExists('button[data-test-subj="saved-query-management-popover-button"]', 1)
-        })
-
-        it('checking query input display', () => {
-            commonUI.checkElementExists('textarea[data-test-subj="queryInput"]', 1)
-        })
-
-        it('checking refresh button display', () => {
-            commonUI.checkElementExists('button[data-test-subj="querySubmitButton"]', 1)
-        })
-
-        it('checking add filter button display', () => {
-            commonUI.checkElementExists('button[data-test-subj="addFilter"]', 1)
-        })
-
-        it('checking index pattern switch button display', () => {
-            commonUI.checkElementExists('button[data-test-subj="indexPattern-switch-link"]', 1)
-        })
-
-        it('checking field filter display', () => {
-            commonUI.checkElementExists('button[data-test-subj="toggleFieldFilterButton"]', 1)
-        })
-
-    })
-
     describe('adding sample data', () => {
         before(() => {
             miscUtils.addSampleData()
@@ -204,6 +145,65 @@ describe('dashboard sample data validation', () => {
     
             it('checking web logs object is saved', () => {
                 commonUI.checkElementContainsValue('div[data-test-subj="savedObjectsTable"]', 1, 'opensearch_dashboards_sample_data_logs')
+            })
+    
+        })
+
+        describe('checking Visualize', () => {
+            before(() => {
+                // Go to the Visualize page
+                miscUtils.visitPage('app/visualize#/')
+            })
+    
+            after(() => {
+    
+            })
+    
+            it('checking visualizations list display', () => {
+                commonUI.checkElementExists('div[data-test-subj="itemsInMemTable"]', 1)
+            })
+    
+            it('checking search bar display', () => {
+                commonUI.checkElementExists('input[placeholder="Search..."]', 1)
+            })
+    
+            it('checking create visualization button display', () => {
+                commonUI.checkElementExists('button[data-test-subj="newItemButton"]', 1)
+            })
+        })
+
+        describe('checking discover', () => {
+            before(() => {
+                // Go to the Discover page
+                miscUtils.visitPage('app/discover#/')
+            })
+    
+            after(() => {
+    
+            })
+    
+            it('checking save query button display', () => {
+                commonUI.checkElementExists('button[data-test-subj="saved-query-management-popover-button"]', 1)
+            })
+    
+            it('checking query input display', () => {
+                commonUI.checkElementExists('textarea[data-test-subj="queryInput"]', 1)
+            })
+    
+            it('checking refresh button display', () => {
+                commonUI.checkElementExists('button[data-test-subj="querySubmitButton"]', 1)
+            })
+    
+            it('checking add filter button display', () => {
+                commonUI.checkElementExists('button[data-test-subj="addFilter"]', 1)
+            })
+    
+            it('checking index pattern switch button display', () => {
+                commonUI.checkElementExists('button[data-test-subj="indexPattern-switch-link"]', 1)
+            })
+    
+            it('checking field filter display', () => {
+                commonUI.checkElementExists('button[data-test-subj="toggleFieldFilterButton"]', 1)
             })
     
         })
