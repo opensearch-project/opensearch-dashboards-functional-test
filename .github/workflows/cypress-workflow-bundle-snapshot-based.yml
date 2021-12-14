@@ -1,4 +1,4 @@
-name: Bundle Snapshot based E2E Cypress tests workflow
+name: Bundle Snapshot based E2E Cypress tests workflow for core Dashboards
 on:
   pull_request:
     branches:
@@ -8,6 +8,8 @@ on:
     branches:
       - main
       - dev-*
+env:
+  VERSION: "1.2.0"
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -24,27 +26,27 @@ jobs:
           java-version: 14
       - name: Get and run OpenSearch
         run: |
-          wget https://artifacts.opensearch.org/releases/bundle/opensearch/1.2.0/opensearch-1.2.0-linux-x64.tar.gz
-          tar -xzf opensearch-1.2.0-linux-x64.tar.gz
-          cd opensearch-1.2.0/
+          wget https://artifacts.opensearch.org/releases/bundle/opensearch/${{ env.VERSION }}/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          cd opensearch-${{ env.VERSION }}/
           ./opensearch-tar-install.sh &
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          wget https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/1.2.0/opensearch-dashboards-1.2.0-linux-x64.tar.gz
-          tar -xzf opensearch-dashboards-1.2.0-linux-x64.tar.gz
+          wget https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/${{ env.VERSION }}/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Get node and yarn versions
         id: versions
         run: |
-          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-1.2.0-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
+          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       - name: Run OpenSearch-Dashboards server
         run: |
-          cd opensearch-dashboards-1.2.0-linux-x64
+          cd opensearch-dashboards-${{ env.VERSION }}-linux-x64
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout monterey-test
@@ -70,8 +72,8 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: monterey-test
-          command: yarn run cypress run --browser chrome --headless --spec 'cypress/integration/*/with-security/*.js' 
-          wait-on: 'http://localhost:5601'
+          command: yarn run cypress run --browser chrome --headless --spec 'cypress/integration/*/*.js'
+          wait-on: "http://localhost:5601"
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()

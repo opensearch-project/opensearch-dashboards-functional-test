@@ -88,7 +88,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: monetery-test
-          command: yarn run cypress run --browser chrome --headless --spec 'cypress/integration/vanilla-opensearch-dashboards/*.js'
+          command: yarn run cypress run --browser chrome --headless --env SECURITY_ENABLED=true --spec 'cypress/integration/vanilla-opensearch-dashboards/*.js'
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
