@@ -1,25 +1,66 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import {
+  AD_GET_DETECTORS_NODE_API_PATH,
+  AD_GET_INDICES_NODE_API_PATH,
+} from "../utils/constants";
+
+/**
+ * This overwrites the default visit command to authenticate before visiting
+ * webpages if SECURITY_ENABLED cypress env var is true
+ */
+Cypress.Commands.overwrite("visit", (orig, url, options) => {
+  if (Cypress.env("SECURITY_ENABLED")) {
+    let newOptions = options;
+    if (options) {
+      newOptions["auth"] = {
+        username: "admin",
+        password: "admin",
+      };
+    } else {
+      newOptions = {
+        auth: {
+          username: "admin",
+          password: "admin",
+        },
+      };
+    }
+    orig(url, newOptions);
+  } else {
+    orig(url, options);
+  }
+});
+
+/**
+ *****************************
+ AD PLUGIN COMMANDS
+ *****************************
+ */
+Cypress.Commands.add("mockGetDetectorOnAction", function (
+  fixtureFileName,
+  funcMockedOn
+) {
+  cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
+    fixture: fixtureFileName,
+  }).as("getDetectors");
+
+  funcMockedOn();
+
+  cy.wait("@getDetectors");
+});
+
+Cypress.Commands.add("mockSearchIndexOnAction", function (
+  fixtureFileName,
+  funcMockedOn
+) {
+  cy.route2(buildAdApiUrl(AD_GET_INDICES_NODE_API_PATH + "*"), {
+    fixture: fixtureFileName,
+  }).as("getIndices");
+
+  funcMockedOn();
+
+  cy.wait("@getIndices");
+});

@@ -41,7 +41,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
+          registry-url: "https://registry.npmjs.org"
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-1.2.0-SNAPSHOT-linux-x64
@@ -70,8 +70,8 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: monetery-test
-          command: yarn run cypress run --browser chrome --headless --spec 'cypress/integration/vanilla-opensearch-dashboards/*.js'
-          wait-on: 'http://localhost:5601'
+          command: yarn run cypress run --browser chrome --headless --env SECURITY_ENABLED=false --spec 'cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js'
+          wait-on: "http://localhost:5601"
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()

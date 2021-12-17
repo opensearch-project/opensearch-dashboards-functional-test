@@ -9,7 +9,7 @@
   "viewportHeight": 1320,
   "env": {
     "openSearchUrl": "http://localhost:9200",
-    "userName": "admin",
-    "password": "admin"
-  }
+    "SECURITY_ENABLED": false
+  },
+  "experimentalNetworkStubbing": true
 }
