@@ -3,6 +3,7 @@
   - [Install Dependencies](#install-dependencies)
     - [opensearch-dashboards-test-library](#opensearch-dashboards-test-library)
   - [Run Tests](#run-tests)
+  - [Formatting](#formatting)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
   - [Bug Reports](#bug-reports)
@@ -69,6 +70,16 @@ And you can override certain cypress config or environment variable by appling a
 ```
 $ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
 ```
+
+### Formatting
+
+`prettier` is used to standardize formatting of files. You can format all files (new and existing) by running
+
+```
+$ npx prettier * --write
+```
+
+This should be done before opening a PR to keep checked-in code consistent.
 
 ## First Things First
 
