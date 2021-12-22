@@ -11,7 +11,7 @@
   - [Release Frequently](#release-frequently)
   - [Promote Other Maintainers](#promote-other-maintainers)
   - [Describe the Repo](#describe-the-repo)
-  
+
 ## Overview
 
 This document explains who the maintainers are (see below), what they do in this repo, and how they should be doing it. If you're interested in contributing, see [CONTRIBUTING](CONTRIBUTING.md).
@@ -43,7 +43,7 @@ Review pull requests regularly, comment, suggest, reject, merge and close. Accep
 
 ### Triage Open Issues
 
-Manage labels, review issues regularly, and triage by labelling them. 
+Manage labels, review issues regularly, and triage by labelling them.
 
 All repositories in this organization have a standard set of labels, including `bug`, `documentation`, `duplicate`, `enhancement`, `good first issue`, `help wanted`, `blocker`, `invalid`, `question`, `wontfix`, and `untriaged`, along with release labels, such as `v1.0.0`, `v1.1.0`, `v2.0.0`, `patch`, and `backport`.
 
@@ -51,11 +51,11 @@ Use labels to target an issue or a PR for a given release, add `help wanted` to 
 
 ### Be Responsive
 
-Respond to enhancement requests, and forum posts. Allocate time to reviewing and commenting on issues and conversations as they come in. 
+Respond to enhancement requests, and forum posts. Allocate time to reviewing and commenting on issues and conversations as they come in.
 
 ### Maintain Overall Health of the Repo
 
-Keep the `main` branch at production quality at all times. Backport features as needed. Cut release branches and tags to enable future patches. 
+Keep the `main` branch at production quality at all times. Backport features as needed. Cut release branches and tags to enable future patches.
 
 ### Use Semver
 

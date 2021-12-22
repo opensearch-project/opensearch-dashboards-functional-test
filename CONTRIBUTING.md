@@ -1,6 +1,7 @@
 - [Contributing to OpenSearch](#contributing-to-opensearch)
 - [Developer Guide](#developer-guide)
   - [Install Dependencies](#install-dependencies)
+    - [opensearch-dashboards-test-library](#opensearch-dashboards-test-library)
   - [Run Tests](#run-tests)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
@@ -10,6 +11,9 @@
   - [Contributing Code](#contributing-code)
 - [Developer Certificate of Origin](#developer-certificate-of-origin)
 - [License Headers](#license-headers)
+  - [Java](#java)
+  - [Python](#python)
+  - [Shell](#shell)
 - [Review Process](#review-process)
 
 ## Contributing to OpenSearch
@@ -22,7 +26,7 @@ OpenSearch is a community project that is built and maintained by people just li
 
 #### opensearch-dashboards-test-library
 
-opensearch-dashboards-test-library is the test utility library used by this project, it is already a published package in NPM. You can import the lastest  version by installing from NPM registry
+opensearch-dashboards-test-library is the test utility library used by this project, it is already a published package in NPM. You can import the lastest version by installing from NPM registry
 
 ```
 "@opensearch-dashboards-test/opensearch-dashboards-test-library": "^1.0.1"
@@ -42,25 +46,26 @@ $ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library &
 
 ### Run Tests
 
-You can run the cypress tests by cli: 
+You can run the cypress tests by cli:
 
 ```
 $ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js"
 ```
 
-By default, it uses headless mode (hide the broswer) You can turn on the browser display by: 
+By default, it uses headless mode (hide the broswer) You can turn on the browser display by:
 
 ```
 $ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js --headed"
 ```
 
-You can also manually trigger the test via browser UI by: 
+You can also manually trigger the test via browser UI by:
 
 ```
 $ npx cypress open
 ```
 
 And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
+
 ```
 $ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
 ```
@@ -69,7 +74,7 @@ $ npx cypress run --spec "cypress/integration/vanilla-opensearch-dashboards/*.js
 
 1. **When in doubt, open an issue** - For almost any type of contribution, the first step is opening an issue. Even if you think you already know what the solution is, writing down a description of the problem you're trying to solve will help everyone get context when they review your pull request. If it's truly a trivial change (e.g. spelling error), you can skip this step -- but as the subject says, when it doubt, [open an issue](issues).
 
-2. **Only submit your own work**  (or work you have sufficient rights to submit) - Please make sure that any code or documentation you submit is your work or you have the rights to submit. We respect the intellectual property rights of others, and as part of contributing, we'll ask you to sign your contribution with a "Developer Certificate of Origin" (DCO) that states you have the rights to submit this work and you understand we'll use your contribution. There's more information about this topic in the [DCO section](#developer-certificate-of-origin).
+2. **Only submit your own work** (or work you have sufficient rights to submit) - Please make sure that any code or documentation you submit is your work or you have the rights to submit. We respect the intellectual property rights of others, and as part of contributing, we'll ask you to sign your contribution with a "Developer Certificate of Origin" (DCO) that states you have the rights to submit this work and you understand we'll use your contribution. There's more information about this topic in the [DCO section](#developer-certificate-of-origin).
 
 ## Ways to Contribute
 
@@ -130,7 +135,7 @@ By making a contribution to this project, I certify that:
     sign-off) is maintained indefinitely and may be redistributed
     consistent with this project or the open source license(s)
     involved.
- ```
+```
 
 We require that every contribution to OpenSearch is signed with a Developer Certificate of Origin. Additionally, please use your real name. We do not accept anonymous contributors nor those utilizing pseudonyms.
 
@@ -156,12 +161,14 @@ New files in your code contributions should contain the following license header
 ```
 
 ### Python
+
 ```
 # Copyright OpenSearch Contributors
 # SPDX-License-Identifier: Apache-2.0
 ```
 
 ### Shell
+
 ```
 # Copyright OpenSearch Contributors
 # SPDX-License-Identifier: Apache-2.0

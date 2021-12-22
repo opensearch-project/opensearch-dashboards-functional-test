@@ -6,25 +6,25 @@
 import {
   AD_GET_DETECTORS_NODE_API_PATH,
   AD_GET_INDICES_NODE_API_PATH,
-} from "../utils/constants";
+} from '../utils/constants';
 
 /**
  * This overwrites the default visit command to authenticate before visiting
  * webpages if SECURITY_ENABLED cypress env var is true
  */
-Cypress.Commands.overwrite("visit", (orig, url, options) => {
-  if (Cypress.env("SECURITY_ENABLED")) {
+Cypress.Commands.overwrite('visit', (orig, url, options) => {
+  if (Cypress.env('SECURITY_ENABLED')) {
     let newOptions = options;
     if (options) {
-      newOptions["auth"] = {
-        username: "admin",
-        password: "admin",
+      newOptions['auth'] = {
+        username: 'admin',
+        password: 'admin',
       };
     } else {
       newOptions = {
         auth: {
-          username: "admin",
-          password: "admin",
+          username: 'admin',
+          password: 'admin',
         },
       };
     }
@@ -39,28 +39,28 @@ Cypress.Commands.overwrite("visit", (orig, url, options) => {
  AD PLUGIN COMMANDS
  *****************************
  */
-Cypress.Commands.add("mockGetDetectorOnAction", function (
-  fixtureFileName,
-  funcMockedOn
-) {
-  cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
-    fixture: fixtureFileName,
-  }).as("getDetectors");
+Cypress.Commands.add(
+  'mockGetDetectorOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
+      fixture: fixtureFileName,
+    }).as('getDetectors');
 
-  funcMockedOn();
+    funcMockedOn();
 
-  cy.wait("@getDetectors");
-});
+    cy.wait('@getDetectors');
+  }
+);
 
-Cypress.Commands.add("mockSearchIndexOnAction", function (
-  fixtureFileName,
-  funcMockedOn
-) {
-  cy.route2(buildAdApiUrl(AD_GET_INDICES_NODE_API_PATH + "*"), {
-    fixture: fixtureFileName,
-  }).as("getIndices");
+Cypress.Commands.add(
+  'mockSearchIndexOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(buildAdApiUrl(AD_GET_INDICES_NODE_API_PATH + '*'), {
+      fixture: fixtureFileName,
+    }).as('getIndices');
 
-  funcMockedOn();
+    funcMockedOn();
 
-  cy.wait("@getIndices");
-});
+    cy.wait('@getIndices');
+  }
+);
