@@ -26,9 +26,9 @@ jobs:
       - name: Checkout OpenSearch
         uses: actions/checkout@v2
         with:
-          repository: "opensearch-project/OpenSearch"
+          repository: 'opensearch-project/OpenSearch'
           path: OpenSearch
-          ref: "1.0"
+          ref: '1.0'
       - name: Run OpenSearch
         run: |
           cd OpenSearch
@@ -40,7 +40,7 @@ jobs:
         with:
           repository: opensearch-project/OpenSearch-Dashboards
           path: OpenSearch-Dashboards
-          ref: "1.0"
+          ref: '1.0'
       - name: Get node and yarn versions
         id: versions
         run: |
@@ -50,7 +50,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: "https://registry.npmjs.org"
+          registry-url: 'https://registry.npmjs.org'
       - name: Install correct yarn version for OpenSearch-Dashboards
         run: |
           npm uninstall -g yarn
@@ -89,7 +89,7 @@ jobs:
         with:
           working-directory: monetery-test
           command: yarn run cypress run --browser chrome --headless --env SECURITY_ENABLED=false --spec 'cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js'
-          wait-on: "http://localhost:5601"
+          wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()

@@ -9,7 +9,7 @@ on:
       - main
       - dev-*
 env:
-  VERSION: "1.2.0"
+  VERSION: '1.2.0'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: "https://registry.npmjs.org"
+          registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}-linux-x64
@@ -73,7 +73,7 @@ jobs:
         with:
           working-directory: monterey-test
           command: yarn run cypress run --browser chrome --headless --env SECURITY_ENABLED=true --spec 'cypress/integration/plugins/*/*.js'
-          wait-on: "http://localhost:5601"
+          wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()

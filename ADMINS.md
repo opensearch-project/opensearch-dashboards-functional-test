@@ -4,9 +4,9 @@ This document explains who the admins are (see below), what they do in this repo
 
 ## Current Admins
 
-| Admin           | GitHub ID                               | Affiliation |
-| --------------- | --------------------------------------- | ----------- |
-| Henri Yandell   | [hyandell](https://github.com/hyandell) | Amazon      |
+| Admin         | GitHub ID                               | Affiliation |
+| ------------- | --------------------------------------- | ----------- |
+| Henri Yandell | [hyandell](https://github.com/hyandell) | Amazon      |
 
 ## Admin Responsibilities
 
