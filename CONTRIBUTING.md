@@ -112,6 +112,25 @@ npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/
 
 Since your release tests have been moved in this repo, to avoid maintain code in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml
 
+7. [optional] Verify test execution from OpenSearch build repo
+
+The tests inside this repo will be executed from OpenSearch build repo. You can verify that by running test script from https://github.com/opensearch-project/opensearch-build/tree/main/src/test_workflow Please refer to the repo to the way of test exeuction. Below is the set of commands you can use based on current situation.
+
+Suppose your plugin is ready for version 1.2.0
+
+```
+./build.sh manifests/1.2.0/opensearch-1.2.0.yml
+
+./build.sh manifests/1.2.0/opensearch-dashboards-1.2.0.yml
+
+./assemble.sh builds/opensearch/manifest.yml 
+
+./assemble.sh builds/opensearch-dashboards/manifest.yml 
+
+./test.sh integ-test manifests/1.2.0/opensearch-dashboards-1.2.0-test.yml
+
+```
+
 ## First Things First
 
 1. **When in doubt, open an issue** - For almost any type of contribution, the first step is opening an issue. Even if you think you already know what the solution is, writing down a description of the problem you're trying to solve will help everyone get context when they review your pull request. If it's truly a trivial change (e.g. spelling error), you can skip this step -- but as the subject says, when it doubt, [open an issue](issues).
