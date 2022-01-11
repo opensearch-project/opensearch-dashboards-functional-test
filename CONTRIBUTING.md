@@ -108,6 +108,16 @@ E.g if you want to run all plugin tests with security enabled.
 npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/*/*"    
 ```
 
+E.g if you want to run AD plugin tests with security enabled.
+
+```
+npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/anomaly-detection-dashboards-plugin"
+```
+
+For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/installing-cypress#Opening-Cypress.
+
+The env paramaters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters.
+
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 
 Since your release tests have been moved in this repo, to avoid maintain duplicated code and potentially diverged Cypress versions in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml However, this can be decided at plugin level to phase out the changes. 
