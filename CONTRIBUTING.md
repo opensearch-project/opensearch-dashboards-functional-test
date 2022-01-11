@@ -4,6 +4,7 @@
     - [opensearch-dashboards-test-library](#opensearch-dashboards-test-library)
   - [Run Tests](#run-tests)
   - [Formatting](#formatting)
+  - [Onboarding](#onboarding)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
   - [Bug Reports](#bug-reports)
@@ -80,6 +81,36 @@ $ npx prettier * --write
 ```
 
 This should be done before opening a PR to keep checked-in code consistent.
+
+### Onboarding
+
+To onboard your release tests (Dashboards plugins) onto this repo test function, you can follow the next steps.
+
+0. Create a name to identify your plugin, e.g `plugin-name`
+
+The dir name shall be descriptive to identify your plugin. You can use the same name defined in build repo https://github.com/opensearch-project/opensearch-build/tree/main/scripts/components
+
+1. Move test files under `cypress/integration/plugins/<plugin-name>`
+
+2. Move fixtures under `cypress/fixtures/plugins/<plugin-name>`
+
+3. Move custom commands under `cypress/fixtures/plugins/<plugin-name>`
+
+4. Move constants to `cypress/utils/constants.js`
+
+5. Run tests
+
+Start OpenSearch and OpenSearch Dashboards. Then refer to this test execution command https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/integtest.sh#L89
+
+E.g if you want to run all plugin tests with security enabled.
+
+```
+npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/*/*"    
+```
+
+6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
+
+Since your release tests have been moved in this repo, to avoid maintain code in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml
 
 ## First Things First
 
