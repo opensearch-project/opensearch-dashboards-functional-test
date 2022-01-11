@@ -100,7 +100,7 @@ The dir name shall be descriptive to identify your plugin. You can use the same 
 
 5. Run tests
 
-Start OpenSearch and OpenSearch Dashboards. Then refer to this test execution command https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/integtest.sh#L89
+Start OpenSearch and OpenSearch Dashboards. Then refer to the test execution file https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/integtest.sh.
 
 E.g if you want to run all plugin tests with security enabled.
 
@@ -110,7 +110,7 @@ npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 
-Since your release tests have been moved in this repo, to avoid maintain code in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml
+Since your release tests have been moved in this repo, to avoid maintain duplicated code and potentially diverged Cypress versions in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml However, this can be decided at plugin level to phase out the changes. 
 
 7. [optional] Verify test execution from OpenSearch build repo
 
