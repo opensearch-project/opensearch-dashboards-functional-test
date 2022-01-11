@@ -90,13 +90,13 @@ To onboard your release tests (Dashboards plugins) onto this repo test function,
 
 The dir name shall be descriptive to identify your plugin. You can use the same name defined in build repo https://github.com/opensearch-project/opensearch-build/tree/main/scripts/components
 
-1. Move test files under `cypress/integration/plugins/<plugin-name>`
+1. Place test files under `cypress/integration/plugins/<plugin-name>`
 
-2. Move fixtures under `cypress/fixtures/plugins/<plugin-name>`
+2. Place fixtures under `cypress/fixtures/plugins/<plugin-name>`
 
-3. Move custom commands under `cypress/fixtures/plugins/<plugin-name>`
+3. Place custom commands under `cypress/fixtures/plugins/<plugin-name>`
 
-4. Move constants to `cypress/utils/constants.js`
+4. Place constants to `cypress/utils/constants.js`
 
 5. Run tests
 
