@@ -114,9 +114,9 @@ E.g if you want to run AD plugin tests with security enabled.
 npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/anomaly-detection-dashboards-plugin"
 ```
 
-For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/installing-cypress#Opening-Cypress.
+For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/.installing-cypress#Opening-Cypress.
 
-The env paramaters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters.
+The env paramaters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 
