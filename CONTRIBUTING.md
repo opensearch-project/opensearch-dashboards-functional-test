@@ -100,7 +100,7 @@ The dir name shall be descriptive to identify your plugin. You can use the same 
 
 5. Run tests
 
-Start OpenSearch and OpenSearch Dashboards. Then refer to the test execution file https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/integtest.sh.
+Start OpenSearch and OpenSearch Dashboards. Then refer to the [test execution file](/integtest.sh).
 
 E.g if you want to run all plugin tests with security enabled.
 
