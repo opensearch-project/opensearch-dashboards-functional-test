@@ -41,7 +41,7 @@ while getopts ":hb:p:s:c:v:" arg; do
             ;;
         v)
             VERSION=$OPTARG
-            ;;        
+            ;;
         :)
             echo "-${OPTARG} requires an argument"
             usage
@@ -86,4 +86,6 @@ else
    echo "run security disabled tests"
 fi
 
-npx cypress run --env SECURITY_ENABLED=$SECURITY_ENABLED --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*"
+env TZ=America/Los_Angeles \
+    npx cypress run --env SECURITY_ENABLED=$SECURITY_ENABLED \
+    --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*"
