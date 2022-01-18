@@ -7,14 +7,7 @@
 
 import { BASE_PATH } from '../../../utils/constants';
 
-const testDataSet = [
-  {
-    url: 'https://raw.githubusercontent.com/opensearch-project/dashboards-visualizations/main/gantt-chart/.cypress/utils/jaeger-sample.json',
-    index: 'jaeger',
-  },
-];
-
-const delay = 1500;
+const delay = 100;
 const GANTT_VIS_NAME =
   'A test gantt chart ' + Math.random().toString(36).substring(2);
 const Y_LABEL = 'A unique label for Y-axis';
@@ -23,8 +16,7 @@ const DEFAULT_SIZE = 10;
 
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
-    const dumpDataSet = (url, index) =>
-      cy.request(url).then((response) => {
+    const dumpDataSet = (ndjson, index) =>
         cy.request({
           method: 'POST',
           form: true,
@@ -37,10 +29,11 @@ describe('Dump test data', () => {
             path: `${index}/_bulk`,
             method: 'POST',
           },
-          body: response.body,
-        });
+          body: ndjson,
       });
-    testDataSet.forEach(({ url, index }) => dumpDataSet(url, index));
+    cy.fixture("plugins/gantt-chart-dashboards/jaeger-sample.txt").then((ndjson) => {
+      dumpDataSet(ndjson, 'jaeger')
+    })
 
     cy.request({
       method: 'POST',
@@ -58,13 +51,12 @@ describe('Dump test data', () => {
 describe('Save a gantt chart', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
-    cy.wait(delay * 3);
   });
 
   it('Creates and saves a gantt chart', () => {
-    cy.contains('Create ').click({ force: true });
+    cy.get('.euiButton__text').contains('Create ').click({ force: true });
     cy.wait(delay);
-    cy.contains('Gantt Chart')
+    cy.get('[data-test-subj="visTypeTitle"]').contains('Gantt Chart')
       .click({ force: true });
     cy.wait(delay);
     cy.contains(/^jaeger$/)
@@ -128,13 +120,9 @@ describe('Render and configure a gantt chart', () => {
 describe('Configure panel settings', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
-    cy.wait(delay * 5);
-    cy.get('button').contains(GANTT_VIS_NAME).click({ force: true });
-    cy.wait(delay * 5);
-    cy.get('.euiTab__content')
-      .contains('Panel settings')
+    cy.contains(GANTT_VIS_NAME).click({ force: true });
+    cy.contains('Panel settings')
       .click({ force: true });
-    cy.wait(delay);
   });
 
   it('Changes y-axis label', () => {
@@ -180,37 +168,37 @@ describe('Configure panel settings', () => {
   });
 
   it('Changes time formats', () => {
-    cy.get('g.xtick > text').contains('12:59:07.303 PM').should('exist');
+    cy.contains('12:59:07.303 PM').should('exist');
 
     cy.get('select').eq(3).select('MM/DD hh:mm:ss A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
-    cy.get('g.xtick > text').contains('05/28 12:59:07 PM').should('exist');
+    cy.contains('05/28 12:59:07 PM').should('exist');
 
     cy.get('select').eq(3).select('MM/DD/YY hh:mm A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
-    cy.get('g.xtick > text').contains('05/28/20 12:59 PM').should('exist');
+    cy.contains('05/28/20 12:59 PM').should('exist');
 
     cy.get('select').eq(3).select('HH:mm:ss.SSS');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
-    cy.get('g.xtick > text').contains('12:59:07.303').should('exist');
+    cy.contains('12:59:07.303').should('exist');
 
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
-    cy.get('g.xtick > text').contains('05/28 12:59:07').should('exist');
+    cy.contains('05/28 12:59:07').should('exist');
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
-    cy.get('g.xtick > text').contains('05/28/20 12:59').should('exist');
+    cy.contains('05/28/20 12:59').should('exist');
   });
 
   it('Hides legends', () => {
@@ -228,9 +216,8 @@ describe('Configure panel settings', () => {
 describe('Add gantt chart to dashboard', () => {
   it('Adds gantt chart to dashboard', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#/create`);
-    cy.wait(delay * 5);
 
-    cy.get('.euiLink').contains('Add an existing').click({ force: true });
+    cy.contains('Add an existing').click({ force: true });
     cy.wait(delay);
     cy.get('input[data-test-subj="savedObjectFinderSearchInput"]')
       .focus()
