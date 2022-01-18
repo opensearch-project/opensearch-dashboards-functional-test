@@ -17,23 +17,25 @@ const DEFAULT_SIZE = 10;
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
     const dumpDataSet = (ndjson, index) =>
-        cy.request({
+      cy.request({
+        method: 'POST',
+        form: true,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `${index}/_bulk`,
           method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_bulk`,
-            method: 'POST',
-          },
-          body: ndjson,
+        },
+        body: ndjson,
       });
-    cy.fixture("plugins/gantt-chart-dashboards/jaeger-sample.txt").then((ndjson) => {
-      dumpDataSet(ndjson, 'jaeger')
-    })
+    cy.fixture('plugins/gantt-chart-dashboards/jaeger-sample.txt').then(
+      (ndjson) => {
+        dumpDataSet(ndjson, 'jaeger');
+      }
+    );
 
     cy.request({
       method: 'POST',
@@ -56,11 +58,11 @@ describe('Save a gantt chart', () => {
   it('Creates and saves a gantt chart', () => {
     cy.get('.euiButton__text').contains('Create ').click({ force: true });
     cy.wait(delay);
-    cy.get('[data-test-subj="visTypeTitle"]').contains('Gantt Chart')
+    cy.get('[data-test-subj="visTypeTitle"]')
+      .contains('Gantt Chart')
       .click({ force: true });
     cy.wait(delay);
-    cy.contains(/^jaeger$/)
-      .click({ force: true });
+    cy.contains(/^jaeger$/).click({ force: true });
     cy.wait(delay);
     cy.contains('Save').click({ force: true });
     cy.wait(delay);
@@ -121,8 +123,7 @@ describe('Configure panel settings', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
-    cy.contains('Panel settings')
-      .click({ force: true });
+    cy.contains('Panel settings').click({ force: true });
   });
 
   it('Changes y-axis label', () => {

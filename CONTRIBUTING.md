@@ -105,7 +105,7 @@ Start OpenSearch and OpenSearch Dashboards. Then refer to the [test execution fi
 E.g if you want to run all plugin tests with security enabled.
 
 ```
-npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/*/*"    
+npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/*/*"
 ```
 
 E.g if you want to run AD plugin tests with security enabled.
@@ -120,7 +120,7 @@ The env paramaters are defined in https://github.com/opensearch-project/opensear
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 
-Since your release tests have been moved in this repo, to avoid maintain duplicated code and potentially diverged Cypress versions in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml However, this can be decided at plugin level to phase out the changes. 
+Since your release tests have been moved in this repo, to avoid maintain duplicated code and potentially diverged Cypress versions in two repos, you can remove them from your plugin. Then execute the tests inside this repo from your CI. See AD's example https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/blob/main/.github/workflows/remote-integ-tests-workflow.yml However, this can be decided at plugin level to phase out the changes.
 
 7. [optional] Verify test execution from OpenSearch build repo
 
@@ -133,9 +133,9 @@ Suppose your plugin is ready for version 1.2.0
 
 ./build.sh manifests/1.2.0/opensearch-dashboards-1.2.0.yml
 
-./assemble.sh builds/opensearch/manifest.yml 
+./assemble.sh builds/opensearch/manifest.yml
 
-./assemble.sh builds/opensearch-dashboards/manifest.yml 
+./assemble.sh builds/opensearch-dashboards/manifest.yml
 
 ./test.sh integ-test manifests/1.2.0/opensearch-dashboards-1.2.0-test.yml
 

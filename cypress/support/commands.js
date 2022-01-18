@@ -57,7 +57,6 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
   return originalFn(Object.assign({}, defaults, options));
 });
 
-
 /**
  *****************************
  AD PLUGIN COMMANDS
