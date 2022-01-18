@@ -27,6 +27,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
+    newOptions.qs = { security_tenant: 'private' };
     orig(url, newOptions);
   } else {
     orig(url, options);
