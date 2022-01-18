@@ -26,3 +26,7 @@ Cypress.on('uncaught:exception', (err) => {
     return false;
   }
 });
+
+if (Cypress.env('SECURITY_ENABLED')) {
+  Cypress.env('openSearchUrl', 'https://localhost:9200');
+}

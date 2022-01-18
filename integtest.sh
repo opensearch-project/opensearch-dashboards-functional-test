@@ -86,4 +86,4 @@ else
    echo "run security disabled tests"
 fi
 
-npx cypress run --env SECURITY_ENABLED=$SECURITY_ENABLED --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*"
+TZ=America/Los_Angeles npx cypress run --env SECURITY_ENABLED=$SECURITY_ENABLED --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*"
