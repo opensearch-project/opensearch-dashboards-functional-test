@@ -5,7 +5,11 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "cypress:run": "env TZ=America/Los_Angeles cypress run --browser chrome --headless --env SECURITY_ENABLED=false",
+    "cypress:run-with-security": "env TZ=America/Los_Angeles cypress run --browser chrome --headless --env SECURITY_ENABLED=true",
+    "cypress:run-plugin-tests": "yarn cypress:run --spec 'cypress/integration/plugins/*/*.js'",
+    "cypress:run-plugin-tests-with-security": "yarn cypress:run-with-security --spec 'cypress/integration/plugins/*/*.js'"
   },
   "repository": {
     "type": "git",
