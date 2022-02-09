@@ -265,7 +265,7 @@ describe('dashboard filtering', () => {
         );
       });
 
-      // Skip this test as a ﬂaky test
+      // Skip this test as a ﬂaky test.
       it.skip('Filter disabled: goal and guages', () => {
         // Goal label should be 7,544, and the gauge label should be 39.958%%
         // Inconsistency: original code says that the goal label should have "7,544",
