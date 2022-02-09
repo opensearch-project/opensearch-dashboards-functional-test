@@ -34,7 +34,7 @@ opensearch-dashboards-test-library is the test utility library used by this proj
 "@opensearch-dashboards-test/opensearch-dashboards-test-library": "^1.0.1"
 ```
 
-You can aslo import from the git repository target branch to use the development code directly
+You can also import from the git repository target branch to use the development code directly
 
 ```
 "@opensearch-dashboards-test/opensearch-dashboards-test-library": "opensearch-project/opensearch-dashboards-test-library#main"
@@ -48,28 +48,30 @@ $ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library &
 
 ### Run Tests
 
-You can run the cypress tests by cli:
+You can run the cypress tests by cli. There are some handy sripts in [package.json](package.json) to run the tests with some pre-set configurations.
+
+To run without security:
 
 ```
-$ npx cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
+$ yarn cypress run-without-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
 ```
 
-By default, it uses headless mode (hide the broswer) You can turn on the browser display by:
+To run with security:
 
 ```
-$ npx cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js --headed"
+$ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
 ```
 
-You can also manually trigger the test via browser UI by:
+These tests run in headless mode by default. You can also manually trigger the test via browser UI by running:
 
 ```
-$ npx cypress open
+$ yarn cypress open
 ```
 
 And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
 
 ```
-$ npx cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
+$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
 ```
 
 ### Formatting
