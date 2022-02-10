@@ -4,6 +4,7 @@
  */
 
 import {
+  AD_FIXTURE_BASE_PATH,
   BASE_AD_DETECTOR_LIST_PATH,
   TEST_DETECTOR_ID,
   DETECTOR_STATE_DISABLED,
@@ -19,9 +20,12 @@ describe('Detector list', () => {
     'Create an anomaly detector to get started.';
 
   it('Empty detectors - no detector index', () => {
-    cy.mockGetDetectorOnAction('no_detector_index_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('p', '(0)');
     cy.contains('p', EMPTY_MESSAGE);
@@ -32,9 +36,12 @@ describe('Detector list', () => {
   });
 
   it('Empty detectors - empty detector index', () => {
-    cy.mockGetDetectorOnAction('empty_detector_index_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'empty_detector_index_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('p', '(0)');
     cy.contains('p', EMPTY_MESSAGE);
@@ -45,9 +52,12 @@ describe('Detector list', () => {
   });
 
   it('One detector - single stopped detector index', () => {
-    cy.mockGetDetectorOnAction('single_stopped_detector_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('p', '(1)');
     cy.contains('stopped-detector');
@@ -60,9 +70,12 @@ describe('Detector list', () => {
   });
 
   it('Multiple detectors - multiple detectors index', () => {
-    cy.mockGetDetectorOnAction('multiple_detectors_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('p', '(4)');
     cy.contains('stopped-detector');
@@ -84,17 +97,23 @@ describe('Detector list', () => {
   });
 
   it('Redirect to create detector', () => {
-    cy.mockGetDetectorOnAction('single_stopped_detector_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
     cy.get('[data-test-subj=addDetector]').click({ force: true });
     cy.contains('span', 'Create detector');
   });
 
   it('Start single detector', () => {
-    cy.mockGetDetectorOnAction('single_stopped_detector_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
     cy.get('.euiTableRowCellCheckbox').within(() =>
       cy.get('.euiCheckbox__input').click({ force: true })
     );
@@ -103,7 +122,7 @@ describe('Detector list', () => {
     cy.contains('The following detectors will begin initializing.');
     cy.contains('stopped-detector');
     cy.mockStartDetectorOnAction(
-      'start_detector_response.json',
+      AD_FIXTURE_BASE_PATH + 'start_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
         cy.get('[data-test-subj=confirmButton]').click({ force: true });
@@ -113,9 +132,12 @@ describe('Detector list', () => {
   });
 
   it('Stop single detector', () => {
-    cy.mockGetDetectorOnAction('single_running_detector_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'single_running_detector_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
     cy.get('.euiTableRowCellCheckbox').within(() =>
       cy.get('.euiCheckbox__input').click({ force: true })
     );
@@ -124,7 +146,7 @@ describe('Detector list', () => {
     cy.contains('The following detectors will be stopped.');
     cy.contains('running-detector');
     cy.mockStopDetectorOnAction(
-      'stop_detector_response.json',
+      AD_FIXTURE_BASE_PATH + 'stop_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
         cy.get('[data-test-subj=confirmButton]').click({ force: true });
@@ -134,9 +156,12 @@ describe('Detector list', () => {
   });
 
   it.skip('Delete single detector', () => {
-    cy.mockGetDetectorOnAction('single_stopped_detector_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
     cy.get('.euiTableRowCellCheckbox').within(() =>
       cy.get('.euiCheckbox__input').click({ force: true })
     );
@@ -152,7 +177,7 @@ describe('Detector list', () => {
       .click({ force: true })
       .type('delete');
     cy.mockDeleteDetectorOnAction(
-      'delete_detector_response.json',
+      AD_FIXTURE_BASE_PATH + 'delete_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
         cy.get('[data-test-subj=confirmButton]').click({ force: true });
@@ -162,9 +187,12 @@ describe('Detector list', () => {
   });
 
   it('Filter by detector search', () => {
-    cy.mockGetDetectorOnAction('multiple_detectors_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('stopped-detector');
     cy.contains('running-detector');
@@ -179,9 +207,12 @@ describe('Detector list', () => {
   });
 
   it('Filter by detector state', () => {
-    cy.mockGetDetectorOnAction('multiple_detectors_response.json', () => {
-      cy.visit(BASE_AD_DETECTOR_LIST_PATH);
-    });
+    cy.mockGetDetectorOnAction(
+      AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
+      () => {
+        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+      }
+    );
 
     cy.contains('stopped-detector');
     cy.contains('running-detector');

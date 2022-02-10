@@ -3,17 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Base URL path with the trailing slash removed
-export const BASE_PATH = new URL(Cypress.config().baseUrl).pathname.replace(
-  /\/$/,
-  ''
-);
+export const BASE_PATH = Cypress.config('baseUrl');
 
 /**
  *****************************
  AD PLUGIN CONSTANTS
  *****************************
  */
+
+export const AD_FIXTURE_BASE_PATH = 'plugins/anomaly-detection-dashboards-plugin/'
+
 export const BASE_AD_PATH = BASE_PATH + '/app/anomaly-detection-dashboards#';
 
 export const BASE_AD_DASHBOARDS_PATH = BASE_AD_PATH + '/dashboard';
