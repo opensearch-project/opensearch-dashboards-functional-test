@@ -4,17 +4,18 @@
  */
 
 import {
-  AD_GET_DETECTORS_NODE_API_PATH,
-  AD_GET_INDICES_NODE_API_PATH,
-  AD_GET_MAPPINGS_NODE_API_PATH,
+  AD_NODE_API_PATH,
   getADStartDetectorNodeApiPath,
   getADStopDetectorNodeApiPath,
+  getADDeleteDetectorNodeApiPath,
+  getADMatchDetectorNodeApiPath,
+  getADGetDetectorApiPath,
 } from '../../constants';
 
 Cypress.Commands.add(
   'mockGetDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
+    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, {
       fixture: fixtureFileName,
     }).as('getDetectors');
 
@@ -25,9 +26,27 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'mockGetDetectorsAndIndicesOnAction',
+  function (detectorsFixtureFileName, indexFixtureFileName, funcMockedOn) {
+    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, {
+      fixture: detectorsFixtureFileName,
+    }).as('getDetectors');
+
+    cy.route2(AD_NODE_API_PATH.GET_INDICES, {
+      fixture: indexFixtureFileName,
+    }).as('getIndices');
+
+    funcMockedOn();
+
+    cy.wait('@getDetectors');
+    cy.wait('@getIndices');
+  }
+);
+
+Cypress.Commands.add(
   'mockSearchIndexOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_GET_INDICES_NODE_API_PATH, {
+    cy.route2(AD_NODE_API_PATH.GET_INDICES, {
       fixture: fixtureFileName,
     }).as('getIndices');
 
@@ -40,7 +59,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockStartDetectorOnAction',
   function (fixtureFileName, detectorId, funcMockedOn) {
-    cy.server();
     cy.route2(getADStartDetectorNodeApiPath(detectorId), {
       fixture: fixtureFileName,
     }).as('startDetector');
@@ -54,7 +72,6 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockStopDetectorOnAction',
   function (fixtureFileName, detectorId, funcMockedOn) {
-    cy.server();
     cy.route2(getADStopDetectorNodeApiPath(detectorId), {
       fixture: fixtureFileName,
     }).as('stopDetector');
@@ -66,10 +83,22 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'mockDeleteDetectorOnAction',
+  function (fixtureFileName, detectorId, funcMockedOn) {
+    cy.route2(getADDeleteDetectorNodeApiPath(detectorId), {
+      fixture: fixtureFileName,
+    }).as('deleteDetector');
+
+    funcMockedOn();
+
+    cy.wait('@deleteDetector');
+  }
+);
+
+Cypress.Commands.add(
   'mockGetIndexMappingsOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.server();
-    cy.route2(AD_GET_MAPPINGS_NODE_API_PATH, {
+    cy.route2(AD_NODE_API_PATH.GET_MAPPINGS, {
       fixture: fixtureFileName,
     }).as('getMappings');
 
@@ -82,8 +111,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockCreateDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.server();
-    cy.route2(AD_GET_DETECTORS_NODE_API_PATH, { fixture: fixtureFileName }).as(
+    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, { fixture: fixtureFileName }).as(
       'createDetector'
     );
 
@@ -92,3 +120,40 @@ Cypress.Commands.add(
     cy.wait('@createDetector');
   }
 );
+
+Cypress.Commands.add(
+  'mockMatchDetectorOnAction',
+  function (fixtureFileName, detectorName, funcMockedOn) {
+    cy.route2(getADMatchDetectorNodeApiPath(detectorName), {
+      fixture: fixtureFileName,
+    }).as('match');
+
+    funcMockedOn();
+
+    cy.wait('@match');
+  }
+);
+
+Cypress.Commands.add(
+  'mockValidateDetectorOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(AD_NODE_API_PATH.VALIDATE, {
+      fixture: fixtureFileName,
+    }).as('validate');
+
+    funcMockedOn();
+
+    cy.wait('@validate');
+  }
+);
+
+Cypress.Commands.add('deleteDetector', (detectorId) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}/${getADGetDetectorApiPath(detectorId)}`
+  );
+});
+
+Cypress.Commands.add('getElementByTestId', (testId) => {
+  return cy.get(`[data-test-subj=${testId}]`);
+});

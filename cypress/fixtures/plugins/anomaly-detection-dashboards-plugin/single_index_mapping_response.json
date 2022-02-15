@@ -2,7 +2,7 @@
   "ok": true,
   "response": {
     "mappings": {
-      "e2e-test-index": {
+      "test-index": {
         "mappings": {
           "properties": {
             "timestamp": {

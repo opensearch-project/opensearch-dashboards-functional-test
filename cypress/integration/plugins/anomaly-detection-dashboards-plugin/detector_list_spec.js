@@ -5,129 +5,140 @@
 
 import {
   AD_FIXTURE_BASE_PATH,
-  BASE_AD_DETECTOR_LIST_PATH,
+  AD_URL,
   TEST_DETECTOR_ID,
-  DETECTOR_STATE_DISABLED,
-  DETECTOR_STATE_INIT,
-  DETECTOR_STATE_RUNNING,
-  DETECTOR_STATE_FEATURE_REQUIRED,
+  DETECTOR_STATE,
 } from '../../../utils/constants';
+import { selectTopItemFromFilter } from '../../../utils/helpers';
 
-describe('Detector list', () => {
-  const EMPTY_MESSAGE =
-    'A detector is an individual anomaly detection task. You can create multiple detectors, ' +
-    'and all the detectors can run simultaneously, with each analyzing data from different sources. ' +
-    'Create an anomaly detector to get started.';
+describe('Detector list page', () => {
+  before(() => {
+    cy.server();
+  });
 
   it('Empty detectors - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('p', '(0)');
-    cy.contains('p', EMPTY_MESSAGE);
-    cy.get('.euiButton--primary.euiButton--fill').should(
-      'have.length.at.least',
-      2
-    );
+    cy.getElementByTestId('detectorListHeader').contains('(0)');
+    cy.getElementByTestId('emptyDetectorListMessage').should('exist');
+    cy.getElementByTestId('sampleDetectorButton').should('exist');
+    cy.getElementByTestId('createDetectorButton').should('exist');
   });
 
   it('Empty detectors - empty detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'empty_detector_index_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('p', '(0)');
-    cy.contains('p', EMPTY_MESSAGE);
-    cy.get('.euiButton--primary.euiButton--fill').should(
-      'have.length.at.least',
-      2
-    );
+    cy.getElementByTestId('detectorListHeader').contains('(0)');
+    cy.getElementByTestId('emptyDetectorListMessage').should('exist');
+    cy.getElementByTestId('sampleDetectorButton').should('exist');
+    cy.getElementByTestId('createDetectorButton').should('exist');
   });
 
   it('One detector - single stopped detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('p', '(1)');
-    cy.contains('stopped-detector');
-    cy.contains('Stopped');
-    cy.contains('test-index');
-    cy.get('.euiButton--primary.euiButton--fill').should(
-      'have.length.at.least',
-      1
+    cy.getElementByTestId('detectorListHeader').contains('(1)');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable').contains(
+      DETECTOR_STATE.DISABLED
     );
+    cy.getElementByTestId('detectorListTable').contains(
+      'stopped-detector-index'
+    );
+    cy.getElementByTestId('createDetectorButton').should('exist');
+    cy.getElementByTestId('sampleDetectorButton').should('not.exist');
+    cy.getElementByTestId('emptyDetectorListMessage').should('not.exist');
   });
 
   it('Multiple detectors - multiple detectors index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('p', '(4)');
-    cy.contains('stopped-detector');
-    cy.contains('initializing-detector');
-    cy.contains('running-detector');
-    cy.contains('feature-required-detector');
-    cy.contains('stopped-index');
-    cy.contains('initializing-index');
-    cy.contains('running-index');
-    cy.contains('feature-required-index');
-    cy.contains(DETECTOR_STATE_DISABLED);
-    cy.contains(DETECTOR_STATE_INIT);
-    cy.contains(DETECTOR_STATE_RUNNING);
-    cy.contains(DETECTOR_STATE_FEATURE_REQUIRED);
-    cy.get('.euiButton--primary.euiButton--fill').should(
-      'have.length.at.least',
-      1
+    cy.getElementByTestId('detectorListHeader').contains('(4)');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable').contains(
+      'initializing-detector'
     );
+    cy.getElementByTestId('detectorListTable').contains('running-detector');
+    cy.getElementByTestId('detectorListTable').contains(
+      'feature-required-detector'
+    );
+    cy.getElementByTestId('detectorListTable').contains(
+      'stopped-detector-index'
+    );
+    cy.getElementByTestId('detectorListTable').contains(
+      'initializing-detector-index'
+    );
+    cy.getElementByTestId('detectorListTable').contains(
+      'running-detector-index'
+    );
+    cy.getElementByTestId('detectorListTable').contains(
+      'feature-required-detector-index'
+    );
+    cy.getElementByTestId('detectorListTable').contains(
+      DETECTOR_STATE.DISABLED
+    );
+    cy.getElementByTestId('detectorListTable').contains(DETECTOR_STATE.INIT);
+    cy.getElementByTestId('detectorListTable').contains(DETECTOR_STATE.RUNNING);
+    cy.getElementByTestId('detectorListTable').contains(
+      DETECTOR_STATE.FEATURE_REQUIRED
+    );
+    cy.getElementByTestId('createDetectorButton').should('exist');
+    cy.getElementByTestId('sampleDetectorButton').should('not.exist');
+    cy.getElementByTestId('emptyDetectorListMessage').should('not.exist');
   });
 
   it('Redirect to create detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
-    cy.get('[data-test-subj=createDetectorButton]').click({ force: true });
-    cy.contains('span', 'Create detector');
+    cy.getElementByTestId('createDetectorButton').click();
+    cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
   });
 
   it('Start single detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
-    cy.get('.euiTableRowCellCheckbox').within(() =>
-      cy.get('.euiCheckbox__input').click({ force: true })
-    );
-    cy.get('[data-test-subj=listActionsButton]').click({ force: true });
-    cy.get('[data-test-subj=startDetectors]').click({ force: true });
-    cy.contains('The following detectors will begin initializing.');
+    cy.getElementByTestId('startDetectorsModal').should('not.exist');
+    cy.get('.euiTableRowCellCheckbox').find('.euiCheckbox__input').click();
+    cy.getElementByTestId('listActionsButton').click();
+    cy.getElementByTestId('startDetectors').click();
+    cy.getElementByTestId('startDetectorsModal').should('exist');
     cy.contains('stopped-detector');
     cy.mockStartDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'start_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
-        cy.get('[data-test-subj=confirmButton]').click({ force: true });
+        cy.getElementByTestId('confirmButton').click();
       }
     );
+    cy.getElementByTestId('startDetectorsModal').should('not.exist');
     cy.contains('Successfully started all selected detectors');
   });
 
@@ -135,54 +146,50 @@ describe('Detector list', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_running_detector_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
-    cy.get('.euiTableRowCellCheckbox').within(() =>
-      cy.get('.euiCheckbox__input').click({ force: true })
-    );
-    cy.get('[data-test-subj=listActionsButton]').click({ force: true });
-    cy.get('[data-test-subj=stopDetectors]').click({ force: true });
-    cy.contains('The following detectors will be stopped.');
+    cy.getElementByTestId('stopDetectorsModal').should('not.exist');
+    cy.get('.euiTableRowCellCheckbox').find('.euiCheckbox__input').click();
+    cy.getElementByTestId('listActionsButton').click();
+    cy.getElementByTestId('stopDetectors').click();
+    cy.getElementByTestId('stopDetectorsModal').should('exist');
     cy.contains('running-detector');
     cy.mockStopDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'stop_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
-        cy.get('[data-test-subj=confirmButton]').click({ force: true });
+        cy.getElementByTestId('confirmButton').click();
       }
     );
+    cy.getElementByTestId('stopDetectorsModal').should('not.exist');
     cy.contains('Successfully stopped all selected detectors');
   });
 
-  it.skip('Delete single detector', () => {
+  it('Delete single detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
-    cy.get('.euiTableRowCellCheckbox').within(() =>
-      cy.get('.euiCheckbox__input').click({ force: true })
-    );
-    cy.get('[data-test-subj=listActionsButton]').click({ force: true });
-    cy.get('[data-test-subj=deleteDetectors]').click({ force: true });
-    cy.contains(
-      'The following detectors and feature configurations will be permanently removed. This action is irreversible.'
-    );
+    cy.getElementByTestId('deleteDetectorsModal').should('not.exist');
+    cy.get('.euiTableRowCellCheckbox').find('.euiCheckbox__input').click();
+    cy.getElementByTestId('listActionsButton').click();
+    cy.getElementByTestId('deleteDetectors').click();
+    cy.getElementByTestId('deleteDetectorsModal').should('exist');
     cy.contains('stopped-detector');
     cy.contains('Running');
     cy.contains('No');
-    cy.get('[data-test-subj=typeDeleteField]')
-      .click({ force: true })
-      .type('delete');
+    cy.getElementByTestId('typeDeleteField').click().type('delete');
     cy.mockDeleteDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'delete_detector_response.json',
       TEST_DETECTOR_ID,
       () => {
-        cy.get('[data-test-subj=confirmButton]').click({ force: true });
+        cy.getElementByTestId('confirmButton').click();
       }
     );
+    cy.getElementByTestId('deleteDetectorsModal').should('not.exist');
     cy.contains('Successfully deleted all selected detectors');
   });
 
@@ -190,40 +197,68 @@ describe('Detector list', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('stopped-detector');
-    cy.contains('running-detector');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable').contains('running-detector');
 
-    cy.get('[data-test-subj=detectorListSearch]')
+    cy.getElementByTestId('detectorListSearch')
       .first()
-      .click({ force: true })
+      .click()
       .type('stopped-detector');
 
-    cy.contains('stopped-detector');
-    cy.contains('running-detector').should('not.be.visible');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable')
+      .contains('running-detector')
+      .should('not.be.visible');
   });
 
   it('Filter by detector state', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
-        cy.visit(BASE_AD_DETECTOR_LIST_PATH);
+        cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
 
-    cy.contains('stopped-detector');
-    cy.contains('running-detector');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable').contains('running-detector');
 
-    cy.get('[data-test-subj=comboBoxToggleListButton]')
-      .first()
-      .click({ force: true });
-    cy.get('.euiFilterSelectItem').first().click({ force: true });
-    cy.get('.euiPageSideBar').click({ force: true });
+    selectTopItemFromFilter('detectorStateFilter');
 
-    cy.contains('stopped-detector'); // because stopped is the first item in the detector state dropdown
-    cy.contains('running-detector').should('not.be.visible');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector'); // because stopped is the first item in the detector state dropdown
+    cy.getElementByTestId('detectorListTable')
+      .contains('running-detector')
+      .should('not.be.visible');
+  });
+
+  it('Filter by index', () => {
+    cy.mockGetDetectorsAndIndicesOnAction(
+      AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
+      AD_FIXTURE_BASE_PATH + 'multiple_detectors_index_response.json',
+      () => {
+        cy.visit(AD_URL.DETECTOR_LIST);
+      }
+    );
+
+    cy.getElementByTestId('detectorListTable').contains(
+      'feature-required-detector'
+    );
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
+    cy.getElementByTestId('detectorListTable').contains('running-detector');
+
+    selectTopItemFromFilter('indicesFilter');
+
+    cy.getElementByTestId('detectorListTable').contains(
+      'feature-required-detector'
+    ); // because feature-required is the first index returned in the fixture
+    cy.getElementByTestId('detectorListTable')
+      .contains('running-detector')
+      .should('not.be.visible');
+    cy.getElementByTestId('detectorListTable')
+      .contains('stopped-detector')
+      .should('not.be.visible');
   });
 });

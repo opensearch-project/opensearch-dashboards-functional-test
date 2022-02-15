@@ -5,8 +5,8 @@
     "detectorList": [
       {
         "id": "ulgqpXEBqtadYz9j2MHG",
-        "description": "test",
-        "indices": ["test-index"],
+        "description": "A stopped detector.",
+        "indices": ["stopped-detector-index"],
         "lastUpdateTime": 1587614056945,
         "name": "stopped-detector",
         "timeField": "timestamp",

@@ -6,7 +6,7 @@
       {
         "id": "ulgqpXEBqtadYz7j2MHG",
         "description": "test",
-        "indices": ["feature-required-index"],
+        "indices": ["feature-required-detector-index"],
         "lastUpdateTime": 1587614056945,
         "name": "feature-required-detector",
         "timeField": "timestamp",
@@ -28,7 +28,7 @@
       {
         "id": "ulgqpXEBqtadYz6j2MHG",
         "description": "test",
-        "indices": ["initializing-index"],
+        "indices": ["initializing-detector-index"],
         "lastUpdateTime": 1587614056945,
         "name": "initializing-detector",
         "timeField": "timestamp",
@@ -63,7 +63,7 @@
       {
         "id": "ulgqpXEBqtadYz8j2MHG",
         "description": "test",
-        "indices": ["running-index"],
+        "indices": ["running-detector-index"],
         "lastUpdateTime": 1587614056945,
         "name": "running-detector",
         "timeField": "timestamp",
@@ -98,7 +98,7 @@
       {
         "id": "ulgqpXEBqtadYz9j2MHG",
         "description": "test",
-        "indices": ["stopped-index"],
+        "indices": ["stopped-detector-index"],
         "lastUpdateTime": 1587614056945,
         "name": "stopped-detector",
         "timeField": "timestamp",

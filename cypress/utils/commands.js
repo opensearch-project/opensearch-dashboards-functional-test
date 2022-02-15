@@ -98,6 +98,10 @@ Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
   }
 });
 
+Cypress.Commands.add('deleteIndex', (indexName) => {
+  cy.request('DELETE', `${Cypress.env('openSearchUrl')}/${indexName}`);
+});
+
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
   cy.request(
     'PUT',
