@@ -4,4 +4,5 @@ cypress/results/
 cypress/screenshots/
 .DS_Store
 **/.DS_Store
+.idea
 

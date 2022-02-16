@@ -1,16 +1,9 @@
 /*
+ * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
- *
- * The OpenSearch Contributors require contributions made to
- * this file be licensed under the Apache-2.0 license or a
- * compatible open source license.
- *
- * Modifications Copyright OpenSearch Contributors. See
- * GitHub history for details.
  */
 
-import { BASE_PATH } from '../../../utils/constants';
-import { IM_PLUGIN_NAME } from "../../../utils/constants";
+import { BASE_PATH, IM_PLUGIN_NAME } from '../../../utils/constants';
 import sampleTransform from "../../../fixtures/plugins/index-management-dashboards-plugin/sample_transform";
 
 const TRANSFORM_ID = "test_transform_id";

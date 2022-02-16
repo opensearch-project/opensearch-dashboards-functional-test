@@ -13,7 +13,8 @@
     "openSearchUrl": "http://localhost:9200",
     "SECURITY_ENABLED": false,
     "username": "admin",
-    "password": "admin"
+    "password": "admin",
+    "AWS_DOMAIN": false
   },
   "experimentalNetworkStubbing": true
 }

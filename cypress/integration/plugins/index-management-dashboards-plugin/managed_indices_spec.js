@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../../../utils/constants';
-import { IM_PLUGIN_NAME } from "../../../utils/constants";
+import { BASE_PATH, IM_PLUGIN_NAME } from '../../../utils/constants';
 import samplePolicy from "../../../fixtures/plugins/index-management-dashboards-plugin/sample_policy";
 import sampleRolloverPolicy from "../../../fixtures/plugins/index-management-dashboards-plugin/sample_rollover_policy";
 import sampleDataStreamPolicy from "../../../fixtures/plugins/index-management-dashboards-plugin/sample_data_stream_policy.json";
