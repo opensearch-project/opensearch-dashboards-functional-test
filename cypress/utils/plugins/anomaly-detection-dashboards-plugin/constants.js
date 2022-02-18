@@ -3,10 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// since this file is export in main constant file
-// this will be loaded before main constant file
-// so cannot import BASE_PATH but have to define it directly
-const BASE_PATH = Cypress.config('baseUrl');
+import { BASE_PATH } from '../../base_constants';
 
 export const AD_FIXTURE_BASE_PATH =
   'plugins/anomaly-detection-dashboards-plugin/';

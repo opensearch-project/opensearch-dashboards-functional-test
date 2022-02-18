@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../utils/constants';
+import { BASE_PATH } from './constants';
 
 const ADMIN_AUTH = {
   username: Cypress.env('username'),

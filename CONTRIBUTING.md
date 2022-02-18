@@ -70,15 +70,15 @@ These tests run in headless mode by default. You can also manually trigger the t
 $ yarn cypress open
 ```
 
-And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote **AWS OpenSearch endpoint**:
+And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote **AWS OpenSearch endpoint**:
 
 ```
 $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,AWS_DOMAIN=true"
 ```
 
-`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`.
+`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also please notice security enabled domain normally uses https protocol, so you may want to pass in different urls.
 
-`AWS_DOMAIN`: AWS OpenSearch domain is wrapped with proxy that redirects the direct url access to the login url. Even with auth option provided in `cy.visit`, redirection to the login url happens, so a login request before tests and cache the security cookie are needed and can be switched on by this argument.
+`AWS_DOMAIN`: AWS OpenSearch domain is wrapped with proxy that redirects the visiting url to the login url. Even with auth option provided in `cy.visit`, redirection to the login url happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 ### Formatting
 
