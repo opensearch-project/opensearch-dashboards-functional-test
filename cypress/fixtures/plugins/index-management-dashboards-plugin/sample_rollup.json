@@ -47,7 +47,13 @@
     "metrics": [
       {
         "source_field": "taxless_total_price",
-        "metrics": [{ "avg": {} }, { "sum": {} }, { "max": {} }, { "min": {} }, { "value_count": {} }]
+        "metrics": [
+          { "avg": {} },
+          { "sum": {} },
+          { "max": {} },
+          { "min": {} },
+          { "value_count": {} }
+        ]
       },
       {
         "source_field": "total_quantity",

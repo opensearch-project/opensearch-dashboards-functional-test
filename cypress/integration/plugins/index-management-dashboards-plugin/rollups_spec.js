@@ -4,136 +4,170 @@
  */
 
 import { BASE_PATH, IM_PLUGIN_NAME } from '../../../utils/constants';
-import sampleRollup from "../../../fixtures/plugins/index-management-dashboards-plugin/sample_rollup";
+import sampleRollup from '../../../fixtures/plugins/index-management-dashboards-plugin/sample_rollup';
 
-const ROLLUP_ID = "test_rollup_id";
+const ROLLUP_ID = 'test_rollup_id';
 
-describe("Rollups", () => {
+describe('Rollups', () => {
   beforeEach(() => {
     // Set welcome screen tracking to true
-    localStorage.setItem("home:welcome:show", "true");
+    localStorage.setItem('home:welcome:show', 'true');
 
     // Go to sample data page
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
 
     // Click on "Sample data" tab
-    cy.contains("Sample data").click({ force: true });
+    cy.contains('Sample data').click({ force: true });
     // Load sample eCommerce data
-    cy.get(`button[data-test-subj="addSampleDataSetecommerce"]`).click({ force: true });
+    cy.get(`button[data-test-subj="addSampleDataSetecommerce"]`).click({
+      force: true,
+    });
 
     // Verify that sample data is add by checking toast notification
-    cy.contains("Sample eCommerce orders installed", { timeout: 60000 });
+    cy.contains('Sample eCommerce orders installed', { timeout: 60000 });
 
     // Visit ISM OSD
     cy.visit(`${BASE_PATH}/app/${IM_PLUGIN_NAME}#/rollups`);
 
     // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-    cy.contains("Create rollup", { timeout: 60000 });
+    cy.contains('Create rollup', { timeout: 60000 });
   });
 
-  describe("can be created", () => {
+  describe('can be created', () => {
     before(() => {
       cy.deleteAllIndices();
     });
 
-    it("successfully", () => {
+    it('successfully', () => {
       // Confirm we loaded empty state
       cy.contains(
-        "Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need"
+        'Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need'
       );
 
       // Route us to create rollup page
-      cy.contains("Create rollup").click({ force: true });
+      cy.contains('Create rollup').click({ force: true });
 
       // Type in the rollup ID
-      cy.get(`input[placeholder="my-rollupjob1"]`).type(ROLLUP_ID, { force: true });
+      cy.get(`input[placeholder="my-rollupjob1"]`).type(ROLLUP_ID, {
+        force: true,
+      });
 
       // Get description input box
-      cy.get(`textarea[data-test-subj="description"]`).focus().type("some description");
+      cy.get(`textarea[data-test-subj="description"]`)
+        .focus()
+        .type('some description');
 
       // Enter source index
       cy.get(`div[data-test-subj="sourceIndexCombobox"]`)
         .find(`input[data-test-subj="comboBoxSearchInput"]`)
         .focus()
-        .type("opensearch_dashboards_sample_data_ecommerce{enter}");
+        .type('opensearch_dashboards_sample_data_ecommerce{enter}');
 
       // Enter target index
       cy.get(`div[data-test-subj="targetIndexCombobox"]`)
         .find(`input[data-test-subj="comboBoxSearchInput"]`)
         .focus()
-        .type("target_index{enter}");
+        .type('target_index{enter}');
 
       // Click the next button
-      cy.get("button").contains("Next").click({ force: true });
+      cy.get('button').contains('Next').click({ force: true });
 
       // Confirm that we got to step 2 of creation page
-      cy.contains("Time aggregation");
+      cy.contains('Time aggregation');
 
       // Enter timestamp field
-      cy.get(`input[data-test-subj="comboBoxSearchInput"]`).focus().type("order_date{enter}");
+      cy.get(`input[data-test-subj="comboBoxSearchInput"]`)
+        .focus()
+        .type('order_date{enter}');
 
       // Add aggregation
-      cy.get(`button[data-test-subj="addFieldsAggregationEmpty"]`).click({ force: true });
+      cy.get(`button[data-test-subj="addFieldsAggregationEmpty"]`).click({
+        force: true,
+      });
 
       // Select a few fields
-      cy.get(`input[data-test-subj="checkboxSelectRow-customer_gender"]`).click({ force: true });
-      cy.get(`input[data-test-subj="checkboxSelectRow-day_of_week_i"]`).click({ force: true });
-      cy.get(`input[data-test-subj="checkboxSelectRow-geoip.city_name"]`).click({ force: true });
+      cy.get(`input[data-test-subj="checkboxSelectRow-customer_gender"]`).click(
+        { force: true }
+      );
+      cy.get(`input[data-test-subj="checkboxSelectRow-day_of_week_i"]`).click({
+        force: true,
+      });
+      cy.get(`input[data-test-subj="checkboxSelectRow-geoip.city_name"]`).click(
+        { force: true }
+      );
 
       // Click the Add button from add fields modal
-      cy.get(`button[data-test-subj="addFieldsAggregationAdd"]`).click({ force: true });
+      cy.get(`button[data-test-subj="addFieldsAggregationAdd"]`).click({
+        force: true,
+      });
 
       // Confirm fields are added
-      cy.contains("customer_gender");
-      cy.contains("day_of_week_i");
-      cy.contains("geoip.city_name");
+      cy.contains('customer_gender');
+      cy.contains('day_of_week_i');
+      cy.contains('geoip.city_name');
 
       // Add metrics
-      cy.get(`button[data-test-subj="addFieldsMetricEmpty"]`).click({ force: true });
+      cy.get(`button[data-test-subj="addFieldsMetricEmpty"]`).click({
+        force: true,
+      });
 
       // Select a few fields
-      cy.get(`input[data-test-subj="checkboxSelectRow-products.taxless_price"]`).click({ force: true });
-      cy.get(`input[data-test-subj="checkboxSelectRow-total_quantity"]`).click({ force: true });
+      cy.get(
+        `input[data-test-subj="checkboxSelectRow-products.taxless_price"]`
+      ).click({ force: true });
+      cy.get(`input[data-test-subj="checkboxSelectRow-total_quantity"]`).click({
+        force: true,
+      });
 
       // Click the Add button from add fields modal
-      cy.get(`button[data-test-subj="addFieldsMetricAdd"]`).click({ force: true });
+      cy.get(`button[data-test-subj="addFieldsMetricAdd"]`).click({
+        force: true,
+      });
 
       // Confirm fields are added
-      cy.contains("products.taxless_price");
-      cy.contains("total_quantity");
+      cy.contains('products.taxless_price');
+      cy.contains('total_quantity');
 
-      cy.get(`input[data-test-subj="min-total_quantity"]`).click({ force: true });
-      cy.get(`input[data-test-subj="max-total_quantity"]`).click({ force: true });
-      cy.get(`input[data-test-subj="sum-total_quantity"]`).click({ force: true });
-      cy.get(`input[data-test-subj="all-products.taxless_price"]`).click({ force: true });
+      cy.get(`input[data-test-subj="min-total_quantity"]`).click({
+        force: true,
+      });
+      cy.get(`input[data-test-subj="max-total_quantity"]`).click({
+        force: true,
+      });
+      cy.get(`input[data-test-subj="sum-total_quantity"]`).click({
+        force: true,
+      });
+      cy.get(`input[data-test-subj="all-products.taxless_price"]`).click({
+        force: true,
+      });
 
       // Click the next button
-      cy.get("button").contains("Next").click({ force: true });
+      cy.get('button').contains('Next').click({ force: true });
 
       // Confirm that we got to step 3 of creation page
-      cy.contains("Enable job by default");
+      cy.contains('Enable job by default');
 
       // Click the next button
-      cy.get("button").contains("Next").click({ force: true });
+      cy.get('button').contains('Next').click({ force: true });
 
       // Confirm that we got to step 4 of creation page
-      cy.contains("Job name and indices");
+      cy.contains('Job name and indices');
 
       // Click the create button
-      cy.get("button").contains("Create").click({ force: true });
+      cy.get('button').contains('Create').click({ force: true });
 
       // Verify that sample data is add by checking toast notification
       cy.contains(`Created rollup: ${ROLLUP_ID}`);
     });
   });
 
-  describe("can be edited", () => {
+  describe('can be edited', () => {
     before(() => {
       cy.deleteAllIndices();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 
-    it("successfully", () => {
+    it('successfully', () => {
       // Confirm we have our initial rollup
       cy.contains(ROLLUP_ID);
 
@@ -147,31 +181,40 @@ describe("Rollups", () => {
       cy.get(`[data-test-subj="editButton"]`).click({ force: true });
 
       // Wait for initial rollup job to load
-      cy.contains("An example rollup job that rolls up the sample ecommerce data");
+      cy.contains(
+        'An example rollup job that rolls up the sample ecommerce data'
+      );
 
-      cy.get(`textArea[data-test-subj="description"]`).focus().clear().type("A new description");
+      cy.get(`textArea[data-test-subj="description"]`)
+        .focus()
+        .clear()
+        .type('A new description');
 
       // Click Save changes button
-      cy.get(`[data-test-subj="editRollupSaveChangesButton"]`).click({ force: true });
+      cy.get(`[data-test-subj="editRollupSaveChangesButton"]`).click({
+        force: true,
+      });
 
       // Confirm we get toaster saying changes saved
       cy.contains(`Changes to "${ROLLUP_ID}" saved!`);
 
       // Click into rollup job details page
-      cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({ force: true });
+      cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({
+        force: true,
+      });
 
       // Confirm new description shows in details page
-      cy.contains("A new description");
+      cy.contains('A new description');
     });
   });
 
-  describe("can be deleted", () => {
+  describe('can be deleted', () => {
     before(() => {
       cy.deleteAllIndices();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 
-    it("successfully", () => {
+    it('successfully', () => {
       // Confirm we have our initial rollup
       cy.contains(ROLLUP_ID);
 
@@ -185,7 +228,7 @@ describe("Rollups", () => {
       cy.get(`[data-test-subj="deleteButton"]`).click({ force: true });
 
       // Type "delete" to confirm deletion
-      cy.get(`input[placeholder="delete"]`).type("delete", { force: true });
+      cy.get(`input[placeholder="delete"]`).type('delete', { force: true });
 
       // Click the delete confirmation button in modal
       cy.get(`[data-test-subj="confirmModalConfirmButton"]`).click();
@@ -195,37 +238,43 @@ describe("Rollups", () => {
 
       // Confirm showing empty loading state
       cy.contains(
-        "Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need"
+        'Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need'
       );
     });
   });
 
-  describe("can be enabled and disabled", () => {
+  describe('can be enabled and disabled', () => {
     before(() => {
       cy.deleteAllIndices();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 
-    it("successfully", () => {
+    it('successfully', () => {
       // Confirm we have our initial rollup
       cy.contains(ROLLUP_ID);
 
       // Click into rollup job details page
-      cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({ force: true });
+      cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({
+        force: true,
+      });
 
       cy.contains(`${ROLLUP_ID}`);
 
       // Disable button is enabled
-      cy.get(`[data-test-subj="disableButton"]`).should("not.be.disabled");
+      cy.get(`[data-test-subj="disableButton"]`).should('not.be.disabled');
 
       // Click Disable button
-      cy.get(`[data-test-subj="disableButton"]`).trigger("click", { force: true });
+      cy.get(`[data-test-subj="disableButton"]`).trigger('click', {
+        force: true,
+      });
 
       // Confirm we get toaster saying rollup job is disabled
       cy.contains(`${ROLLUP_ID} is disabled`);
 
       // Click Enable button
-      cy.get(`[data-test-subj="enableButton"]`).trigger("click", { force: true });
+      cy.get(`[data-test-subj="enableButton"]`).trigger('click', {
+        force: true,
+      });
 
       // Confirm we get toaster saying rollup job is enabled
       cy.contains(`${ROLLUP_ID} is enabled`);

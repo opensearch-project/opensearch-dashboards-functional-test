@@ -15,8 +15,8 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands';
-import '../utils/plugins/index-management-dashboards-plugin/commands'
-import '../utils/plugins/anomaly-detection-dashboards-plugin/commands'
+import '../utils/plugins/index-management-dashboards-plugin/commands';
+import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -35,9 +35,9 @@ if (Cypress.env('AWS_DOMAIN')) {
   Cypress.Cookies.debug(false);
   before(() => {
     cy.login();
-  })
+  });
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('security_authentication');
-  })
+  });
 }

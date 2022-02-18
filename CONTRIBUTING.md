@@ -48,15 +48,17 @@ $ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library &
 
 ### Run Tests
 
-You can run the cypress tests by cli. There are some handy sripts in [package.json](package.json) to run the tests with some pre-set configurations.
+You can run the cypress tests by cli. There are some handy scripts in [package.json](package.json) to run the tests with some pre-set configurations.
 
-To run without security:
+To run tests against a local cluster
+
+without security:
 
 ```
 $ yarn cypress run-without-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
 ```
 
-To run with security:
+with security:
 
 ```
 $ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
@@ -68,11 +70,15 @@ These tests run in headless mode by default. You can also manually trigger the t
 $ yarn cypress open
 ```
 
-And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
+And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote **AWS OpenSearch endpoint**:
 
 ```
-$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
+$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,AWS_DOMAIN=true"
 ```
+
+`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`.
+
+`AWS_DOMAIN`: AWS OpenSearch domain is wrapped with proxy that redirects the direct url access to the login url. Even with auth option provided in `cy.visit`, redirection to the login url happens, so a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 ### Formatting
 

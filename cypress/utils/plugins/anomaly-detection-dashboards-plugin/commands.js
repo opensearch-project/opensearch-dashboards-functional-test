@@ -3,91 +3,92 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 import {
-    AD_GET_DETECTORS_NODE_API_PATH,
-    AD_GET_INDICES_NODE_API_PATH, AD_GET_MAPPINGS_NODE_API_PATH,
-    getADStartDetectorNodeApiPath, getADStopDetectorNodeApiPath
-} from "../../constants";
+  AD_GET_DETECTORS_NODE_API_PATH,
+  AD_GET_INDICES_NODE_API_PATH,
+  AD_GET_MAPPINGS_NODE_API_PATH,
+  getADStartDetectorNodeApiPath,
+  getADStopDetectorNodeApiPath,
+} from '../../constants';
 
 Cypress.Commands.add(
-    'mockGetDetectorOnAction',
-    function (fixtureFileName, funcMockedOn) {
-        cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
-            fixture: fixtureFileName,
-        }).as('getDetectors');
+  'mockGetDetectorOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {
+      fixture: fixtureFileName,
+    }).as('getDetectors');
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@getDetectors');
-    }
+    cy.wait('@getDetectors');
+  }
 );
 
 Cypress.Commands.add(
-    'mockSearchIndexOnAction',
-    function (fixtureFileName, funcMockedOn) {
-        cy.route2(AD_GET_INDICES_NODE_API_PATH, {
-            fixture: fixtureFileName,
-        }).as('getIndices');
+  'mockSearchIndexOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(AD_GET_INDICES_NODE_API_PATH, {
+      fixture: fixtureFileName,
+    }).as('getIndices');
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@getIndices');
-    }
+    cy.wait('@getIndices');
+  }
 );
 
 Cypress.Commands.add(
-    'mockStartDetectorOnAction',
-    function (fixtureFileName, detectorId, funcMockedOn) {
-        cy.server();
-        cy.route2(getADStartDetectorNodeApiPath(detectorId), {
-            fixture: fixtureFileName,
-        }).as('startDetector');
+  'mockStartDetectorOnAction',
+  function (fixtureFileName, detectorId, funcMockedOn) {
+    cy.server();
+    cy.route2(getADStartDetectorNodeApiPath(detectorId), {
+      fixture: fixtureFileName,
+    }).as('startDetector');
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@startDetector');
-    }
+    cy.wait('@startDetector');
+  }
 );
 
 Cypress.Commands.add(
-    'mockStopDetectorOnAction',
-    function (fixtureFileName, detectorId, funcMockedOn) {
-        cy.server();
-        cy.route2(getADStopDetectorNodeApiPath(detectorId), {
-            fixture: fixtureFileName,
-        }).as('stopDetector');
+  'mockStopDetectorOnAction',
+  function (fixtureFileName, detectorId, funcMockedOn) {
+    cy.server();
+    cy.route2(getADStopDetectorNodeApiPath(detectorId), {
+      fixture: fixtureFileName,
+    }).as('stopDetector');
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@stopDetector');
-    }
+    cy.wait('@stopDetector');
+  }
 );
 
 Cypress.Commands.add(
-    'mockGetIndexMappingsOnAction',
-    function (fixtureFileName, funcMockedOn) {
-        cy.server();
-        cy.route2(AD_GET_MAPPINGS_NODE_API_PATH, {
-            fixture: fixtureFileName,
-        }).as('getMappings');
+  'mockGetIndexMappingsOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.server();
+    cy.route2(AD_GET_MAPPINGS_NODE_API_PATH, {
+      fixture: fixtureFileName,
+    }).as('getMappings');
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@getMappings');
-    }
+    cy.wait('@getMappings');
+  }
 );
 
 Cypress.Commands.add(
-    'mockCreateDetectorOnAction',
-    function (fixtureFileName, funcMockedOn) {
-        cy.server();
-        cy.route2(AD_GET_DETECTORS_NODE_API_PATH, {fixture: fixtureFileName}).as(
-            'createDetector'
-        );
+  'mockCreateDetectorOnAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.server();
+    cy.route2(AD_GET_DETECTORS_NODE_API_PATH, { fixture: fixtureFileName }).as(
+      'createDetector'
+    );
 
-        funcMockedOn();
+    funcMockedOn();
 
-        cy.wait('@createDetector');
-    }
+    cy.wait('@createDetector');
+  }
 );

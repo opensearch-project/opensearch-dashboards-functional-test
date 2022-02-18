@@ -8,7 +8,8 @@
 // so cannot import BASE_PATH but have to define it directly
 const BASE_PATH = Cypress.config('baseUrl');
 
-export const AD_FIXTURE_BASE_PATH = 'plugins/anomaly-detection-dashboards-plugin/'
+export const AD_FIXTURE_BASE_PATH =
+  'plugins/anomaly-detection-dashboards-plugin/';
 
 export const BASE_AD_PATH = BASE_PATH + '/app/anomaly-detection-dashboards#';
 
@@ -21,20 +22,20 @@ export const BASE_AD_CREATE_AD_PATH = BASE_AD_PATH + '/create-ad';
 export const BASE_AD_NODE_API_PATH = BASE_PATH + '/api/anomaly_detectors';
 
 export const AD_GET_DETECTORS_NODE_API_PATH =
-    BASE_AD_NODE_API_PATH + '/detectors*';
+  BASE_AD_NODE_API_PATH + '/detectors*';
 
 export const AD_GET_INDICES_NODE_API_PATH =
-    BASE_AD_NODE_API_PATH + '/_indices*';
+  BASE_AD_NODE_API_PATH + '/_indices*';
 
 export const AD_GET_MAPPINGS_NODE_API_PATH =
-    BASE_AD_NODE_API_PATH + '/_mappings*';
+  BASE_AD_NODE_API_PATH + '/_mappings*';
 
 export function getADStartDetectorNodeApiPath(detectorId) {
-    return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/start';
+  return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/start';
 }
 
 export function getADStopDetectorNodeApiPath(detectorId) {
-    return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/stop';
+  return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/stop';
 }
 
 export const TEST_DETECTOR_ID = 'ulgqpXEBqtadYz9j2MHG';
