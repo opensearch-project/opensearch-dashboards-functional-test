@@ -14,7 +14,7 @@
     "SECURITY_ENABLED": false,
     "username": "admin",
     "password": "admin",
-    "AWS_DOMAIN": false
+    "ENDPOINT_WITH_PROXY": false
   },
   "experimentalNetworkStubbing": true
 }

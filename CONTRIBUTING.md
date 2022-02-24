@@ -70,15 +70,15 @@ These tests run in headless mode by default. You can also manually trigger the t
 $ yarn cypress open
 ```
 
-And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote **AWS OpenSearch endpoint**:
+And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
 ```
-$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,AWS_DOMAIN=true"
+$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
 ```
 
-`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also please notice security enabled domain normally uses https protocol, so you may want to pass in different urls.
+`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also, please notice security enabled endpoint normally uses https protocol, so you may want to pass in different urls.
 
-`AWS_DOMAIN`: AWS OpenSearch domain is wrapped with proxy that redirects the visiting url to the login url. Even with auth option provided in `cy.visit`, redirection to the login url happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
+`ENDPOINT_WITH_PROXY`: for an OpenSearch endpoint wrapped with a proxy that redirects the visiting url to the login url, even with auth option provided in `cy.visit`, the redirection to the login url still happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 ### Formatting
 
