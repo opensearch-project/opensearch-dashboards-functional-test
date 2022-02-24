@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from './constants';
+import { BASE_PATH, IM_API } from './constants';
 
 const ADMIN_AUTH = {
   username: Cypress.env('username'),
@@ -65,4 +65,61 @@ Cypress.Commands.add('login', () => {
       'osd-xsrf': true,
     },
   });
+});
+
+Cypress.Commands.add('deleteAllIndices', () => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}/index*,sample*,opensearch_dashboards*`
+  );
+});
+
+Cypress.Commands.add('getIndexSettings', (index) => {
+  cy.request('GET', `${Cypress.env('openSearchUrl')}/${index}/_settings`);
+});
+
+Cypress.Commands.add('updateIndexSettings', (index, settings) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}/${index}/_settings`,
+    settings
+  );
+});
+
+Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
+  if (policyID != null) {
+    const body = { policy_id: policyID };
+    cy.request(
+      'POST',
+      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
+      body
+    );
+  }
+});
+
+Cypress.Commands.add('createIndexTemplate', (name, template) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    template
+  );
+});
+
+Cypress.Commands.add('createDataStream', (name) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${name}`
+  );
+});
+
+Cypress.Commands.add('deleteDataStreams', (names) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${names}`
+  );
+});
+
+Cypress.Commands.add('rollover', (target) => {
+  cy.request('POST', `${Cypress.env('openSearchUrl')}/${target}/_rollover`);
 });

@@ -12,6 +12,7 @@ describe('Transforms', () => {
   before(() => {
     // Delete all indices
     cy.deleteAllIndices();
+    cy.deleteIMJobs();
 
     // Load ecommerce data
     cy.request({

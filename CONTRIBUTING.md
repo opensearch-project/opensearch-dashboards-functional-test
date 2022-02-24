@@ -102,9 +102,9 @@ The dir name shall be descriptive to identify your plugin. You can use the same 
 
 2. Place fixtures under `cypress/fixtures/plugins/<plugin-name>`
 
-3. Place custom commands under `cypress/fixtures/plugins/<plugin-name>`
+3. Place custom commands under `cypress/utils/plugins/<plugin-name>`, if it's a general command that could be reused by other plugins, place it under `cypress/utils/commands.js`
 
-4. Place constants to `cypress/utils/constants.js`
+4. Place custom constants under `cypress/utils/plugins/<plugin-name>`, reuse the constants in `cypress/utils/base_constants.js`
 
 5. Run tests
 
@@ -124,7 +124,7 @@ npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/
 
 For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/.installing-cypress#Opening-Cypress.
 
-The env paramaters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
+The env parameters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 

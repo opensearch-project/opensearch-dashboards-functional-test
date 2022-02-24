@@ -36,6 +36,7 @@ describe('Rollups', () => {
   describe('can be created', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
     });
 
     it('successfully', () => {
@@ -164,6 +165,7 @@ describe('Rollups', () => {
   describe('can be edited', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 
@@ -211,6 +213,7 @@ describe('Rollups', () => {
   describe('can be deleted', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 
@@ -246,6 +249,7 @@ describe('Rollups', () => {
   describe('can be enabled and disabled', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createRollup(ROLLUP_ID, sampleRollup);
     });
 

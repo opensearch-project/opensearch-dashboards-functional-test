@@ -35,6 +35,7 @@ describe('Managed indices', () => {
   describe('can have policies removed', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
       cy.createIndex(SAMPLE_INDEX, POLICY_ID);
     });
@@ -70,6 +71,7 @@ describe('Managed indices', () => {
   describe('can have policies retried', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       // Create a policy that rolls over
       cy.createPolicy(POLICY_ID_ROLLOVER, sampleRolloverPolicy);
       // Create index with alias to rollover
@@ -149,6 +151,7 @@ describe('Managed indices', () => {
 
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
       // Create index with rollover_alias
       cy.createIndex(SAMPLE_INDEX, POLICY_ID, {
@@ -206,6 +209,7 @@ describe('Managed indices', () => {
   describe('can change policies', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
       cy.createPolicy(POLICY_ID_2, samplePolicy);
       cy.createIndex(SAMPLE_INDEX, POLICY_ID);
@@ -267,6 +271,7 @@ describe('Managed indices', () => {
   describe('can manage data stream indices', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.deleteDataStreams('*');
 
       cy.createPolicy('sample-index-policy', samplePolicy);

@@ -4,4 +4,4 @@
  */
 
 export const BASE_PATH = Cypress.config('baseUrl');
-export const BACKEND_BASE = Cypress.env('openSearchUrl');
+export const BACKEND_BASE_PATH = Cypress.env('openSearchUrl');

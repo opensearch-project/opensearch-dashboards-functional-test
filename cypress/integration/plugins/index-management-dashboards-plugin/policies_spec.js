@@ -23,6 +23,7 @@ describe('Policies', () => {
   describe('can be created', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
     });
 
     it('successfully', () => {
@@ -72,6 +73,7 @@ describe('Policies', () => {
   describe('can be edited', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 
@@ -127,6 +129,7 @@ describe('Policies', () => {
   describe('can be deleted', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 
@@ -154,6 +157,7 @@ describe('Policies', () => {
   describe('can be searched', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       // Create 20+ policies that can be easily sorted alphabetically using letters a-z
       for (let i = 97; i < 123; i++) {
         const char = String.fromCharCode(i);
@@ -185,6 +189,7 @@ describe('Policies', () => {
   describe('can be viewed', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 

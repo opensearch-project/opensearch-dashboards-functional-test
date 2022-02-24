@@ -24,6 +24,8 @@ describe('Indices', () => {
   describe('can be searched', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
+      cy.deleteIMJobs();
       // Create 20+ indices that can be sorted alphabetically by using letters a-z
       for (let i = 97; i < 123; i++) {
         const char = String.fromCharCode(i);
@@ -53,6 +55,7 @@ describe('Indices', () => {
   describe('can show data stream indices', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.deleteDataStreams('*');
 
       cy.createIndexTemplate('logs-template', {
@@ -121,6 +124,7 @@ describe('Indices', () => {
   describe('can have policies applied', () => {
     before(() => {
       cy.deleteAllIndices();
+      cy.deleteIMJobs();
       cy.createPolicy(POLICY_ID, samplePolicy);
       cy.createIndex(SAMPLE_INDEX);
     });
