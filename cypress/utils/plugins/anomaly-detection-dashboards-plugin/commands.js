@@ -100,7 +100,3 @@ Cypress.Commands.add('deleteDetector', (detectorId) => {
     `${Cypress.env('openSearchUrl')}/${getADGetDetectorApiPath(detectorId)}`
   );
 });
-
-Cypress.Commands.add('getElementByTestId', (testId) => {
-  return cy.get(`[data-test-subj=${testId}]`);
-});

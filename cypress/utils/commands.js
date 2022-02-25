@@ -67,6 +67,10 @@ Cypress.Commands.add('login', () => {
   });
 });
 
+Cypress.Commands.add('getElementByTestId', (testId) => {
+  return cy.get(`[data-test-subj=${testId}]`);
+});
+
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.request(
     'DELETE',
