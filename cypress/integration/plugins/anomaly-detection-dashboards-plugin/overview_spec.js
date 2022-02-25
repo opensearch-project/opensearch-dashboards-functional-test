@@ -15,6 +15,23 @@ context('Overview page', () => {
     cy.getElementByTestId('createHostHealthSampleDetectorButton').should(
       'exist'
     );
+    cy.getElementByTestId('flyoutInfoButton').should('have.length', 3);
+  };
+
+  // Takes an index as an argument, to click on the n'th found flyout button
+  const openAndCloseFlyout = (flyoutButtonIndex) => {
+    cy.getElementByTestId('detectorDetailsHeader').should('not.exist');
+    cy.getElementByTestId('indexDetailsHeader').should('not.exist');
+
+    cy.getElementByTestId('flyoutInfoButton').eq(flyoutButtonIndex).click();
+
+    cy.getElementByTestId('detectorDetailsHeader').should('exist');
+    cy.getElementByTestId('indexDetailsHeader').should('exist');
+
+    cy.getElementByTestId('euiFlyoutCloseButton').click();
+
+    cy.getElementByTestId('detectorDetailsHeader').should('not.exist');
+    cy.getElementByTestId('indexDetailsHeader').should('not.exist');
   };
 
   before(() => {
@@ -38,5 +55,25 @@ context('Overview page', () => {
 
     cy.get('.euiSideNav').contains('Anomaly detection').click();
     validatePageElements();
+  });
+
+  context('Flyouts open and close', () => {
+    it('HTTP responses sample detector', () => {
+      cy.visit(AD_URL.OVERVIEW);
+      validatePageElements();
+      openAndCloseFlyout(0);
+    });
+
+    it('eCommerce sample detector', () => {
+      cy.visit(AD_URL.OVERVIEW);
+      validatePageElements();
+      openAndCloseFlyout(1);
+    });
+
+    it('Host health sample detector', () => {
+      cy.visit(AD_URL.OVERVIEW);
+      validatePageElements();
+      openAndCloseFlyout(2);
+    });
   });
 });
