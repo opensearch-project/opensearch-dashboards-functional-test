@@ -17,11 +17,14 @@
 - [Documentation](https://docs-beta.opensearch.org/)
 - Need help? Try [Forums](https://discuss.opendistrocommunity.dev/)
 - [Project Principles](https://opensearch.org/#principles)
-- [Contributing to OpenSearch](CONTRIBUTING.md)
 - [Maintainer Responsibilities](MAINTAINERS.md)
 - [Release Management](RELEASING.md)
 - [Admin Responsibilities](ADMINS.md)
 - [Security](SECURITY.md)
+
+## Contributing
+
+See [contributing guide](CONTRIBUTING.md).
 
 ## Code of Conduct
 

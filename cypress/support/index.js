@@ -14,7 +14,9 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands';
+import '../utils/commands';
+import '../utils/plugins/index-management-dashboards-plugin/commands';
+import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
@@ -27,6 +29,15 @@ Cypress.on('uncaught:exception', (err) => {
   }
 });
 
-if (Cypress.env('SECURITY_ENABLED')) {
-  Cypress.env('openSearchUrl', 'https://localhost:9200');
+// Proxy layer of OpenSearch domain may redirect to login page
+//  if you haven't authenticate
+if (Cypress.env('ENDPOINT_WITH_PROXY')) {
+  Cypress.Cookies.debug(false);
+  before(() => {
+    cy.login();
+  });
+
+  beforeEach(() => {
+    Cypress.Cookies.preserveOnce('security_authentication');
+  });
 }
