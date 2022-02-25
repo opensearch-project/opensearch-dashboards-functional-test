@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AD_URL } from '../../../utils/constants';
+import {
+  AD_URL,
+} from '../../../utils/constants';
 
 context('Sample detectors', () => {
-  // TODO: change to 30000 before merging
-  const CREATE_SAMPLE_DETECTOR_TIMEOUT = 20000;
-
   // Helper fn used in many of the below tests. Takes in a button test ID to determine
   // the sample detector to create/delete from the overview page
   const createAndDeleteSampleDetector = (createButtonDataTestSubj) => {
@@ -17,11 +16,7 @@ context('Sample detectors', () => {
     cy.getElementByTestId('overviewTitle').should('exist');
     cy.getElementByTestId('viewSampleDetectorLink').should('not.exist');
     cy.getElementByTestId(createButtonDataTestSubj).click();
-    cy.wait(CREATE_SAMPLE_DETECTOR_TIMEOUT);
-
     cy.visit(AD_URL.OVERVIEW);
-    cy.getElementByTestId('overviewTitle').should('exist');
-    cy.getElementByTestId('viewSampleDetectorLink').should('exist');
 
     // Check that the details page defaults to real-time, and shows detector is initializing
     cy.getElementByTestId('viewSampleDetectorLink').click();
