@@ -8,7 +8,6 @@ import {
   getADStartDetectorNodeApiPath,
   getADStopDetectorNodeApiPath,
   getADDeleteDetectorNodeApiPath,
-  getADMatchDetectorNodeApiPath,
   getADGetDetectorApiPath,
 } from '../../constants';
 
@@ -92,58 +91,6 @@ Cypress.Commands.add(
     funcMockedOn();
 
     cy.wait('@deleteDetector');
-  }
-);
-
-Cypress.Commands.add(
-  'mockGetIndexMappingsOnAction',
-  function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.GET_MAPPINGS, {
-      fixture: fixtureFileName,
-    }).as('getMappings');
-
-    funcMockedOn();
-
-    cy.wait('@getMappings');
-  }
-);
-
-Cypress.Commands.add(
-  'mockCreateDetectorOnAction',
-  function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, { fixture: fixtureFileName }).as(
-      'createDetector'
-    );
-
-    funcMockedOn();
-
-    cy.wait('@createDetector');
-  }
-);
-
-Cypress.Commands.add(
-  'mockMatchDetectorOnAction',
-  function (fixtureFileName, detectorName, funcMockedOn) {
-    cy.route2(getADMatchDetectorNodeApiPath(detectorName), {
-      fixture: fixtureFileName,
-    }).as('match');
-
-    funcMockedOn();
-
-    cy.wait('@match');
-  }
-);
-
-Cypress.Commands.add(
-  'mockValidateDetectorOnAction',
-  function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.VALIDATE, {
-      fixture: fixtureFileName,
-    }).as('validate');
-
-    funcMockedOn();
-
-    cy.wait('@validate');
   }
 );
 

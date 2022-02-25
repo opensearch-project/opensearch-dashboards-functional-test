@@ -7,15 +7,6 @@ import { BASE_PATH } from '../../base_constants';
 
 /**
  *****************************
- AD PLUGIN CONSTANTS
- *****************************
- */
-
-export const AD_FIXTURE_BASE_PATH =
-  'plugins/anomaly-detection-dashboards-plugin/';
-
-/**
- *****************************
  URL CONSTANTS
  *****************************
  */
@@ -72,15 +63,14 @@ export function getADDeleteDetectorNodeApiPath(detectorId) {
   return getBaseNodeApiPath(detectorId);
 }
 
-export function getADMatchDetectorNodeApiPath(detectorName) {
-  return getBaseNodeApiPath(detectorName) + '/_match';
-}
-
 /**
  *****************************
  MISC CONSTANTS
  *****************************
  */
+
+export const AD_FIXTURE_BASE_PATH =
+  'plugins/anomaly-detection-dashboards-plugin/';
 
 export const TEST_DETECTOR_ID = 'ulgqpXEBqtadYz9j2MHG';
 
