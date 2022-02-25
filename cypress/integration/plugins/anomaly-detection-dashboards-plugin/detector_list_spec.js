@@ -16,7 +16,7 @@ describe('Detector list page', () => {
     cy.server();
   });
 
-  it('Empty detectors - no detector index', () => {
+  it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
       () => {
@@ -30,7 +30,7 @@ describe('Detector list page', () => {
     cy.getElementByTestId('createDetectorButton').should('exist');
   });
 
-  it('Empty detectors - empty detector index', () => {
+  it('Empty - empty detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'empty_detector_index_response.json',
       () => {
@@ -44,7 +44,7 @@ describe('Detector list page', () => {
     cy.getElementByTestId('createDetectorButton').should('exist');
   });
 
-  it('One detector - single stopped detector index', () => {
+  it('Non-empty - single stopped detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_stopped_detector_response.json',
       () => {
@@ -65,7 +65,7 @@ describe('Detector list page', () => {
     cy.getElementByTestId('emptyDetectorListMessage').should('not.exist');
   });
 
-  it('Multiple detectors - multiple detectors index', () => {
+  it('Non-empty - multiple detectors', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {

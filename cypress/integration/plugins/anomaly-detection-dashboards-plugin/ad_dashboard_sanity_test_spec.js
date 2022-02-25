@@ -12,7 +12,7 @@ describe('AD Dashboard page', () => {
     cy.server();
   });
 
-  it('empty - no detector index', () => {
+  it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
       () => {
@@ -23,7 +23,7 @@ describe('AD Dashboard page', () => {
     cy.getElementByTestId('dashboardLiveAnomaliesHeader').should('not.exist');
   });
 
-  it('empty - empty detector index', () => {
+  it('Empty - empty detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'empty_detector_index_response.json',
       () => {
@@ -34,7 +34,7 @@ describe('AD Dashboard page', () => {
     cy.getElementByTestId('dashboardLiveAnomaliesHeader').should('not.exist');
   });
 
-  it('non-empty - single running detector', () => {
+  it('Non-empty - single running detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'single_running_detector_response.json',
       () => {
@@ -51,7 +51,7 @@ describe('AD Dashboard page', () => {
     );
   });
 
-  it('redirect to create detector page', () => {
+  it('Redirect to create detector page', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
       () => {
@@ -69,7 +69,7 @@ describe('AD Dashboard page', () => {
     cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
   });
 
-  it('filter by detector', () => {
+  it('Filter by detector', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
@@ -87,7 +87,7 @@ describe('AD Dashboard page', () => {
     cy.contains('running-detector').should('not.be.visible');
   });
 
-  it('filter by detector state', () => {
+  it('Filter by detector state', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
@@ -104,7 +104,7 @@ describe('AD Dashboard page', () => {
     cy.contains('running-detector').should('not.be.visible');
   });
 
-  it('filter by index', () => {
+  it('Filter by index', () => {
     cy.mockGetDetectorsAndIndicesOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_index_response.json',
@@ -124,7 +124,7 @@ describe('AD Dashboard page', () => {
     cy.contains('stopped-detector').should('not.be.visible');
   });
 
-  it('enter and exit full screen', () => {
+  it('Enter and exit full screen', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'multiple_detectors_response.json',
       () => {
