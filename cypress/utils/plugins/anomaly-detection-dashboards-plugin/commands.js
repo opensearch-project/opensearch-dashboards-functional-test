@@ -6,8 +6,9 @@
 import {
   AD_NODE_API_PATH,
   getADStartDetectorNodeApiPath,
-  getADStopDetectorApiPath,
+  getADStopDetectorNodeApiPath,
   getADDeleteDetectorNodeApiPath,
+  getADStopDetectorApiPath,
   getADGetDetectorApiPath,
 } from '../../constants';
 
