@@ -24,6 +24,7 @@ context('Real-time results page', () => {
         .invoke('text')
         .then((detectorId) => {
           cy.log('Deleting detector with ID: ' + detectorId);
+          cy.stopDetector(detectorId);
           cy.deleteDetector(detectorId);
         });
     });
@@ -41,6 +42,7 @@ context('Real-time results page', () => {
   it('Anomaly occurrence table and feature breakdown - renders no anomalies', () => {
     cy.getElementByTestId('anomalyOccurrenceTab').click();
     cy.getElementByTestId('noAnomaliesMessage').should('exist');
+    cy.getElementByTestId('anomalyOccurrencesHeader').should('contain', '(0)');
     cy.getElementByTestId('featureNameHeader').should('not.exist');
 
     cy.getElementByTestId('featureBreakdownTab').click();

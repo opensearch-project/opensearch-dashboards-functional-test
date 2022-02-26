@@ -32,6 +32,10 @@ export function getADGetDetectorApiPath(detectorId) {
   return AD_BASE_API_PATH + '/' + detectorId;
 }
 
+export function getADStopDetectorApiPath(detectorId) {
+  return AD_BASE_API_PATH + '/' + detectorId + '/_stop';
+}
+
 /**
  *****************************
  NODE API / SERVER CONSTANTS

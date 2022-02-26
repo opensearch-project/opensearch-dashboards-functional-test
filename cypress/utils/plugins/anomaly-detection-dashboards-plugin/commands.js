@@ -6,7 +6,7 @@
 import {
   AD_NODE_API_PATH,
   getADStartDetectorNodeApiPath,
-  getADStopDetectorNodeApiPath,
+  getADStopDetectorApiPath,
   getADDeleteDetectorNodeApiPath,
   getADGetDetectorApiPath,
 } from '../../constants';
@@ -98,5 +98,12 @@ Cypress.Commands.add('deleteDetector', (detectorId) => {
   cy.request(
     'DELETE',
     `${Cypress.env('openSearchUrl')}/${getADGetDetectorApiPath(detectorId)}`
+  );
+});
+
+Cypress.Commands.add('stopDetector', (detectorId) => {
+  cy.request(
+    'POST',
+    `${Cypress.env('openSearchUrl')}/${getADStopDetectorApiPath(detectorId)}`
   );
 });
