@@ -28,6 +28,25 @@ context('Historical results page', () => {
     );
   }
 
+  function verifyNoAnomaliesInCharts() {
+    // Wait for any kicked off historical analysis to finish. Relying on default
+    // timeout (60s) to find an element that only shows up when the analysis is finished
+    cy.getElementByTestId('detectorStateFinished').should('exist');
+
+    // Let results load separately, since they load asynchronously. Should take <1s
+    cy.wait(5000);
+
+    cy.getElementByTestId('anomalyOccurrenceStat').within(() => {
+      cy.get('.euiTitle--small')
+        .invoke('text')
+        .then((anomalyOccurrenceCount) => {
+          cy.log('Num anomaly occurrences: ' + anomalyOccurrenceCount);
+          expect(parseInt(anomalyOccurrenceCount)).to.equal(0);
+        });
+    });
+    cy.getElementByTestId('anomalyOccurrencesHeader').should('contain', '(0)');
+  }
+
   // Creating a sample detector and visiting the config page
   before(() => {
     cy.server();
@@ -79,6 +98,27 @@ context('Historical results page', () => {
     // should produce 4+ anomalies
     it('Produces anomaly results by default', () => {
       cy.wait(10000);
+      verifyAnomaliesInCharts();
+    });
+
+    it('Filtering by date range', () => {
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      cy.get(`[aria-label="Next time window"]`).click();
+      cy.contains('Refresh').click();
+      verifyNoAnomaliesInCharts();
+
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      cy.get(`[aria-label="Previous time window"]`).click();
+      cy.contains('Refresh').click();
+      verifyAnomaliesInCharts();
+    });
+
+    it('Aggregations render anomalies', () => {
+      cy.get(`[aria-label="Daily max"]`).click();
+      verifyAnomaliesInCharts();
+      cy.get(`[aria-label="Weekly max"]`).click();
+      verifyAnomaliesInCharts();
+      cy.get(`[aria-label="Monthly max"]`).click();
       verifyAnomaliesInCharts();
     });
 
