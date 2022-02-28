@@ -72,7 +72,7 @@ describe('Roles page', () => {
 
   });
 
-  it.only('should create new role successfully', () => {
+  it('should create new role successfully', () => {
     cy.mockRolesAction(
       SEC_ROLES_FIXTURES_PATH + '/roles_response.json',
       () => {
