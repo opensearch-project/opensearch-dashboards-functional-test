@@ -1,0 +1,280 @@
+{
+    "total": 25,
+    "data": {
+        "data_access": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/*",
+                "crud"
+            ],
+            "type": "index",
+            "description": "Allow all read/write operations on data",
+            "static": true
+        },
+        "delete": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/write/delete*"
+            ],
+            "type": "index",
+            "description": "Allow deleting documents",
+            "static": true
+        },
+        "cluster_manage_pipelines": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "cluster:admin/ingest/pipeline/*"
+            ],
+            "type": "cluster",
+            "description": "Manage pipelines",
+            "static": true
+        },
+        "manage_aliases": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:admin/aliases*"
+            ],
+            "type": "index",
+            "description": "Allow managing index aliases",
+            "static": true
+        },
+        "crud": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "read",
+                "write"
+            ],
+            "type": "index",
+            "description": "Allow all read/write operations on data",
+            "static": true
+        },
+        "manage_snapshots": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "cluster:admin/snapshot/*",
+                "cluster:admin/repository/*"
+            ],
+            "type": "cluster",
+            "description": "Allow snapshots",
+            "static": true
+        },
+        "kibana_all_read": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "kibana:saved_objects/*/read"
+            ],
+            "type": "kibana",
+            "description": "Allow reading in all OpenSearch Dashboards apps",
+            "static": true
+        },
+        "search": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/read/search*",
+                "indices:data/read/msearch*",
+                "indices:admin/resolve/index",
+                "suggest"
+            ],
+            "type": "index",
+            "description": "Allow searching",
+            "static": true
+        },
+        "get": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/read/get*",
+                "indices:data/read/mget*"
+            ],
+            "type": "index",
+            "description": "Allow get",
+            "static": true
+        },
+        "manage_data_streams": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:admin/data_stream/*",
+                "indices:monitor/data_stream/stats"
+            ],
+            "type": "index",
+            "description": "Manage data streams",
+            "static": true
+        },
+        "write": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/write*",
+                "indices:admin/mapping/put"
+            ],
+            "type": "index",
+            "description": "Allow writing data",
+            "static": true
+        },
+        "cluster_manage_index_templates": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:admin/template/*"
+            ],
+            "type": "cluster",
+            "description": "Manage index templates",
+            "static": true
+        },
+        "indices_all": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:*"
+            ],
+            "type": "index",
+            "description": "Allow readonly everything with indices and data",
+            "static": true
+        },
+        "read": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/read*",
+                "indices:admin/mappings/fields/get*",
+                "indices:admin/resolve/index"
+            ],
+            "type": "index",
+            "description": "Allow all read operations",
+            "static": true
+        },
+        "cluster_all": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "cluster:*"
+            ],
+            "type": "cluster",
+            "description": "Allow everything on cluster level",
+            "static": true
+        },
+        "unlimited": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "*"
+            ],
+            "type": "all",
+            "description": "Allow all",
+            "static": true
+        },
+        "create_index": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:admin/create",
+                "indices:admin/mapping/put"
+            ],
+            "type": "index",
+            "description": "Allow creating new indices",
+            "static": true
+        },
+        "index": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/write/index*",
+                "indices:data/write/update*",
+                "indices:admin/mapping/put",
+                "indices:data/write/bulk*"
+            ],
+            "type": "index",
+            "description": "Allow indexing",
+            "static": true
+        },
+        "cluster_composite_ops_ro": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/read/mget",
+                "indices:data/read/msearch",
+                "indices:data/read/mtv",
+                "indices:admin/aliases/exists*",
+                "indices:admin/aliases/get*",
+                "indices:data/read/scroll",
+                "indices:admin/resolve/index"
+            ],
+            "type": "cluster",
+            "description": "Allow readonly bulk and m* operations",
+            "static": true
+        },
+        "suggest": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/read/suggest*"
+            ],
+            "type": "index",
+            "description": "Allow suggestions",
+            "static": true
+        },
+        "manage": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:monitor/*",
+                "indices:admin/*"
+            ],
+            "type": "index",
+            "description": "Allow indices management",
+            "static": true
+        },
+        "cluster_composite_ops": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:data/write/bulk",
+                "indices:admin/aliases*",
+                "indices:data/write/reindex",
+                "cluster_composite_ops_ro"
+            ],
+            "type": "cluster",
+            "description": "Allow read/write bulk and m* operations",
+            "static": true
+        },
+        "cluster_monitor": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "cluster:monitor/*"
+            ],
+            "type": "cluster",
+            "description": "Allow monitoring the cluster",
+            "static": true
+        },
+        "indices_monitor": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "indices:monitor/*"
+            ],
+            "type": "index",
+            "description": "Allow monitoring indices",
+            "static": true
+        },
+        "kibana_all_write": {
+            "reserved": true,
+            "hidden": false,
+            "allowed_actions": [
+                "kibana:saved_objects/*/write"
+            ],
+            "type": "kibana",
+            "description": "Allow writing in all OpenSearch Dashboards apps",
+            "static": true
+        }
+    }
+}
