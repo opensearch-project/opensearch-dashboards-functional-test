@@ -9,6 +9,10 @@ import {
   getADStartDetectorNodeApiPath,
   getADStopDetectorNodeApiPath,
   AD_GET_MAPPINGS_NODE_API_PATH,
+  SEC_API_AUTHINFO_PATH,
+  SEC_API_CONFIG_PATH,
+  SEC_API_ROLES_PATH,
+  SEC_API_ROLES_VIEW_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -145,5 +149,37 @@ Cypress.Commands.add(
     funcMockedOn();
 
     cy.wait('@createDetector');
+  }
+);
+
+
+/**
+ *****************************
+ SECURITY PLUGIN COMMANDS
+ *****************************
+ */
+Cypress.Commands.add(
+  'mockAuthAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_CONFIG_PATH, {
+      fixture: fixtureFileName,
+    }).as('getAuthDetails');
+
+    funcMockedOn();
+
+    cy.wait('@getAuthDetails');
+  }
+);
+
+Cypress.Commands.add(
+  'mockRolesAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_ROLES_PATH, {
+      fixture: fixtureFileName,
+    }).as('getRoleDetails');
+
+    funcMockedOn();
+
+    cy.wait('@getRoleDetails');
   }
 );
