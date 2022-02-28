@@ -3,4 +3,4 @@
 {"index":{"_id": "id-2"}}
 { "value": 2, "timestamp": "2020-01-02"}
 {"index":{"_id": "id-3"}}
-{ "value": 3, "timestamp": "2015-01-03"}
+{ "value": 3, "timestamp": "2020-01-03"}
