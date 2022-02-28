@@ -6,7 +6,7 @@
 import { AD_URL } from '../../../utils/constants';
 
 context('Overview page', () => {
-  const validatePageElements = () => {
+  function validatePageElements() {
     cy.getElementByTestId('overviewTitle').should('exist');
     cy.getElementByTestId('createHttpSampleDetectorButton').should('exist');
     cy.getElementByTestId('createECommerceSampleDetectorButton').should(
@@ -16,10 +16,10 @@ context('Overview page', () => {
       'exist'
     );
     cy.getElementByTestId('flyoutInfoButton').should('have.length', 3);
-  };
+  }
 
   // Takes an index as an argument, to click on the n'th found flyout button
-  const openAndCloseFlyout = (flyoutButtonIndex) => {
+  function openAndCloseFlyout(flyoutButtonIndex) {
     cy.getElementByTestId('detectorDetailsHeader').should('not.exist');
     cy.getElementByTestId('indexDetailsHeader').should('not.exist');
 
@@ -32,7 +32,7 @@ context('Overview page', () => {
 
     cy.getElementByTestId('detectorDetailsHeader').should('not.exist');
     cy.getElementByTestId('indexDetailsHeader').should('not.exist');
-  };
+  }
 
   before(() => {
     cy.server();

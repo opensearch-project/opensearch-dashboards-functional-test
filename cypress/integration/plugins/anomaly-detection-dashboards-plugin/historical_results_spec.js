@@ -6,56 +6,12 @@
 import { AD_URL } from '../../../utils/constants';
 
 context('Historical results page', () => {
-  // Creating a sample detector and visiting the config page
-  before(() => {
-    cy.server();
-    cy.visit(AD_URL.OVERVIEW);
-    cy.getElementByTestId('createHttpSampleDetectorButton').click();
-    cy.visit(AD_URL.OVERVIEW);
-    cy.getElementByTestId('viewSampleDetectorLink').click();
-    cy.getElementByTestId('historicalTab').click();
-  });
-
-  // Clean up resources
-  after(() => {
-    cy.getElementByTestId('configurationsTab').click();
-    cy.getElementByTestId('detectorIdCell').within(() => {
-      cy.get('.euiText--medium')
-        .invoke('text')
-        .then((detectorId) => {
-          cy.log('Deleting detector with ID: ' + detectorId);
-          cy.stopDetector(detectorId);
-          cy.deleteDetector(detectorId);
-        });
-    });
-    cy.deleteAllIndices();
-  });
-
-  it('No historical runs - modal works as expected', () => {
-    cy.getElementByTestId('runHistoricalAnalysisButton').click();
-    cy.getElementByTestId('historicalAnalysisModalHeader').should('exist');
-    cy.getElementByTestId('cancelButton').click();
-    cy.getElementByTestId('historicalAnalysisModalHeader').should('not.exist');
-    cy.getElementByTestId('emptyHistoricalAnalysisMessage').should('exist');
-    cy.getElementByTestId('historicalAnalysisHeader').should('not.exist');
-  });
-
-  it('Start historical analysis for first time with sample detector', () => {
-    cy.getElementByTestId('runHistoricalAnalysisButton').click();
-    cy.getElementByTestId('historicalAnalysisModalHeader').should('exist');
-    cy.getElementByTestId('confirmButton').click();
-
-    cy.getElementByTestId('emptyHistoricalAnalysisMessage').should('not.exist');
-    cy.getElementByTestId('historicalAnalysisModalHeader').should('not.exist');
-    cy.getElementByTestId('historicalAnalysisTitle').should('exist');
-  });
-
-  it('Sample detector produces anomaly results', () => {
-    // Wait for the analysis from the previous test to finish. Should take <10s, so relying on default
-    // timeout to find an element that only shows up when the analysis is finished
+  function verifyAnomaliesInCharts() {
+    // Wait for any kicked off historical analysis to finish. Relying on default
+    // timeout (60s) to find an element that only shows up when the analysis is finished
     cy.getElementByTestId('detectorStateFinished').should('exist');
 
-    // Let results load. Should take <5s
+    // Let results load separately, since they load asynchronously. Should take <1s
     cy.wait(5000);
 
     cy.getElementByTestId('anomalyOccurrenceStat').within(() => {
@@ -70,5 +26,74 @@ context('Historical results page', () => {
       'not.contain',
       '(0)'
     );
+  }
+
+  // Creating a sample detector and visiting the config page
+  before(() => {
+    cy.server();
+    cy.visit(AD_URL.OVERVIEW);
+    cy.getElementByTestId('createHttpSampleDetectorButton').click();
+    cy.visit(AD_URL.OVERVIEW);
+    cy.getElementByTestId('viewSampleDetectorLink').click();
+    cy.getElementByTestId('historicalTab').click();
+  });
+
+  // Clean up resources
+  after(() => {
+    cy.getElementByTestId('actionsButton').click();
+    cy.getElementByTestId('deleteDetectorItem').click();
+    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
+    cy.getElementByTestId('confirmButton').click();
+    cy.deleteAllIndices();
+  });
+
+  context('Sample detector', () => {
+    it('Empty message with modal', () => {
+      cy.getElementByTestId('emptyHistoricalAnalysisMessage').should('exist');
+      cy.getElementByTestId('runHistoricalAnalysisButton').click();
+      cy.getElementByTestId('historicalAnalysisModalHeader').should('exist');
+      cy.getElementByTestId('cancelButton').click();
+      cy.getElementByTestId('historicalAnalysisModalHeader').should(
+        'not.exist'
+      );
+      cy.getElementByTestId('emptyHistoricalAnalysisMessage').should('exist');
+      cy.getElementByTestId('historicalAnalysisHeader').should('not.exist');
+    });
+
+    it('Start first historical analysis', () => {
+      cy.getElementByTestId('runHistoricalAnalysisButton').click();
+      cy.getElementByTestId('historicalAnalysisModalHeader').should('exist');
+      cy.getElementByTestId('confirmButton').click();
+
+      cy.getElementByTestId('emptyHistoricalAnalysisMessage').should(
+        'not.exist'
+      );
+      cy.getElementByTestId('historicalAnalysisModalHeader').should(
+        'not.exist'
+      );
+      cy.getElementByTestId('detectorStateInitializing').should('exist');
+      cy.getElementByTestId('historicalAnalysisTitle').should('exist');
+    });
+
+    // Choosing the default of 30 days with the sample detector data (which contains 7 days historical data)
+    // should produce 4+ anomalies
+    it('Produces anomaly results by default', () => {
+      cy.wait(10000);
+      verifyAnomaliesInCharts();
+    });
+
+    it('Run subsequent historical analysis', () => {
+      cy.getElementByTestId('modifyHistoricalAnalysisButton').click();
+      cy.getElementByTestId('historicalAnalysisModalHeader').should('exist');
+      cy.getElementByTestId('confirmButton').click();
+      cy.getElementByTestId('historicalAnalysisModalHeader').should(
+        'not.exist'
+      );
+      cy.getElementByTestId('detectorStateInitializing').should('exist');
+      cy.getElementByTestId('historicalAnalysisTitle').should('exist');
+
+      cy.wait(10000);
+      verifyAnomaliesInCharts();
+    });
   });
 });
