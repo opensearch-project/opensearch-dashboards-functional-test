@@ -116,7 +116,7 @@ describe('Home(Get Started) page', () => {
         });
     });
 
-    it.only('should purge Cache successfully', () => {
+    it('should purge Cache successfully', () => {
         cy.visit(BASE_SEC_UI_PATH);
 
         cy.mockCachePurgeAction(
