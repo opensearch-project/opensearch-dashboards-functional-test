@@ -9,12 +9,10 @@ import {
   getADStartDetectorNodeApiPath,
   getADStopDetectorNodeApiPath,
   AD_GET_MAPPINGS_NODE_API_PATH,
-  SEC_API_AUTHINFO_PATH,
   SEC_API_CONFIG_PATH,
   SEC_API_ROLES_PATH,
-  SEC_API_ROLES_VIEW_PATH,
   SEC_API_INTERNAL_USERS_PATH,
-  SEC_API_INTERNAL_USERS_CREATE_PATH,
+  SEC_API_ACTIONGROUPS_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -191,10 +189,24 @@ Cypress.Commands.add(
   function (fixtureFileName, funcMockedOn) {
     cy.route2(SEC_API_INTERNAL_USERS_PATH, {
       fixture: fixtureFileName,
-    }, ).as('getInternalUsersDetails');
+    }).as('getInternalUsersDetails');
 
     funcMockedOn();
 
     cy.wait('@getInternalUsersDetails');
   }
 );
+
+Cypress.Commands.add(
+  'mockPermissionsAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_ACTIONGROUPS_PATH, {
+      fixture: fixtureFileName,
+    }).as('getPermissions');
+
+    funcMockedOn();
+
+    cy.wait('@getPermissions');
+  }
+);
+
