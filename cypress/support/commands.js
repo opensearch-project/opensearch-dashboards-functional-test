@@ -13,6 +13,8 @@ import {
   SEC_API_CONFIG_PATH,
   SEC_API_ROLES_PATH,
   SEC_API_ROLES_VIEW_PATH,
+  SEC_API_INTERNAL_USERS_PATH,
+  SEC_API_INTERNAL_USERS_CREATE_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -181,5 +183,18 @@ Cypress.Commands.add(
     funcMockedOn();
 
     cy.wait('@getRoleDetails');
+  }
+);
+
+Cypress.Commands.add(
+  'mockInternalUsersAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_INTERNAL_USERS_PATH, {
+      fixture: fixtureFileName,
+    }, ).as('getInternalUsersDetails');
+
+    funcMockedOn();
+
+    cy.wait('@getInternalUsersDetails');
   }
 );
