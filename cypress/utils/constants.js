@@ -85,7 +85,6 @@ export const SEC_UI_PERMISSIONS_PATH = BASE_SEC_UI_PATH + '/permissions';
 export const SEC_UI_TENANTS_PATH = BASE_SEC_UI_PATH + '/tenants';
 
 export const SEC_UI_AUDIT_LOGGING_PATH = BASE_SEC_UI_PATH + '/auditLogging';
-export const SEC_UI_AUDIT_LOGGING_EDIT_PATH = SEC_UI_AUDIT_LOGGING_PATH + '/edit/complianceSettings';
 
 // API PATHS
 export const BASE_SEC_API_PATH = '/api/v1/configuration';
