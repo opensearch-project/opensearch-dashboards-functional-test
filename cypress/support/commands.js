@@ -14,6 +14,8 @@ import {
   SEC_API_INTERNAL_USERS_PATH,
   SEC_API_ACTIONGROUPS_PATH,
   SEC_API_TENANTS_PATH,
+  SEC_API_AUDIT_PATH,
+  SEC_API_AUDIT_CONFIG_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -225,3 +227,28 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  'mockAuditLogsAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_AUDIT_PATH, {
+      fixture: fixtureFileName,
+    }).as('getAuditInfo');
+
+    funcMockedOn();
+
+    cy.wait('@getAuditInfo');
+  }
+);
+
+Cypress.Commands.add(
+  'mockAuditConfigUpdateAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2({method: 'POST', url: SEC_API_AUDIT_CONFIG_PATH}, {
+      fixture: fixtureFileName,
+    }).as('updateAuditConfig');
+
+    funcMockedOn();
+
+    cy.wait('@updateAuditConfig');
+  }
+);
