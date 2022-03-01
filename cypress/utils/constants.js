@@ -105,6 +105,9 @@ export const SEC_API_ACCOUNT_PATH = BASE_SEC_API_PATH + '/account';
 export const SEC_API_AUDIT_PATH = BASE_SEC_API_PATH + '/audit';
 export const SEC_API_AUDIT_CONFIG_PATH = SEC_API_AUDIT_PATH + '/config';
 
+export const SEC_API_CACHE_PURGE_PATH = BASE_SEC_API_PATH + '/cache';
+
 export const SEC_API_AUTHINFO_PATH = '/api/v1/auth/authinfo';
 export const SEC_API_TENANT_PATH = '/api/v1/multitenancy/tenant';
+
 
