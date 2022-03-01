@@ -30,17 +30,22 @@ describe('Audit logs page', () => {
   });
 
   it('should toggle enable-disable switch for audit logging', () => {
-    cy.mockAuditLogsAction(
-      SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
-      () => {
-        cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
-      }
-    );
+
+    cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
     
     // enabled by default
     cy.contains('.euiSwitch', 'Enabled');
 
-    cy.get('button[name="auditLoggingEnabledSwitch"]').first().click({ force: true });
+    cy.mockAuditConfigUpdateAction(
+      SEC_AUDIT_FIXTURES_PATH + '/audit_config_updated.json',
+      () => {
+        cy.get('button[name="auditLoggingEnabledSwitch"]').first().click({ force: true })
+      }
+    ).then((response) => {
+        const body = JSON.parse(response.response.body);
+
+        expect(body.message).to.equal("'config' updated.");
+    });
     
     cy.contains('.euiSwitch', 'Disabled');
 
@@ -51,12 +56,8 @@ describe('Audit logs page', () => {
 
 
   it('should configure general settings successfully', () => {
-    cy.mockAuditLogsAction(
-      SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
-      () => {
-        cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
-      }
-    );
+
+    cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
 
     cy.get('button[data-test-subj="general-settings-configure"]').first().click({ force: true });
 
@@ -66,20 +67,25 @@ describe('Audit logs page', () => {
 
     cy.contains('h1', 'General settings');
 
-    cy.get('button[data-test-subj="save"]').click({ force: true });
+    cy.mockAuditConfigUpdateAction(
+      SEC_AUDIT_FIXTURES_PATH + '/audit_config_updated.json',
+      () => {
+        cy.get('button[data-test-subj="save"]').click({ force: true });
+      }
+    ).then((response) => {
+        const body = JSON.parse(response.response.body);
+
+        expect(body.message).to.equal("'config' updated.");
+    });
+    
     cy.url().should((url) => {
       expect(url).to.not.contain('/generalSettings');
     });
    
   });
 
-  it('should configure compliance settings successfully', () => {
-    cy.mockAuditLogsAction(
-      SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
-      () => {
-        cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
-      }
-    );
+  it('should configure compliance settings successfully', () => {  
+    cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
 
     cy.get('button[data-test-subj="compliance-settings-configure"]').first().click({ force: true });
 
@@ -89,7 +95,16 @@ describe('Audit logs page', () => {
 
     cy.contains('h1', 'Compliance settings');
 
-    cy.get('button[data-test-subj="save"]').click({ force: true });
+    cy.mockAuditConfigUpdateAction(
+      SEC_AUDIT_FIXTURES_PATH + '/audit_config_updated.json',
+      () => {
+        cy.get('button[data-test-subj="save"]').click({ force: true });
+      }
+    ).then((response) => {
+        const body = JSON.parse(response.response.body);
+
+        expect(body.message).to.equal("'config' updated.");
+    });
 
     cy.url().should((url) => {
       expect(url).to.not.contain('/complianceSettings');

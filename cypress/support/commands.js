@@ -242,6 +242,19 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
+  'mockAuditConfigUpdateAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2({method: 'POST', url: SEC_API_AUDIT_CONFIG_PATH}, {
+      fixture: fixtureFileName,
+    }).as('configUpdate');
+
+    funcMockedOn();
+
+    cy.wait('@configUpdate');
+  }
+);
+
+Cypress.Commands.add(
   'mockCachePurgeAction',
   function (fixtureFileName, funcMockedOn) {
     cy.route2({method: 'DELETE', url: SEC_API_CACHE_PURGE_PATH}, {
