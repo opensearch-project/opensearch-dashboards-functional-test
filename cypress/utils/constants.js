@@ -61,7 +61,7 @@ export const DETECTOR_STATE_FEATURE_REQUIRED = 'Feature required';
 
 // Fixtures path
 export const SEC_FIXTURES_BASE_PATH = 'plugins/security';
-export const SEC_ACTIONGROUPS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/actiongroups';
+export const SEC_PERMISSIONS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/permissions';
 export const SEC_AUDIT_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/audit';
 export const SEC_INTERNALUSERS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/internalusers';
 export const SEC_ROLES_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/roles';
