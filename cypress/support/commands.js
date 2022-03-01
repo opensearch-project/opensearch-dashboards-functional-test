@@ -13,6 +13,7 @@ import {
   SEC_API_ROLES_PATH,
   SEC_API_INTERNAL_USERS_PATH,
   SEC_API_ACTIONGROUPS_PATH,
+  SEC_API_TENANTS_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -207,6 +208,20 @@ Cypress.Commands.add(
     funcMockedOn();
 
     cy.wait('@getPermissions');
+  }
+);
+
+
+Cypress.Commands.add(
+  'mockTenantsAction',
+  function (fixtureFileName, funcMockedOn) {
+    cy.route2(SEC_API_TENANTS_PATH, {
+      fixture: fixtureFileName,
+    }).as('getTenants');
+
+    funcMockedOn();
+
+    cy.wait('@getTenants');
   }
 );
 
