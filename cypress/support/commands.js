@@ -16,6 +16,7 @@ import {
   SEC_API_TENANTS_PATH,
   SEC_API_AUDIT_PATH,
   SEC_API_AUDIT_CONFIG_PATH,
+  SEC_API_CACHE_PURGE_PATH,
 } from '../utils/constants';
 
 const ADMIN_AUTH = {
@@ -241,14 +242,14 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'mockAuditConfigUpdateAction',
+  'mockCachePurgeAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.route2({method: 'POST', url: SEC_API_AUDIT_CONFIG_PATH}, {
+    cy.route2({method: 'DELETE', url: SEC_API_CACHE_PURGE_PATH}, {
       fixture: fixtureFileName,
-    }).as('updateAuditConfig');
+    }).as('purgeCache');
 
     funcMockedOn();
 
-    cy.wait('@updateAuditConfig');
+    cy.wait('@purgeCache');
   }
 );
