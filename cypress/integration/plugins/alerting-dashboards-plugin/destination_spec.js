@@ -9,8 +9,11 @@ import sampleDestinationChime from '../../../fixtures/plugins/alerting-dashboard
 
 const SAMPLE_DESTINATION = 'sample_destination';
 const SAMPLE_DESTINATION_WITH_ANOTHER_NAME = 'sample_destination_chime';
+const SAMPLE_DESTINATION_SNS = 'sample_destination_sns';
 const UPDATED_DESTINATION = 'updated_destination';
 const SAMPLE_URL = 'http://www.sampledestination.com';
+const SAMPLE_TOPIC_ARN ='arn:aws:sns:us-east-1:123456789012:test-sns'
+const SAMPLE_ROLE_ARN ='arn:aws:iam::123456789012:user/test'
 
 describe('Destinations', () => {
   beforeEach(() => {
@@ -52,6 +55,30 @@ describe('Destinations', () => {
       cy.contains(SAMPLE_DESTINATION);
     });
 
+
+    it('with SNS', () => {
+      // Confirm we loaded empty destination list
+      cy.contains('There are no existing destinations');
+
+      // Route us to create destination page
+      cy.contains('Add destination').click({ force: true });
+
+      // Wait for input to load and then type in the destination name
+      cy.get('input[name="name"]').type(SAMPLE_DESTINATION_SNS, { force: true });
+
+      // Select the type of destination
+      cy.get('#type').select('sns', { force: true });
+
+      // Wait for input to load and then type in SNS topic ARN and role ARN
+      cy.get('input[name="sns.topic_arn"]').type(SAMPLE_TOPIC_ARN, { force: true });
+      cy.get('input[name="sns.role_arn"]').type(SAMPLE_ROLE_ARN, { force: true });
+
+      // Click the create button
+      cy.get('button').contains('Create').click({ force: true });
+
+      // Confirm we can see the created destination in the list
+      cy.contains(SAMPLE_DESTINATION_SNS);
+    });
   });
 
   describe('can be updated', () => {
