@@ -1,0 +1,23 @@
+{
+    "total": 3,
+    "data": {
+        "test": {
+            "reserved": false,
+            "hidden": false,
+            "description": "Test description",
+            "static": false
+        },
+        "global_tenant": {
+            "reserved": true,
+            "hidden": false,
+            "description": "Global tenant",
+            "static": true
+        },
+        "admin_tenant": {
+            "reserved": false,
+            "hidden": false,
+            "description": "Demo tenant for admin user",
+            "static": false
+        }
+    }
+}

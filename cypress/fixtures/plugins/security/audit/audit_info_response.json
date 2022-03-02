@@ -1,0 +1,42 @@
+{
+    "_readonly": [],
+    "config": {
+        "compliance": {
+            "enabled": true,
+            "write_log_diffs": false,
+            "read_watched_fields": {},
+            "read_ignore_users": [
+                "kibanaserver"
+            ],
+            "write_watched_indices": [],
+            "write_ignore_users": [
+                "kibanaserver"
+            ],
+            "read_metadata_only": true,
+            "write_metadata_only": true,
+            "external_config": false,
+            "internal_config": true
+        },
+        "enabled": true,
+        "audit": {
+            "ignore_users": [
+                "kibanaserver"
+            ],
+            "ignore_requests": [],
+            "disabled_rest_categories": [
+                "AUTHENTICATED",
+                "GRANTED_PRIVILEGES"
+            ],
+            "disabled_transport_categories": [
+                "AUTHENTICATED",
+                "GRANTED_PRIVILEGES"
+            ],
+            "log_request_body": true,
+            "resolve_indices": true,
+            "resolve_bulk_requests": false,
+            "exclude_sensitive_headers": true,
+            "enable_transport": true,
+            "enable_rest": true
+        }
+    }
+}
