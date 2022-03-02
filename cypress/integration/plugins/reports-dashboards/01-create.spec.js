@@ -3,24 +3,24 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { visitReportingLandingPage } from "../../../utils/plugins/reports-dashboards/constants";
+import { visitReportingLandingPage, SAMPLE_DATA_WAIT_TIME } from "../../../utils/plugins/reports-dashboards/constants";
 import { BASE_PATH } from '../../../utils/constants';
 
-describe('Adding sample data', () => {
-  it('Adds sample data', () => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]').contains(/(Add|View) data/).click();
-    cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardecommerce"]').contains(/(Add|View) data/).click();
-    cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardlogs"]').contains(/(Add|View) data/).click();
-    cy.wait(3000);
-  });
-});
 
 describe('Cypress', () => {
+  // add sample data
+  before(() => {
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardflights"]').contains(/(Add|View) data/).click();
+    cy.wait(SAMPLE_DATA_WAIT_TIME);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardecommerce"]').contains(/(Add|View) data/).click();
+    cy.wait(SAMPLE_DATA_WAIT_TIME);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardlogs"]').contains(/(Add|View) data/).click();
+    cy.wait(SAMPLE_DATA_WAIT_TIME);
+  });
+
   it('Visits Reporting homepage', () => {
     visitReportingLandingPage();
   });

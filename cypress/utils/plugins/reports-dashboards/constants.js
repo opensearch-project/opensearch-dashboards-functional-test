@@ -12,3 +12,5 @@ export function visitReportingLandingPage() {
     '/reports-dashboards'
   );
 }
+
+export const SAMPLE_DATA_WAIT_TIME = 10000;

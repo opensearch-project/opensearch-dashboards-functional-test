@@ -6,6 +6,19 @@
 import { BASE_PATH } from '../../../utils/constants';
 
 describe('Cypress', () => {
+  // remove sample data
+  after(() => {
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardflights"]').contains('Remove').click();
+    cy.wait(3000);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardecommerce"]').contains('Remove').click();
+    cy.wait(3000);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.get('div[data-test-subj="sampleDataSetCardlogs"]').contains('Remove').click();
+    cy.wait(3000);
+  });
+
   it('Download from reporting homepage', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
