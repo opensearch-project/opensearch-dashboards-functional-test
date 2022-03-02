@@ -23,11 +23,13 @@
   "homepage": "https://github.com/opensearch-project/opensearch-dashboards-functional-test",
   "dependencies": {
     "@opensearch-dashboards-test/opensearch-dashboards-test-library": "opensearch-project/opensearch-dashboards-test-library#main",
+    "brace": "^0.11.1",
     "prettier": "^2.5.1"
   },
   "devDependencies": {
     "cypress": "^5.6.0",
     "cypress-multi-reporters": "^1.5.0",
-    "mocha-junit-reporter": "^2.0.0"
+    "mocha-junit-reporter": "^2.0.0",
+    "typescript": "^4.6.2"
   }
 }
