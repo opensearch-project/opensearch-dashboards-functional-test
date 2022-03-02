@@ -1,0 +1,80 @@
+{
+    "total": 6,
+    "data": {
+        "logstash": {
+            "hash": "",
+            "reserved": false,
+            "hidden": false,
+            "backend_roles": [
+                "logstash"
+            ],
+            "attributes": {},
+            "description": "Demo logstash user",
+            "opendistro_security_roles": [],
+            "static": false
+        },
+        "snapshotrestore": {
+            "hash": "",
+            "reserved": false,
+            "hidden": false,
+            "backend_roles": [
+                "snapshotrestore"
+            ],
+            "attributes": {},
+            "description": "Demo snapshotrestore user",
+            "opendistro_security_roles": [],
+            "static": false
+        },
+        "admin": {
+            "hash": "",
+            "reserved": true,
+            "hidden": false,
+            "backend_roles": [
+                "admin"
+            ],
+            "attributes": {},
+            "description": "Demo admin user",
+            "opendistro_security_roles": [],
+            "static": false
+        },
+        "kibanaserver": {
+            "hash": "",
+            "reserved": true,
+            "hidden": false,
+            "backend_roles": [],
+            "attributes": {},
+            "description": "Demo OpenSearch Dashboards user",
+            "opendistro_security_roles": [],
+            "static": false
+        },
+        "kibanaro": {
+            "hash": "",
+            "reserved": false,
+            "hidden": false,
+            "backend_roles": [
+                "kibanauser",
+                "readall"
+            ],
+            "attributes": {
+                "attribute1": "value1",
+                "attribute2": "value2",
+                "attribute3": "value3"
+            },
+            "description": "Demo OpenSearch Dashboards read only user",
+            "opendistro_security_roles": [],
+            "static": false
+        },
+        "readall": {
+            "hash": "",
+            "reserved": false,
+            "hidden": false,
+            "backend_roles": [
+                "readall"
+            ],
+            "attributes": {},
+            "description": "Demo readall user",
+            "opendistro_security_roles": [],
+            "static": false
+        }
+    }
+}

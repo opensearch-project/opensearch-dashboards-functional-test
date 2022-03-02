@@ -1,0 +1,22 @@
+{
+    "user": "User [name=admin, backend_roles=[admin], requestedTenant=__user__]",
+    "user_name": "admin",
+    "user_requested_tenant": "__user__",
+    "remote_address": "127.0.0.1:56431",
+    "backend_roles": [
+        "admin"
+    ],
+    "custom_attribute_names": [],
+    "roles": [
+        "own_index",
+        "all_access"
+    ],
+    "tenants": {
+        "global_tenant": true,
+        "admin_tenant": true,
+        "admin": true
+    },
+    "principal": null,
+    "peer_certificates": "0",
+    "sso_logout_url": null
+}
