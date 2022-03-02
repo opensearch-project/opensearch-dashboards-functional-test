@@ -4,7 +4,6 @@
  */
 
 import {
-  SEC_API_ACTIONGROUPS_PATH,
   SEC_PERMISSIONS_FIXTURES_PATH,
   SEC_UI_PERMISSIONS_PATH,
 } from '../../../utils/constants';
@@ -38,10 +37,10 @@ describe('Permissions page', () => {
         cy.visit(SEC_UI_PERMISSIONS_PATH);
       }
     );
-    
+
     cy.get('tr[class="euiTableRow euiTableRow-isExpandedRow"]').should('not.be.visible');
 
-    cy.get('[class="euiTableRowCell euiTableRowCell--isExpander"]').find('button').first().click({ force:true });
+    cy.get('[class="euiTableRowCell euiTableRowCell--isExpander"]').find('button').first().click({ force: true });
 
     // a row should be expanded after click
     cy.get('tr[class="euiTableRow euiTableRow-isExpandedRow"]').should('be.visible');
@@ -59,7 +58,7 @@ describe('Permissions page', () => {
     cy.contains('button', 'Create from selection').should('not.exist');
 
     cy.contains('button', 'Create action group').first().click({ force: true });
-    
+
     cy.contains('button', 'Create from blank');
     cy.contains('button', 'Create from selection');
   });
@@ -67,7 +66,7 @@ describe('Permissions page', () => {
   it('should create new action group successfully by selecting `Create from blank`', () => {
     cy.visit(SEC_UI_PERMISSIONS_PATH);
     cy.contains('button', 'Create action group').first().click({ force: true });
-    
+
     cy.contains('button', 'Create from blank').first().click({ force: true });
 
     cy.contains('button', 'Create');
@@ -84,8 +83,58 @@ describe('Permissions page', () => {
         cy.get('button[id="submit"]').first().click({ force: true });
       }
     );
-    
-    
+
+
+    cy.url().should((url) => {
+      expect(url).to.contain('/permissions');
+    });
+
+
+    cy.contains('h3', 'Permissions');
+    // should contain the new action group that was just created
+    cy.contains('span', actionGroupName);
+
+  });
+
+  it('should create new action group successfully by selecting `Create from selection`', () => {
+    cy.visit(SEC_UI_PERMISSIONS_PATH);
+
+    // `Create from selection` should be disabled initially
+    cy.contains('button', 'Create action group').first().click({ force: true });
+    cy.get('button[id="create-from-selection"]').should('have.attr', 'disabled');
+
+    // check the first action-group by using pattern matching to find the checkbox with id ending in `-checkbox`
+    cy.get('[id$=-checkbox]').first().check();
+    cy.wait(500);
+
+    // `Create from selection` should now be clickable
+    cy.contains('button', 'Create action group').first().click({ force: true });
+    cy.get('button[id="create-from-selection"]').click({ force: true });
+
+    cy.contains('button', 'Create');
+    cy.contains('button', 'Cancel')
+    cy.contains('.euiModalHeader__title', 'Create new action group');
+
+    const actionGroupName = 'test';
+    cy.get('input[data-test-subj="name-text"]').type(actionGroupName, { force: true });
+    cy.get('input[data-test-subj="name-text"]').should('have.value', actionGroupName);
+
+    cy.get('div[data-test-subj="comboBoxInput"]').find('span').should('have.class', 'euiBadge');
+
+    cy.mockPermissionsAction(
+      SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_post_new_creation_from_selection_response.json',
+      () => {
+        cy.get('button[id="submit"]').first().click({ force: true });
+      }
+    ).then((response) => {
+      const body = JSON.parse(response.response.body);
+      const testAG = body.data.test;
+
+      expect(testAG).to.not.be.null;
+      expect(testAG.allowed_actions).to.have.length.of.at.least(1);
+    });;
+
+
     cy.url().should((url) => {
       expect(url).to.contain('/permissions');
     });
