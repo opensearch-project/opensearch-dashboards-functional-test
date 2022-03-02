@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { visitReportingLandingPage, SAMPLE_DATA_WAIT_TIME } from "../../../utils/plugins/reports-dashboards/constants";
-import { BASE_PATH } from '../../../utils/constants';
+import { 
+  visitReportingLandingPage,
+  SAMPLE_DATA_WAIT_TIME, 
+  BASE_PATH
+} from "../../../utils/constants";
 
 
 describe('Cypress', () => {
