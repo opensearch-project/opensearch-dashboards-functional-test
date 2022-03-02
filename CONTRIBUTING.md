@@ -48,15 +48,17 @@ $ npm uninstall @opensearch-dashboards-test/opensearch-dashboards-test-library &
 
 ### Run Tests
 
-You can run the cypress tests by cli. There are some handy sripts in [package.json](package.json) to run the tests with some pre-set configurations.
+You can run the cypress tests by cli. There are some handy scripts in [package.json](package.json) to run the tests with some pre-set configurations.
 
-To run without security:
+To run tests against a local cluster
+
+without security:
 
 ```
 $ yarn cypress run-without-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
 ```
 
-To run with security:
+with security:
 
 ```
 $ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
@@ -68,11 +70,15 @@ These tests run in headless mode by default. You can also manually trigger the t
 $ yarn cypress open
 ```
 
-And you can override certain cypress config or environment variable by appling additional cli arguments, for example to override the baseUrl and OpensearchUrl to test a remote endpoint:
+And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
 ```
-$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --env "openSearchUrl=https://foo.com" --config "baseUrl=https://foo.com/_dashboards"
+$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
 ```
+
+`SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also, please notice security enabled endpoint normally uses https protocol, so you may want to pass in different urls.
+
+`ENDPOINT_WITH_PROXY`: for an OpenSearch endpoint wrapped with a proxy that redirects the visiting url to the login url, even with auth option provided in `cy.visit`, the redirection to the login url still happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 ### Formatting
 
@@ -96,9 +102,9 @@ The dir name shall be descriptive to identify your plugin. You can use the same 
 
 2. Place fixtures under `cypress/fixtures/plugins/<plugin-name>`
 
-3. Place custom commands under `cypress/fixtures/plugins/<plugin-name>`
+3. Place custom commands under `cypress/utils/plugins/<plugin-name>`, if it's a general command that could be reused by other plugins, place it under `cypress/utils/commands.js`
 
-4. Place constants to `cypress/utils/constants.js`
+4. Place custom constants under `cypress/utils/plugins/<plugin-name>`, reuse the constants in `cypress/utils/base_constants.js`
 
 5. Run tests
 
@@ -118,7 +124,7 @@ npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/
 
 For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/.installing-cypress#Opening-Cypress.
 
-The env paramaters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
+The env parameters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 
