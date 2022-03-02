@@ -3,21 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { visitReportingLandingPage } from "../../../utils/constants";
+import { WAIT_TIME, visitReportingLandingPage } from "../../../utils/constants";
 
 describe('Cypress', () => {
   it('Visit report definition details page', () => {
     visitReportingLandingPage();
-    cy.wait(5000);
+    cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
     verifyReportDefinitionDetailsURL();
     verifyDeleteDefinitionButtonExists();
+    cy.wait(WAIT_TIME);
     verifyGenerateReportFromFileFormatExists();
   });
 
   it('Go to edit report definition from report definition details', () => {
     visitReportingLandingPage();
-    cy.wait(5000);
+    cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
     verifyEditDefinitionButtonExists();
     clickEditReportDefinitionButton();
@@ -26,8 +27,9 @@ describe('Cypress', () => {
 
   it('Verify report source URL on report definition details', () => {
     visitReportingLandingPage();
-    cy.wait(5000);
+    cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
+    cy.wait(WAIT_TIME);
     verifyReportDefinitionSourceURLExists();
     
   });
@@ -50,8 +52,9 @@ describe('Cypress', () => {
 
   it('Verify report source URL on report details', () => {
     visitReportingLandingPage();
-    cy.wait(5000);
+    cy.wait(WAIT_TIME);
     visitReportDetailsPage();
+    cy.wait(WAIT_TIME);
     verifyReportDetailsSourceURLExists();
   });
 });

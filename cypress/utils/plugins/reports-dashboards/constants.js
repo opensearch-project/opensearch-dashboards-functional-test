@@ -13,4 +13,4 @@ export function visitReportingLandingPage() {
   );
 }
 
-export const SAMPLE_DATA_WAIT_TIME = 10000;
+export const WAIT_TIME = 10000;

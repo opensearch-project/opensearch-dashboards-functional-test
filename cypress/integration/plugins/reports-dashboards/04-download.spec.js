@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../../../utils/constants';
+import { WAIT_TIME, BASE_PATH } from '../../../utils/constants';
 
 describe('Cypress', () => {
   // remove sample data
@@ -94,11 +94,13 @@ describe('Cypress', () => {
       'include',
       '/reports-dashboards'
     );
-    cy.wait(10000);
+    cy.wait(WAIT_TIME);
 
     cy.get('tr.euiTableRow-isSelectable:nth-child(1) > td:nth-child(1) > div:nth-child(2) > button:nth-child(1)').first().click(); 
 
     cy.url().should('include', 'report_definition_details');
+
+    cy.wait(WAIT_TIME);
 
     cy.get('#generateReportFromDetailsFileFormat').should('exist');
 

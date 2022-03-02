@@ -5,7 +5,8 @@
 
 import { 
   visitReportingLandingPage,
-  SAMPLE_DATA_WAIT_TIME, 
+  WAIT_TIME, 
+  LONG_WAIT_TIME,
   BASE_PATH
 } from "../../../utils/constants";
 
@@ -15,13 +16,13 @@ describe('Cypress', () => {
   before(() => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
     cy.get('div[data-test-subj="sampleDataSetCardflights"]').contains(/(Add|View) data/).click();
-    cy.wait(SAMPLE_DATA_WAIT_TIME);
+    cy.wait(WAIT_TIME);
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
     cy.get('div[data-test-subj="sampleDataSetCardecommerce"]').contains(/(Add|View) data/).click();
-    cy.wait(SAMPLE_DATA_WAIT_TIME);
+    cy.wait(WAIT_TIME);
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
     cy.get('div[data-test-subj="sampleDataSetCardlogs"]').contains(/(Add|View) data/).click();
-    cy.wait(SAMPLE_DATA_WAIT_TIME);
+    cy.wait(WAIT_TIME);
   });
 
   it('Visits Reporting homepage', () => {
@@ -123,6 +124,7 @@ describe('Cypress', () => {
 
     cy.wait(500);
     setReportTriggerToSchedule();
+    cy.wait(WAIT_TIME);
     selectIntervalScheduleFrequency();
     inputTextIntoField('#recurringByIntervalNumber', '5');
     clickCreateReportDefinitionButton();
@@ -135,7 +137,9 @@ describe('Cypress', () => {
     setReportDefinitionName('Cypress vis interval recurring report');
     selectReportSource('#visualizationReportSource');
     selectReportSourceComboBox();
+    cy.wait(3000);
     setReportTriggerToSchedule();
+    cy.wait(WAIT_TIME);
     selectIntervalScheduleFrequency();
     inputTextIntoField('#recurringByIntervalNumber', '5');
     clickCreateReportDefinitionButton();
@@ -148,7 +152,9 @@ describe('Cypress', () => {
     setReportDefinitionName('Cypress saved search interval recurring report');
     selectReportSource('#savedSearchReportSource');
     selectReportSourceComboBox();
+    cy.wait(3000);
     setReportTriggerToSchedule();
+    cy.wait(WAIT_TIME);
     selectIntervalScheduleFrequency();
     inputTextIntoField('#recurringByIntervalNumber', '5');
     clickCreateReportDefinitionButton();
@@ -166,6 +172,7 @@ describe('Cypress', () => {
     cy.wait(500);
     setReportTriggerToSchedule();
     selectCronBasedRequestTime();
+    cy.wait(WAIT_TIME);
     inputTextIntoField('#cronExpressionFieldText', '0 12 * * *');
     clickCreateReportDefinitionButton();
     cy.wait(3000);
@@ -179,6 +186,7 @@ describe('Cypress', () => {
     selectReportSourceComboBox();
     setReportTriggerToSchedule();
     selectCronBasedRequestTime();
+    cy.wait(WAIT_TIME);
     inputTextIntoField('#cronExpressionFieldText', '0 12 * * *');
     cy.wait(500);
     clickCreateReportDefinitionButton();
@@ -193,6 +201,7 @@ describe('Cypress', () => {
     selectReportSourceComboBox();
     setReportTriggerToSchedule();
     selectCronBasedRequestTime();
+    cy.wait(WAIT_TIME);
     inputTextIntoField('#cronExpressionFieldText', '0 12 * * *');
     cy.wait(500);
     clickCreateReportDefinitionButton();
