@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
 import { INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
-import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
+import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
+import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
+import {BASE_PATH} from "../../../utils/base_constants";
 
 const BUCKET_MONITOR = 'sample_alerts_flyout_bucket_level_monitor';
 const BUCKET_TRIGGER = 'sample_alerts_flyout_bucket_level_trigger';
@@ -28,7 +28,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.createMonitor(sampleAlertsFlyoutQueryMonitor);
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
+    cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Confirm test monitors were created successfully
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
@@ -40,7 +40,7 @@ describe('AcknowledgeAlertsModal', () => {
 
   beforeEach(() => {
     // Reloading the page to close any modals that were not closed by other tests that had failures.
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
+    cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Confirm dashboard is displaying rows for the test monitors.
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
