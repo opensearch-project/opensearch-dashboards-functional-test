@@ -13,4 +13,4 @@ export function visitReportingLandingPage() {
   );
 }
 
-export const WAIT_TIME = 60000;
+export const WAIT_TIME = 40000;
