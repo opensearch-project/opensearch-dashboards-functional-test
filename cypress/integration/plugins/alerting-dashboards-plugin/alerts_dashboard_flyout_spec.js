@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { INDEX, PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import { INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
 
@@ -28,7 +28,7 @@ describe('Alerts by trigger flyout', () => {
     cy.createMonitor(sampleAlertsFlyoutQueryMonitor);
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/monitors`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Confirm test monitors were created successfully
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
@@ -40,7 +40,7 @@ describe('Alerts by trigger flyout', () => {
 
   beforeEach(() => {
     // Reloading the page to close any flyouts that were not closed by other tests that had failures.
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/dashboard`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Waiting 5 seconds for alerts to finish loading.
     // This short wait period alleviates flakiness observed during these tests.

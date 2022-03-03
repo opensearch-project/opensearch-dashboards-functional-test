@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../../../utils/plugins//plugins/alerting-dashboards-plugin/constants';
+import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins//plugins/alerting-dashboards-plugin/constants';
 import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins//plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
 import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins//plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
 
@@ -15,7 +15,7 @@ describe('Alerts', () => {
     localStorage.setItem('home:welcome:show', 'false');
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/dashboard`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Common text to wait for to confirm page loaded, give up to 30 seconds for initial load
     cy.contains('Acknowledge', { timeout: 30000 });

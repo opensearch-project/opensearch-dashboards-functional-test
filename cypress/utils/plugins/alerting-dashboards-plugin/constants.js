@@ -10,12 +10,12 @@ export const INDEX = {
   SAMPLE_DATA_ECOMMERCE: 'opensearch_dashboards_sample_data_ecommerce',
 };
 
-export const API = {
+export const ALERTING_API = {
   MONITOR_BASE: `${API_ROUTE_PREFIX}/monitors`,
   DESTINATION_BASE: `${API_ROUTE_PREFIX}/destinations`,
 };
 
-export const PLUGIN_NAME = 'alerting';
+export const ALERTING_PLUGIN_NAME = 'alerting';
 
 export const ADMIN_AUTH = {
   username: 'admin',

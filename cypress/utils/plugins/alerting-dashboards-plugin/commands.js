@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { API } = require('./constants');
+import { ALERTING_API } from '../../constants';
 
 // ***********************************************
 // This example commands.js shows you how to
@@ -32,19 +32,19 @@ const { API } = require('./constants');
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('createMonitor', (monitorJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${API.MONITOR_BASE}`, monitorJSON);
+  cy.request('POST', `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}`, monitorJSON);
 });
 
 Cypress.Commands.add('createDestination', (destinationJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${API.DESTINATION_BASE}`, destinationJSON);
+  cy.request('POST', `${Cypress.env('opensearch')}${ALERTING_API.DESTINATION_BASE}`, destinationJSON);
 });
 
 Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${API.MONITOR_BASE}`, monitorJSON).then(
+  cy.request('POST', `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}`, monitorJSON).then(
     (response) => {
       cy.request(
         'POST',
-        `${Cypress.env('opensearch')}${API.MONITOR_BASE}/${response.body._id}/_execute`
+        `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/${response.body._id}/_execute`
       );
     }
   );
@@ -61,11 +61,11 @@ Cypress.Commands.add('deleteMonitorByName', (monitorName) => {
       },
     },
   };
-  cy.request('GET', `${Cypress.env('opensearch')}${API.MONITOR_BASE}/_search`, body).then(
+  cy.request('GET', `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/_search`, body).then(
     (response) => {
       cy.request(
         'DELETE',
-        `${Cypress.env('opensearch')}${API.MONITOR_BASE}/${response.body.hits.hits[0]._id}`
+        `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/${response.body.hits.hits[0]._id}`
       );
     }
   );
@@ -82,7 +82,7 @@ Cypress.Commands.add('deleteAllMonitors', () => {
   };
   cy.request({
     method: 'GET',
-    url: `${Cypress.env('opensearch')}${API.MONITOR_BASE}/_search`,
+    url: `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/_search`,
     failOnStatusCode: false, // In case there is no alerting config index in cluster, where the status code is 404
     body,
   }).then((response) => {
@@ -90,7 +90,7 @@ Cypress.Commands.add('deleteAllMonitors', () => {
       for (let i = 0; i < response.body.hits.total.value; i++) {
         cy.request(
           'DELETE',
-          `${Cypress.env('opensearch')}${API.MONITOR_BASE}/${response.body.hits.hits[i]._id}`
+          `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/${response.body.hits.hits[i]._id}`
         );
       }
     } else {
@@ -102,14 +102,14 @@ Cypress.Commands.add('deleteAllMonitors', () => {
 Cypress.Commands.add('deleteAllDestinations', () => {
   cy.request({
     method: 'GET',
-    url: `${Cypress.env('opensearch')}${API.DESTINATION_BASE}?size=200`,
+    url: `${Cypress.env('opensearch')}${ALERTING_API.DESTINATION_BASE}?size=200`,
     failOnStatusCode: false, // In case there is no alerting config index in cluster, where the status code is 404
   }).then((response) => {
     if (response.status === 200) {
       for (let i = 0; i < response.body.totalDestinations; i++) {
         cy.request(
           'DELETE',
-          `${Cypress.env('opensearch')}${API.DESTINATION_BASE}/${response.body.destinations[i].id}`
+          `${Cypress.env('opensearch')}${ALERTING_API.DESTINATION_BASE}/${response.body.destinations[i].id}`
         );
       }
     } else {

@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { INDEX, PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import {deleteAllMonitors,  }from '../../../utils/plugins/alerting-dashboards-plugin/commands'
+import { INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
 
@@ -29,7 +28,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.createMonitor(sampleAlertsFlyoutQueryMonitor);
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/monitors`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Confirm test monitors were created successfully
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
@@ -41,7 +40,7 @@ describe('AcknowledgeAlertsModal', () => {
 
   beforeEach(() => {
     // Reloading the page to close any modals that were not closed by other tests that had failures.
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/dashboard`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Confirm dashboard is displaying rows for the test monitors.
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });

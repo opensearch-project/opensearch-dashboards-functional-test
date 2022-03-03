@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { INDEX, PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import { INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query';
 import sampleDestination from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_custom_webhook';
 import sampleExtractionQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_extraction_query_bucket_level_monitor';
@@ -104,7 +104,7 @@ describe('Bucket-Level Monitors', () => {
     localStorage.setItem('home:welcome:show', 'false');
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/monitors`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
     cy.contains('Create monitor', { timeout: 20000 });

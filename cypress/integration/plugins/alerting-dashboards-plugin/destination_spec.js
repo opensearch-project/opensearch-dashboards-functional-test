@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleDestination from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_custom_webhook';
 import sampleDestinationChime from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_chime';
 
@@ -21,17 +21,13 @@ describe('Destinations', () => {
     localStorage.setItem('home:welcome:show', 'false');
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/destinations`);
+    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/destinations`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
     cy.contains('Add destination', { timeout: 20000 });
   });
 
   describe('can be created', () => {
-    before(() => {
-      cy.deleteAllDestinations();
-    });
-
     it('with a custom webhook', () => {
       // Confirm we loaded empty destination list
       cy.contains('There are no existing destinations');
@@ -53,10 +49,14 @@ describe('Destinations', () => {
 
       // Confirm we can see the created destination in the list
       cy.contains(SAMPLE_DESTINATION);
+
+      // Delete all destinations
+      cy.deleteAllDestinations();
     });
 
 
     it('with SNS', () => {
+
       // Confirm we loaded empty destination list
       cy.contains('There are no existing destinations');
 
@@ -78,6 +78,9 @@ describe('Destinations', () => {
 
       // Confirm we can see the created destination in the list
       cy.contains(SAMPLE_DESTINATION_SNS);
+
+      // Delete all destinations
+      cy.deleteAllDestinations();
     });
   });
 
