@@ -126,7 +126,8 @@ describe('Cypress', () => {
     setReportTriggerToSchedule();
     cy.wait(WAIT_TIME);
     // selectIntervalScheduleFrequency();
-    inputTextIntoField('#recurringByIntervalNumber', '5');
+    // inputTextIntoField('#recurringByIntervalNumber', '5');
+    cy.get('#recurringByIntervalNumber').type('5');
     clickCreateReportDefinitionButton();
     cy.wait(3000);
     verifyOnReportingLandingPage();
