@@ -11,8 +11,6 @@
   "viewportHeight": 1320,
   "env": {
     "openSearchUrl": "https://search-bowennexuscold-zmxlw3wnkcnwcu3emsuszgtkiu.us-east-1.es.amazonaws.com",
-    "opensearch": "https://search-bowennexuscold-zmxlw3wnkcnwcu3emsuszgtkiu.us-east-1.es.amazonaws.com",
-    "opensearch_dashboards": "https://search-bowennexuscold-zmxlw3wnkcnwcu3emsuszgtkiu.us-east-1.es.amazonaws.com/_dashboards",
     "SECURITY_ENABLED": false,
     "username": "admin",
     "password": "admin",

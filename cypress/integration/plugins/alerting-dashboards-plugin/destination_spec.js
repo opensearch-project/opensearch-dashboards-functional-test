@@ -6,6 +6,7 @@
 import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleDestination from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_custom_webhook';
 import sampleDestinationChime from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_chime';
+import {BASE_PATH} from "../../../utils/base_constants";
 
 const SAMPLE_DESTINATION = 'sample_destination';
 const SAMPLE_DESTINATION_WITH_ANOTHER_NAME = 'sample_destination_chime';
@@ -21,7 +22,7 @@ describe('Destinations', () => {
     localStorage.setItem('home:welcome:show', 'false');
 
     // Visit Alerting OpenSearch Dashboards
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${ALERTING_PLUGIN_NAME}#/destinations`);
+    cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/destinations`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
     cy.contains('Add destination', { timeout: 20000 });
