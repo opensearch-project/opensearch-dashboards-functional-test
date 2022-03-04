@@ -2,12 +2,10 @@ name: Bundle Snapshot based E2E Cypress tests workflow for all Dashboards plugin
 on:
   pull_request:
     branches:
-      - main
-      - dev-*
+      - 1.2
   push:
     branches:
-      - main
-      - dev-*
+      - 1.2
 env:
   VERSION: '1.2.0'
 jobs:

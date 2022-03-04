@@ -2,12 +2,10 @@ name: Snapshot based E2E Cypress tests workflow
 on:
   pull_request:
     branches:
-      - main
-      - dev-*
+      - 1.2
   push:
     branches:
-      - main
-      - dev-*
+      - 1.2
 jobs:
   tests:
     name: Run Cypress E2E tests
