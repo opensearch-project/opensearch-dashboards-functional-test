@@ -55,7 +55,7 @@ describe('Destinations', () => {
       cy.deleteAllDestinations();
     });
 
-    if(cy.env("MANAGED_SERVICE_ENDPOINT")) {
+    if(Cypress.env("MANAGED_SERVICE_ENDPOINT")) {
       it('with SNS', () => {
 
         // Confirm we loaded empty destination list
