@@ -46,7 +46,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
         run: |
-          cd opensearch-dashboards-${{ env.VERSION }}-linux-x64
+          cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout monterey-test
