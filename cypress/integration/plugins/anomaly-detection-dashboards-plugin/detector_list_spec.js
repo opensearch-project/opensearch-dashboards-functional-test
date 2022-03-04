@@ -103,7 +103,7 @@ describe('Detector list', () => {
         cy.visit(BASE_AD_DETECTOR_LIST_PATH);
       }
     );
-    cy.get('[data-test-subj=addDetector]').click({ force: true });
+    cy.get('[data-test-subj=createDetectorButton]').click({ force: true });
     cy.contains('span', 'Create detector');
   });
 
