@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins//plugins/alerting-dashboards-plugin/constants';
-import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins//plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
-import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins//plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
+import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
+import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
 import {BASE_PATH} from "../../../utils/base_constants";
 
 const TESTING_INDEX = 'alerting_test';
