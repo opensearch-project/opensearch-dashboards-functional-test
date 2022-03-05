@@ -6,7 +6,7 @@
 import { BASE_PATH } from '../../../utils/constants';
 
 describe('Cypress', () => {
-  it('Visit edit page, update name and description', () => {
+  it.skip('Visit edit page, update name and description', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
@@ -39,7 +39,7 @@ describe('Cypress', () => {
     cy.get('#reportDefinitionDetailsLink').should('exist');
   });
 
-  it('Visit edit page, change report trigger', () => {
+  it.skip('Visit edit page, change report trigger', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
@@ -68,7 +68,7 @@ describe('Cypress', () => {
     cy.get('#reportDefinitionDetailsLink').should('exist');
   });
 
-  it('Visit edit page, change report trigger back', () => {
+  it.skip('Visit edit page, change report trigger back', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
