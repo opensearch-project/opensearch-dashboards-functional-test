@@ -6,7 +6,7 @@
 import { WAIT_TIME, visitReportingLandingPage } from "../../../utils/constants";
 
 describe('Cypress', () => {
-  it('Visit report definition details page', () => {
+  it.skip('Visit report definition details page', () => {
     visitReportingLandingPage();
     cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
@@ -16,7 +16,7 @@ describe('Cypress', () => {
     verifyGenerateReportFromFileFormatExists();
   });
 
-  it('Go to edit report definition from report definition details', () => {
+  it.skip('Go to edit report definition from report definition details', () => {
     visitReportingLandingPage();
     cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
@@ -25,7 +25,7 @@ describe('Cypress', () => {
     verifyEditReportDefinitionURL();
   });
 
-  it('Verify report source URL on report definition details', () => {
+  it.skip('Verify report source URL on report definition details', () => {
     visitReportingLandingPage();
     cy.wait(WAIT_TIME);
     visitReportDefinitionDetailsPage();
@@ -34,7 +34,7 @@ describe('Cypress', () => {
     
   });
 
-  it('Delete report definition from details page', () => {
+  it.skip('Delete report definition from details page', () => {
     visitReportingLandingPage();
     cy.wait(5000);
     visitReportDefinitionDetailsPage();
@@ -43,14 +43,14 @@ describe('Cypress', () => {
     verifyDeleteSuccess();
   });
 
-  it('Visit report details page', () => {
+  it.skip('Visit report details page', () => {
     visitReportingLandingPage();
     cy.wait(5000);
     visitReportDetailsPage();
     verifyReportDetailsURL();
   });
 
-  it('Verify report source URL on report details', () => {
+  it.skip('Verify report source URL on report details', () => {
     visitReportingLandingPage();
     cy.wait(WAIT_TIME);
     visitReportDetailsPage();
