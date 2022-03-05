@@ -80,6 +80,7 @@ $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanill
 
 `ENDPOINT_WITH_PROXY`: for an OpenSearch endpoint wrapped with a proxy that redirects the visiting url to the login url, even with auth option provided in `cy.visit`, the redirection to the login url still happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
+`MANAGED_SERVICE_ENDPOINT`: set to true if tests are running against managed service domains.
 ### Formatting
 
 `prettier` is used to standardize formatting of files. You can format all files (new and existing) by running
