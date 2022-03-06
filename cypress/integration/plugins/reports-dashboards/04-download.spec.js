@@ -19,7 +19,7 @@ describe('Cypress', () => {
     cy.wait(3000);
   });
 
-  it.skip('Download from reporting homepage', () => {
+  it('Download from reporting homepage', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
@@ -38,7 +38,7 @@ describe('Cypress', () => {
     })
   });
 
-  it.skip('Download pdf from in-context menu', () => {
+  it('Download pdf from in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#`);
     cy.wait(5000);
 
@@ -54,7 +54,7 @@ describe('Cypress', () => {
     cy.get('#reportGenerationProgressModal');
   });
 
-  it.skip('Download png from in-context menu', () => {
+  it('Download png from in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#`);
     cy.wait(5000);
 
@@ -69,7 +69,7 @@ describe('Cypress', () => {
     cy.get('#reportGenerationProgressModal');
   });
 
-  it.skip('Download csv from saved search in-context menu', () => {
+  it('Download csv from saved search in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/discover#`);
     cy.wait(5000);
 
@@ -86,7 +86,7 @@ describe('Cypress', () => {
     cy.get('#generateCSV').click({ force: true });
   });
 
-  it.skip('Download from Report definition details page', () => {
+  it('Download from Report definition details page', () => {
     // create an on-demand report definition 
 
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
