@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { delay, setTimeFilter, SPAN_ID, TRACE_ID } from '../../../utils/constants';
+import { delayTime, setTimeFilter, SPAN_ID, TRACE_ID } from '../../../utils/constants';
 
 describe('Testing traces table empty state', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('Testing traces table empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders empty state', () => {
@@ -48,7 +48,7 @@ describe('Testing traces table', () => {
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains(' (1)').should('exist');
     cy.contains('03/25/2021 10:21:22').should('exist');
   });
@@ -61,7 +61,7 @@ describe('Testing trace view', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders the trace view', () => {
@@ -70,7 +70,7 @@ describe('Testing trace view', () => {
     cy.contains('03/25/2021 10:21:22').should('exist');
     cy.get('h2.euiTitle').contains(TRACE_ID).should('exist');
 
-    cy.get('div.js-plotly-plot').should('have.length', 2);
+    cy.get('div.js-plotly-plot').should('have.length.gte', 2);
     cy.get('text[data-unformatted="database <br>mysql.APM "]').should('exist');
     cy.contains(`"${SPAN_ID}"`).should('exist');
   });
@@ -80,12 +80,12 @@ describe('Testing trace view', () => {
     cy.contains('2 columns hidden').should('exist');
 
     cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains('Span detail').should('exist');
     cy.contains('Span attributes').should('exist');
     cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
     cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.get('.euiBadge__text').contains('spanId: ').should('exist');
     cy.contains('Spans (1)').should('exist');

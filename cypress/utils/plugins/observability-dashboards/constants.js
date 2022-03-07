@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const delay = 1500;
+export const delayTime = 1500;
 
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
 export const SPAN_ID = 'a673bc074b438374';
 export const SERVICE_NAME = 'frontend-client';
 
-export const testDataSet = [
+export const testIndexDataSet = [
   {
     mapping_url: 'https://raw.githubusercontent.com/opensearch-project/observability/main/dashboards-observability/.cypress/utils/otel-v1-apm-service-map-mappings.json',
     data_url: 'https://raw.githubusercontent.com/opensearch-project/observability/main/dashboards-observability/.cypress/utils/otel-v1-apm-service-map.json',
@@ -42,18 +42,18 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     .focus()
     .type('{selectall}' + startTime);
   if (setEndTime) {
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get(
       'button.euiDatePopoverButton--end[data-test-subj="superDatePickerendDatePopoverButton"]'
     ).click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('.euiTab__content').contains('Absolute').click();
     cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]')
       .focus()
       .type('{selectall}' + endTime);
   }
   if (refresh) cy.get('.euiButton__text').contains('Refresh').click();
-  cy.wait(delay);
+  cy.wait(delayTime);
 };
 
 // notebooks
@@ -147,3 +147,10 @@ export const PPL_VISUALIZATIONS_NAMES = [
 export const NEW_VISUALIZATION_NAME = 'Flight count by destination airport';
 
 export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Munich Airport'";
+
+export const supressResizeObserverIssue = () => {
+  // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
+  cy.on('uncaught:exception', (err, runnable) => {
+    if (err.message.includes('ResizeObserver loop')) return false;
+  });
+};

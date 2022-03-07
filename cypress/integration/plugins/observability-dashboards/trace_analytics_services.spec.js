@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { delay, SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
+import { delayTime, SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing services table empty state', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('Testing services table empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders empty state', () => {
@@ -43,7 +43,7 @@ describe('Testing services table', () => {
   it('Searches correctly', () => {
     cy.get('input[type="search"]').first().focus().type(`${SERVICE_NAME}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains(' (1)').should('exist');
     cy.contains('3.57%').should('exist');
   });
@@ -61,7 +61,7 @@ describe('Testing service view empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders service view empty state', () => {
@@ -95,12 +95,12 @@ describe('Testing service view', () => {
 
   it('Renders spans data grid, flyout, filters', () => {
     cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains('Span detail').should('exist');
     cy.contains('Span attributes').should('exist');
     cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
     cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.get('.euiBadge__text').contains('spanId: ').should('exist');
     cy.contains('Spans (1)').should('exist');

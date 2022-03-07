@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { testDataSet, delay, setTimeFilter } from '../../../utils/constants';
+import { testIndexDataSet, delayTime, setTimeFilter } from '../../../utils/constants';
 
 describe('Dump test data', () => {
   it('Indexes test data', () => {
@@ -59,7 +59,7 @@ describe('Dump test data', () => {
       });
     };
 
-    testDataSet.forEach(({ mapping_url, data_url, index }) =>
+    testIndexDataSet.forEach(({ mapping_url, data_url, index }) =>
       dumpDataSet(mapping_url, data_url, index)
     );
   });
@@ -72,7 +72,7 @@ describe('Testing dashboard table empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders empty state', () => {
@@ -100,18 +100,18 @@ describe('Testing dashboard table', () => {
 
   it('Adds the percentile filters', () => {
     cy.contains(' >= 95 percentile').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains(' >= 95 percentile').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.contains('Latency percentile within trace group: >= 95th').should('exist');
     cy.contains(' (7)').should('exist');
     cy.contains('318.69').should('exist');
 
     cy.contains(' < 95 percentile').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains(' < 95 percentile').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.contains('Latency percentile within trace group: < 95th').should('exist');
     cy.contains(' (8)').should('exist');
@@ -125,16 +125,16 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.wait(delay * 5);
+    cy.wait(delayTime * 5);
     cy.get('.euiLink').contains('13').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.get('h2.euiTitle').contains('Traces').should('exist');
     cy.contains(' (13)').should('exist');
     cy.contains('client_create_order').should('exist');
 
     cy.get('.euiSideNavItemButton__label').contains('Trace analytics').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.contains('client_create_order').should('exist');
   });
@@ -164,7 +164,7 @@ describe('Testing plots', () => {
     cy.get('text[data-unformatted="60"]').should('exist');
 
     cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
-    cy.wait(delay);
+    cy.wait(delayTime);
   });
 
   it('Renders plots', () => {
