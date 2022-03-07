@@ -1,0 +1,6 @@
+{"index":{"_id": "id-1"}}
+{ "value": 1, "timestamp": "2020-01-01"}
+{"index":{"_id": "id-2"}}
+{ "value": 2, "timestamp": "2020-01-02"}
+{"index":{"_id": "id-3"}}
+{ "value": 3, "timestamp": "2020-01-03"}

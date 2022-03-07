@@ -18,6 +18,7 @@ import '../utils/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
 import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
 import '../utils/plugins/security/commands';
+import '../utils/plugins/alerting-dashboards-plugin/commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')

@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "response": {
+    "indices": [
+      { "health": "green", "index": "feature-required-detector-index" },
+      { "health": "green", "index": "initializing-detector-index" },
+      { "health": "green", "index": "running-detector-index" },
+      { "health": "green", "index": "stopped-detector-index" }
+    ]
+  }
+}

@@ -82,10 +82,9 @@ npm install
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
+   yarn cypress:run-with-security --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
 else
    echo "run security disabled tests"
-fi
+   yarn cypress:run-without-security --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
 
-env TZ=America/Los_Angeles \
-    npx cypress run --env SECURITY_ENABLED=$SECURITY_ENABLED \
-    --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*"
+fi
