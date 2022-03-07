@@ -5,43 +5,82 @@
 
 import { BASE_PATH } from '../../base_constants';
 
-export const AD_FIXTURE_BASE_PATH =
-  'plugins/anomaly-detection-dashboards-plugin/';
+/**
+ *****************************
+ URL CONSTANTS
+ *****************************
+ */
 
-export const BASE_AD_PATH = BASE_PATH + '/app/anomaly-detection-dashboards#';
+const BASE_AD_PATH = BASE_PATH + '/app/anomaly-detection-dashboards#';
 
-export const BASE_AD_DASHBOARDS_PATH = BASE_AD_PATH + '/dashboard';
+export const AD_URL = {
+  OVERVIEW: BASE_AD_PATH + '/overview',
+  DASHBOARD: BASE_AD_PATH + '/dashboard',
+  DETECTOR_LIST: BASE_AD_PATH + '/detectors',
+  CREATE_AD: BASE_AD_PATH + '/create-ad',
+};
 
-export const BASE_AD_DETECTOR_LIST_PATH = BASE_AD_PATH + '/detectors';
+/**
+ *****************************
+ PUBLIC API CONSTANTS
+ *****************************
+ */
 
-export const BASE_AD_CREATE_AD_PATH = BASE_AD_PATH + '/create-ad';
+const AD_BASE_API_PATH = '_plugins/_anomaly_detection/detectors';
 
-export const BASE_AD_NODE_API_PATH = BASE_PATH + '/api/anomaly_detectors';
+export function getADGetDetectorApiPath(detectorId) {
+  return AD_BASE_API_PATH + '/' + detectorId;
+}
 
-export const AD_GET_DETECTORS_NODE_API_PATH =
-  BASE_AD_NODE_API_PATH + '/detectors*';
+export function getADStopDetectorApiPath(detectorId) {
+  return AD_BASE_API_PATH + '/' + detectorId + '/_stop';
+}
 
-export const AD_GET_INDICES_NODE_API_PATH =
-  BASE_AD_NODE_API_PATH + '/_indices*';
+/**
+ *****************************
+ NODE API / SERVER CONSTANTS
+ *****************************
+ */
 
-export const AD_GET_MAPPINGS_NODE_API_PATH =
-  BASE_AD_NODE_API_PATH + '/_mappings*';
+const BASE_AD_NODE_API_PATH = BASE_PATH + '/api/anomaly_detectors';
+
+export const AD_NODE_API_PATH = {
+  GET_DETECTORS: BASE_AD_NODE_API_PATH + '/detectors*',
+  GET_INDICES: BASE_AD_NODE_API_PATH + '/_indices*',
+  GET_MAPPINGS: BASE_AD_NODE_API_PATH + '/_mappings*',
+  VALIDATE: BASE_AD_NODE_API_PATH + '/detectors/_validate',
+};
+
+function getBaseNodeApiPath(detectorId) {
+  return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId;
+}
 
 export function getADStartDetectorNodeApiPath(detectorId) {
-  return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/start';
+  return getBaseNodeApiPath(detectorId) + '/start';
 }
 
 export function getADStopDetectorNodeApiPath(detectorId) {
-  return BASE_AD_NODE_API_PATH + '/detectors/' + detectorId + '/stop';
+  return getBaseNodeApiPath(detectorId) + '/stop';
 }
+
+export function getADDeleteDetectorNodeApiPath(detectorId) {
+  return getBaseNodeApiPath(detectorId);
+}
+
+/**
+ *****************************
+ MISC CONSTANTS
+ *****************************
+ */
+
+export const AD_FIXTURE_BASE_PATH =
+  'plugins/anomaly-detection-dashboards-plugin/';
 
 export const TEST_DETECTOR_ID = 'ulgqpXEBqtadYz9j2MHG';
 
-// TODO: when repo is onboarded to typescript we can convert these detector states into an enum
-export const DETECTOR_STATE_DISABLED = 'Stopped';
-
-export const DETECTOR_STATE_INIT = 'Initializing';
-
-export const DETECTOR_STATE_RUNNING = 'Running';
-
-export const DETECTOR_STATE_FEATURE_REQUIRED = 'Feature required';
+export const DETECTOR_STATE = {
+  DISABLED: 'Stopped',
+  INIT: 'Initializing',
+  RUNNING: 'Running',
+  FEATURE_REQUIRED: 'Feature required',
+};

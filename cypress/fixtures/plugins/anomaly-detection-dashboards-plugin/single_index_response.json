@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "response": {
+    "indices": [{ "health": "green", "index": "test-index" }]
+  }
+}

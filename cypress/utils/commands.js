@@ -67,7 +67,12 @@ Cypress.Commands.add('login', () => {
   });
 });
 
+Cypress.Commands.add('getElementByTestId', (testId) => {
+  return cy.get(`[data-test-subj=${testId}]`);
+});
+
 Cypress.Commands.add('deleteAllIndices', () => {
+  cy.log('Deleting all indices');
   cy.request(
     'DELETE',
     `${Cypress.env('openSearchUrl')}/index*,sample*,opensearch_dashboards*`
@@ -96,6 +101,10 @@ Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
       body
     );
   }
+});
+
+Cypress.Commands.add('deleteIndex', (indexName) => {
+  cy.request('DELETE', `${Cypress.env('openSearchUrl')}/${indexName}`);
 });
 
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
