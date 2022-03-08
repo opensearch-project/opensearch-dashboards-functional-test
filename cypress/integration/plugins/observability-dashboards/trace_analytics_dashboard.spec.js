@@ -124,7 +124,7 @@ describe('Testing dashboard table', () => {
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should('exist');
   });
 
-  it('Redirects to traces table with filter', () => {
+  it.skip('Redirects to traces table with filter', () => {
     cy.wait(delayTime * 5);
     cy.get('.euiLink').contains('13').click();
     cy.wait(delayTime);
@@ -140,7 +140,7 @@ describe('Testing dashboard table', () => {
   });
 });
 
-describe('Testing plots', () => {
+describe.skip('Testing plots', () => {
   beforeEach(() => {
     cy.visit('app/observability-dashboards#/trace_analytics/home', {
       onBeforeLoad: (win) => {
