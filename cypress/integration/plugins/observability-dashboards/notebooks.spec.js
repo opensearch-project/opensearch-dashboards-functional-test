@@ -16,8 +16,6 @@ import {
   BASE_PATH
 } from '../../../utils/constants';
 
-// import { SAMPLE_PANEL } from '../utils/panel_constants';
-
 import { skipOn } from '@cypress/skip-test';
 
 describe('Adding sample data and visualization', () => {
@@ -28,7 +26,7 @@ describe('Adding sample data and visualization', () => {
       .click();
   });
 
-  it('Add sample observability data', () => {
+  it.skip('Add sample observability data', () => {
     cy.visit(
       `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
     );
