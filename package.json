@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
-    "cypress:run-without-security": "env TZ=America/Los_Angeles cypress run --headless --env SECURITY_ENABLED=false",
-    "cypress:run-with-security": "env TZ=America/Los_Angeles cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200",
+    "cypress:run-without-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=false",
+    "cypress:run-with-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200",
     "cypress:run-plugin-tests-without-security": "yarn cypress:run-without-security --spec 'cypress/integration/plugins/*/*.js'",
     "cypress:run-plugin-tests-with-security": "yarn cypress:run-with-security --spec 'cypress/integration/plugins/*/*.js'"
   },
