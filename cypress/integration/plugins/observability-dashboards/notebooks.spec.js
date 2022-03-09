@@ -292,7 +292,7 @@ describe('Testing paragraphs', () => {
     cy.get('.euiDataGrid__overflow').should('exist');
   });
 
-  it('Adds an observability visualization paragraph', () => {
+  it.skip('Adds an observability visualization paragraph', () => {
     cy.contains('Add paragraph').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem__text').contains('Visualization').click();
