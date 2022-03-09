@@ -7,7 +7,7 @@
 
 import { testIndexDataSet, delayTime, setTimeFilter } from '../../../utils/constants';
 
-describe('Dump test data', () => {
+describe.skip('Dump test data', () => {
   it('Indexes test data', () => {
     const dumpDataSet = (mapping_url, data_url, index) => {
       cy.request({

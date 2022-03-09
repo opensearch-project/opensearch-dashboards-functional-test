@@ -27,8 +27,67 @@ import {
   visName,
   composition,
   newName,
-  supressResizeObserverIssue
+  supressResizeObserverIssue,
+  testIndexDataSet
 } from '../../../utils/constants';
+
+describe('Dump test data', () => {
+  it('Indexes test data', () => {
+    const dumpDataSet = (mapping_url, data_url, index) => {
+      cy.request({
+        method: 'POST',
+        failOnStatusCode: false,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `${index}`,
+          method: 'PUT',
+        },
+      });
+
+      cy.request(mapping_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_mapping`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+
+      cy.request(data_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_bulk`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+    };
+
+    testIndexDataSet.forEach(({ mapping_url, data_url, index }) =>
+      dumpDataSet(mapping_url, data_url, index)
+    );
+  });
+});
 
 describe('Creating application', () => {
   beforeEach(() => {
@@ -55,7 +114,7 @@ describe('Creating application', () => {
     cy.get('.euiButton').contains('Create').should('not.be.disabled');
   });
 
-  it('Suggests correct autocompletion', () => {
+  it.skip('Suggests correct autocompletion', () => {
     cy.get('.euiAccordion').contains('Log source').click();
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
     cy.get('.aa-List').find('.aa-Item').should('have.length', 1);
@@ -64,6 +123,7 @@ describe('Creating application', () => {
     cy.get('.aa-List').find('.aa-Item').should('have.length', 1);
     cy.get('.aa-Item').contains('=').should('exist');
     cy.focused().type('{enter}');
+    cy.wait(1000);
     cy.focused().type('opensearch');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
     cy.get('.aa-Item').contains('opensearch_dashboards_sample_data_flights').click();
@@ -251,7 +311,7 @@ describe('Viewing application', () => {
     cy.get('.euiBadge__text').contains('Base Query').should('exist');
   });
 
-  it('Saves visualization to panel', () => {
+  it.skip('Saves visualization to panel', () => {
     cy.get('.euiTab').contains('Log Events').click();
     cy.get('.plot-container').should('exist');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();

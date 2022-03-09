@@ -183,7 +183,7 @@ describe('Click actions', () => {
     cy.url().should('contain', '#/event_analytics/explorer');
   });
 
-  it('Actions - add sample data', () => {
+  it.skip('Actions - add sample data', () => {
     cy.get('[data-test-subj="eventHomeAction"]').click();
     cy.get('[data-test-subj="eventHomeAction__addSamples"]').click();
     cy.get('[data-test-subj="confirmModalConfirmButton"]').click();
@@ -274,7 +274,7 @@ describe('Saves a query on explorer page', () => {
 });
 
 describe('Override default timestamp for an index', () => {
-  it('Click override button to override default timestamp', () => {
+  it.skip('Click override button to override default timestamp', () => {
     landOnEventExplorer();
 
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').type(TEST_QUERIES[2].query);

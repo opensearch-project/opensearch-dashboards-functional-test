@@ -64,7 +64,7 @@ describe('Testing service view empty state', () => {
     cy.wait(delayTime * 3);
   });
 
-  it('Renders service view empty state', () => {
+  it.skip('Renders service view empty state', () => {
     cy.get('h2.euiTitle').contains('frontend-client').should('exist');
     cy.get('.euiText').contains('0').should('exist');
     cy.get('.euiText').contains('-').should('exist');
