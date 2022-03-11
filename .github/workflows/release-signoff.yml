@@ -1,4 +1,4 @@
-name: Release signoff for OpenSearch Dashboards and Dashboards plugins
+name: Release signoff for bundled OpenSearch Dashboards with Dashboards plugins
 on:
   schedule:
     - cron: '0 */3 * * *'
