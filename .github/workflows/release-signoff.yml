@@ -39,15 +39,15 @@ jobs:
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
-      - name: Checkout monterey-test
+      - name: Checkout functional-test
         uses: actions/checkout@v2
         with:
           repository: ${{github.repository}}
-          path: monterey-test
+          path: functional-test
       - name: Get Cypress version
         id: cypress_version
         run: |
-          echo "::set-output name=cypress_version::$(cat ./monterey-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+          echo "::set-output name=cypress_version::$(cat ./functional-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
       - name: Cache Cypress
         id: cache-cypress
         uses: actions/cache@v1
@@ -61,7 +61,7 @@ jobs:
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
-          working-directory: monterey-test
+          working-directory: functional-test
           command: env TZ=America/Los_Angeles cypress run --browser chrome --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
@@ -69,10 +69,10 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: monterey-test/cypress/screenshots
+          path: functional-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
         if: always()
         with:
           name: cypress-videos
-          path: monterey-test/cypress/videos
+          path: functional-test/cypress/videos
