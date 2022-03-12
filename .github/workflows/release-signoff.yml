@@ -56,6 +56,10 @@ jobs:
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
         env:
           CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
+      - name: Run npm install
+        run: |
+          cd functional-test
+          npm install
       - run: npx cypress cache list
       - run: npx cypress cache path
       - name: Cypress tests
