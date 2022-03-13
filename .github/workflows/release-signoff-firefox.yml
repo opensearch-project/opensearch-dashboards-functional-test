@@ -1,4 +1,4 @@
-name: Release signoff for bundled OpenSearch Dashboards with Dashboards plugins (x64, Electron)
+name: Release signoff for bundled OpenSearch Dashboards with Dashboards plugins (x64, Firefox)
 on:
   schedule:
     - cron: '0 */3 * * *'
