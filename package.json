@@ -13,7 +13,7 @@
     "cypress:release-chrome": "yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-electron": "yarn cypress:run-with-security --browser electron --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-chromium": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
-    "cypress:release-firefox": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'"
+    "cypress:release-firefox": "yarn cypress:run-with-security --browser firefox --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'"
   },
   "repository": {
     "type": "git",
