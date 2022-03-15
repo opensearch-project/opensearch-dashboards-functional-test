@@ -25,15 +25,15 @@ describe('Cypress', () => {
     cy.wait(WAIT_TIME);
   });
 
-  it.skip('Visits Reporting homepage', () => {
+  it('Visits Reporting homepage', () => {
     visitReportingLandingPage();
   });
 
-  it.skip('Visit Create page', () => {
+  it('Visit Create page', () => {
     visitCreateReportDefinitionPage();
   });
 
-  it.skip('Create a new on-demand dashboard report definition', () => {
+  it('Create a new on-demand dashboard report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress dashboard on-demand report');
     setReportDefinitionDescription('Description for cypress test');
@@ -48,7 +48,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new on-demand visualization report definition', ()=> {
+  it('Create a new on-demand visualization report definition', ()=> {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress vis on-demand report');
     setReportDefinitionDescription('Description for cypress test');
@@ -60,7 +60,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new on-demand saved search report definition', () => {
+  it('Create a new on-demand saved search report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress saved search on-demand report');
     setReportDefinitionDescription('Description for cypress test');
@@ -72,7 +72,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new dashboard daily recurring report definition', () => {
+  it('Create a new dashboard daily recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress dashboard daily scheduled report');
     setReportDefinitionDescription('Description for cypress test');
@@ -88,7 +88,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new visualization daily recurring report definition', () => {
+  it('Create a new visualization daily recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress vis daily scheduled report');
     setReportDefinitionDescription('Description for cypress test');
@@ -101,7 +101,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new saved search daily recurring report definition', () => {
+  it('Create a new saved search daily recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress search daily scheduled report');
     setReportDefinitionDescription('Description for cypress test');
@@ -113,7 +113,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new dashboard interval recurring report definition', () => {
+  it('Create a new dashboard interval recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress dashboard recurring report');
     setReportDefinitionDescription('Description for cypress test');
@@ -132,7 +132,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new visualization interval recurring report definition', () => {
+  it('Create a new visualization interval recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress vis interval recurring report');
     selectReportSource('#visualizationReportSource');
@@ -147,7 +147,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a new saved search interval recurring report definition', () => {
+  it('Create a new saved search interval recurring report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress saved search interval recurring report');
     selectReportSource('#savedSearchReportSource');
@@ -162,7 +162,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a dashboard cron-based report definition', () => {
+  it('Create a dashboard cron-based report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress dashboard cron definition');
     selectReportSourceComboBox();
@@ -179,7 +179,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a visualization cron-based report definition', () => {
+  it('Create a visualization cron-based report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress vis cron definition');
     selectReportSource('#visualizationReportSource');
@@ -194,7 +194,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it.skip('Create a saved search cron-based report definition', () => {
+  it('Create a saved search cron-based report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress search cron definition');
     selectReportSource('#savedSearchReportSource');
