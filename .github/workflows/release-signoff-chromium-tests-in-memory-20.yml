@@ -66,7 +66,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: functional-test
-          command: env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --numTestsKeptInMemory 20 --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200 --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
+          command: yarn cypress:release-chromium-20
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
