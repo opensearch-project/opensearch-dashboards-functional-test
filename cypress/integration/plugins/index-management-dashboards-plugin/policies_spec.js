@@ -26,7 +26,7 @@ describe('Policies', () => {
       cy.deleteIMJobs();
     });
 
-    it('successfully', () => {
+    it.skip('successfully', () => {
       // Confirm we loaded empty state
       cy.contains('There are no existing policies');
 
@@ -77,7 +77,7 @@ describe('Policies', () => {
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 
-    it('successfully', () => {
+    it.skip('successfully', () => {
       // Make changes to policy JSON for editing confirmation
       const newPolicy = {
         policy: { ...samplePolicy.policy, description: 'A new description' },
@@ -133,7 +133,7 @@ describe('Policies', () => {
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 
-    it('successfully', () => {
+    it.skip('successfully', () => {
       // Confirm we have our initial policy
       cy.contains('A simple description');
 
@@ -165,7 +165,7 @@ describe('Policies', () => {
       }
     });
 
-    it('successfully', () => {
+    it.skip('successfully', () => {
       // Confirm we have our initial policy
       cy.contains('A simple description');
 
@@ -193,7 +193,7 @@ describe('Policies', () => {
       cy.createPolicy(POLICY_ID, samplePolicy);
     });
 
-    it('successfully', () => {
+    it.skip('successfully', () => {
       cy.contains(POLICY_ID);
 
       cy.get(`[data-test-subj="policyLink_${POLICY_ID}"]`).click({

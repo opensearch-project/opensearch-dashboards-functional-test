@@ -40,7 +40,7 @@ context('Create detector workflow', () => {
     cy.deleteIndex(TEST_INDEX_NAME);
   });
 
-  it('Full creation - based on real index', () => {
+  it.skip('Full creation - based on real index', () => {
     // Define detector step
     cy.visit(AD_URL.CREATE_AD);
     cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');

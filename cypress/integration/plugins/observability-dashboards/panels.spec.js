@@ -39,7 +39,7 @@ const moveToTestPanel = () => {
 };
 
 describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
+  it.skip('Adds sample flights data for visualization paragraph', () => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
     cy.get('div[data-test-subj="sampleDataSetCardflights"]')
       .contains(/(Add|View) data/)
@@ -53,7 +53,7 @@ describe('Creating visualizations', () => {
     moveToEventsHome();
   });
 
-  it('Create first visualization in event analytics', () => {
+  it.skip('Create first visualization in event analytics', () => {
     cy.get('[id^=autocomplete-textarea]').type(PPL_VISUALIZATIONS[0]);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.wait(panelDelay);
@@ -68,7 +68,7 @@ describe('Creating visualizations', () => {
     cy.get('.euiToastHeader__title').contains('successfully').should('exist');
   });
 
-  it('Create second visualization in event analytics', () => {
+  it.skip('Create second visualization in event analytics', () => {
     cy.get('[id^=autocomplete-textarea]').type(PPL_VISUALIZATIONS[1]);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.wait(panelDelay);
@@ -89,7 +89,7 @@ describe('Testing panels table', () => {
     moveToPanelHome();
   });
 
-  it('Displays error toast for invalid panel name', () => {
+  it.skip('Displays error toast for invalid panel name', () => {
     cy.get('.euiButton__text').contains('Create panel').click();
     cy.wait(panelDelay);
     cy.get('.euiButton__text')
@@ -100,7 +100,7 @@ describe('Testing panels table', () => {
     cy.get('.euiToastHeader__title').contains('Invalid Operational Panel name').should('exist');
   });
 
-  it('Creates a panel and redirects to the panel', () => {
+  it.skip('Creates a panel and redirects to the panel', () => {
     cy.get('.euiButton__text').contains('Create panel').click();
     cy.wait(panelDelay);
     cy.get('input.euiFieldText').type(TEST_PANEL);
@@ -112,7 +112,7 @@ describe('Testing panels table', () => {
     cy.contains(TEST_PANEL).should('exist');
   });
 
-  it('Duplicates and renames a panel', () => {
+  it.skip('Duplicates and renames a panel', () => {
     cy.get('.euiCheckbox__input[title="Select this row"]').eq(0).click();
     cy.wait(panelDelay);
     cy.get('.euiButton__text').contains('Actions').click();
@@ -135,7 +135,7 @@ describe('Testing panels table', () => {
     cy.wait(panelDelay);
   });
 
-  it('Searches existing panel', () => {
+  it.skip('Searches existing panel', () => {
     cy.get('input.euiFieldSearch').type('this panel should not exist');
     cy.wait(panelDelay);
 
@@ -151,7 +151,7 @@ describe('Testing panels table', () => {
       .should('exist');
   });
 
-  it('Deletes panels', () => {
+  it.skip('Deletes panels', () => {
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]').click();
     cy.wait(panelDelay);
     cy.get('.euiButton__text').contains('Actions').click();
@@ -179,11 +179,11 @@ describe('Testing panels table', () => {
 });
 
 describe('Testing a panel', () => {
-  it('Move to test panel', () => {
+  it.skip('Move to test panel', () => {
     moveToTestPanel();
   });
 
-  it('Duplicate the open panel', () => {
+  it.skip('Duplicate the open panel', () => {
     cy.get('.euiButton__text').contains('Panel actions').click();
     cy.wait(panelDelay);
     cy.get('.euiContextMenuItem__text').contains('Duplicate panel').click();
@@ -198,7 +198,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Rename the open panel', () => {
+  it.skip('Rename the open panel', () => {
     cy.get('.euiButton__text').contains('Panel actions').click();
     cy.wait(panelDelay);
     cy.get('.euiContextMenuItem__text').contains('Rename panel').click();
@@ -214,7 +214,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Change date filter of the panel', () => {
+  it.skip('Change date filter of the panel', () => {
     moveToTestPanel();
     cy.get('.euiButtonEmpty[data-test-subj="superDatePickerToggleQuickMenuButton"]').click();
     cy.get('.euiLink').contains('This year').click();
@@ -225,7 +225,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Add existing visualization #1', () => {
+  it.skip('Add existing visualization #1', () => {
     cy.get('.euiButton__text').contains('Add Visualization').click();
     cy.wait(panelDelay);
     cy.get('.euiContextMenuItem__text').contains('Select Existing Visualization').click();
@@ -239,7 +239,7 @@ describe('Testing a panel', () => {
     cy.get('.euiToastHeader__title').contains('successfully').should('exist');
   });
 
-  it('Add existing visualization #2', () => {
+  it.skip('Add existing visualization #2', () => {
     cy.get('.euiButton__text').contains('Add Visualization').click();
     cy.wait(panelDelay);
     cy.get('.euiContextMenuItem__text').contains('Select Existing Visualization').click();
@@ -253,7 +253,7 @@ describe('Testing a panel', () => {
     cy.get('.euiToastHeader__title').contains('successfully').should('exist');
   });
 
-  it('Add ppl filter to panel', () => {
+  it.skip('Add ppl filter to panel', () => {
     cy.get('[data-test-subj="searchAutocompleteTextArea"]')
       .click()
       .wait(1500)
@@ -279,7 +279,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Drag and drop a visualization', () => {
+  it.skip('Drag and drop a visualization', () => {
     cy.get('.euiButton__text').contains('Edit').click();
     cy.wait(panelDelay);
     cy.get('h5')
@@ -297,7 +297,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Resize a visualization', () => {
+  it.skip('Resize a visualization', () => {
     cy.get('.euiButton__text').contains('Edit').click();
     cy.wait(panelDelay);
     cy.get('.react-resizable-handle')
@@ -312,7 +312,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Delete a visualization', () => {
+  it.skip('Delete a visualization', () => {
     cy.get('h5').contains(PPL_VISUALIZATIONS_NAMES[1]).should('exist');
     cy.get('.euiButton__text').contains('Edit').click();
     cy.wait(panelDelay);
@@ -324,7 +324,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Duplicate a visualization', () => {
+  it.skip('Duplicate a visualization', () => {
     cy.get('h5').contains(PPL_VISUALIZATIONS_NAMES[0]).should('exist');
     cy.get('button[aria-label="actionMenuButton"]').click();
     cy.get('.euiContextMenu__itemLayout > .euiContextMenuItem__text').contains('Duplicate').click();
@@ -336,7 +336,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Replace a visualization', () => {
+  it.skip('Replace a visualization', () => {
     cy.get('.visualization-action-button').eq(1).click();
     cy.get('.euiContextMenu__itemLayout > .euiContextMenuItem__text').contains('Replace').click();
     cy.get('select').select(PPL_VISUALIZATIONS_NAMES[1]);
@@ -352,7 +352,7 @@ describe('Testing a panel', () => {
     cy.wait(panelDelay);
   });
 
-  it('Create new visualization and add to panel', () => {
+  it.skip('Create new visualization and add to panel', () => {
     cy.get('.euiButton__text').contains('Add Visualization').click();
     cy.wait(panelDelay);
     cy.get('.euiContextMenuItem__text').contains('Create New Visualization').click();
@@ -377,7 +377,7 @@ describe('Testing a panel', () => {
     cy.get('h5').contains(PPL_VISUALIZATIONS_NAMES[2]).should('exist');
   });
 
-  it('Move to test panel and check visualization edit button', () => {
+  it.skip('Move to test panel and check visualization edit button', () => {
     moveToTestPanel();
     cy.get('h5').contains(PPL_VISUALIZATIONS_NAMES[0]).should('exist');
     cy.get('button[aria-label="actionMenuButton"]').eq(0).click();
@@ -403,7 +403,7 @@ describe('Testing a panel', () => {
 });
 
 describe('Add samples and clean up all test data', () => {
-  it('Add sample data', () => {
+  it.skip('Add sample data', () => {
     moveToPanelHome();
     cy.get('.euiButton__text').contains('Actions').click();
     cy.wait(panelDelay);
@@ -419,7 +419,7 @@ describe('Add samples and clean up all test data', () => {
     cy.wait(panelDelay);
   });
 
-  it('Validate sample data', () => {
+  it.skip('Validate sample data', () => {
     moveToPanelHome();
     cy.get('.euiTableCellContent').contains(SAMPLE_PANEL).click();
     cy.wait(panelDelay * 3);
@@ -431,7 +431,7 @@ describe('Add samples and clean up all test data', () => {
     cy.wait(panelDelay);
   });
 
-  it('Delete visualizations from event analytics', () => {
+  it.skip('Delete visualizations from event analytics', () => {
     moveToEventsHome();
     cy.get('[data-test-subj="tablePaginationPopoverButton"]').click();
     cy.get('.euiContextMenuItem__text').contains('50 rows').click();
@@ -451,7 +451,7 @@ describe('Add samples and clean up all test data', () => {
     cy.get('.euiTextAlign').contains('No Queries or Visualizations').should('exist');
   });
 
-  it('Deletes test panel', () => {
+  it.skip('Deletes test panel', () => {
     moveToPanelHome();
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]').click();
     cy.wait(panelDelay);
