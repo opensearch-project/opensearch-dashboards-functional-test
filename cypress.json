@@ -7,6 +7,7 @@
   "reporterOptions": {
     "configFile": "reporter-config.json"
   },
+  "numTestsKeptInMemory": 50,
   "viewportWidth": 2000,
   "viewportHeight": 1320,
   "env": {
