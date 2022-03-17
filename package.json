@@ -17,7 +17,9 @@
     "cypress:release-chromium-20": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=20 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-chromium-5": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=5 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-chromium-0": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=0 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
-    "cypress:release-firefox": "yarn cypress:run-with-security --browser firefox --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'"
+    "cypress:release-firefox": "yarn cypress:run-with-security --browser firefox --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+    "cypress:release-ad-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'",
+    "cypress:release-ism-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'"
   },
   "repository": {
     "type": "git",
