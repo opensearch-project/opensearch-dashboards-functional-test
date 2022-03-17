@@ -15,7 +15,7 @@ import {
 Cypress.Commands.add(
   'mockGetDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, {
+    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
       fixture: fixtureFileName,
     }).as('getDetectors');
 
@@ -28,11 +28,11 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockGetDetectorsAndIndicesOnAction',
   function (detectorsFixtureFileName, indexFixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.GET_DETECTORS, {
+    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
       fixture: detectorsFixtureFileName,
     }).as('getDetectors');
 
-    cy.route2(AD_NODE_API_PATH.GET_INDICES, {
+    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
       fixture: indexFixtureFileName,
     }).as('getIndices');
 
@@ -46,7 +46,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockSearchIndexOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.route2(AD_NODE_API_PATH.GET_INDICES, {
+    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
       fixture: fixtureFileName,
     }).as('getIndices');
 
@@ -59,7 +59,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockStartDetectorOnAction',
   function (fixtureFileName, detectorId, funcMockedOn) {
-    cy.route2(getADStartDetectorNodeApiPath(detectorId), {
+    cy.intercept(getADStartDetectorNodeApiPath(detectorId), {
       fixture: fixtureFileName,
     }).as('startDetector');
 
@@ -72,7 +72,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockStopDetectorOnAction',
   function (fixtureFileName, detectorId, funcMockedOn) {
-    cy.route2(getADStopDetectorNodeApiPath(detectorId), {
+    cy.intercept(getADStopDetectorNodeApiPath(detectorId), {
       fixture: fixtureFileName,
     }).as('stopDetector');
 
@@ -85,7 +85,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockDeleteDetectorOnAction',
   function (fixtureFileName, detectorId, funcMockedOn) {
-    cy.route2(getADDeleteDetectorNodeApiPath(detectorId), {
+    cy.intercept(getADDeleteDetectorNodeApiPath(detectorId), {
       fixture: fixtureFileName,
     }).as('deleteDetector');
 
