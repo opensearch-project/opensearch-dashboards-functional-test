@@ -9,7 +9,6 @@ import { selectTopItemFromFilter } from '../../../utils/helpers';
 // Contains basic sanity tests on AD Dashboards page
 describe('AD Dashboard page', () => {
   before(() => {
-    cy.server();
   });
 
   it('Empty - no detector index', () => {
@@ -83,8 +82,8 @@ describe('AD Dashboard page', () => {
     selectTopItemFromFilter('detectorFilter');
 
     cy.contains('feature-required-detector'); // first one in the list returned by multiple_detectors_response.json
-    cy.contains('stopped-detector').should('not.be.visible');
-    cy.contains('running-detector').should('not.be.visible');
+    cy.contains('stopped-detector').should('not.exist');
+    cy.contains('running-detector').should('not.exist');
   });
 
   it('Filter by detector state', () => {
@@ -101,7 +100,7 @@ describe('AD Dashboard page', () => {
     selectTopItemFromFilter('detectorStateFilter');
 
     cy.contains('stopped-detector'); // because stopped is the first item in the detector state dropdown
-    cy.contains('running-detector').should('not.be.visible');
+    cy.contains('running-detector').should('not.exist');
   });
 
   it('Filter by index', () => {
@@ -120,8 +119,8 @@ describe('AD Dashboard page', () => {
     selectTopItemFromFilter('indicesFilter');
 
     cy.contains('feature-required-detector'); // because feature-required is the first index returned in the fixture
-    cy.contains('running-detector').should('not.be.visible');
-    cy.contains('stopped-detector').should('not.be.visible');
+    cy.contains('running-detector').should('not.exist');
+    cy.contains('stopped-detector').should('not.exist');
   });
 
   it('Enter and exit full screen', () => {
@@ -133,12 +132,12 @@ describe('AD Dashboard page', () => {
     );
 
     cy.contains('View full screen');
-    cy.contains('Exit full screen').should('not.be.visible');
+    cy.contains('Exit full screen').should('not.exist');
     cy.getElementByTestId('dashboardFullScreenButton').click();
-    cy.contains('View full screen').should('not.be.visible');
+    cy.contains('View full screen').should('not.exist');
     cy.contains('Exit full screen');
     cy.getElementByTestId('dashboardFullScreenButton').click();
     cy.contains('View full screen');
-    cy.contains('Exit full screen').should('not.be.visible');
+    cy.contains('Exit full screen').should('not.exist');
   });
 });

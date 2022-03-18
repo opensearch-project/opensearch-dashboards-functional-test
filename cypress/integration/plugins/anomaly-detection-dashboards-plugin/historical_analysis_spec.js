@@ -49,7 +49,6 @@ context('Historical results page', () => {
 
   // Creating a sample detector and visiting the config page
   before(() => {
-    cy.server();
     cy.visit(AD_URL.OVERVIEW);
     cy.getElementByTestId('createHttpSampleDetectorButton').click();
     cy.visit(AD_URL.OVERVIEW);

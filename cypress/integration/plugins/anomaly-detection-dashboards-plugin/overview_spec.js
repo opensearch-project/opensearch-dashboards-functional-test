@@ -35,7 +35,6 @@ context('Overview page', () => {
   }
 
   before(() => {
-    cy.server();
   });
 
   it('Empty dashboard redirects to overview page', () => {

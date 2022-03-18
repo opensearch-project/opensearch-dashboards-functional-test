@@ -13,7 +13,6 @@ if(Cypress.env("SECURITY_ENABLED")) {
     // start a server so that server responses can be mocked via fixtures
     // in all of the below test cases
     before(() => {
-      cy.server();
     });
   
     it('authentication and authorization section should exist', () => {

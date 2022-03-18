@@ -13,7 +13,6 @@ if(Cypress.env("SECURITY_ENABLED")) {
     // start a server so that server responses can be mocked via fixtures
     // in all of the below test cases
     before(() => {
-      cy.server();
     });
   
     it('should load Audit logs page properly', () => {
@@ -50,8 +49,8 @@ if(Cypress.env("SECURITY_ENABLED")) {
       
       cy.contains('.euiSwitch', 'Disabled');
   
-      cy.contains('h3', 'General settings').should('not.be.visible');
-      cy.contains('h3', 'Compliance settings').should('not.be.visible');
+      cy.contains('h3', 'General settings').should('not.exist');
+      cy.contains('h3', 'Compliance settings').should('not.exist');
      
     });
   

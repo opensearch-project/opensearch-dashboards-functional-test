@@ -14,8 +14,7 @@ context('Create detector workflow', () => {
   const TEST_INDEX_NAME = 'ad-cypress-test-index';
 
   // Index some sample data first
-  before(() => {
-    cy.server();
+  before(() => {    
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',

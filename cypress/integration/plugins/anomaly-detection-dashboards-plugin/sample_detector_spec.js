@@ -51,7 +51,6 @@ context('Sample detectors', () => {
   };
 
   before(() => {
-    cy.server();
   });
 
   it('HTTP response sample detector - create and delete', () => {
