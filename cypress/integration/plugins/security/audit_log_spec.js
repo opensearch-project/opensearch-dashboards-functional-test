@@ -42,7 +42,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
           cy.get('button[name="auditLoggingEnabledSwitch"]').first().click({ force: true })
         }
       ).then((response) => {
-          const body = JSON.parse(response.response.body);
+          const body = response.response.body;
   
           expect(body.message).to.equal("'config' updated.");
       });
@@ -73,7 +73,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
           cy.get('button[data-test-subj="save"]').click({ force: true });
         }
       ).then((response) => {
-          const body = JSON.parse(response.response.body);
+          const body = response.response.body;
   
           expect(body.message).to.equal("'config' updated.");
       });
@@ -101,7 +101,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
           cy.get('button[data-test-subj="save"]').click({ force: true });
         }
       ).then((response) => {
-          const body = JSON.parse(response.response.body);
+          const body = response.response.body;
   
           expect(body.message).to.equal("'config' updated.");
       });
