@@ -6,8 +6,7 @@
 import {
   SEC_UI_ROLES_PATH,
   SEC_ROLES_FIXTURES_PATH,
-  SEC_UI_ROLES_CREATE_PATH,
-  SEC_ACTIONGROUPS_FIXTURES_PATH
+  SEC_UI_ROLES_CREATE_PATH
 } from '../../../utils/constants';
 
 if(Cypress.env("SECURITY_ENABLED")) {
@@ -73,20 +72,8 @@ if(Cypress.env("SECURITY_ENABLED")) {
     });
   
     it('should create new role successfully', () => {
-      cy.mockRolesAction(
-        SEC_ROLES_FIXTURES_PATH + '/roles_response.json',
-        () => {
-          cy.visit(SEC_UI_ROLES_PATH);
-        }
-      );
-  
-      cy.mockRolesAction(
-        SEC_ACTIONGROUPS_FIXTURES_PATH + '/actiongroups_response.json',
-        () => {
-          cy.visit(SEC_UI_ROLES_CREATE_PATH);
-        }
-      );
-  
+      cy.visit(SEC_UI_ROLES_CREATE_PATH);
+
       cy.contains('span', 'Create');
       
       const roleName = 'role-name';
