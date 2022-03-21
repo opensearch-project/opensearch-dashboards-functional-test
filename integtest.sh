@@ -79,12 +79,23 @@ fi
 
 npm install
 
+TEST_FILES='cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js'
+
+# TEST_FILES+=',cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'
+# TEST_FILES+=',cypress/integration/plugins/gantt-chart-dashboards/*'
+# TEST_FILES+=',cypress/integration/plugins/alerting-dashboards-plugin/*'
+# TEST_FILES+=',cypress/integration/plugins/index-management-dashboards-plugin/*'
+# TEST_FILES+=',cypress/integration/plugins/observability-dashboards/*'
+# TEST_FILES+=',cypress/integration/plugins/query-workbench-dashboards/*'
+# TEST_FILES+=',cypress/integration/plugins/reports-dashboards/*'
+# TEST_FILES+=',cypress/integration/plugins/security/*'
+
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
-   yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
+   yarn cypress:run-with-security --browser chromium --spec $TEST_FILES
 else
    echo "run security disabled tests"
-   yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'
+   yarn cypress:run-without-security --browser chromium --spec $TEST_FILES
 
 fi
