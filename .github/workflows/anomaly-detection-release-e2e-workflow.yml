@@ -1,4 +1,4 @@
-name: Release tests workflow for Anomaly Detection in Bundled OpenSearch Dashboards
+name: Anomaly Detection Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
     branches:

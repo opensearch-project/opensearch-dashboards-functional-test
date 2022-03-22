@@ -1,0 +1,17 @@
+name: Query Workbench Release tests workflow in Bundled OpenSearch Dashboards
+on:
+  pull_request:
+    branches:
+      - main
+      - dev-*
+  push:
+    branches:
+      - main
+      - dev-*
+jobs:
+  tests:
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Query Workbench
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-workbench-dashboards/*'
+      version: 1.3.0
