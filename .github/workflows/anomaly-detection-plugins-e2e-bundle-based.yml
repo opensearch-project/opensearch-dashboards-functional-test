@@ -1,0 +1,22 @@
+on:
+  pull_request:
+    branches:
+      - main
+      - dev-*
+  push:
+    branches:
+      - main
+      - dev-*
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
+    uses: opensearch-project/opensearch-dashboards-functional-test/.github/workflows/component-e2e-workflow-template.yml@main
+    with:
+      component-name: Anomaly Detection
+      test-command: yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'
+      version: 1.3.0

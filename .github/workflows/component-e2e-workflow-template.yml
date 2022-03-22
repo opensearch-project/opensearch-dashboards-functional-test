@@ -1,0 +1,98 @@
+name: E2E Cypress tests workflow in Bundled OpenSearch Dashboards
+on:
+  workflow_call:
+    inputs:
+      component-name:
+        required: true
+        type: string
+      test-command:
+        required: true
+        type: string
+      version:
+        required: true
+        type: string
+env:
+  VERSION: ${{ inputs.version }}
+jobs:
+  tests:
+    name: Run Cypress E2E tests for ${{ inputs.component-name }}
+    runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Get and run OpenSearch
+        run: |
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          cd opensearch-${{ env.VERSION }}/
+          ./opensearch-tar-install.sh &
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+      - name: Get OpenSearch-Dashboards
+        run: |
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+      - name: Get node and yarn versions
+        id: versions
+        run: |
+          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.versions.outputs.node_version }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Run OpenSearch-Dashboards server
+        run: |
+          cd opensearch-dashboards-${{ env.VERSION }}
+          bin/opensearch-dashboards serve &
+          timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: cypress-test
+      - name: Get Cypress version
+        id: cypress_version
+        run: |
+          echo "::set-output name=cypress_version::$(cat ./cypress-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+      - name: Cache Cypress
+        id: cache-cypress
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+        env:
+          CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
+      - run: npx cypress cache list
+      - run: npx cypress cache path
+      - name: Cypress tests
+        uses: cypress-io/github-action@v2
+        with:
+          working-directory: cypress-test
+          command: ${{ inputs.test-command }}
+          wait-on: 'http://localhost:5601'
+      # Screenshots are only captured on failure, will change this once we do visual regression tests
+      - uses: actions/upload-artifact@v1
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress-test/cypress/screenshots
+      # Test run video was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress-test/cypress/videos
+      # Test reports was always captured, so this action uses "always()" condition
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: cypress-results
+          path: cypress-test/cypress/results
+
