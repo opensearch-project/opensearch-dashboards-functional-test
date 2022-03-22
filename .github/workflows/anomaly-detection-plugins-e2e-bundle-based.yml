@@ -15,7 +15,7 @@ jobs:
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
-    uses: opensearch-project/opensearch-dashboards-functional-test/.github/workflows/component-e2e-workflow-template.yml@main
+    uses: ./.github/workflows/component-e2e-workflow-template
     with:
       component-name: Anomaly Detection
       test-command: yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'
