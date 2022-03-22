@@ -72,7 +72,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: monterey-test
-          command: yarn cypress:run-plugin-tests-with-security
+          command: yarn cypress:run-plugin-tests-with-security --browser chromium
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
