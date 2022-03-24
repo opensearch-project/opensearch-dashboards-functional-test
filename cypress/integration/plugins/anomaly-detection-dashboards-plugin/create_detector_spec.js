@@ -80,14 +80,10 @@ context('Create detector workflow', () => {
     cy.getElementByTestId('featureTable').contains(TEST_FEATURE_NAME);
     cy.getElementByTestId('createDetectorButton').click();
 
-    // Clean up the created detector. Extract detector ID from the detector configuration page
-    cy.getElementByTestId('detectorIdCell').within(() => {
-      cy.get('.euiText--medium')
-        .invoke('text')
-        .then((detectorId) => {
-          cy.log('Deleting detector with ID: ' + detectorId);
-          cy.deleteDetector(detectorId);
-        });
-    });
+    // Lands on the config page by default. Delete the detector to clean up.
+    cy.getElementByTestId('actionsButton').click();
+    cy.getElementByTestId('deleteDetectorItem').click();
+    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
+    cy.getElementByTestId('confirmButton').click();
   });
 });
