@@ -114,6 +114,8 @@ describe('Detector list page', () => {
         cy.visit(AD_URL.DETECTOR_LIST);
       }
     );
+    cy.getElementByTestId('detectorListHeader').contains('(1)');
+    cy.getElementByTestId('detectorListTable').contains('stopped-detector');
     cy.getElementByTestId('createDetectorButton').click();
     cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
   });
