@@ -31,8 +31,8 @@ jobs:
           yum install jq -y
       - name: Switch user
         run: |
-          adduser -c "User" integ-test
-          su integ-test          
+          # adduser -c "User" integ-test
+          su opensearch
       - name: Get and run OpenSearch
         run: |
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
