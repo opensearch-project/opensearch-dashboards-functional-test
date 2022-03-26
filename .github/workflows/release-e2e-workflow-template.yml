@@ -31,13 +31,18 @@ jobs:
           yum install jq -y
       - name: Switch user
         run: |
-          # adduser -c "User" integ-test
+          echo $USER
           su opensearch
+          echo $USER
       - name: Get and run OpenSearch
         run: |
+          echo $USER
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
+          echo $USER
+          su opensearch
+          echo $USER
           ./opensearch-tar-install.sh &
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
@@ -47,6 +52,10 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
+          echo $USER
+          su opensearch
+          echo $USER
+
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout cypress-test
