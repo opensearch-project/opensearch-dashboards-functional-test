@@ -25,10 +25,6 @@ jobs:
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: 14
       - name: Get and run OpenSearch
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
@@ -40,15 +36,6 @@ jobs:
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
-      - name: Get node and yarn versions
-        id: versions
-        run: |
-          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
-      - name: Setup node
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.versions.outputs.node_version }}
-          registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
