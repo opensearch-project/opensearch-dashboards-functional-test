@@ -29,9 +29,10 @@ jobs:
       - name: Install JQ
         run: |
           yum install jq -y
-      - name: Exit root
+      - name: Switch user
         run: |
-          exit          
+          adduser --disabled-password --shell /bin/bash --gecos "User" integ-test
+          su integ-test          
       - name: Get and run OpenSearch
         run: |
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
