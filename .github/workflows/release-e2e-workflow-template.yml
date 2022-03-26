@@ -32,19 +32,19 @@ jobs:
       - name: Switch user
         run: |
           echo 'switch user'
-          echo $USER
-          su opensearch
-          echo $USER
+          echo 'user is '$USER
+          sudo su opensearch
+          echo 'user is '$USER
       - name: Get and run OpenSearch
         run: |
-          echo $USER
+          echo 'user is '$USER
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
           echo 'update user'
-          echo $USER
-          su opensearch
-          echo $USER
+          echo 'user is '$USER
+          sudo su opensearch
+          echo 'user is '$USER
           ./opensearch-tar-install.sh &
           timeout 100 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
