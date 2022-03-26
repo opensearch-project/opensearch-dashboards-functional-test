@@ -31,6 +31,7 @@ jobs:
           yum install jq -y
       - name: Switch user
         run: |
+          echo 'switch user'
           echo $USER
           su opensearch
           echo $USER
@@ -40,6 +41,7 @@ jobs:
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
+          echo 'update user'
           echo $USER
           su opensearch
           echo $USER
