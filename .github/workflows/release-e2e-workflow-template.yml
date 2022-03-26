@@ -27,14 +27,14 @@ jobs:
     steps:
       - name: Get and run OpenSearch
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          curl -fsSL https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
           ./opensearch-tar-install.sh &
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          curl -fsSL https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Run OpenSearch-Dashboards server
         run: |
