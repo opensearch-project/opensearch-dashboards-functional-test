@@ -45,7 +45,7 @@ jobs:
           cd /usr/share/opensearch
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
-          timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+          timeout 300 bash -c 'while [[ !("$(curl -s localhost:5601/api/status | grep -q 'green') ]]; do sleep 5; done'
       - name: Checkout cypress-test
         uses: actions/checkout@v2
         with:
