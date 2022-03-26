@@ -31,7 +31,7 @@ jobs:
           yum install jq -y
       - name: Switch user
         run: |
-          adduser --disabled-password --shell /bin/bash --gecos "User" integ-test
+          adduser --gecos "User" integ-test
           su integ-test          
       - name: Get and run OpenSearch
         run: |
