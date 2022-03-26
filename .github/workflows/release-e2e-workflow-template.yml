@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v1
-      options: --user root
+      # options: --user root
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -28,7 +28,7 @@ jobs:
     steps:
       - name: Install JQ
         run: |
-          yum install jq -y
+          sudo yum install jq -y
       - name: Get and run OpenSearch
         run: |
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
