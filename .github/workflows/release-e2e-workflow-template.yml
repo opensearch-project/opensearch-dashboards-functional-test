@@ -33,8 +33,10 @@ jobs:
         run: |
           echo 'switch user'
           echo 'user is '$USER
-          sudo su opensearch
+          whoami
+          su opensearch
           echo 'user is '$USER
+          whoami
       - name: Get and run OpenSearch
         run: |
           echo 'user is '$USER
@@ -43,7 +45,9 @@ jobs:
           cd opensearch-${{ env.VERSION }}/
           echo 'update user'
           echo 'user is '$USER
-          sudo su opensearch
+          whoami
+          su opensearch
+          whoami
           echo 'user is '$USER
           ./opensearch-tar-install.sh &
           timeout 100 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
