@@ -42,6 +42,7 @@ jobs:
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Run OpenSearch-Dashboards server
         run: |
+          cd /usr/share/opensearch
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
