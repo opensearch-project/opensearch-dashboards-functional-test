@@ -19,17 +19,18 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v1
+      options: --user root
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
     steps:
+      - name: Install JQ
+        run: |
+          yum install jq -y
       - name: Get and run OpenSearch
         run: |
-          pwd
-          ls
-          cd /usr/share/opensearch
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
@@ -37,24 +38,22 @@ jobs:
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          cd /usr/share/opensearch
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Run OpenSearch-Dashboards server
         run: |
-          cd /usr/share/opensearch
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
-          sleep 60
+          timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout cypress-test
         uses: actions/checkout@v2
         with:
           repository: ${{github.repository}}
-          path: /usr/share/opensearch/cypress-test
+          path: cypress-test
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
-          working-directory: /usr/share/opensearch/cypress-test
+          working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
@@ -62,16 +61,16 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: /usr/share/opensearch/cypress-test/cypress/screenshots
+          path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
         if: always()
         with:
           name: cypress-videos
-          path: /usr/share/opensearch/cypress-test/cypress/videos
+          path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
         if: always()
         with:
           name: cypress-results
-          path: /usr/share/opensearch/cypress-test/cypress/results
+          path: cypress-test/cypress/results
