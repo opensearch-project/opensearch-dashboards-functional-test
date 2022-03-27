@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v1
+      options: --user root
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -35,7 +36,7 @@ jobs:
           echo 'switch user'
           echo 'user is '$USER
           whoami
-          su opensearch
+          su - opensearch
           echo 'user is '$USER
           whoami
       - name: Get and run OpenSearch
@@ -47,7 +48,7 @@ jobs:
           echo 'update user'
           echo 'user is '$USER
           whoami
-          su opensearch
+          su - opensearch
           whoami
           echo 'user is '$USER
           ./opensearch-tar-install.sh &
@@ -60,7 +61,7 @@ jobs:
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
           echo $USER
-          su opensearch
+          su - opensearch
           echo $USER
 
           bin/opensearch-dashboards serve &
