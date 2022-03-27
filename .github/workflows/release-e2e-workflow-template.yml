@@ -48,7 +48,7 @@ jobs:
           echo 'update user'
           echo 'user is '$USER
           whoami
-          su - opensearch
+          su - opensearch -s /bin/sh
           whoami
           echo 'user is '$USER
           ./opensearch-tar-install.sh &
