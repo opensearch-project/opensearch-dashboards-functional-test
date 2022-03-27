@@ -36,7 +36,7 @@ jobs:
           echo 'switch user'
           echo 'user is '$USER
           whoami
-          su - opensearch
+          su - opensearch -s /bin/sh
           echo 'user is '$USER
           whoami
       - name: Get and run OpenSearch
