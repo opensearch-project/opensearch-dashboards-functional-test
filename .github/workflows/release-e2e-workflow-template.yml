@@ -19,53 +19,40 @@ jobs:
     runs-on: ubuntu-latest
     container: 
       image: opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v1
-      options: --user root
+      # options: --user root
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
     steps:
-      - name: Install JQ
-        run: |
-          echo 'user is '$USER
-          whoami
-          yum install jq -y
-      - name: Switch user
-        run: |
-          echo 'switch user'
-          echo 'user is '$USER
-          whoami
-          su - opensearch -s /bin/sh
-          echo 'user is '$USER
-          whoami
-      - name: Get and run OpenSearch
-        run: |
-          echo 'user is '$USER
-          curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
-          tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
-          cd opensearch-${{ env.VERSION }}/
-          echo 'update user'
-          echo 'user is '$USER
-          whoami
-          su - opensearch -s /bin/sh
-          whoami
-          echo 'user is '$USER
-          ./opensearch-tar-install.sh &
-          timeout 100 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
-      - name: Get OpenSearch-Dashboards
-        run: |
-          curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
-          tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
-      - name: Run OpenSearch-Dashboards server
-        run: |
-          cd opensearch-dashboards-${{ env.VERSION }}
-          echo $USER
-          su - opensearch
-          echo $USER
+      # - name: Get and run OpenSearch
+      #   run: |
+      #     echo 'user is '$USER
+      #     curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+      #     tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+      #     cd opensearch-${{ env.VERSION }}/
+      #     echo 'update user'
+      #     echo 'user is '$USER
+      #     whoami
+      #     su - opensearch -s /bin/sh
+      #     whoami
+      #     echo 'user is '$USER
+      #     ./opensearch-tar-install.sh &
+      #     timeout 100 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+      # - name: Get OpenSearch-Dashboards
+      #   run: |
+      #     curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+      #     tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+      # - name: Run OpenSearch-Dashboards server
+      #   run: |
+      #     cd opensearch-dashboards-${{ env.VERSION }}
+      #     echo $USER
+      #     su - opensearch
+      #     echo $USER
 
-          bin/opensearch-dashboards serve &
-          timeout 100 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+      #     bin/opensearch-dashboards serve &
+      #     timeout 100 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout cypress-test
         uses: actions/checkout@v2
         with:
