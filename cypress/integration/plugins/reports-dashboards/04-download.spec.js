@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/// <reference types="cypress" />
+
 import { WAIT_TIME, BASE_PATH } from '../../../utils/constants';
 
 describe('Cypress', () => {
@@ -27,7 +29,7 @@ describe('Cypress', () => {
     );
 
     cy.wait(12500);
-    cy.get('#landingPageOnDemandDownload').click({ force: true });
+    cy.get('[id="landingPageOnDemandDownload"]').contains('PDF').click({ force: true });
     cy.get('body').then($body => {
       if ($body.find('#downloadInProgressLoadingModal').length > 0) {
         return;
