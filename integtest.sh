@@ -2,6 +2,8 @@
 
 set -e
 
+. ./test_finder.sh
+
 function usage() {
     echo ""
     echo "This script is used to run integration tests for plugin installed on a remote OpenSearch/Dashboards cluster."
@@ -79,23 +81,19 @@ fi
 
 npm install
 
-TEST_FILES='cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js'
+TEST_FILES=$(get_test_list)
 
-# TEST_FILES+=',cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'
-# TEST_FILES+=',cypress/integration/plugins/gantt-chart-dashboards/*'
-# TEST_FILES+=',cypress/integration/plugins/alerting-dashboards-plugin/*'
-# TEST_FILES+=',cypress/integration/plugins/index-management-dashboards-plugin/*'
-# TEST_FILES+=',cypress/integration/plugins/observability-dashboards/*'
-# TEST_FILES+=',cypress/integration/plugins/query-workbench-dashboards/*'
-# TEST_FILES+=',cypress/integration/plugins/reports-dashboards/*'
-# TEST_FILES+=',cypress/integration/plugins/security/*'
-
+## WARNING: THIS LOGIC NEEDS TO BE THE LAST IN THIS FILE! ##
+# Cypress returns back the test failure count in the error code
+# The CI outputs the error code as test failure count.
+#
+# We need to ensure the cypress tests are the last execute process to
+# the error code gets passed to the CI.
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
-   yarn cypress:run-with-security --browser chromium --spec $TEST_FILES
+   yarn cypress:run-with-security --browser chromium --spec "$TEST_FILES"
 else
    echo "run security disabled tests"
-   yarn cypress:run-without-security --browser chromium --spec $TEST_FILES
-
+   yarn cypress:run-without-security --browser chromium --spec "$TEST_FILES"
 fi
