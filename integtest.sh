@@ -79,9 +79,9 @@ then
   PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 fi
 
-TEST_FILES=$(get_test_list)
-
 npm install
+
+TEST_FILES=$(get_test_list)
 
 ## WARNING: THIS LOGIC NEEDS TO BE THE LAST IN THIS FILE! ##
 # Cypress returns back the test failure count in the error code
