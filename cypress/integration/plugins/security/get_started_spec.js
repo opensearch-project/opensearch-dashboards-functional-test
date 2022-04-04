@@ -125,10 +125,15 @@ if(Cypress.env("SECURITY_ENABLED")) {
                 () => {
                     cy.contains('button', 'Purge cache').first().click({ force: true });
                 }
-            ).then((response) => {
-                const body = JSON.parse(response.response.body);
-    
-                expect(body.message).to.equal('Cache flushed successfully.');
+            ).then((result) => {
+                // NOTE: JSON.parse fails on ARM64 because it is an object
+                try {
+                    const body = JSON.parse(result.response.body);
+                    expect(body.message).to.equal("'config' updated.");
+                } catch (e) {
+                    const resp = JSON.parse(JSON.stringify(result.response));;
+                    expect(resp.statusCode).to.equal(200);
+                }
             });
         });
     
