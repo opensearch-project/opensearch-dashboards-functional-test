@@ -136,6 +136,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
           expect(testAG).to.not.be.null;
           expect(testAG.allowed_actions).to.have.length.of.at.least(1);
         } catch (e) {
+          if (!(e instanceof SyntaxError)) throw e;
           const resp = JSON.parse(JSON.stringify(result.response));;
           expect(resp.statusCode).to.equal(200);
         }

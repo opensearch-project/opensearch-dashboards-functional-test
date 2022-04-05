@@ -131,6 +131,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
                     const body = JSON.parse(result.response.body);
                     expect(body.message).to.equal("'config' updated.");
                 } catch (e) {
+                    if (!(e instanceof SyntaxError)) throw e;
                     const resp = JSON.parse(JSON.stringify(result.response));;
                     expect(resp.statusCode).to.equal(200);
                 }
