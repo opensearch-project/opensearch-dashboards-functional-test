@@ -214,7 +214,7 @@ describe('Detector list page', () => {
     cy.getElementByTestId('detectorListTable').contains('stopped-detector');
     cy.getElementByTestId('detectorListTable')
       .contains('running-detector')
-      .should('not.be.visible');
+      .should('not.exist');
   });
 
   it('Filter by detector state', () => {
@@ -233,7 +233,7 @@ describe('Detector list page', () => {
     cy.getElementByTestId('detectorListTable').contains('stopped-detector'); // because stopped is the first item in the detector state dropdown
     cy.getElementByTestId('detectorListTable')
       .contains('running-detector')
-      .should('not.be.visible');
+      .should('not.exist');
   });
 
   it('Filter by index', () => {
@@ -258,9 +258,9 @@ describe('Detector list page', () => {
     ); // because feature-required is the first index returned in the fixture
     cy.getElementByTestId('detectorListTable')
       .contains('running-detector')
-      .should('not.be.visible');
+      .should('not.exist');
     cy.getElementByTestId('detectorListTable')
       .contains('stopped-detector')
-      .should('not.be.visible');
+      .should('not.exist');
   });
 });
