@@ -56,13 +56,13 @@ context('Real-time results page', () => {
 
     it('Enter and exit full screen', () => {
       cy.contains('View full screen');
-      cy.contains('Exit full screen').should('not.be.visible');
+      cy.contains('Exit full screen').should('not.exist');
       cy.getElementByTestId('anomalyResultsFullScreenButton').click();
-      cy.contains('View full screen').should('not.be.visible');
+      cy.contains('View full screen').should('not.exist');
       cy.contains('Exit full screen');
       cy.getElementByTestId('anomalyResultsFullScreenButton').click();
       cy.contains('View full screen');
-      cy.contains('Exit full screen').should('not.be.visible');
+      cy.contains('Exit full screen').should('not.exist');
     });
   });
 });
