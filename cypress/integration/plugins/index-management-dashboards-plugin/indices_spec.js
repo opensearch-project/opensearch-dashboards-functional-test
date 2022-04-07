@@ -75,6 +75,9 @@ describe('Indices', () => {
     });
 
     it('successfully', () => {
+      cy.get('[data-test-subj="tablePaginationPopoverButton"]').click();
+      cy.get('.euiContextMenuItem__text').contains('50 rows').click();
+
       // Confirm that the regular indices are shown.
       cy.contains('index-1');
       cy.contains('index-2');
