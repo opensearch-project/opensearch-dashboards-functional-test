@@ -106,19 +106,20 @@ context('Historical results page', () => {
       cy.get(`[aria-label="Next time window"]`).click();
       cy.contains('Refresh').click();
       verifyNoAnomaliesInCharts();
-
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      
       cy.get(`[aria-label="Previous time window"]`).click();
       cy.contains('Refresh').click();
       verifyAnomaliesInCharts();
     });
 
     it('Aggregations render anomalies', () => {
-      cy.get(`[aria-label="Daily max"]`).click();
+      cy.contains('Refresh').click();
+      cy.wait(2000);
+      cy.get(`[title="Daily max"]`).click();
       verifyAnomaliesInCharts();
-      cy.get(`[aria-label="Weekly max"]`).click();
+      cy.get(`[title="Weekly max"]`).click();
       verifyAnomaliesInCharts();
-      cy.get(`[aria-label="Monthly max"]`).click();
+      cy.get(`[title="Monthly max"]`).click();
       verifyAnomaliesInCharts();
     });
 
