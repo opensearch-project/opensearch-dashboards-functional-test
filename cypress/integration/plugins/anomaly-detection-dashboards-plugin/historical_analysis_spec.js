@@ -107,6 +107,7 @@ context('Historical results page', () => {
       cy.contains('Refresh').click();
       verifyNoAnomaliesInCharts();
       
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
       cy.get(`[aria-label="Previous time window"]`).click();
       cy.contains('Refresh').click();
       verifyAnomaliesInCharts();
