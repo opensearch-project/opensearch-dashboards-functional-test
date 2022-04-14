@@ -26,6 +26,7 @@ function generate_test_list() {
     DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/query-workbench-dashboards/*"
     DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/reports-dashboards/*"
     DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/security/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/notifications-dashboards/*"
 
     echo "$DEFAULT_TEST_FILES"
 }
@@ -41,6 +42,7 @@ function generate_test_list_from_build_manifest() {
     grep -q 'queryWorkbenchDashboards' $OSD_BUILD_MANIFEST && MANIFEST_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/query-workbench-dashboards/*" || true
     grep -q 'reportsDashboards' $OSD_BUILD_MANIFEST && MANIFEST_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/reports-dashboards/*" || true
     grep -q 'securityDashboards' $OSD_BUILD_MANIFEST && MANIFEST_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/security/*" || true
+    grep -q 'notificationsDashboards' $OSD_BUILD_MANIFEST && MANIFEST_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/notifications-dashboards/*" || true
 
     echo "$MANIFEST_TEST_FILES"
 }
