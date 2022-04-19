@@ -104,6 +104,7 @@ if(Cypress.env("SECURITY_ENABLED")) {
       cy.contains('button', 'Create action group').first().click({ force: true });
       cy.get('button[id="create-from-selection"]').should('have.attr', 'disabled');
   
+      cy.wait(500);
       // check the first action-group by using pattern matching to find the checkbox with id ending in `-checkbox`
       cy.get('[id$=-checkbox]').first().check();
       cy.wait(500);
