@@ -30,7 +30,9 @@ import {
   newName,
   TYPING_DELAY,
   supressResizeObserverIssue,
+  BASE_PATH
 } from '../../../utils/constants';
+
 
 describe('Creating application', () => {
   beforeEach(() => {
@@ -86,10 +88,11 @@ describe('Creating application', () => {
     cy.focused().type('{downArrow}');
     cy.focused().type('{enter}');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').should('contain', 'source = opensearch_dashboards_sample_data_flights, ');
-    cy.focused().type('opensearch');
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    cy.get('.aa-Item').contains('opensearch_dashboards_sample_data_logs').click();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').should('contain', 'source = opensearch_dashboards_sample_data_flights,opensearch_dashboards_sample_data_logs ');
+    // TODO: add sample data logs
+    // cy.focused().type('opensearch');
+    // cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
+    // cy.get('.aa-Item').contains('opensearch_dashboards_sample_data_logs').click();
+    // cy.get('[data-test-subj="searchAutocompleteTextArea"]').should('contain', 'source = opensearch_dashboards_sample_data_flights,opensearch_dashboards_sample_data_logs ');
   });
 
   it('Creates an application and redirects to application', () => {
@@ -108,8 +111,15 @@ describe('Creating application', () => {
     cy.get('.euiFilterSelectItem').contains(trace_two).trigger('click');
     cy.get('.euiBadge').contains('2').should('exist');
     cy.get('.euiButton').contains('Create').should('not.be.disabled');
-    cy.get('.euiButton').contains('Create').click();
-    cy.wait(delayTime*3);
+    cy.route2('POST', '/api/observability/application/').as('addApplication');
+    cy.route2('POST', 'panels').as('addPanels');
+    cy.route2('PUT', '/api/observability/application/').as('putApplication');
+    cy.route2('POST', 'query').as('postQuery');
+    cy.get('.euiButton__text').contains('Create').click();
+    cy.wait('@addApplication');
+    cy.wait('@addPanels');
+    cy.wait('@putApplication');
+    cy.wait('@postQuery.all');
     cy.get('.euiTitle').contains(nameOne).should('exist');
     cy.get('.euiTab').contains('Panel').click();
     cy.get('.euiText').contains('Start by adding your first visualization').should('exist');
@@ -117,7 +127,7 @@ describe('Creating application', () => {
 
   it('Hides application panels in Operational Panels', () => {
     cy.visit(
-      `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+      `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
     );
     cy.wait(delayTime*4);
     if (cy.get('.euiButton').contains('Create panel').length < 2) {
@@ -203,7 +213,7 @@ describe('Viewing application', () => {
   });
 
   it('Has working breadcrumbs', () => {
-    cy.get('.euiBreadcrumb').contains('Cypress').click();
+    cy.get('.euiBreadcrumb').contains(nameOne).click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains(nameOne).should('exist');
     cy.get('.euiBreadcrumb').contains('Application analytics').click();
@@ -336,15 +346,12 @@ describe('Viewing application', () => {
     cy.get('.euiPopover').contains('serviceName: order').should('not.exist');
   });
 
-  it('Shows base query', () => {
-    cy.get('.euiTab').contains('Log Events').click();
-    cy.get('.euiBadge__text').contains('Base Query').should('exist');
-  });
-
   it('Saves visualization #1 to panel', () => {
-    cy.get('.euiTab').contains('Panel').click();
+    cy.get('.euiTab').contains('Panel').click({ force: true });
     cy.get('.euiButton').contains('Add').click();
-    cy.wait(delayTime);
+    cy.route2('POST', '/api/ppl/search').as('pplSearch');
+    cy.get('.euiButton__text').contains('Create').click();
+    cy.wait('@pplSearch.all');
     cy.get('.plot-container').should('exist');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
     cy.get('.aa-List').find('.aa-Item').should('have.length', 11);
@@ -481,7 +488,7 @@ describe('Viewing application', () => {
   })
 
   it('Hides application visualizations in Event Analytics', () => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics`);
+    cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics`);
     cy.wait(delayTime*3);
     if (cy.get('.euiButton').length == 2) {
       cy.get('input.euiFieldSearch').type(visOneName, {delayTime: TYPING_DELAY});
@@ -512,7 +519,7 @@ describe('Viewing application', () => {
 
   it('Hides application visualizations in Operational Panels', () => {
     cy.visit(
-      `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+      `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
     );
     cy.wait(delayTime*3);
     cy.get('.euiButton__text').contains('Actions').click();
@@ -528,7 +535,7 @@ describe('Viewing application', () => {
     cy.get('option').contains(visOneName).should('not.exist');
     cy.get('option').contains(visTwoName).should('not.exist');
     cy.visit(
-      `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+      `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
     );
     cy.wait(delayTime*3);
     cy.get('input.euiFieldSearch').type('[Logs] Web traffic Panel', {delayTime: TYPING_DELAY});
@@ -544,6 +551,11 @@ describe('Viewing application', () => {
     cy.get('button.euiButton--danger').should('not.be.disabled');
     cy.get('.euiButton__text').contains('Delete').click();
     cy.wait(delayTime);
+  });
+
+  it('Shows base query', () => {
+    cy.get('.euiTab').contains('Log Events').click();
+    cy.get('.euiBadge__text').contains('Base Query').should('exist');
   });
 });
 

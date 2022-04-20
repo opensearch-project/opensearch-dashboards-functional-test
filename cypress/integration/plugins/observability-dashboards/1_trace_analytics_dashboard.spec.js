@@ -91,6 +91,10 @@ describe('Testing dashboard table', () => {
     setTimeFilter();
   });
 
+  after(() => {
+    cy.get('[aria-label="Remove filter"]').click();
+  })
+
   it('Renders the dashboard table', () => {
     cy.contains(' (10)').should('exist');
     cy.contains('client_cancel_order').should('exist');
@@ -137,7 +141,8 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.wait(delayTime * 5);
+    cy.get('[aria-label="Remove filter"]').click();
+    cy.wait(delayTime);
     cy.get('.euiLink').contains('13').click();
     cy.wait(delayTime);
 

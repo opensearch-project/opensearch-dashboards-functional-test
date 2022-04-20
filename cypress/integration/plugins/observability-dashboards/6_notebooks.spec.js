@@ -12,31 +12,25 @@ import {
   SAMPLE_URL,
   SQL_QUERY_TEXT,
   PPL_QUERY_TEXT,
-  SAMPLE_PANEL
+  SAMPLE_PANEL,
+  BASE_PATH
 } from '../../../utils/constants';
 
 import { skipOn } from '@cypress/skip-test';
 
 const moveToEventsHome = () => {
-  cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics/`);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics/`);
   cy.wait(delayTime * 3);
 };
 
 const moveToPanelHome = () => {
   cy.visit(
-    `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+    `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
   );
   cy.wait(delayTime * 3);
 };
 
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-  });
-
+describe('Adding sample visualization', () => {
   it('Add sample observability data', () => {
     moveToPanelHome();
     cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
@@ -47,9 +41,8 @@ describe('Adding sample data and visualization', () => {
       .contains('Add samples')
       .should('exist');
     cy.wait(100);
-    cy.get('.euiButton__text').contains('Yes').trigger('mouseover').click();
-    cy.wait(100 * 5);
     cy.route2('POST', '/addSamplePanels').as('addSamples');
+    cy.get('.euiButton__text').contains('Yes').trigger('mouseover').click();
     cy.wait('@addSamples').then(() => {
       cy.get('.euiTableCellContent').contains(SAMPLE_PANEL).should('exist');
     });
@@ -59,7 +52,7 @@ describe('Adding sample data and visualization', () => {
 
 describe('Testing notebooks table', () => {
   beforeEach(() => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/notebooks`);
+    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
   });
 
   it('Displays error toast for invalid notebook name', () => {
@@ -153,7 +146,7 @@ describe('Testing notebooks table', () => {
 
 describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/notebooks`);
+    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
     cy.get('.euiTableCellContent').contains(TEST_NOTEBOOK).click();
     cy.wait(delayTime * 3);
     cy.get('body').then(($body) => {
@@ -197,7 +190,7 @@ describe('Test reporting integration if plugin installed', () => {
 
 describe('Testing paragraphs', () => {
   beforeEach(() => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/notebooks`);
+    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
     cy.get('.euiTableCellContent').contains(TEST_NOTEBOOK).click();
   });
 

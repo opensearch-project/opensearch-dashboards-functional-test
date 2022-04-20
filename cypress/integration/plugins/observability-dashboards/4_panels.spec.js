@@ -12,17 +12,18 @@ import {
   PPL_VISUALIZATIONS_NAMES,
   NEW_VISUALIZATION_NAME,
   PPL_FILTER,
-  supressResizeObserverIssue
+  supressResizeObserverIssue,
+  BASE_PATH
 } from '../../../utils/constants';
 
 const moveToEventsHome = () => {
-  cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics/`);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics/`);
   cy.wait(delay * 3);
 };
 
 const moveToPanelHome = () => {
   cy.visit(
-    `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+    `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
   );
   cy.wait(delay * 3);
 };
@@ -34,17 +35,6 @@ const moveToTestPanel = () => {
   cy.get('h1').contains(TEST_PANEL).should('exist');
   cy.wait(delay);
 };
-
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .trigger('mouseover')
-      .click();
-    cy.wait(delay * 3);
-  });
-});
 
 describe('Creating visualizations', () => {
   beforeEach(() => {

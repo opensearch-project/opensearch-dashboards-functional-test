@@ -227,9 +227,12 @@ export const moveToCreatePage = () => {
 };
  
  export const moveToApplication = (name) => {
+   cy.route2('GET', '/api/observability/application/').as('getObservabilityApplication');
+   cy.route2('GET', 'panels').as('getPanels');
    cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
    supressResizeObserverIssue();
-   cy.wait(delayTime * 6);
+   cy.wait('@getObservabilityApplication', { timeout: 60000 });
+   cy.wait('@getPanels.all', { timeout: 60000 });
    cy.get('.euiLink').contains(name).click();
    cy.wait(delayTime);
    cy.get('.euiTitle').contains(name).should('exist');
@@ -274,9 +277,10 @@ export const moveToCreatePage = () => {
    cy.get('.euiButton__text').contains('Delete').click();
  };
  
+ export const uniqueId = Date.now();
  export const baseQuery = 'source = opensearch_dashboards_sample_data_flights';
- export const nameOne = 'Cypress';
- export const nameTwo = 'Pine';
+ export const nameOne = `Cypress-${uniqueId}`;
+ export const nameTwo = `Pine-${uniqueId}`;
  export const description = 'This is my application for cypress testing.';
  export const service_one = 'order';
  export const service_two = 'payment';

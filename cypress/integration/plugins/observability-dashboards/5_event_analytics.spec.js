@@ -21,16 +21,6 @@ import {
   supressResizeObserverIssue
 } from "../../../utils/constants";
 
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for event analytics', () => {
-    cy.visit(`${Cypress.env('opensearchDashboards')}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-    cy.wait(delayTime);
-  });
-});
-
 describe('Has working breadcrumbs', () => {
   it('Redirect to correct page on breadcrumb click', () => {
     landOnEventExplorer();
