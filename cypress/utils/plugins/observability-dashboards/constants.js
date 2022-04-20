@@ -2,7 +2,9 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-export const delay = 1500;
+import { BASE_PATH } from "../../base_constants";
+
+export const delayTime = 1500;
 
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
@@ -10,7 +12,7 @@ export const SPAN_ID = 'a673bc074b438374';
 export const SERVICE_NAME = 'frontend-client';
 export const SERVICE_SPAN_ID = '7df5609a6d104736';
 
-export const testDataSet = [
+export const testIndexDataSet = [
   {
     mapping_url: 'https://raw.githubusercontent.com/opensearch-project/observability/main/dashboards-observability/.cypress/utils/otel-v1-apm-service-map-mappings.json',
     data_url: 'https://raw.githubusercontent.com/opensearch-project/observability/main/dashboards-observability/.cypress/utils/otel-v1-apm-service-map.json',
@@ -49,18 +51,18 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     .focus()
     .type('{selectall}' + startTime, { force: true });
   if (setEndTime) {
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get(
       'button.euiDatePopoverButton--end[data-test-subj="superDatePickerendDatePopoverButton"]'
     ).click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('.euiTab__content').contains('Absolute').click();
     cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]')
       .focus()
       .type('{selectall}' + endTime, { force: true });
   }
   if (refresh) cy.get('.euiButton__text').contains('Refresh').click();
-  cy.wait(delay);
+  cy.wait(delayTime);
 };
 
 // notebooks
@@ -134,37 +136,37 @@ export const SAVE_QUERY4 = 'Mock Flight peek';
 export const querySearch = (query, rangeSelected) => {
   cy.get('[data-test-subj="searchAutocompleteTextArea"]').type(query);
   cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]').click();
-  cy.wait(delay);
+  cy.wait(delayTime);
   cy.get(rangeSelected).click();
   cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').contains('Refresh').click();
 };
 
 export const landOnEventHome = () => {
-  cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics`);
-  cy.wait(delay);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics`);
+  cy.wait(delayTime);
 };
 
 export const landOnEventExplorer = () => {
   cy.visit(
-    `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics/explorer`
+    `${BASE_PATH}/app/observability-dashboards#/event_analytics/explorer`
   );
-  cy.wait(delay);
+  cy.wait(delayTime);
 };
 
 export const landOnEventVisualizations = () => {
   cy.visit(
-    `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/event_analytics/explorer`
+    `${BASE_PATH}/app/observability-dashboards#/event_analytics/explorer`
   );
   cy.get('button[id="main-content-vis"]').contains('Visualizations').click();
   supressResizeObserverIssue();
-  cy.wait(delay);
+  cy.wait(delayTime);
 };
 
 export const landOnPanels = () => {
   cy.visit(
-    `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels`
+    `${BASE_PATH}/app/observability-dashboards#/operational_panels`
   );
-  cy.wait(delay);
+  cy.wait(delayTime);
 };
 
 /**
@@ -195,7 +197,7 @@ export const PPL_VISUALIZATIONS = [
 
 export const PPL_VISUALIZATIONS_NAMES = [
   'Flight count by destination',
-  'Average flight delay minutes',
+  'Average flight delayTime minutes',
   'Max distance by destination city',
 ];
 
@@ -209,27 +211,27 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
 
  export const TYPING_DELAY = 500;
 
- export const moveToHomePage = () => {
-   cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/application_analytics/`);
-   cy.wait(delay * 3);
-   cy.get('.euiTitle').contains('Applications').should('exist');
- };
+export const moveToHomePage = () => {
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.wait(delayTime * 3);
+  cy.get('.euiTitle').contains('Applications').should('exist');
+};
  
- export const moveToCreatePage = () => {
-   cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/application_analytics/`);
-   cy.wait(delay * 2);
-   cy.get('.euiButton__text').contains('Create application').click();
-   supressResizeObserverIssue();
-   cy.wait(delay);
-   cy.get('.euiTitle').contains('Create application').should('exist');
- };
+export const moveToCreatePage = () => {
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.wait(delayTime * 2);
+  cy.get('.euiButton__text').contains('Create application').click();
+  supressResizeObserverIssue();
+  cy.wait(delayTime);
+  cy.get('.euiTitle').contains('Create application').should('exist');
+};
  
  export const moveToApplication = (name) => {
-   cy.visit(`${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/application_analytics/`);
+   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
    supressResizeObserverIssue();
-   cy.wait(delay * 6);
+   cy.wait(delayTime * 6);
    cy.get('.euiLink').contains(name).click();
-   cy.wait(delay);
+   cy.wait(delayTime);
    cy.get('.euiTitle').contains(name).should('exist');
    changeTimeTo24('years');
  };
@@ -239,16 +241,16 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
    cy.get('.euiTab').contains('Configuration').click();
    cy.get('.euiButton').contains('Edit').click();
    supressResizeObserverIssue();
-   cy.wait(delay);
+   cy.wait(delayTime);
    cy.get('.euiTitle').contains('Edit application');
  };
  
  export const changeTimeTo24 = (timeUnit) => {
    cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]').trigger('mouseover').click();
-   cy.wait(delay);
+   cy.wait(delayTime);
    cy.get('[aria-label="Time unit"]').select(timeUnit);
    cy.get('.euiButton').contains('Apply').click();
-   cy.wait(delay);
+   cy.wait(delayTime);
    cy.get('.euiButton').contains('Refresh').click();
  };
  
@@ -259,9 +261,9 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
  
  export const moveToPanelHome = () => {
    cy.visit(
-     `${Cypress.env('opensearchDashboards')}/app/observability-dashboards#/operational_panels/`
+     `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
    );
-   cy.wait(delay * 3);
+   cy.wait(delayTime * 3);
  };
  
  export const deleteAllSavedApplications = () => {

@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { delay, SERVICE_NAME, SERVICE_SPAN_ID, setTimeFilter } from '../utils/constants';
+import { delayTime, SERVICE_NAME, SERVICE_SPAN_ID, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing services table empty state', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('Testing services table empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delay * 3);
+    cy.wait(delayTime * 3);
   });
 
   it('Renders empty state', () => {
@@ -93,28 +93,28 @@ describe('Testing service view', () => {
 
   it('Has working breadcrumbs', () => {
     cy.get('.euiBreadcrumb').contains(SERVICE_NAME).click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
     cy.get('.euiBreadcrumb').contains('Services').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('.euiTitle').contains('Services').should('exist');
     cy.get('.euiBreadcrumb').contains('Trace analytics').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('.euiTitle').contains('Dashboard').should('exist');
     cy.get('.euiBreadcrumb').contains('Observability').click();
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.get('.euiTitle').contains('Event analytics').should('exist');
   });
 
   it('Renders spans data grid, flyout, filters', () => {
     cy.get('.euiLink').contains(SERVICE_SPAN_ID).trigger('mouseover', { force: true });
     cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
     cy.contains('Span detail').should('exist');
     cy.contains('Span attributes').should('exist');
     cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
     cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({ force: true });
-    cy.wait(delay);
+    cy.wait(delayTime);
 
     cy.get('.euiBadge__text').contains('spanId: ').should('exist');
     cy.contains('Spans (1)').should('exist');
