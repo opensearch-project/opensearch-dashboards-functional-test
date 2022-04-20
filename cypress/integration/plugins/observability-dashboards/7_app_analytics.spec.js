@@ -99,7 +99,14 @@ describe('Creating application', () => {
     cy.get('[data-test-subj="nameFormRow"]').type(nameOne);
     cy.get('[data-test-subj="descriptionFormRow"]').type('This application is for testing.');
     cy.get('.euiAccordion').contains('Log source').trigger('mouseover').click();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').focus().type(baseQuery, {delayTime: TYPING_DELAY});
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
+    // source
+    cy.focused().type('{enter}');
+    // =
+    cy.focused().type('{enter}');
+    cy.focused().type('opensearch');
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
+    cy.get('.aa-Item').contains('opensearch_dashboards_sample_data_flights').click();
     cy.get('.euiAccordion').contains('Services & entities').trigger('mouseover').click();
     cy.get('[data-test-subj="servicesEntitiesComboBox"]').click();
     cy.focused().type('{downArrow}');
@@ -348,9 +355,8 @@ describe('Viewing application', () => {
 
   it('Saves visualization #1 to panel', () => {
     cy.get('.euiTab').contains('Panel').click({ force: true });
-    cy.get('.euiButton').contains('Add').click();
     cy.route2('POST', '/api/ppl/search').as('pplSearch');
-    cy.get('.euiButton__text').contains('Create').click();
+    cy.get('.euiButton').contains('Add').click();
     cy.wait('@pplSearch.all');
     cy.get('.plot-container').should('exist');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
