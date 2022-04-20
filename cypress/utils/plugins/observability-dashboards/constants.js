@@ -209,10 +209,12 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
  * App constants
  */
 
- export const TYPING_DELAY = 3000;
+ export const TYPING_DELAY = 1500;
 
 export const moveToHomePage = () => {
+  cy.route2('GET', '/api/observability/application/').as('getObservabilityApplication');
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.wait('@getObservabilityApplication', { timeout: 60000 });
   cy.wait(delayTime * 3);
   cy.get('.euiTitle').contains('Applications').should('exist');
 };
@@ -231,9 +233,9 @@ export const moveToCreatePage = () => {
    cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
    supressResizeObserverIssue();
    cy.wait('@getObservabilityApplication', { timeout: 60000 });
-   cy.wait(delayTime * 3);
+   cy.wait(delayTime * 6);
    cy.get('.euiLink').contains(name).click();
-   cy.wait(delayTime * 3);
+   cy.wait(delayTime * 2);
    cy.get('.euiTitle').contains(name).should('exist');
    changeTimeTo24('years');
  };
