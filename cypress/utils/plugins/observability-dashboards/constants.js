@@ -233,10 +233,8 @@ export const moveToCreatePage = () => {
    cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
    supressResizeObserverIssue();
    cy.wait('@getObservabilityApplication', { timeout: 60000 });
-   cy.wait(delayTime * 6);
-   cy.get('.euiLink').contains(name).click();
-   cy.wait(delayTime * 2);
-   cy.get('.euiTitle').contains(name).should('exist');
+   cy.get('.euiLink').contains(name, { timeout: 60000 }).click();
+   cy.get('.euiTitle').contains(name, { timeout: 60000 }).should('exist');
    changeTimeTo24('years');
  };
  
