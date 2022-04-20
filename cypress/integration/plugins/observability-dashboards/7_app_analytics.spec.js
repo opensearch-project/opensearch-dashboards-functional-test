@@ -88,11 +88,6 @@ describe('Creating application', () => {
     cy.focused().type('{downArrow}');
     cy.focused().type('{enter}');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').should('contain', 'source = opensearch_dashboards_sample_data_flights, ');
-    // TODO: add sample data logs
-    // cy.focused().type('opensearch');
-    // cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    // cy.get('.aa-Item').contains('opensearch_dashboards_sample_data_logs').click();
-    // cy.get('[data-test-subj="searchAutocompleteTextArea"]').should('contain', 'source = opensearch_dashboards_sample_data_flights,opensearch_dashboards_sample_data_logs ');
   });
 
   it('Creates an application and redirects to application', () => {
@@ -353,17 +348,26 @@ describe('Viewing application', () => {
     cy.get('.euiPopover').contains('serviceName: order').should('not.exist');
   });
 
+  it('Shows base query', () => {
+    cy.get('.euiTab').contains('Log Events').click();
+    cy.get('.euiBadge__text').contains('Base Query').should('exist');
+  });
+
   it('Saves visualization #1 to panel', () => {
-    cy.get('.euiTab').contains('Panel').click({ force: true });
-    cy.route2('POST', '/api/ppl/search').as('pplSearch');
+    cy.get('.euiTab').contains('Panel').click();
     cy.get('.euiButton').contains('Add').click();
-    cy.wait('@pplSearch.all');
+    cy.wait(delayTime);
     cy.get('.plot-container').should('exist');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
     cy.get('.aa-List').find('.aa-Item').should('have.length', 11);
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').focus().type('x', {delayTime: TYPING_DELAY});
-    cy.focused().clear();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').focus().type(query_one, {delayTime: TYPING_DELAY});
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]')
+      .trigger('mouseover')
+      .click()
+      .wait(3000)
+      .focus()
+      .type(query_one, {
+        delay: TYPING_DELAY,
+      });
     changeTimeTo24('months');
     cy.wait(delayTime * 2);
     cy.get('.euiTab').contains('Visualizations').click();
@@ -425,9 +429,14 @@ describe('Viewing application', () => {
     cy.wait(delayTime);
     cy.get('.plot-container').should('exist');
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').clear();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').focus().type('x', {delayTime: TYPING_DELAY});
-    cy.focused().clear();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').focus().type(query_two, {delayTime: TYPING_DELAY});
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]')
+      .trigger('mouseover')
+      .click()
+      .wait(3000)
+      .focus()
+      .type(query_two, {
+        delay: TYPING_DELAY,
+      });
     cy.get('.euiButton').contains('Refresh').click();
     cy.wait(delayTime);
     cy.get('.euiTab').contains('Visualizations').click();
@@ -477,7 +486,6 @@ describe('Viewing application', () => {
     cy.get('[aria-label="List of trace groups"]').find('li').should('have.length', 2);
     cy.get('option').should('have.length', 2);
   });
-
 
   it('Changes availability visualization', () => {
     cy.get('.euiTab').contains('Configuration').click();
@@ -557,11 +565,6 @@ describe('Viewing application', () => {
     cy.get('button.euiButton--danger').should('not.be.disabled');
     cy.get('.euiButton__text').contains('Delete').click();
     cy.wait(delayTime);
-  });
-
-  it('Shows base query', () => {
-    cy.get('.euiTab').contains('Log Events').click();
-    cy.get('.euiBadge__text').contains('Base Query').should('exist');
   });
 });
 
