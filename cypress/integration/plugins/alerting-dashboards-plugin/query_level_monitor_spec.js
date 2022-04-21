@@ -260,7 +260,7 @@ describe('Query-Level Monitors', () => {
       // Select visual editor
       cy.get('[data-test-subj="visualEditorRadioCard"]').click();
       // Wait for input to load and then type in the index name
-      cy.get('#index').type(`{backspace}${INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, { force: true });
+      cy.get('#index').type(`{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, { force: true });
       // Enter the time field
       cy.get('#timeField').type('order_date{downArrow}{enter}', { force: true });
       // Add the test triggers
