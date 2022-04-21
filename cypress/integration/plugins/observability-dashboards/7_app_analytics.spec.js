@@ -262,15 +262,13 @@ describe('Viewing application', () => {
     cy.get('[data-test-subj="superDatePickerShowDatesButton"]').should('contain', 'Last 24 weeks');
     cy.get('.euiBreadcrumb').contains('Application analytics').click();
     cy.wait(delayTime);
-    cy.get('.euiLink').contains(nameOne).click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains(nameOne).should('exist');
+    cy.contains(nameOne, { timeout: 150000 }).click();
+    cy.get('.euiTitle--large', { timeout: 60000 }).contains(nameOne, { timeout: 60000 }).should('exist');
     cy.get('[data-test-subj="superDatePickerShowDatesButton"]').should('contain', 'Last 24 months');
     cy.get('.euiBreadcrumb').contains('Application analytics').click();
     cy.wait(delayTime);
-    cy.get('.euiLink').contains(nameTwo).click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains(nameTwo).should('exist');
+    cy.contains(nameTwo, { timeout: 150000 }).click();
+    cy.get('.euiTitle--large', { timeout: 60000 }).contains(nameTwo, { timeout: 60000 }).should('exist');
     cy.get('[data-test-subj="superDatePickerShowDatesButton"]').should('contain', 'Last 24 weeks');
   });
 

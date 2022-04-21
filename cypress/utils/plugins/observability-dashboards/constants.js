@@ -213,7 +213,7 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
 
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.get('.euiTitle').contains('Applications', { timeout: 60000 }).should('exist');
+  cy.contains('Applications', { timeout: 60000 }).should('exist');
   cy.wait(delayTime * 3);
 };
  
@@ -229,8 +229,9 @@ export const moveToCreatePage = () => {
  export const moveToApplication = (name) => {
    cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
    supressResizeObserverIssue();
-   cy.get('.euiLink').contains(name, { timeout: 60000 }).click();
-   cy.get('.euiTitle').contains(name, { timeout: 60000 }).should('exist');
+   cy.wait(delayTime * 2);
+   cy.contains(name, { timeout: 120000 }).click();
+   cy.get('.euiTitle--large', { timeout: 60000 }).contains(name, { timeout: 60000 }).should('exist');
    changeTimeTo24('years');
  };
  
