@@ -214,6 +214,7 @@ export const PPL_FILTER = "where Carrier = 'OpenSearch-Air' | where Dest = 'Muni
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   cy.get('.euiTitle').contains('Applications', { timeout: 60000 }).should('exist');
+  cy.wait(delayTime * 3);
 };
  
 export const moveToCreatePage = () => {
