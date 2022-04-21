@@ -5,65 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { testIndexDataSet, delayTime, setTimeFilter } from '../../../utils/constants';
-
-describe.skip('Dump test data', () => {
-  it('Indexes test data', () => {
-    const dumpDataSet = (mapping_url, data_url, index) => {
-      cy.request({
-        method: 'POST',
-        failOnStatusCode: false,
-        url: 'api/console/proxy',
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          'osd-xsrf': true,
-        },
-        qs: {
-          path: `${index}`,
-          method: 'PUT',
-        },
-      });
-
-      cy.request(mapping_url).then((response) => {
-        cy.request({
-          method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_mapping`,
-            method: 'POST',
-          },
-          body: response.body,
-        });
-      });
-
-      cy.request(data_url).then((response) => {
-        cy.request({
-          method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_bulk`,
-            method: 'POST',
-          },
-          body: response.body,
-        });
-      });
-    };
-
-    testIndexDataSet.forEach(({ mapping_url, data_url, index }) =>
-      dumpDataSet(mapping_url, data_url, index)
-    );
-  });
-});
+import { delayTime, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing dashboard table empty state', () => {
   beforeEach(() => {
@@ -77,7 +19,7 @@ describe('Testing dashboard table empty state', () => {
 
   it('Renders empty state', () => {
     cy.contains(' (0)').should('exist');
-    cy.get('h2.euiTitle').contains('No matches').should('exist');
+    cy.contains('No matches').should('exist');
   });
 });
 
@@ -91,11 +33,27 @@ describe('Testing dashboard table', () => {
     setTimeFilter();
   });
 
+  after(() => {
+    cy.get('[aria-label="Remove filter"]').click();
+  })
+
   it('Renders the dashboard table', () => {
     cy.contains(' (10)').should('exist');
     cy.contains('client_cancel_order').should('exist');
     cy.contains('166.44').should('exist');
     cy.contains('7.14%').should('exist');
+  });
+
+  it('Has working breadcrumbs', () => {
+    cy.get('.euiBreadcrumb').contains('Dashboard').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Dashboard').should('exist');
+    cy.get('.euiBreadcrumb').contains('Trace analytics').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Dashboard').should('exist');
+    cy.get('.euiBreadcrumb').contains('Observability').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Event analytics').should('exist');
   });
 
   it('Adds the percentile filters', () => {
@@ -124,8 +82,9 @@ describe('Testing dashboard table', () => {
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should('exist');
   });
 
-  it.skip('Redirects to traces table with filter', () => {
-    cy.wait(delayTime * 5);
+  it('Redirects to traces table with filter', () => {
+    cy.get('[aria-label="Remove filter"]').click();
+    cy.wait(delayTime);
     cy.get('.euiLink').contains('13').click();
     cy.wait(delayTime);
 
@@ -140,7 +99,7 @@ describe('Testing dashboard table', () => {
   });
 });
 
-describe.skip('Testing plots', () => {
+describe('Testing plots', () => {
   beforeEach(() => {
     cy.visit('app/observability-dashboards#/trace_analytics/home', {
       onBeforeLoad: (win) => {
@@ -151,17 +110,18 @@ describe.skip('Testing plots', () => {
   });
 
   it('Renders service map', () => {
+    // plotly scale texts are in attribute "data-unformatted"
     cy.get('text.ytitle[data-unformatted="Latency (ms)"]').should('exist');
     cy.get('text[data-unformatted="200"]').should('exist');
     cy.get('.vis-network').should('exist');
 
-    cy.get('.euiToggle__input[title="Error rate"]').click();
+    cy.get('.euiButton__text[title="Error rate"]').click();
     cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
     cy.get('text[data-unformatted="10%"]').should('exist');
 
-    cy.get('.euiToggle__input[title="Throughput"]').click();
+    cy.get('.euiButton__text[title="Throughput"]').click();
     cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
-    cy.get('text[data-unformatted="60"]').should('exist');
+    cy.get('text[data-unformatted="50"]').should('exist');
 
     cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
     cy.wait(delayTime);
@@ -169,8 +129,8 @@ describe.skip('Testing plots', () => {
 
   it('Renders plots', () => {
     cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
-    cy.get('text.annotation-text[data-unformatted="Now: 0%"]').should('exist');
+    cy.get('text.annotation-text[data-unformatted="Now: 14.81%"]').should('exist');
     cy.get('text.ytitle[data-unformatted="Throughput (n)"]').should('exist');
-    cy.get('text.annotation-text[data-unformatted="Now: 62"]').should('exist');
+    cy.get('text.annotation-text[data-unformatted="Now: 108"]').should('exist');
   });
 });

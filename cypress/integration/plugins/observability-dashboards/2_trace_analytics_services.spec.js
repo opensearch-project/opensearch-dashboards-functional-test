@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { delayTime, SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
+import { delayTime, SERVICE_NAME, SERVICE_SPAN_ID, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing services table empty state', () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('Testing services table empty state', () => {
 
   it('Renders empty state', () => {
     cy.contains(' (0)').should('exist');
-    cy.get('h2.euiTitle').contains('No matches').should('exist');
+    cy.contains('No matches').should('exist');
   });
 });
 
@@ -43,7 +43,6 @@ describe('Testing services table', () => {
   it('Searches correctly', () => {
     cy.get('input[type="search"]').first().focus().type(`${SERVICE_NAME}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
-    cy.wait(delayTime);
     cy.contains(' (1)').should('exist');
     cy.contains('3.57%').should('exist');
   });
@@ -61,11 +60,10 @@ describe('Testing service view empty state', () => {
         win.sessionStorage.clear();
       },
     });
-    cy.wait(delayTime * 3);
   });
 
-  it.skip('Renders service view empty state', () => {
-    cy.get('h2.euiTitle').contains('frontend-client').should('exist');
+  it('Renders service view empty state', () => {
+    cy.contains('frontend-client').should('exist');
     cy.get('.euiText').contains('0').should('exist');
     cy.get('.euiText').contains('-').should('exist');
   });
@@ -87,13 +85,29 @@ describe('Testing service view', () => {
   });
 
   it('Renders service view', () => {
-    cy.get('h2.euiTitle').contains('frontend-client').should('exist');
+    cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
     cy.contains('178.6').should('exist');
     cy.contains('3.57%').should('exist');
     cy.get('div.vis-network').should('exist');
   });
 
+  it('Has working breadcrumbs', () => {
+    cy.get('.euiBreadcrumb').contains(SERVICE_NAME).click();
+    cy.wait(delayTime);
+    cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
+    cy.get('.euiBreadcrumb').contains('Services').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Services').should('exist');
+    cy.get('.euiBreadcrumb').contains('Trace analytics').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Dashboard').should('exist');
+    cy.get('.euiBreadcrumb').contains('Observability').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Event analytics').should('exist');
+  });
+
   it('Renders spans data grid, flyout, filters', () => {
+    cy.get('.euiLink').contains(SERVICE_SPAN_ID).trigger('mouseover', { force: true });
     cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
     cy.wait(delayTime);
     cy.contains('Span detail').should('exist');

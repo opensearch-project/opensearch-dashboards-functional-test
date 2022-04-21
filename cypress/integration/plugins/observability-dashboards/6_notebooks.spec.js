@@ -18,26 +18,35 @@ import {
 
 import { skipOn } from '@cypress/skip-test';
 
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-  });
+const moveToEventsHome = () => {
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics/`);
+  cy.wait(delayTime * 3);
+};
 
-  it.skip('Add sample observability data', () => {
-    cy.visit(
-      `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
-    );
-    cy.get('.euiButton__text').contains('Actions').click();
-    cy.get('.euiContextMenuItem__text').contains('Add samples').click();
+const moveToPanelHome = () => {
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
+  );
+  cy.wait(delayTime * 3);
+};
+
+describe('Adding sample visualization', () => {
+  it('Add sample observability data', () => {
+    moveToPanelHome();
+    cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
+    cy.wait(100);
+    cy.get('.euiContextMenuItem__text').contains('Add samples').trigger('mouseover').click();
+    cy.wait(100 * 3);
     cy.get('.euiModalHeader__title[data-test-subj="confirmModalTitleText"]')
       .contains('Add samples')
       .should('exist');
-    cy.get('.euiButton__text').contains('Yes').click();
-    cy.wait(delayTime * 5);
-    cy.get('.euiTableCellContent').contains(SAMPLE_PANEL).should('exist');
+    cy.wait(100);
+    cy.route2('POST', '/addSamplePanels').as('addSamples');
+    cy.get('.euiButton__text').contains('Yes').trigger('mouseover').click();
+    cy.wait('@addSamples').then(() => {
+      cy.get('.euiTableCellContent').contains(SAMPLE_PANEL).should('exist');
+    });
+    cy.wait(100);
   });
 });
 
@@ -202,6 +211,18 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
   });
 
+  it('Has working breadcrumbs', () => {
+    cy.get('.euiBreadcrumb').contains(TEST_NOTEBOOK).click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains(TEST_NOTEBOOK).should('exist');
+    cy.get('.euiBreadcrumb').contains('Notebooks').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Notebooks').should('exist');
+    cy.get('.euiBreadcrumb').contains('Observability').click();
+    cy.wait(delayTime);
+    cy.get('.euiTitle').contains('Event analytics').should('exist');
+  });
+
   it('Renders markdown', () => {
     cy.get('.euiTextArea').should('not.exist');
     cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
@@ -223,7 +244,7 @@ describe('Testing paragraphs', () => {
   });
 
   it('Renders input only mode', () => {
-    cy.get('.euiToggle__input[title="Input only"]').click();
+    cy.get('.euiButton__text[title="Input only"]').click();
     cy.wait(delayTime);
 
     cy.get('div.markdown-body').should('not.exist');
@@ -236,7 +257,7 @@ describe('Testing paragraphs', () => {
   });
 
   it('Renders output only mode', () => {
-    cy.get('.euiToggle__input[title="Output only"]').click();
+    cy.get('.euiButton__text[title="Output only"]').click();
     cy.wait(delayTime);
 
     cy.get('button[aria-label="Open paragraph menu"]').should('not.exist');
@@ -267,7 +288,9 @@ describe('Testing paragraphs', () => {
 
     cy.get('.euiButton__text').contains('Browse').click();
     cy.wait(delayTime);
-    cy.get('.euiFieldSearch').focus().type('[Flights] Flight Count and Average Ticket Price{enter}');
+    cy.get('.euiFieldSearch')
+      .focus()
+      .type('[Flights] Flight Count and Average Ticket Price{enter}');
     cy.wait(delayTime);
     cy.get('.euiButton__text').contains('Select').click();
     cy.wait(delayTime);
@@ -292,7 +315,7 @@ describe('Testing paragraphs', () => {
     cy.get('.euiDataGrid__overflow').should('exist');
   });
 
-  it.skip('Adds an observability visualization paragraph', () => {
+  it('Adds an observability visualization paragraph', () => {
     cy.contains('Add paragraph').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem__text').contains('Visualization').click();
@@ -431,5 +454,61 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime * 3);
 
     cy.get('.euiButton__text').contains('Create notebook').should('exist');
+  });
+  
+  it('Cleans up test notebooks', () => {
+    cy.get('[data-test-subj="notebook-notebook-actions-button"]').click();
+    cy.wait(delayTime);
+    cy.get('.euiContextMenuItem__text').contains('Delete notebook').click();
+    cy.wait(delayTime);
+
+    cy.get('button.euiButton--danger').should('be.disabled');
+
+    cy.get('input.euiFieldText[placeholder="delete"]').type('delete');
+    cy.get('button.euiButton--danger').should('not.be.disabled');
+    cy.get('.euiButton__text').contains('Delete').click();
+    cy.wait(delayTime * 3);
+
+    cy.get('.euiText').contains('No notebooks').should('exist');
+  });
+});
+
+describe('clean up all test data', () => {
+  it('Delete visualizations from event analytics', () => {
+    moveToEventsHome();
+    cy.get('[data-test-subj="tablePaginationPopoverButton"]').trigger('mouseover').click();
+    cy.get('.euiContextMenuItem__text').contains('50 rows').trigger('mouseover').click();
+    cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('.euiContextMenuItem__text').contains('Delete').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('button.euiButton--danger').should('be.disabled');
+    cy.get('input.euiFieldText[placeholder="delete"]').focus().type('delete', {
+      delayTime: 50,
+    });
+    cy.get('button.euiButton--danger').should('not.be.disabled');
+    cy.get('.euiButton__text').contains('Delete').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('.euiTextAlign').contains('No Queries or Visualizations').should('exist');
+  });
+
+  it('Deletes test panel', () => {
+    moveToPanelHome();
+    cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('.euiContextMenuItem__text').contains('Delete').trigger('mouseover').click();
+    cy.wait(delayTime);
+    cy.get('button.euiButton--danger').should('be.disabled');
+    cy.get('input.euiFieldText[placeholder="delete"]').focus().type('delete', {
+      delayTime: 50,
+    });
+    cy.get('button.euiButton--danger').should('not.be.disabled');
+    cy.get('.euiButton__text').contains('Delete').trigger('mouseover').click();
+
+    cy.get('.euiTextAlign').contains('No Operational Panels').should('exist');
   });
 });
