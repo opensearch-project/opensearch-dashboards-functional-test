@@ -2,11 +2,11 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
+import _ from 'lodash';
 
-import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor';
 import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
-import sampleDestination from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_custom_webhook.json';
 import { BASE_PATH } from "../../../utils/base_constants";
 
 const SAMPLE_MONITOR = 'sample_query_level_monitor';
@@ -14,6 +14,53 @@ const UPDATED_MONITOR = 'updated_query_level_monitor';
 const SAMPLE_MONITOR_WITH_ANOTHER_NAME = 'sample_query_level_monitor_with_always_true_trigger';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
+
+const addVisualQueryLevelTrigger = (
+  triggerName,
+  triggerIndex,
+  isEdit = true,
+  thresholdEnum,
+  thresholdValue
+) => {
+  // Click 'Add trigger' button
+  cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+
+  if (isEdit) {
+    // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
+    //  If this ever becomes available, it can be used to pass data-test-subj for the button.
+    // Since the above is currently not possible, referring to the accordion button using its content
+    cy.get('button').contains('New trigger').click();
+  }
+
+  // Type in the trigger name
+  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(triggerName);
+
+  // Type in the condition thresholdEnum
+  cy.get(
+    `[data-test-subj="triggerDefinitions[${triggerIndex}].thresholdEnum_conditionEnumField"]`
+  ).select(thresholdEnum);
+
+  // Type in the condition thresholdValue
+  cy.get(
+    `[data-test-subj="triggerDefinitions[${triggerIndex}].thresholdValue_conditionValueField"]`
+  )
+    .clear()
+    .type(`${thresholdValue}{enter}`);
+
+  // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
+  //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
+  //  ideally take place in the before() block, and clearing should occur in the after() block.
+  // // Type in the action name
+  // cy.get(
+  //   `input[name="triggerDefinitions[${triggerIndex}].actions.0.name"]`
+  // ).type(`${triggerName}-${triggerIndex}-action1`, { force: true });
+  //
+  // // Click the combo box to list all the destinations
+  // // Using key typing instead of clicking the menu option to avoid occasional failure
+  // cy.get(`[data-test-subj="triggerDefinitions[${triggerIndex}].actions.0_actionDestination"]`)
+  //   .click({ force: true })
+  //   .type(`${SAMPLE_DESTINATION}{downarrow}{enter}`);
+};
 
 describe('Query-Level Monitors', () => {
   beforeEach(() => {
@@ -30,11 +77,6 @@ describe('Query-Level Monitors', () => {
   describe('can be created', () => {
     before(() => {
       cy.deleteAllMonitors();
-      
-      // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
-      //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
-      //  ideally take place in the before() block, and clearing should occur in the after() block.
-      // cy.createDestination(sampleDestination);
     });
 
     it('by extraction query', () => {
