@@ -13,19 +13,19 @@ OSD_PLUGIN_TEST_PATH='cypress/integration/plugins'
 # If the build manifest exists in the expected path then we can read the components to execute component tests if the
 # component exists. If the build manifest does not exist then we can just use a default list of tests.
 function get_test_list() {
-    [ ! -f $OSD_MANIFEST_PATH ] && generate_test_list_from_build_manifest || generate_test_list
+    [ -f $OSD_MANIFEST_PATH ] && generate_test_list_from_build_manifest || generate_test_list
 }
 
 function generate_test_list() {
-    # DEFAULT_TEST_FILES="$OSD_TEST_PATH/opensearch-dashboards/*.js"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/alerting-dashboards-plugin/*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/anomaly-detection-dashboards-plugin/*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/gantt-chart-dashboards/*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/index-management-dashboards-plugin/*"
-    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/observability-dashboards/0*,$OSD_PLUGIN_TEST_PATH/observability-dashboards/7*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/query-workbench-dashboards/*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/reports-dashboards/*"
-    # DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/security/*"
+    DEFAULT_TEST_FILES="$OSD_TEST_PATH/opensearch-dashboards/*.js"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/alerting-dashboards-plugin/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/anomaly-detection-dashboards-plugin/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/gantt-chart-dashboards/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/index-management-dashboards-plugin/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/observability-dashboards/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/query-workbench-dashboards/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/reports-dashboards/*"
+    DEFAULT_TEST_FILES+=",$OSD_PLUGIN_TEST_PATH/security/*"
 
     echo "$DEFAULT_TEST_FILES"
 }
