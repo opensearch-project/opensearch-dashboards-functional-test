@@ -79,6 +79,9 @@ then
   PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 fi
 
+EXECUTE_TESTS=$(is_distribution_supported)
+[ $EXECUTE_TESTS = 'false' ] && echo "Distribution type not supported. Only TARs are supported. Skipping tests." && exit 0
+
 npm install
 
 TEST_FILES=$(get_test_list)
