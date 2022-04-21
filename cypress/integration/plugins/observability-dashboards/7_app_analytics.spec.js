@@ -122,7 +122,7 @@ describe('Creating application', () => {
     cy.wait('@addPanels');
     cy.wait('@putApplication');
     cy.wait('@postQuery.all');
-    cy.get('.euiTitle').contains(nameOne).should('exist');
+    cy.get('.euiTitle--large', { timeout: 60000 }).contains(nameOne, { timeout: 60000 }).should('exist');
     cy.get('.euiTab').contains('Panel').click();
     cy.get('.euiText').contains('Start by adding your first visualization').should('exist');
   });
@@ -626,7 +626,7 @@ describe('Application Analytics home page', () => {
   });
 
   it('Deletes application', () => {
-    cy.get('.euiPopover').contains('Actions').click();
+    cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.get('.euiContextMenuItem-isDisabled').contains('Delete').should('exist');
     cy.get('.euiTableRow').eq(0).within(($row) => {
       cy.get('.euiCheckbox').click();
@@ -635,7 +635,7 @@ describe('Application Analytics home page', () => {
       cy.get('.euiCheckbox').click();
     });
     cy.wait(delayTime);
-    cy.get('.euiPopover').contains('Actions').click();
+    cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem').contains('Delete').click();
     cy.get('.euiButton--fill').contains('Delete').click();
