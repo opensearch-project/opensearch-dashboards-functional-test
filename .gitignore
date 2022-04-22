@@ -6,3 +6,4 @@ cypress/screenshots/
 **/.DS_Store
 .idea
 
+/.opensearch

@@ -1,6 +1,6 @@
 {
   "name": "opensearch-dashboards-functional-test",
-  "version": "2.0.0",
+  "version": "2.0.0-rc1",
   "description": "Maintains functional tests for OpenSearch Dashboards and Dashboards plugins",
   "main": "index.js",
   "scripts": {
@@ -19,7 +19,8 @@
     "cypress:release-chromium-0": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=0 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-firefox": "yarn cypress:run-with-security --browser firefox --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-ad-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'",
-    "cypress:release-ism-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'"
+    "cypress:release-ism-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'",
+    "pkg-version": "./scripts/getpkgversion.sh"
   },
   "repository": {
     "type": "git",

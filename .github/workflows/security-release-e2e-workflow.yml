@@ -10,4 +10,3 @@ jobs:
     with:
       test-name: Security
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security/*'
-      version: 1.3.0
