@@ -5,8 +5,8 @@
 
 import { AD_URL } from '../../../utils/constants';
 
-context('Historical results page', () => {
-  function verifyAnomaliesInCharts() {
+describe('Historical results page', () => {
+  const verifyAnomaliesInCharts = () => {
     // Wait for any kicked off historical analysis to finish. Relying on default
     // timeout (60s) to find an element that only shows up when the analysis is finished
     cy.getElementByTestId('detectorStateFinished').should('exist');
@@ -28,7 +28,7 @@ context('Historical results page', () => {
     );
   }
 
-  function verifyNoAnomaliesInCharts() {
+  const verifyNoAnomaliesInCharts = () => {
     // Wait for any kicked off historical analysis to finish. Relying on default
     // timeout (60s) to find an element that only shows up when the analysis is finished
     cy.getElementByTestId('detectorStateFinished').should('exist');
@@ -107,20 +107,31 @@ context('Historical results page', () => {
       cy.contains('Refresh').click();
       verifyNoAnomaliesInCharts();
       
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
-      cy.get(`[aria-label="Previous time window"]`).click();
-      cy.contains('Refresh').click();
-      verifyAnomaliesInCharts();
+      cy.get('body').then($body => {
+        if ($body.find('[aria-label="Previous time window"]').length == 0) {
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+        }
+
+        cy.get(`[aria-label="Previous time window"]`).click();
+        cy.contains('Refresh').click();
+        verifyAnomaliesInCharts();
+      });
     });
 
     it('Aggregations render anomalies', () => {
+      cy.get('body').then($body => {
+        if ($body.find('[aria-label="Previous time window"]').length > 0) {
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+        }
+      });
+
       cy.contains('Refresh').click();
       cy.wait(2000);
-      cy.get(`[title="Daily max"]`).click();
+      cy.contains('Daily max').click();
       verifyAnomaliesInCharts();
-      cy.get(`[title="Weekly max"]`).click();
+      cy.contains('Weekly max').click();
       verifyAnomaliesInCharts();
-      cy.get(`[title="Monthly max"]`).click();
+      cy.contains('Monthly max').click();
       verifyAnomaliesInCharts();
     });
 
