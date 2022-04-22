@@ -213,20 +213,28 @@ describe('Bucket-Level Monitors', () => {
 
       cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select('count');
 
-      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').type(
-        `${COUNT_METRIC_FIELD}{downArrow}{enter}`
-      );
+      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').click().within(() => {
+        cy.get('[data-test-subj="comboBoxSearchInput"]')
+          .focus()
+          .clear({ force: true })
+          .type(`${COUNT_METRIC_FIELD}{downArrow}{enter}`)
+          .trigger('blur', { force: true });
+      });
 
       cy.get('button').contains('Save').click();
 
       // Add a second metric for the query
       cy.get('[data-test-subj="addMetricButton"]').click();
 
-      cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select('avg');
+      cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select('avg');
 
-      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').type(
-        `${AVERAGE_METRIC_FIELD}{downArrow}{enter}`
-      );
+      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').click().within(() => {
+        cy.get('[data-test-subj="comboBoxSearchInput"]')
+          .focus()
+          .clear({ force: true })
+          .type(`${AVERAGE_METRIC_FIELD}{downArrow}{enter}`)
+          .trigger('blur', { force: true });
+      });
 
       cy.get('button').contains('Save').click();
 
