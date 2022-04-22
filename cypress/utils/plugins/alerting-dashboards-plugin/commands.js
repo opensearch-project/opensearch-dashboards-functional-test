@@ -35,10 +35,6 @@ Cypress.Commands.add('createMonitor', (monitorJSON) => {
   cy.request('POST', `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}`, monitorJSON);
 });
 
-Cypress.Commands.add('createDestination', (destinationJSON) => {
-  cy.request('POST', `${Cypress.env('openSearchUrl')}${ALERTING_API.DESTINATION_BASE}`, destinationJSON);
-});
-
 Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
   cy.request('POST', `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}`, monitorJSON).then(
     (response) => {
@@ -95,25 +91,6 @@ Cypress.Commands.add('deleteAllMonitors', () => {
       }
     } else {
       cy.log('Failed to get all monitors.', response);
-    }
-  });
-});
-
-Cypress.Commands.add('deleteAllDestinations', () => {
-  cy.request({
-    method: 'GET',
-    url: `${Cypress.env('openSearchUrl')}${ALERTING_API.DESTINATION_BASE}?size=200`,
-    failOnStatusCode: false, // In case there is no alerting config index in cluster, where the status code is 404
-  }).then((response) => {
-    if (response.status === 200) {
-      for (let i = 0; i < response.body.totalDestinations; i++) {
-        cy.request(
-          'DELETE',
-          `${Cypress.env('openSearchUrl')}${ALERTING_API.DESTINATION_BASE}/${response.body.destinations[i].id}`
-        );
-      }
-    } else {
-      cy.log('Failed to get all destinations.', response);
     }
   });
 });

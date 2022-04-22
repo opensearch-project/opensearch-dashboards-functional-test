@@ -5,7 +5,6 @@
 
 import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query';
-import sampleDestination from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_destination_custom_webhook';
 import sampleExtractionQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_extraction_query_bucket_level_monitor';
 import sampleVisualEditorMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_visual_editor_bucket_level_monitor';
 import { BASE_PATH } from "../../../utils/base_constants";
@@ -97,11 +96,6 @@ const addTriggerToVisualEditorMonitor = (triggerName, triggerIndex, actionName, 
 
 describe('Bucket-Level Monitors', () => {
   before(() => {
-   // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
-    //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
-    //  ideally take place in the before() block, and clearing should occur in the after() block.
-    // cy.createDestination(sampleDestination);
-
     // Load sample data
     cy.loadSampleEcommerceData();
   });
@@ -219,9 +213,13 @@ describe('Bucket-Level Monitors', () => {
 
       cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select('count');
 
-      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').type(
-        `${COUNT_METRIC_FIELD}{downArrow}{enter}`
-      );
+      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').click().within(() => {
+        cy.get('[data-test-subj="comboBoxSearchInput"]')
+          .focus()
+          .clear({ force: true })
+          .type(`${COUNT_METRIC_FIELD}{downArrow}{enter}`)
+          .trigger('blur', { force: true });
+      });
 
       cy.get('button').contains('Save').click();
 
@@ -230,9 +228,13 @@ describe('Bucket-Level Monitors', () => {
 
       cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select('avg');
 
-      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').type(
-        `${AVERAGE_METRIC_FIELD}{downArrow}{enter}`
-      );
+      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').click().within(() => {
+        cy.get('[data-test-subj="comboBoxSearchInput"]')
+          .focus()
+          .clear({ force: true })
+          .type(`${AVERAGE_METRIC_FIELD}{downArrow}{enter}`)
+          .trigger('blur', { force: true });
+      });
 
       cy.get('button').contains('Save').click();
 
@@ -308,9 +310,8 @@ describe('Bucket-Level Monitors', () => {
   });
 
   after(() => {
-    // Delete all monitors and destinations
+    // Delete all monitors
     cy.deleteAllMonitors();
-    cy.deleteAllDestinations();
 
     // Delete sample data
     cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
