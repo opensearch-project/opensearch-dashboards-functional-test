@@ -222,9 +222,9 @@ describe('Bucket-Level Monitors', () => {
       // Add a second metric for the query
       cy.get('[data-test-subj="addMetricButton"]').click();
 
-      cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select('avg');
+      cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select('avg');
 
-      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').type(
+      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').type(
         `${AVERAGE_METRIC_FIELD}{downArrow}{enter}`
       );
 
