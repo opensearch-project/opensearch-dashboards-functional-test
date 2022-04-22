@@ -23,6 +23,15 @@ jobs:
         with:
           java-version: 14
       # dependencies: OpenSearch
+      - name: Checkout monetery-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: monetery-test
+      - name: Get package version
+        working-directory: monetery-test
+        run: |
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
       - name: Checkout OpenSearch
         uses: actions/checkout@v2
         with:

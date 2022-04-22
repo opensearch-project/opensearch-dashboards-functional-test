@@ -13,7 +13,7 @@ OSD_PLUGIN_TEST_PATH='cypress/integration/plugins'
 # If the build manifest exists in the expected path then we can read the components to execute component tests if the
 # component exists. If the build manifest does not exist then we can just use a default list of tests.
 function get_test_list() {
-    [ -f $OSD_MANIFEST_PATH ] && generate_test_list_from_build_manifest || generate_test_list
+    [ -f $OSD_BUILD_MANIFEST ] && generate_test_list_from_build_manifest || generate_test_list
 }
 
 function generate_test_list() {

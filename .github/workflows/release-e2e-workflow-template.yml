@@ -8,11 +8,6 @@ on:
       test-command:
         required: true
         type: string
-      version:
-        required: true
-        type: string
-env:
-  VERSION: ${{ inputs.version }}
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -27,16 +22,25 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 14
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: cypress-test
+      - name: Get package version
+        working-directory: cypress-test
+        run: |
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
       - name: Get and run OpenSearch
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
           ./opensearch-tar-install.sh &
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Get node and yarn versions
         id: versions
@@ -52,11 +56,6 @@ jobs:
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
-      - name: Checkout cypress-test
-        uses: actions/checkout@v2
-        with:
-          repository: ${{github.repository}}
-          path: cypress-test
       - name: Get Cypress version
         id: cypress_version
         run: |
