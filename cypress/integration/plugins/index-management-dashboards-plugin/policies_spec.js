@@ -202,7 +202,7 @@ describe('Policies', () => {
 
       cy.contains(POLICY_ID);
       cy.contains(samplePolicy.policy.description);
-      samplePolicy.policy.states.forEach((state, i) => {
+      samplePolicy.policy.states.forEach((state) => {
         cy.contains(state.name);
       });
 

@@ -19,7 +19,6 @@ const SAMPLE_CLUSTER_METRICS_CAT_SNAPSHOTS_MONITOR =
   'sample_cluster_metrics_cat_snapshots_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
-const SAMPLE_DESTINATION = 'sample_destination';
 
 const addClusterMetricsTrigger = (
   triggerName,

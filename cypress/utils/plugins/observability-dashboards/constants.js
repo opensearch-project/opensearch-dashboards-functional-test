@@ -38,7 +38,7 @@ export const testIndexDataSet = [
 
 export const supressResizeObserverIssue = () => {
   // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-  cy.on('uncaught:exception', (err, runnable) => {
+  cy.on('uncaught:exception', (err) => {
     if (err.message.includes('ResizeObserver loop')) return false;
   });
 };

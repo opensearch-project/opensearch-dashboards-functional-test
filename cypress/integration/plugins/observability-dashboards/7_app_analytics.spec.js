@@ -263,7 +263,7 @@ describe('Creating application', () => {
       .click();
     cy.get('.euiFilterSelectItem').contains(service_one).trigger('click');
     cy.get('.euiBadge').contains('1').should('exist');
-    cy.get('.euiAccordion-isOpen').within(($service) => {
+    cy.get('.euiAccordion-isOpen').within(() => {
       cy.get('.euiButton').contains('Clear all').click();
     });
     cy.get('.euiButton--danger').contains('Clear all').click();
@@ -283,7 +283,7 @@ describe('Creating application', () => {
     cy.get('.euiFilterSelectItem').contains(trace_one).trigger('click');
     cy.get('.euiFilterSelectItem').contains(trace_two).trigger('click');
     cy.get('.euiBadge').contains('2').should('exist');
-    cy.get('.euiAccordion-isOpen').within(($trace) => {
+    cy.get('.euiAccordion-isOpen').within(() => {
       cy.get('.euiButton').contains('Clear all').click();
     });
     cy.get('.euiButton--danger').contains('Clear all').click();
@@ -344,7 +344,7 @@ describe('Viewing application', () => {
     changeTimeTo24('months');
     cy.get('.euiBasicTable')
       .first()
-      .within(($table) => {
+      .within(() => {
         cy.get('.plot-container').should('have.length.at.least', 1);
       });
   });
@@ -409,7 +409,7 @@ describe('Viewing application', () => {
     supressResizeObserverIssue();
     cy.wait(delayTime * 3);
     cy.get('.euiFlyout').contains('Service detail').should('be.visible');
-    cy.get('.euiFlyout').within(($flyout) => {
+    cy.get('.euiFlyout').within(() => {
       cy.get('.euiDescriptionList').contains('3.52').should('exist');
       cy.get('[data-text="Error rate"]').click();
       cy.get('.ytitle').contains('Error rate').should('exist');
@@ -437,7 +437,7 @@ describe('Viewing application', () => {
     cy.wait(delayTime);
     cy.get('[title="03f9c770db5ee2f1caac0afc36db49ba"]').click();
     cy.get('.euiFlyout').contains('Trace detail').should('be.visible');
-    cy.get('.euiFlyout').within(($flyout) => {
+    cy.get('.euiFlyout').within(() => {
       cy.get('.euiDescriptionList').contains('224.99').should('exist');
     });
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
@@ -460,7 +460,7 @@ describe('Viewing application', () => {
     cy.wait(delayTime);
     cy.get('.euiLink').contains('5ff3516909562c60').click();
     cy.get('.euiFlyout').contains('Span detail').should('be.visible');
-    cy.get('.euiFlyout').within(($flyout) => {
+    cy.get('.euiFlyout').within(() => {
       cy.get('.euiText').contains('HTTP GET').should('exist');
     });
     cy.get('.euiText').contains('order').click();
@@ -705,7 +705,7 @@ describe('Viewing application', () => {
     cy.wait(delayTime);
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     cy.get('.euiButton__text').contains('Actions').click();
@@ -777,7 +777,7 @@ describe('Application Analytics home page', () => {
     cy.get('.euiContextMenuItem-isDisabled').contains('Rename').should('exist');
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     cy.wait(delayTime);
@@ -791,7 +791,7 @@ describe('Application Analytics home page', () => {
     );
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiLink').contains(newName).should('exist');
       });
   });
@@ -801,12 +801,12 @@ describe('Application Analytics home page', () => {
     cy.get('.euiContextMenuItem-isDisabled').contains('Delete').should('exist');
     cy.get('.euiTableRow')
       .eq(0)
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     cy.get('.euiTableRow')
       .eq(1)
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     // if action menu is still visable and close it to refresh the state

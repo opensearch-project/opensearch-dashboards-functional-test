@@ -6,8 +6,6 @@
 import {
   BASE_SEC_UI_PATH,
   SEC_FIXTURES_BASE_PATH,
-  SEC_PERMISSIONS_FIXTURES_PATH,
-  SEC_UI_PERMISSIONS_PATH,
 } from '../../../utils/constants';
 
 if (Cypress.env('SECURITY_ENABLED')) {

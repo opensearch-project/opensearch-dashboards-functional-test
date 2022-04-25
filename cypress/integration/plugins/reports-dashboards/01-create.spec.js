@@ -6,7 +6,6 @@
 import {
   visitReportingLandingPage,
   WAIT_TIME,
-  LONG_WAIT_TIME,
   BASE_PATH,
 } from '../../../utils/constants';
 

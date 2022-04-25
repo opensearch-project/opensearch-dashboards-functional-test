@@ -22,7 +22,6 @@ const SAMPLE_DAYS_INTERVAL_MONITOR = 'sample_days_interval_query_level_monitor';
 const SAMPLE_CRON_EXPRESSION_MONITOR =
   'sample_cron_expression_query_level_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
-const SAMPLE_ACTION = 'sample_action';
 
 const addVisualQueryLevelTrigger = (
   triggerName,

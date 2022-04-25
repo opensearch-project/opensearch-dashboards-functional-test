@@ -61,7 +61,7 @@ describe('Testing services table', () => {
 describe('Testing service view empty state', () => {
   beforeEach(() => {
     // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-    cy.on('uncaught:exception', (err, runnable) => {
+    cy.on('uncaught:exception', (err) => {
       if (err.message.includes('ResizeObserver loop')) return false;
     });
     cy.visit(
@@ -84,7 +84,7 @@ describe('Testing service view empty state', () => {
 describe('Testing service view', () => {
   beforeEach(() => {
     // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-    cy.on('uncaught:exception', (err, runnable) => {
+    cy.on('uncaught:exception', (err) => {
       if (err.message.includes('ResizeObserver loop')) return false;
     });
     cy.visit(
