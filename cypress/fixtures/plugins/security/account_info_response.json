@@ -1,23 +1,18 @@
 {
-    "total": 9,
-    "data": {
-        "user_name": "admin",
-        "is_reserved": true,
-        "is_hidden": false,
-        "is_internal_user": true,
-        "user_requested_tenant": "",
-        "backend_roles": [
-            "admin"
-        ],
-        "custom_attribute_names": [],
-        "tenants": {
-            "global_tenant": true,
-            "admin_tenant": true,
-            "admin": true
-        },
-        "roles": [
-            "own_index",
-            "all_access"
-        ]
-    }
+  "total": 9,
+  "data": {
+    "user_name": "admin",
+    "is_reserved": true,
+    "is_hidden": false,
+    "is_internal_user": true,
+    "user_requested_tenant": "",
+    "backend_roles": ["admin"],
+    "custom_attribute_names": [],
+    "tenants": {
+      "global_tenant": true,
+      "admin_tenant": true,
+      "admin": true
+    },
+    "roles": ["own_index", "all_access"]
+  }
 }

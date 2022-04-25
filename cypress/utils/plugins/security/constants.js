@@ -11,12 +11,13 @@ import { BASE_PATH } from '../../base_constants';
  *****************************
  */
 
-
 // Fixtures path
 export const SEC_FIXTURES_BASE_PATH = 'plugins/security';
-export const SEC_PERMISSIONS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/permissions';
+export const SEC_PERMISSIONS_FIXTURES_PATH =
+  SEC_FIXTURES_BASE_PATH + '/permissions';
 export const SEC_AUDIT_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/audit';
-export const SEC_INTERNALUSERS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/internalusers';
+export const SEC_INTERNALUSERS_FIXTURES_PATH =
+  SEC_FIXTURES_BASE_PATH + '/internalusers';
 export const SEC_ROLES_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/roles';
 export const SEC_TENANTS_FIXTURES_PATH = SEC_FIXTURES_BASE_PATH + '/tenants';
 
@@ -31,7 +32,8 @@ export const SEC_UI_ROLES_CREATE_PATH = SEC_UI_ROLES_PATH + '/create';
 export const SEC_UI_INTERNAL_USERS_PATH = BASE_SEC_UI_PATH + '/users';
 export const SEC_UI_USER_EDIT_PATH = SEC_UI_INTERNAL_USERS_PATH + '/edit';
 export const SEC_UI_USER_CREATE_PATH = SEC_UI_INTERNAL_USERS_PATH + '/create';
-export const SEC_UI_USER_DUPLICATE_PATH = SEC_UI_INTERNAL_USERS_PATH + '/duplicate';
+export const SEC_UI_USER_DUPLICATE_PATH =
+  SEC_UI_INTERNAL_USERS_PATH + '/duplicate';
 
 export const SEC_UI_PERMISSIONS_PATH = BASE_SEC_UI_PATH + '/permissions';
 
