@@ -6,10 +6,9 @@
 /// <reference types="cypress" />
 
 describe('After', () => {
-    before(() => {
-      cy.deleteAllIndices();
-    });
+  before(() => {
+    cy.deleteAllIndices();
+  });
 
-    it('clean up complete', () => {});
-  }
-);
+  it('clean up complete', () => {});
+});

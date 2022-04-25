@@ -5,7 +5,12 @@
 
 /// <reference types="cypress" />
 
-import { delayTime, setTimeFilter, SPAN_ID, TRACE_ID } from '../../../utils/constants';
+import {
+  delayTime,
+  setTimeFilter,
+  SPAN_ID,
+  TRACE_ID,
+} from '../../../utils/constants';
 
 describe('Testing traces table empty state', () => {
   beforeEach(() => {
@@ -61,11 +66,14 @@ describe('Testing traces table', () => {
 
 describe('Testing trace view', () => {
   beforeEach(() => {
-    cy.visit(`app/observability-dashboards#/trace_analytics/traces/${TRACE_ID}`, {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
+    cy.visit(
+      `app/observability-dashboards#/trace_analytics/traces/${TRACE_ID}`,
+      {
+        onBeforeLoad: (win) => {
+          win.sessionStorage.clear();
+        },
+      }
+    );
   });
 
   it('Renders the trace view', () => {
@@ -80,7 +88,9 @@ describe('Testing trace view', () => {
   });
 
   it('Has working breadcrumbs', () => {
-    cy.get(`.euiBreadcrumb[href="#/trace_analytics/traces/${TRACE_ID}"]`).click();
+    cy.get(
+      `.euiBreadcrumb[href="#/trace_analytics/traces/${TRACE_ID}"]`
+    ).click();
     cy.wait(delayTime);
     cy.get('h2.euiTitle').contains(TRACE_ID).should('exist');
     cy.get('.euiBreadcrumb[href="#/trace_analytics/traces"]').click();
@@ -100,13 +110,19 @@ describe('Testing trace view', () => {
 
     cy.wait(delayTime);
     cy.get('.euiLink').contains(SPAN_ID).trigger('mouseover', { force: true });
-    cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
-    cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true }); // first click doesn't go through eui data grid
+    cy.get('button[data-datagrid-interactable="true"]')
+      .eq(0)
+      .click({ force: true });
+    cy.get('button[data-datagrid-interactable="true"]')
+      .eq(0)
+      .click({ force: true }); // first click doesn't go through eui data grid
     cy.wait(delayTime);
     cy.contains('Span detail').should('exist');
     cy.contains('Span attributes').should('exist');
     cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
-    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({ force: true });
+    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({
+      force: true,
+    });
     cy.wait(delayTime);
 
     cy.get('.euiBadge__text').contains('spanId: ').should('exist');

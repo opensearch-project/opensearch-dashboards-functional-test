@@ -5,7 +5,12 @@
 
 /// <reference types="cypress" />
 
-import { delayTime, SERVICE_NAME, SERVICE_SPAN_ID, setTimeFilter } from '../../../utils/constants';
+import {
+  delayTime,
+  SERVICE_NAME,
+  SERVICE_SPAN_ID,
+  setTimeFilter,
+} from '../../../utils/constants';
 
 describe('Testing services table empty state', () => {
   beforeEach(() => {
@@ -35,13 +40,18 @@ describe('Testing services table', () => {
 
   it('Renders the services table', () => {
     cy.contains(' (8)').should('exist');
-    cy.contains('analytics-service, frontend-client, recommendation').should('exist');
+    cy.contains('analytics-service, frontend-client, recommendation').should(
+      'exist'
+    );
     cy.contains('186.95').should('exist');
     cy.contains('14.29%').should('exist');
   });
 
   it('Searches correctly', () => {
-    cy.get('input[type="search"]').first().focus().type(`${SERVICE_NAME}{enter}`);
+    cy.get('input[type="search"]')
+      .first()
+      .focus()
+      .type(`${SERVICE_NAME}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.contains(' (1)').should('exist');
     cy.contains('3.57%').should('exist');
@@ -52,14 +62,16 @@ describe('Testing service view empty state', () => {
   beforeEach(() => {
     // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
     cy.on('uncaught:exception', (err, runnable) => {
-      if (err.message.includes('ResizeObserver loop'))
-        return false;
+      if (err.message.includes('ResizeObserver loop')) return false;
     });
-    cy.visit(`app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`, {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
+    cy.visit(
+      `app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`,
+      {
+        onBeforeLoad: (win) => {
+          win.sessionStorage.clear();
+        },
+      }
+    );
   });
 
   it('Renders service view empty state', () => {
@@ -73,14 +85,16 @@ describe('Testing service view', () => {
   beforeEach(() => {
     // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
     cy.on('uncaught:exception', (err, runnable) => {
-      if (err.message.includes('ResizeObserver loop'))
-        return false;
+      if (err.message.includes('ResizeObserver loop')) return false;
     });
-    cy.visit(`app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`, {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
+    cy.visit(
+      `app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`,
+      {
+        onBeforeLoad: (win) => {
+          win.sessionStorage.clear();
+        },
+      }
+    );
     setTimeFilter(undefined, false);
   });
 
@@ -107,13 +121,19 @@ describe('Testing service view', () => {
   });
 
   it('Renders spans data grid, flyout, filters', () => {
-    cy.get('.euiLink').contains(SERVICE_SPAN_ID).trigger('mouseover', { force: true });
-    cy.get('button[data-datagrid-interactable="true"]').eq(0).click({ force: true });
+    cy.get('.euiLink')
+      .contains(SERVICE_SPAN_ID)
+      .trigger('mouseover', { force: true });
+    cy.get('button[data-datagrid-interactable="true"]')
+      .eq(0)
+      .click({ force: true });
     cy.wait(delayTime);
     cy.contains('Span detail').should('exist');
     cy.contains('Span attributes').should('exist');
     cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
-    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({ force: true });
+    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({
+      force: true,
+    });
     cy.wait(delayTime);
 
     cy.get('.euiBadge__text').contains('spanId: ').should('exist');

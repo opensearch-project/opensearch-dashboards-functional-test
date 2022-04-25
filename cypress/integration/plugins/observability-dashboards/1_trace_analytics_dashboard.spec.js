@@ -35,7 +35,7 @@ describe('Testing dashboard table', () => {
 
   after(() => {
     cy.get('[aria-label="Remove filter"]').click();
-  })
+  });
 
   it('Renders the dashboard table', () => {
     cy.contains(' (10)').should('exist');
@@ -62,7 +62,9 @@ describe('Testing dashboard table', () => {
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
 
-    cy.contains('Latency percentile within trace group: >= 95th').should('exist');
+    cy.contains('Latency percentile within trace group: >= 95th').should(
+      'exist'
+    );
     cy.contains(' (7)').should('exist');
     cy.contains('318.69').should('exist');
 
@@ -71,7 +73,9 @@ describe('Testing dashboard table', () => {
     cy.contains(' < 95 percentile').click({ force: true });
     cy.wait(delayTime);
 
-    cy.contains('Latency percentile within trace group: < 95th').should('exist');
+    cy.contains('Latency percentile within trace group: < 95th').should(
+      'exist'
+    );
     cy.contains(' (8)').should('exist');
     cy.contains('383.05').should('exist');
   });
@@ -79,7 +83,9 @@ describe('Testing dashboard table', () => {
   it('Opens latency trend popover', () => {
     setTimeFilter(true);
     cy.get('.euiButtonIcon[aria-label="Open popover"]').first().click();
-    cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should('exist');
+    cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should(
+      'exist'
+    );
   });
 
   it('Redirects to traces table with filter', () => {
@@ -129,7 +135,9 @@ describe('Testing plots', () => {
 
   it('Renders plots', () => {
     cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
-    cy.get('text.annotation-text[data-unformatted="Now: 14.81%"]').should('exist');
+    cy.get('text.annotation-text[data-unformatted="Now: 14.81%"]').should(
+      'exist'
+    );
     cy.get('text.ytitle[data-unformatted="Throughput (n)"]').should('exist');
     cy.get('text.annotation-text[data-unformatted="Now: 108"]').should('exist');
   });
