@@ -3,14 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import {
+  ALERTING_INDEX,
+  ALERTING_PLUGIN_NAME,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query';
 import sampleExtractionQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_extraction_query_bucket_level_monitor';
 import sampleVisualEditorMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_visual_editor_bucket_level_monitor';
-import { BASE_PATH } from "../../../utils/base_constants";
+import { BASE_PATH } from '../../../utils/base_constants';
 
-const SAMPLE_EXTRACTION_QUERY_MONITOR = 'sample_extraction_query_bucket_level_monitor';
-const SAMPLE_VISUAL_EDITOR_MONITOR = 'sample_visual_editor_bucket_level_monitor';
+const SAMPLE_EXTRACTION_QUERY_MONITOR =
+  'sample_extraction_query_bucket_level_monitor';
+const SAMPLE_VISUAL_EDITOR_MONITOR =
+  'sample_visual_editor_bucket_level_monitor';
 const UPDATED_MONITOR = 'updated_bucket_level_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
@@ -22,7 +27,12 @@ const GROUP_BY_FIELD = 'user';
 const COUNT_METRIC_NAME = 'count_products_quantity';
 const AVERAGE_METRIC_NAME = 'avg_products_base_price';
 
-const addTriggerToVisualEditorMonitor = (triggerName, triggerIndex, actionName, isEdit) => {
+const addTriggerToVisualEditorMonitor = (
+  triggerName,
+  triggerIndex,
+  actionName,
+  isEdit
+) => {
   // Add a trigger
   cy.contains('Add trigger').click({ force: true });
 
@@ -36,50 +46,60 @@ const addTriggerToVisualEditorMonitor = (triggerName, triggerIndex, actionName, 
   }
 
   // Type in the trigger name
-  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(triggerName);
-
-  // Edit the first metric condition for the trigger
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[0].queryMetric"]`).select(
-    `${AVERAGE_METRIC_NAME}`
+  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(
+    triggerName
   );
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[0].thresholdValue"]`)
+  // Edit the first metric condition for the trigger
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[0].queryMetric"]`
+  ).select(`${AVERAGE_METRIC_NAME}`);
+
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[0].thresholdValue"]`
+  )
     .clear()
     .type('200');
 
   // Add another metric condition for the trigger
   cy.get('[data-test-subj="addTriggerConditionButton"]').click();
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].andOrCondition"]`).select(
-    'OR'
-  );
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].andOrCondition"]`
+  ).select('OR');
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].queryMetric"]`).select(
-    `${COUNT_METRIC_NAME}`
-  );
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].queryMetric"]`
+  ).select(`${COUNT_METRIC_NAME}`);
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].thresholdEnum"]`).select(
-    'IS BELOW'
-  );
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].thresholdEnum"]`
+  ).select('IS BELOW');
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].thresholdValue"]`)
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].thresholdValue"]`
+  )
     .clear()
     .type('300');
 
   // Add a trigger where filter
-  cy.get(`[data-test-subj="triggerDefinitions[${triggerIndex}].where.addFilterButton"]`).click();
+  cy.get(
+    `[data-test-subj="triggerDefinitions[${triggerIndex}].where.addFilterButton"]`
+  ).click();
 
   cy.get(`[name="triggerDefinitions[${triggerIndex}].where.fieldName"]`).type(
     `${GROUP_BY_FIELD}{downarrow}{enter}`
   );
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].where.operator"]`).select('includes');
+  cy.get(`[name="triggerDefinitions[${triggerIndex}].where.operator"]`).select(
+    'includes'
+  );
 
   cy.get(`[name="triggerDefinitions[${triggerIndex}].where.fieldValue"]`)
     .type('a*')
     .trigger('blur', { force: true });
 
- // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
+  // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
   //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
   //  ideally take place in the before() block, and clearing should occur in the after() block.
   // // Type in the action name
@@ -203,38 +223,50 @@ describe('Bucket-Level Monitors', () => {
 
       // Wait for input to load and then type in the index name
       // Pressing enter at the end to create combo box entry and trigger change events for time field below
-      cy.get('#index').type(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, { force: true });
+      cy.get('#index').type(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, {
+        force: true,
+      });
 
       // Select 'order_date' as the timeField for the data source index
-      cy.get('#timeField').type(`${TIME_FIELD}{downArrow}{enter}`, { force: true });
+      cy.get('#timeField').type(`${TIME_FIELD}{downArrow}{enter}`, {
+        force: true,
+      });
 
       // Add a metric for the query
       cy.get('[data-test-subj="addMetricButton"]').click();
 
-      cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select('count');
+      cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select(
+        'count'
+      );
 
-      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').click().within(() => {
-        cy.get('[data-test-subj="comboBoxSearchInput"]')
-          .focus()
-          .clear({ force: true })
-          .type(`${COUNT_METRIC_FIELD}{downArrow}{enter}`)
-          .trigger('blur', { force: true });
-      });
+      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]')
+        .click()
+        .within(() => {
+          cy.get('[data-test-subj="comboBoxSearchInput"]')
+            .focus()
+            .clear({ force: true })
+            .type(`${COUNT_METRIC_FIELD}{downArrow}{enter}`)
+            .trigger('blur', { force: true });
+        });
 
       cy.get('button').contains('Save').click();
 
       // Add a second metric for the query
       cy.get('[data-test-subj="addMetricButton"]').click();
 
-      cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select('avg');
+      cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select(
+        'avg'
+      );
 
-      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').click().within(() => {
-        cy.get('[data-test-subj="comboBoxSearchInput"]')
-          .focus()
-          .clear({ force: true })
-          .type(`${AVERAGE_METRIC_FIELD}{downArrow}{enter}`)
-          .trigger('blur', { force: true });
-      });
+      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]')
+        .click()
+        .within(() => {
+          cy.get('[data-test-subj="comboBoxSearchInput"]')
+            .focus()
+            .clear({ force: true })
+            .type(`${AVERAGE_METRIC_FIELD}{downArrow}{enter}`)
+            .trigger('blur', { force: true });
+        });
 
       cy.get('button').contains('Save').click();
 
@@ -292,7 +324,9 @@ describe('Bucket-Level Monitors', () => {
         cy.contains(SAMPLE_VISUAL_EDITOR_MONITOR);
 
         // Select the monitor
-        cy.get('a').contains(SAMPLE_VISUAL_EDITOR_MONITOR).click({ force: true });
+        cy.get('a')
+          .contains(SAMPLE_VISUAL_EDITOR_MONITOR)
+          .click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });

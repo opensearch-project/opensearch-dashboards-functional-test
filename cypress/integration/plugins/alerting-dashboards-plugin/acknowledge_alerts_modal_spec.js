@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import {
+  ALERTING_INDEX,
+  ALERTING_PLUGIN_NAME,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
-import { BASE_PATH } from "../../../utils/base_constants";
+import { BASE_PATH } from '../../../utils/base_constants';
 
 const BUCKET_MONITOR = 'sample_alerts_flyout_bucket_level_monitor';
 const BUCKET_TRIGGER = 'sample_alerts_flyout_bucket_level_trigger';
@@ -80,50 +83,66 @@ describe('AcknowledgeAlertsModal', () => {
     cy.get('[data-test-subj="acknowledgeAlertsButton"]').click();
 
     // Perform the test checks within the modal component.
-    cy.get(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).within(() => {
-      // Confirm modal header contains expected text.
-      cy.get(`[data-test-subj="alertsDashboardModal_header_${BUCKET_TRIGGER}"]`).contains(
-        `Select which alerts to acknowledge for ${BUCKET_TRIGGER}`
-      );
+    cy.get(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).within(
+      () => {
+        // Confirm modal header contains expected text.
+        cy.get(
+          `[data-test-subj="alertsDashboardModal_header_${BUCKET_TRIGGER}"]`
+        ).contains(`Select which alerts to acknowledge for ${BUCKET_TRIGGER}`);
 
-      // Set the 'severity' filter to only display ACTIVE alerts.
-      cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
+        // Set the 'severity' filter to only display ACTIVE alerts.
+        cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
 
-      // This monitor configuration consistently returns 46 alerts when testing locally.
-      // Confirm the modal dashboard contains more than 1 ACTIVE alert.
-      cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-        expect($tr).to.have.length.greaterThan(1)
-      );
+        // This monitor configuration consistently returns 46 alerts when testing locally.
+        // Confirm the modal dashboard contains more than 1 ACTIVE alert.
+        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+          expect($tr).to.have.length.greaterThan(1)
+        );
 
-      // Select the first and last alerts in the table.
-      cy.get('input[data-test-subj^="checkboxSelectRow-"]', { timeout: TWENTY_SECONDS })
-        .first()
-        .click();
-      cy.get('input[data-test-subj^="checkboxSelectRow-"]', { timeout: TWENTY_SECONDS })
-        .last()
-        .click();
+        // Select the first and last alerts in the table.
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
+          timeout: TWENTY_SECONDS,
+        })
+          .first()
+          .click();
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
+          timeout: TWENTY_SECONDS,
+        })
+          .last()
+          .click();
 
-      // Press the modal 'Acknowledge button, and wait for the AcknowledgeAlerts API call to complete.
-      cy.get('[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]').click();
-    });
+        // Press the modal 'Acknowledge button, and wait for the AcknowledgeAlerts API call to complete.
+        cy.get(
+          '[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]'
+        ).click();
+      }
+    );
 
     // Confirm acknowledge alerts toast displays expected text.
     cy.contains('Successfully acknowledged 2 alerts.');
 
     // Confirm alerts were acknowledged as expected.
-    cy.get(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).within(() => {
-      // Set the 'severity' filter to only display ACKNOWLEDGED alerts.
-      cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Acknowledged');
+    cy.get(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).within(
+      () => {
+        // Set the 'severity' filter to only display ACKNOWLEDGED alerts.
+        cy.get('[data-test-subj="dashboardAlertStateFilter"]').select(
+          'Acknowledged'
+        );
 
-      // Confirm the table displays 2 acknowledged alerts.
-      cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-        expect($tr).to.have.length(2)
-      );
-    });
+        // Confirm the table displays 2 acknowledged alerts.
+        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+          expect($tr).to.have.length(2)
+        );
+      }
+    );
 
     // Confirm close button hides the modal.
-    cy.get(`[data-test-subj="alertsDashboardModal_closeButton_${BUCKET_TRIGGER}"]`).click();
-    cy.contains(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).should('not.exist');
+    cy.get(
+      `[data-test-subj="alertsDashboardModal_closeButton_${BUCKET_TRIGGER}"]`
+    ).click();
+    cy.contains(
+      `[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`
+    ).should('not.exist');
   });
 
   it('Query-level monitor modal test', () => {
@@ -142,44 +161,56 @@ describe('AcknowledgeAlertsModal', () => {
     cy.get('[data-test-subj="acknowledgeAlertsButton"]').click();
 
     // Perform the test checks within the modal component.
-    cy.get(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).within(() => {
-      // Confirm modal header contains expected text.
-      cy.get(`[data-test-subj="alertsDashboardModal_header_${QUERY_TRIGGER}"]`).contains(
-        `Select which alerts to acknowledge for ${QUERY_TRIGGER}`
-      );
+    cy.get(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).within(
+      () => {
+        // Confirm modal header contains expected text.
+        cy.get(
+          `[data-test-subj="alertsDashboardModal_header_${QUERY_TRIGGER}"]`
+        ).contains(`Select which alerts to acknowledge for ${QUERY_TRIGGER}`);
 
-      // Set the 'severity' filter to only display ACTIVE alerts.
-      cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
+        // Set the 'severity' filter to only display ACTIVE alerts.
+        cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
 
-      // Confirm the modal dashboard contains 1 alert.
-      cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-        expect($tr).to.have.length(1)
-      );
+        // Confirm the modal dashboard contains 1 alert.
+        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+          expect($tr).to.have.length(1)
+        );
 
-      // Select the alert.
-      cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
+        // Select the alert.
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
 
-      // Press the modal 'Acknowledge' button, and wait for the AcknowledgeAlerts API call to complete.
-      cy.get('[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]').click();
-    });
+        // Press the modal 'Acknowledge' button, and wait for the AcknowledgeAlerts API call to complete.
+        cy.get(
+          '[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]'
+        ).click();
+      }
+    );
 
     // Confirm acknowledge alerts toast displays expected text.
     cy.contains('Successfully acknowledged 1 alert.');
 
     // Confirm alerts were acknowledged as expected.
-    cy.get(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).within(() => {
-      // Set the 'severity' filter to only display ACKNOWLEDGED alerts.
-      cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Acknowledged');
+    cy.get(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).within(
+      () => {
+        // Set the 'severity' filter to only display ACKNOWLEDGED alerts.
+        cy.get('[data-test-subj="dashboardAlertStateFilter"]').select(
+          'Acknowledged'
+        );
 
-      // Confirm the table displays 1 acknowledged alert.
-      cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-        expect($tr).to.have.length(1)
-      );
-    });
+        // Confirm the table displays 1 acknowledged alert.
+        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+          expect($tr).to.have.length(1)
+        );
+      }
+    );
 
     // Confirm close button hides the modal.
-    cy.get(`[data-test-subj="alertsDashboardModal_closeButton_${QUERY_TRIGGER}"]`).click();
-    cy.contains(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).should('not.exist');
+    cy.get(
+      `[data-test-subj="alertsDashboardModal_closeButton_${QUERY_TRIGGER}"]`
+    ).click();
+    cy.contains(
+      `[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`
+    ).should('not.exist');
   });
 
   after(() => {

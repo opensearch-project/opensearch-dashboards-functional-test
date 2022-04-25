@@ -5,17 +5,29 @@
 
 import sampleClusterMetricsMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_cluster_metrics_monitor.json';
 
-import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import { BASE_PATH } from "../../../utils/base_constants";
+import {
+  ALERTING_INDEX,
+  ALERTING_PLUGIN_NAME,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import { BASE_PATH } from '../../../utils/base_constants';
 
-const SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR = 'sample_cluster_metrics_health_monitor';
-const SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR = 'sample_cluster_metrics_nodes_stats_monitor';
-const SAMPLE_CLUSTER_METRICS_CAT_SNAPSHOTS_MONITOR = 'sample_cluster_metrics_cat_snapshots_monitor';
+const SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR =
+  'sample_cluster_metrics_health_monitor';
+const SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR =
+  'sample_cluster_metrics_nodes_stats_monitor';
+const SAMPLE_CLUSTER_METRICS_CAT_SNAPSHOTS_MONITOR =
+  'sample_cluster_metrics_cat_snapshots_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
 const SAMPLE_DESTINATION = 'sample_destination';
 
-const addClusterMetricsTrigger = (triggerName, triggerIndex, actionName, isEdit, source) => {
+const addClusterMetricsTrigger = (
+  triggerName,
+  triggerIndex,
+  actionName,
+  isEdit,
+  source
+) => {
   // Click 'Add trigger' button
   cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
 
@@ -27,7 +39,9 @@ const addClusterMetricsTrigger = (triggerName, triggerIndex, actionName, isEdit,
   }
 
   // Type in the trigger name
-  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(triggerName);
+  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(
+    triggerName
+  );
 
   // Clear the default trigger condition source, and type the sample source
   cy.get('[data-test-subj="triggerQueryCodeEditor"]').within(() => {
@@ -101,7 +115,9 @@ describe('ClusterMetricsMonitor', () => {
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
       // Wait for the API types to load and then type in the Cluster Health API
-      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster health{enter}');
+      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+        'cluster health{enter}'
+      );
 
       // Confirm the Query parameters field is present and described as "optional"
       cy.contains('Query parameters - optional');
@@ -155,14 +171,20 @@ describe('ClusterMetricsMonitor', () => {
       cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
 
       // Wait for input to load and then type in the monitor name
-      cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR);
+      cy.get('input[name="name"]').type(
+        SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR
+      );
 
       // Wait for the API types to load and then type in the Cluster Health API
-      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('nodes stats{enter}');
+      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+        'nodes stats{enter}'
+      );
 
       // Confirm the Query parameters field is not present
       cy.contains('Query parameters').should('not.exist');
-      cy.get('[data-test-subj="clusterMetricsParamsFieldText"]').should('not.exist');
+      cy.get('[data-test-subj="clusterMetricsParamsFieldText"]').should(
+        'not.exist'
+      );
 
       // Press the 'Run for response' button
       cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click();
@@ -219,10 +241,14 @@ describe('ClusterMetricsMonitor', () => {
       cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
 
       // Wait for input to load and then type in the monitor name
-      cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_CAT_SNAPSHOTS_MONITOR);
+      cy.get('input[name="name"]').type(
+        SAMPLE_CLUSTER_METRICS_CAT_SNAPSHOTS_MONITOR
+      );
 
       // Wait for the API types to load and then type in the Cluster Health API
-      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('list snapshots{enter}');
+      cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+        'list snapshots{enter}'
+      );
 
       // Confirm the Query parameters field is present and is not described as "optional"
       cy.contains('Query parameters - optional').should('not.exist');
@@ -256,18 +282,26 @@ describe('ClusterMetricsMonitor', () => {
 
       describe('blank API type is defined', () => {
         // Select the Cluster Health API
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster health{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster health{enter}'
+        );
 
         // Confirm clearTriggersModal is not displayed
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
       });
 
       describe('API type is changed', () => {
         // Change the API type to Cluster Stats
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster stats{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster stats{enter}'
+        );
 
         // Confirm clearTriggersModal is not displayed
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
       });
     });
 
@@ -286,15 +320,21 @@ describe('ClusterMetricsMonitor', () => {
 
       describe('blank API type is defined', () => {
         // Select the Cluster Health API
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster health{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster health{enter}'
+        );
 
         // Confirm clearTriggersModal did not open
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
       });
 
       describe('API type is changed', () => {
         // Change the API type to Cluster Stats
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster stats{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster stats{enter}'
+        );
 
         // Confirm clearTriggersModal displays appropriate text
         cy.contains(
@@ -307,10 +347,14 @@ describe('ClusterMetricsMonitor', () => {
         cy.get('[aria-label="Closes this modal window"]').click();
 
         // Confirm clearTriggersModal closed
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
 
         // Confirm API type reverted back to Cluster Health
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').contains('Cluster health');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').contains(
+          'Cluster health'
+        );
 
         // Confirm there is 1 trigger defined
         cy.contains('Triggers (1)');
@@ -318,13 +362,19 @@ describe('ClusterMetricsMonitor', () => {
 
       describe('the modal KEEP button is clicked', () => {
         // Change the API type to Cluster Stats
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster stats{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster stats{enter}'
+        );
 
         // Click the KEEP button
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModalKeepButton"]').click();
+        cy.get(
+          '[data-test-subj="clusterMetricsClearTriggersModalKeepButton"]'
+        ).click();
 
         // Confirm clearTriggersModal closed
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
 
         // Confirm there is 1 trigger defined
         cy.contains('Triggers (1)');
@@ -332,16 +382,24 @@ describe('ClusterMetricsMonitor', () => {
 
       describe('the modal CLEAR button is clicked', () => {
         // Change the API type to Cluster Settings
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type('cluster settings{enter}');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
+          'cluster settings{enter}'
+        );
 
         // Click the CLEAR button
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModalClearButton"]').click();
+        cy.get(
+          '[data-test-subj="clusterMetricsClearTriggersModalClearButton"]'
+        ).click();
 
         // Confirm clearTriggersModal closed
-        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should('not.exist');
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
+          'not.exist'
+        );
 
         // Confirm API type changed to Cluster Stats
-        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').contains('Cluster settings');
+        cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').contains(
+          'Cluster settings'
+        );
 
         // Confirm there are 0 triggers defined
         cy.contains('Triggers (0)', { timeout: 20000 });
@@ -364,7 +422,9 @@ describe('ClusterMetricsMonitor', () => {
         cy.contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
         // Select the monitor
-        cy.get('a').contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR).click({ force: true });
+        cy.get('a')
+          .contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR)
+          .click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });
