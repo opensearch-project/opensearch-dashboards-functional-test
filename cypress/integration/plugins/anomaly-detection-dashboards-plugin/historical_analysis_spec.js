@@ -26,7 +26,7 @@ describe('Historical results page', () => {
       'not.contain',
       '(0)'
     );
-  }
+  };
 
   const verifyNoAnomaliesInCharts = () => {
     // Wait for any kicked off historical analysis to finish. Relying on default
@@ -45,7 +45,7 @@ describe('Historical results page', () => {
         });
     });
     cy.getElementByTestId('anomalyOccurrencesHeader').should('contain', '(0)');
-  }
+  };
 
   // Creating a sample detector and visiting the config page
   before(() => {
@@ -106,8 +106,8 @@ describe('Historical results page', () => {
       cy.get(`[aria-label="Next time window"]`).click();
       cy.contains('Refresh').click();
       verifyNoAnomaliesInCharts();
-      
-      cy.get('body').then($body => {
+
+      cy.get('body').then(($body) => {
         if ($body.find('[aria-label="Previous time window"]').length == 0) {
           cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
         }
@@ -119,7 +119,7 @@ describe('Historical results page', () => {
     });
 
     it('Aggregations render anomalies', () => {
-      cy.get('body').then($body => {
+      cy.get('body').then(($body) => {
         if ($body.find('[aria-label="Previous time window"]').length > 0) {
           cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
         }
