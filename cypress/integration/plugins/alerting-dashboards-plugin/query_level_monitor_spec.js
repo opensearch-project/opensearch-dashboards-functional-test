@@ -4,18 +4,23 @@
  */
 
 import _ from 'lodash';
-import { ALERTING_INDEX, ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import {
+  ALERTING_INDEX,
+  ALERTING_PLUGIN_NAME,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor';
 import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
 import sampleDaysIntervalQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_days_interval_query_level_monitor.json';
 import sampleCronExpressionQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_cron_expression_query_level_monitor.json';
-import { BASE_PATH } from "../../../utils/base_constants";
+import { BASE_PATH } from '../../../utils/base_constants';
 
 const SAMPLE_MONITOR = 'sample_query_level_monitor';
 const UPDATED_MONITOR = 'updated_query_level_monitor';
-const SAMPLE_MONITOR_WITH_ANOTHER_NAME = 'sample_query_level_monitor_with_always_true_trigger';
+const SAMPLE_MONITOR_WITH_ANOTHER_NAME =
+  'sample_query_level_monitor_with_always_true_trigger';
 const SAMPLE_DAYS_INTERVAL_MONITOR = 'sample_days_interval_query_level_monitor';
-const SAMPLE_CRON_EXPRESSION_MONITOR = 'sample_cron_expression_query_level_monitor';
+const SAMPLE_CRON_EXPRESSION_MONITOR =
+  'sample_cron_expression_query_level_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
 
@@ -37,7 +42,9 @@ const addVisualQueryLevelTrigger = (
   }
 
   // Type in the trigger name
-  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(triggerName);
+  cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).type(
+    triggerName
+  );
 
   // Type in the condition thresholdEnum
   cy.get(
@@ -106,7 +113,9 @@ describe('Query-Level Monitors', () => {
       cy.contains('Add trigger').click({ force: true });
 
       // Type in the trigger name
-      cy.get('input[name="triggerDefinitions[0].name"]').type(SAMPLE_TRIGGER, { force: true });
+      cy.get('input[name="triggerDefinitions[0].name"]').type(SAMPLE_TRIGGER, {
+        force: true,
+      });
 
       // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
       //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
@@ -186,7 +195,9 @@ describe('Query-Level Monitors', () => {
       cy.contains(SAMPLE_MONITOR);
 
       // Select checkbox for the existing monitor
-      cy.get('input[data-test-subj^="checkboxSelectRow-"]').click({ force: true });
+      cy.get('input[data-test-subj^="checkboxSelectRow-"]').click({
+        force: true,
+      });
 
       // Click Actions button to open the actions menu
       cy.contains('Actions').click({ force: true });
@@ -217,7 +228,9 @@ describe('Query-Level Monitors', () => {
       cy.contains(SAMPLE_MONITOR_WITH_ANOTHER_NAME).should('not.exist');
 
       // Type in monitor name in search box
-      cy.get(`input[type="search"]`).focus().type(SAMPLE_MONITOR_WITH_ANOTHER_NAME);
+      cy.get(`input[type="search"]`)
+        .focus()
+        .type(SAMPLE_MONITOR_WITH_ANOTHER_NAME);
 
       // Confirm we filtered down to our one and only monitor
       cy.get('tbody > tr').should(($tr) => {
@@ -260,26 +273,41 @@ describe('Query-Level Monitors', () => {
       // Select visual editor
       cy.get('[data-test-subj="visualEditorRadioCard"]').click();
       // Wait for input to load and then type in the index name
-      cy.get('#index').type(`{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, { force: true });
+      cy.get('#index').type(
+        `{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`,
+        { force: true }
+      );
       // Enter the time field
-      cy.get('#timeField').type('order_date{downArrow}{enter}', { force: true });
+      cy.get('#timeField').type('order_date{downArrow}{enter}', {
+        force: true,
+      });
       // Add the test triggers
       // For simplicity, the 'value' number is used in this test for the thresholdValue, and the trigger index number.
       for (let i = 0; i < triggers.length; i++) {
         const trigger = triggers[i];
         triggers[i].value = i;
-        addVisualQueryLevelTrigger(trigger.name, i, true, `IS ${trigger.enum}`, `${i}`);
+        addVisualQueryLevelTrigger(
+          trigger.name,
+          i,
+          true,
+          `IS ${trigger.enum}`,
+          `${i}`
+        );
       }
       // Click Update button
       cy.get('button').contains('Update').last().click({ force: true });
       // Confirm we can see the correct number of rows in the trigger list by checking <caption> element
-      cy.contains(`This table contains ${triggers.length} rows`, { timeout: 20000 });
+      cy.contains(`This table contains ${triggers.length} rows`, {
+        timeout: 20000,
+      });
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       triggers.forEach((trigger) => {
         const triggerIndex = trigger.value;
         // Click the trigger accordion to expand it
-        cy.get(`[data-test-subj="triggerDefinitions[${triggerIndex}]._triggerAccordion"]`).click();
+        cy.get(
+          `[data-test-subj="triggerDefinitions[${triggerIndex}]._triggerAccordion"]`
+        ).click();
         // Confirm each trigger exists with the expected name and values
         cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).should(
           'have.value',
@@ -294,7 +322,7 @@ describe('Query-Level Monitors', () => {
       });
     });
   });
-  
+
   describe('schedule component displays as intended', () => {
     before(() => {
       cy.deleteAllMonitors();
@@ -310,31 +338,40 @@ describe('Query-Level Monitors', () => {
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       // Wait for input to load and then check the Schedule component
-      cy.get('[data-test-subj="frequency_field"]', { timeout: 20000 }).contains('By interval');
-      cy.get('[data-test-subj="interval_interval_field"]', { timeout: 20000 }).should(
-        'have.value',
-        7
+      cy.get('[data-test-subj="frequency_field"]', { timeout: 20000 }).contains(
+        'By interval'
       );
-      cy.get('[data-test-subj="interval_unit_field"]', { timeout: 20000 }).contains('Days');
+      cy.get('[data-test-subj="interval_interval_field"]', {
+        timeout: 20000,
+      }).should('have.value', 7);
+      cy.get('[data-test-subj="interval_unit_field"]', {
+        timeout: 20000,
+      }).contains('Days');
     });
     it('for a cron expression schedule', () => {
       // Create the test monitor
       cy.createMonitor(sampleCronExpressionQueryLevelMonitor);
       // Confirm we can see the created monitors in the list
-      cy.get(`input[type="search"]`).focus().type(SAMPLE_CRON_EXPRESSION_MONITOR);
+      cy.get(`input[type="search"]`)
+        .focus()
+        .type(SAMPLE_CRON_EXPRESSION_MONITOR);
       cy.contains(SAMPLE_CRON_EXPRESSION_MONITOR, { timeout: 20000 });
       // Select the existing monitor
-      cy.get('a').contains(SAMPLE_CRON_EXPRESSION_MONITOR).click({ force: true });
+      cy.get('a')
+        .contains(SAMPLE_CRON_EXPRESSION_MONITOR)
+        .click({ force: true });
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       // Wait for input to load and then check the Schedule component
       cy.get('[data-test-subj="frequency_field"]', { timeout: 20000 }).contains(
         'Custom cron expression'
       );
-      cy.get('[data-test-subj="customCron_cronExpression_field"]', { timeout: 20000 }).contains(
-        '30 11 * * 1-5'
-      );
-      cy.get('[data-test-subj="timezoneComboBox"]', { timeout: 20000 }).contains('US/Pacific');
+      cy.get('[data-test-subj="customCron_cronExpression_field"]', {
+        timeout: 20000,
+      }).contains('30 11 * * 1-5');
+      cy.get('[data-test-subj="timezoneComboBox"]', {
+        timeout: 20000,
+      }).contains('US/Pacific');
     });
   });
 
@@ -342,7 +379,7 @@ describe('Query-Level Monitors', () => {
     // Delete all existing monitors and destinations
     cy.deleteAllMonitors();
 
-        // Delete sample data
-        cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+    // Delete sample data
+    cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
   });
 });

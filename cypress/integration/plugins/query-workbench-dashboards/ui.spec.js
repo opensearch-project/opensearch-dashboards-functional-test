@@ -162,7 +162,7 @@ describe('Test SQL UI', () => {
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
     cy.wait(delay);
 
-    cy.contains('OpenSearchQueryRequest(indexName=accounts')
+    cy.contains('OpenSearchQueryRequest(indexName=accounts');
   });
 
   it('Test Clear button', () => {
@@ -206,7 +206,10 @@ describe('Test and verify SQL downloads', () => {
           query: 'select * from accounts where balance > 49500',
         },
       }).then((response) => {
-        if (title === 'Download and verify CSV' || title === 'Download and verify Text') {
+        if (
+          title === 'Download and verify CSV' ||
+          title === 'Download and verify Text'
+        ) {
           expect(response.body.data.body).to.have.string(files[file]);
         } else {
           expect(response.body.data.resp).to.have.string(files[file]);

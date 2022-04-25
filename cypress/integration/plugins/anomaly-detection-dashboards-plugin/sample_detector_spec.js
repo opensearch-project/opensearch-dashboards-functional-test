@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  AD_URL,
-} from '../../../utils/constants';
+import { AD_URL } from '../../../utils/constants';
 
 context('Sample detectors', () => {
   // Helper fn used in many of the below tests. Takes in a button test ID to determine

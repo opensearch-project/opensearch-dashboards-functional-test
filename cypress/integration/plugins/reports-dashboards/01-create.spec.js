@@ -3,25 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { 
+import {
   visitReportingLandingPage,
-  WAIT_TIME, 
+  WAIT_TIME,
   LONG_WAIT_TIME,
-  BASE_PATH
-} from "../../../utils/constants";
-
+  BASE_PATH,
+} from '../../../utils/constants';
 
 describe('Cypress', () => {
   // add sample data
   before(() => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]').contains(/(Add|View) data/).click();
+    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
+      .contains(/(Add|View) data/)
+      .click();
     cy.wait(WAIT_TIME);
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardecommerce"]').contains(/(Add|View) data/).click();
+    cy.get('div[data-test-subj="sampleDataSetCardecommerce"]')
+      .contains(/(Add|View) data/)
+      .click();
     cy.wait(WAIT_TIME);
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardlogs"]').contains(/(Add|View) data/).click();
+    cy.get('div[data-test-subj="sampleDataSetCardlogs"]')
+      .contains(/(Add|View) data/)
+      .click();
     cy.wait(WAIT_TIME);
   });
 
@@ -48,7 +53,7 @@ describe('Cypress', () => {
     verifyOnReportingLandingPage();
   });
 
-  it('Create a new on-demand visualization report definition', ()=> {
+  it('Create a new on-demand visualization report definition', () => {
     visitCreateReportDefinitionPage();
     setReportDefinitionName('Cypress vis on-demand report');
     setReportDefinitionDescription('Description for cypress test');
@@ -229,7 +234,7 @@ function setReportDefinitionDescription(description) {
 }
 
 function selectReportSource(name) {
-  cy.get(name).click({force: true});
+  cy.get(name).click({ force: true });
 }
 
 function selectReportSourceComboBox() {

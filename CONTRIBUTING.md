@@ -81,6 +81,7 @@ $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanill
 `ENDPOINT_WITH_PROXY`: for an OpenSearch endpoint wrapped with a proxy that redirects the visiting url to the login url, even with auth option provided in `cy.visit`, the redirection to the login url still happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 `MANAGED_SERVICE_ENDPOINT`: set to true if tests are running against managed service domains.
+
 ### Formatting
 
 `prettier` is used to standardize formatting of files. You can format all files (new and existing) by running
@@ -261,6 +262,5 @@ We deeply appreciate everyone who takes the time to make a contribution. We will
 During the PR process, expect that there will be some back-and-forth. Please try to respond to comments in a timely fashion, and if you don't wish to continue with the PR, let us know. If a PR takes too many iterations for its complexity or size, we may reject it. Additionally, if you stop responding we may close the PR as abandoned. In either case, if you feel this was done in error, please add a comment on the PR.
 
 If we accept the PR, a [maintainer](MAINTAINERS.md) will merge your change and usually take care of backporting it to appropriate branches ourselves. For the backporting process, once the PR is merged a [maintainer](MAINTAINERS.md) will label it with the appropriate target branch then the backport workflow will do the rest. For example, the label `backport 1.x` label will be added to the PR that is to be backported to `1.x`. The backport branches are named in the form `backport/backport-<original PR number>-to-<base>`. These branches will be cleaned up by an auto delete workflow once the backport PR is merged.
-
 
 If we reject the PR, we will close the pull request with a comment explaining why. This decision isn't always final: if you feel we have misunderstood your intended change or otherwise think that we should reconsider then please continue the conversation with a comment on the PR and we'll do our best to address any further points you raise.

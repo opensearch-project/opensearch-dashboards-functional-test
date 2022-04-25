@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { WAIT_TIME, visitReportingLandingPage } from "../../../utils/constants";
+import { WAIT_TIME, visitReportingLandingPage } from '../../../utils/constants';
 
 describe('Cypress', () => {
   it('Visit report definition details page', () => {
@@ -31,7 +31,6 @@ describe('Cypress', () => {
     visitReportDefinitionDetailsPage();
     cy.wait(WAIT_TIME);
     verifyReportDefinitionSourceURLExists();
-    
   });
 
   it('Delete report definition from details page', () => {
