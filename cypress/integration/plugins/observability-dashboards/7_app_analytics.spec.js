@@ -129,16 +129,14 @@ describe('Creating application', () => {
       'This application is for testing.'
     );
     cy.get('.euiAccordion').contains('Log source').trigger('mouseover').click();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    // source
-    cy.focused().type('{enter}');
-    // =
-    cy.focused().type('{enter}');
-    cy.focused().type('opensearch');
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    cy.get('.aa-Item')
-      .contains('opensearch_dashboards_sample_data_flights')
-      .click();
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]')
+      .trigger('mouseover')
+      .click()
+      .wait(3000)
+      .focus()
+      .type(baseQuery, {
+        delay: TYPING_DELAY,
+      });
     cy.get('.euiAccordion')
       .contains('Services & entities')
       .trigger('mouseover')
@@ -417,7 +415,7 @@ describe('Viewing application', () => {
       cy.get('.ytitle').contains('Error rate').should('exist');
     });
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
     cy.get('.euiLink').contains('authentication').click();
     supressResizeObserverIssue();
     cy.wait(delayTime * 3);
@@ -430,7 +428,7 @@ describe('Viewing application', () => {
       .click();
     cy.get('.euiFlyout').contains('Span detail').should('be.visible');
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
   });
 
   it('Opens trace detail flyout when Trace ID is clicked', () => {
@@ -444,7 +442,7 @@ describe('Viewing application', () => {
     });
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
     cy.wait(delayTime);
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
     cy.get('[title="03f9c770db5ee2f1caac0afc36db49ba"]').click();
     cy.get('[data-text="Span list"]').click();
     cy.wait(delayTime);
@@ -453,7 +451,7 @@ describe('Viewing application', () => {
       .click();
     cy.get('.euiFlyout').contains('Span detail').should('be.visible');
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
   });
 
   it('Opens span detail flyout when Span ID is clicked', () => {
@@ -787,9 +785,9 @@ describe('Application Analytics home page', () => {
     cy.get('.euiContextMenuItem').contains('Rename').click();
     cy.get('.euiFieldText').clear().focus().type(newName);
     cy.get('.euiButton--fill').contains('Rename').click();
-    cy.wait(delayTime);
     cy.get('.euiToast').contains(
-      `Application successfully renamed to "${newName}"`
+      `Application successfully renamed to "${newName}"`,
+      { timeout: 10000 }
     );
     cy.get('.euiTableRow')
       .first()
@@ -811,7 +809,14 @@ describe('Application Analytics home page', () => {
       .within(($row) => {
         cy.get('.euiCheckbox').click();
       });
-    cy.wait(delayTime);
+    // if action menu is still visable and close it to refresh the state
+    cy.get('body').then(($body) => {
+      if ($body.find('.euiContextMenuItem').length > 0) {
+        cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
+        cy.wait(delayTime);
+      }
+    });
+    cy.wait(delayTime * 4);
     cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem').contains('Delete').click();
