@@ -129,16 +129,14 @@ describe('Creating application', () => {
       'This application is for testing.'
     );
     cy.get('.euiAccordion').contains('Log source').trigger('mouseover').click();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    // source
-    cy.focused().type('{enter}');
-    // =
-    cy.focused().type('{enter}');
-    cy.focused().type('opensearch');
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
-    cy.get('.aa-Item')
-      .contains('opensearch_dashboards_sample_data_flights')
-      .click();
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]')
+      .trigger('mouseover')
+      .click()
+      .wait(3000)
+      .focus()
+      .type(baseQuery, {
+        delay: TYPING_DELAY,
+      });
     cy.get('.euiAccordion')
       .contains('Services & entities')
       .trigger('mouseover')
