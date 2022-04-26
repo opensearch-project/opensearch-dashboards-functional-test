@@ -785,9 +785,9 @@ describe('Application Analytics home page', () => {
     cy.get('.euiContextMenuItem').contains('Rename').click();
     cy.get('.euiFieldText').clear().focus().type(newName);
     cy.get('.euiButton--fill').contains('Rename').click();
-    cy.wait(delayTime);
     cy.get('.euiToast').contains(
-      `Application successfully renamed to "${newName}"`
+      `Application successfully renamed to "${newName}"`,
+      { timeout: 10000 }
     );
     cy.get('.euiTableRow')
       .first()
@@ -809,7 +809,7 @@ describe('Application Analytics home page', () => {
       .within(($row) => {
         cy.get('.euiCheckbox').click();
       });
-    cy.wait(delayTime);
+    cy.contains('Delete', { timeout: 10000 }).should('not.exist');
     cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem').contains('Delete').click();
