@@ -415,7 +415,7 @@ describe('Viewing application', () => {
       cy.get('.ytitle').contains('Error rate').should('exist');
     });
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
     cy.get('.euiLink').contains('authentication').click();
     supressResizeObserverIssue();
     cy.wait(delayTime * 3);
@@ -428,7 +428,7 @@ describe('Viewing application', () => {
       .click();
     cy.get('.euiFlyout').contains('Span detail').should('be.visible');
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
   });
 
   it('Opens trace detail flyout when Trace ID is clicked', () => {
@@ -442,7 +442,7 @@ describe('Viewing application', () => {
     });
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
     cy.wait(delayTime);
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
     cy.get('[title="03f9c770db5ee2f1caac0afc36db49ba"]').click();
     cy.get('[data-text="Span list"]').click();
     cy.wait(delayTime);
@@ -451,7 +451,7 @@ describe('Viewing application', () => {
       .click();
     cy.get('.euiFlyout').contains('Span detail').should('be.visible');
     cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();
-    cy.get('.euiFlyout').should('not.be.visible');
+    cy.get('.euiFlyout').should('not.exist');
   });
 
   it('Opens span detail flyout when Span ID is clicked', () => {
