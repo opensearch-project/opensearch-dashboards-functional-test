@@ -809,11 +809,14 @@ describe('Application Analytics home page', () => {
       .within(($row) => {
         cy.get('.euiCheckbox').click();
       });
+    // if action menu is still visable and close it to refresh the state
     cy.get('body').then(($body) => {
-      if ($body.find('.euiContextMenuItem').length == 0) {
+      if ($body.find('.euiContextMenuItem').length > 0) {
         cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
+        cy.wait(delayTime);
       }
     });
+    cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem').contains('Delete').click();
     cy.get('.euiButton--fill').contains('Delete').click();
