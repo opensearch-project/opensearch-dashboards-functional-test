@@ -817,7 +817,7 @@ describe('Application Analytics home page', () => {
       }
     });
     cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
-    cy.wait(delayTime);
+    cy.wait(delayTime * 2);
     cy.get('.euiContextMenuItem').contains('Delete').click();
     cy.get('.euiButton--fill').contains('Delete').click();
     cy.wait(delayTime);
