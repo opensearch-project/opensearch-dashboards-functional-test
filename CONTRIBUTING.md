@@ -61,7 +61,7 @@ $ yarn cypress run-without-security --spec "cypress/integration/core-opensearch-
 with security:
 
 ```
-$ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
+$ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
 These tests run in headless mode by default. You can also manually trigger the test via browser UI by running:
@@ -73,7 +73,7 @@ $ yarn cypress open
 And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
 ```
-$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
+$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
 ```
 
 `SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also, please notice security enabled endpoint normally uses https protocol, so you may want to pass in different urls.
