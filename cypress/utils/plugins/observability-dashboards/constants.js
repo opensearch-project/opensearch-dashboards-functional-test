@@ -241,7 +241,7 @@ export const moveToCreatePage = () => {
 export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   supressResizeObserverIssue();
-  cy.wait(delayTime * 6);
+  cy.wait(delayTime * 7);
   cy.contains(name, { timeout: 120000 }).click();
   cy.wait(delayTime * 2);
   cy.get('.euiTitle--large', { timeout: 60000 })
