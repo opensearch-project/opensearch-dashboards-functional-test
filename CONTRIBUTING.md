@@ -94,7 +94,7 @@ and auto fix the formatting of all files (new and existing) by running
 $ yarn lint --fix
 ```
 
-This should be done before opening a PR to keep checked-in code consistent.
+`Husky` precommit hook is used to automatically run `yarn lint`, please fix the files according to lint result before commiting code changes (run `yarn lint --fix` for fixable errors, or manully fix code according to error messages). If you have any doubts on `ESLint` rules, feel free to [open an issue](issues).
 
 ### Onboarding
 
