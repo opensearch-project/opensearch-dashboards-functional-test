@@ -8,7 +8,6 @@ import {
   ALERTING_PLUGIN_NAME,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query';
-import sampleExtractionQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_extraction_query_bucket_level_monitor';
 import sampleVisualEditorMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_visual_editor_bucket_level_monitor';
 import { BASE_PATH } from '../../../utils/base_constants';
 
@@ -16,7 +15,6 @@ const SAMPLE_EXTRACTION_QUERY_MONITOR =
   'sample_extraction_query_bucket_level_monitor';
 const SAMPLE_VISUAL_EDITOR_MONITOR =
   'sample_visual_editor_bucket_level_monitor';
-const UPDATED_MONITOR = 'updated_bucket_level_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 const SAMPLE_ACTION = 'sample_action';
 

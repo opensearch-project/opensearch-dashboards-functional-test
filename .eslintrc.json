@@ -1,0 +1,19 @@
+{
+  "env": {
+      "node": true
+  },
+  "extends": [
+      "eslint:recommended",
+      "plugin:cypress/recommended",
+      "prettier"
+    ],
+  "plugins": [
+      "cypress",
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error",
+      // turn off no-unnecessary-waiting for now due to the issue: https://github.com/cypress-io/eslint-plugin-cypress/issues/43
+      "cypress/no-unnecessary-waiting": "off"
+    }
+}

@@ -84,10 +84,14 @@ $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opense
 
 ### Formatting
 
-`prettier` is used to standardize formatting of files. You can format all files (new and existing) by running
+`prettier` and `ESLint` is integrated and used to standardize formatting of files, where `prettier` takes care of the code formatting and `ESLint` takes care of the code style. You can check the formatting of all files (new and existing) by running
 
 ```
-$ npx prettier * --write
+$ yarn lint
+```
+and auto fix the formatting of all files (new and existing) by running
+```
+$ yarn lint --fix
 ```
 
 This should be done before opening a PR to keep checked-in code consistent.
