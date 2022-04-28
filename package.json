@@ -21,7 +21,8 @@
     "cypress:release-ad-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'",
     "cypress:release-ism-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'",
     "lint": "eslint . --ext .js",
-    "pkg-version": "./scripts/getpkgversion.sh"
+    "pkg-version": "./scripts/getpkgversion.sh",
+    "postinstall": "husky install"
   },
   "repository": {
     "type": "git",
