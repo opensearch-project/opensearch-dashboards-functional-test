@@ -15,7 +15,7 @@ describe('Cypress', () => {
 
     cy.wait(12500);
 
-    cy.get('#reportDefinitionDetailsLink').first().click();
+    cy.get('#reportDefinitionDetailsLink').first().click({ force: true });
 
     cy.get('#editReportDefinitionButton').should('exist');
 
