@@ -15,7 +15,6 @@ context('Create detector workflow', () => {
 
   // Index some sample data first
   before(() => {
-    cy.server();
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',

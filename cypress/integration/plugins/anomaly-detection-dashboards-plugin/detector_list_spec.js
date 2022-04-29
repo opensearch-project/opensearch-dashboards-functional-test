@@ -12,9 +12,7 @@ import {
 import { selectTopItemFromFilter } from '../../../utils/helpers';
 
 describe('Detector list page', () => {
-  before(() => {
-    cy.server();
-  });
+  before(() => {});
 
   it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
