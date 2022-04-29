@@ -166,7 +166,7 @@ describe('Creating application', () => {
     cy.wait('@addApplication');
     cy.wait('@addPanels');
     cy.wait('@putApplication');
-    cy.wait('@postQuery.all');
+    cy.wait('@postQuery');
     cy.get('.euiTitle--large', { timeout: 60000 })
       .contains(nameOne, { timeout: 60000 })
       .should('exist');
