@@ -221,7 +221,7 @@ export const PPL_FILTER =
  * App constants
  */
 
-export const TYPING_DELAY = 1500;
+export const TYPING_DELAY = 3000;
 
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
