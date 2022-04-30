@@ -9,7 +9,6 @@ context('Detector configuration page', () => {
   // Creating a sample detector and visiting the config page. Stopping the detector
   // for easier checks when editing/deleting detector
   before(() => {
-    cy.server();
     cy.visit(AD_URL.OVERVIEW);
     cy.getElementByTestId('createHttpSampleDetectorButton').click();
     cy.visit(AD_URL.OVERVIEW);

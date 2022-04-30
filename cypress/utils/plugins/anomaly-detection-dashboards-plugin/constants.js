@@ -60,7 +60,7 @@ export function getADStartDetectorNodeApiPath(detectorId) {
 }
 
 export function getADStopDetectorNodeApiPath(detectorId) {
-  return getBaseNodeApiPath(detectorId) + '/stop';
+  return getBaseNodeApiPath(detectorId) + '/stop/false';
 }
 
 export function getADDeleteDetectorNodeApiPath(detectorId) {

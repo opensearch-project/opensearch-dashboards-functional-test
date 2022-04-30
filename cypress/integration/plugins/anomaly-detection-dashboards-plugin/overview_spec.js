@@ -34,9 +34,7 @@ context('Overview page', () => {
     cy.getElementByTestId('indexDetailsHeader').should('not.exist');
   }
 
-  before(() => {
-    cy.server();
-  });
+  before(() => {});
 
   it('Empty dashboard redirects to overview page', () => {
     cy.visit(AD_URL.DASHBOARD);

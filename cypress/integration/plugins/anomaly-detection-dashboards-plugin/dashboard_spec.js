@@ -8,9 +8,7 @@ import { selectTopItemFromFilter } from '../../../utils/helpers';
 
 // Contains basic sanity tests on AD Dashboards page
 describe('AD Dashboard page', () => {
-  before(() => {
-    cy.server();
-  });
+  before(() => {});
 
   it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(

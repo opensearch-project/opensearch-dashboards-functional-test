@@ -156,15 +156,17 @@ describe('Creating application', () => {
     cy.get('.euiFilterSelectItem').contains(trace_two).trigger('click');
     cy.get('.euiBadge').contains('2').should('exist');
     cy.get('.euiButton').contains('Create').should('not.be.disabled');
-    cy.route2('POST', '/api/observability/application/').as('addApplication');
-    cy.route2('POST', 'panels').as('addPanels');
-    cy.route2('PUT', '/api/observability/application/').as('putApplication');
-    cy.route2('POST', 'query').as('postQuery');
+    cy.intercept('POST', '/api/observability/application/').as(
+      'addApplication'
+    );
+    cy.intercept('POST', 'panels').as('addPanels');
+    cy.intercept('PUT', '/api/observability/application/').as('putApplication');
+    cy.intercept('POST', 'query').as('postQuery');
     cy.get('.euiButton__text').contains('Create').click();
     cy.wait('@addApplication');
     cy.wait('@addPanels');
     cy.wait('@putApplication');
-    cy.wait('@postQuery.all');
+    cy.wait('@postQuery');
     cy.get('.euiTitle--large', { timeout: 60000 })
       .contains(nameOne, { timeout: 60000 })
       .should('exist');

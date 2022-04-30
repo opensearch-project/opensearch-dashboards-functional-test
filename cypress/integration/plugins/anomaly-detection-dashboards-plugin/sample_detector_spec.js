@@ -48,9 +48,7 @@ context('Sample detectors', () => {
     });
   };
 
-  before(() => {
-    cy.server();
-  });
+  before(() => {});
 
   it('HTTP response sample detector - create and delete', () => {
     createAndDeleteSampleDetector('createHttpSampleDetectorButton');
