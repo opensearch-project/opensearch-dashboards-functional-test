@@ -5,8 +5,11 @@
 
 /// <reference types="cypress" />
 
-import { delay, NOTIFICATIONS_PLUGIN_NAME } from '../../../utils/plugins/notifications-dashboards/constants';
-import { BASE_PATH } from "../../../utils/base_constants";
+import {
+  delay,
+  NOTIFICATIONS_PLUGIN_NAME,
+} from '../../../utils/plugins/notifications-dashboards/constants';
+import { BASE_PATH } from '../../../utils/base_constants';
 
 describe('Test create channels', () => {
   beforeEach(() => {
@@ -92,7 +95,9 @@ describe('Test create channels', () => {
   });
 
   it('creates a email channel with ses sender', () => {
-    cy.get('[placeholder="Enter channel name"]').type('Test email channel with ses');
+    cy.get('[placeholder="Enter channel name"]').type(
+      'Test email channel with ses'
+    );
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
     cy.wait(delay);
@@ -100,7 +105,7 @@ describe('Test create channels', () => {
       .contains('Email')
       .click({ force: true });
     cy.wait(delay);
-    
+
     cy.get('input.euiRadio__input#ses_account').click({ force: true });
     cy.wait(delay);
 
@@ -119,9 +124,7 @@ describe('Test create channels', () => {
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       'us-east-1'
     );
-    cy.get(
-      '[data-test-subj="create-ses-sender-modal-create-button"]'
-    ).click();
+    cy.get('[data-test-subj="create-ses-sender-modal-create-button"]').click();
     cy.contains('successfully created.').should('exist');
 
     // custom data-test-subj does not work on combo box
@@ -244,28 +247,30 @@ describe('Test channel details', () => {
     cy.contains('successfully unmuted.').should('exist');
     cy.contains('Active').should('exist');
   });
-  
+
   it('edits channels', () => {
     cy.contains('Actions').click({ force: true });
     cy.contains('Edit').click({ force: true });
     cy.contains('Edit channel').should('exist');
     cy.get('.euiText').contains('Custom webhook').should('exist');
-    cy.get(
-      '[data-test-subj="create-channel-description-input"]'
-    ).type('{selectall}{backspace}Updated custom webhook description');
+    cy.get('[data-test-subj="create-channel-description-input"]').type(
+      '{selectall}{backspace}Updated custom webhook description'
+    );
     cy.wait(delay);
     cy.contains('Save').click({ force: true });
 
     cy.contains('successfully updated.').should('exist');
     cy.contains('Updated custom webhook description').should('exist');
-  })
+  });
 
   it('deletes channels', async () => {
     cy.contains('Actions').click({ force: true });
     cy.contains('Delete').click({ force: true });
     cy.get('input[placeholder="delete"]').type('delete');
-    cy.get('[data-test-subj="delete-channel-modal-delete-button"]').click({force: true})
+    cy.get('[data-test-subj="delete-channel-modal-delete-button"]').click({
+      force: true,
+    });
     cy.contains('successfully deleted.').should('exist');
     cy.contains('Test slack channel').should('exist');
-  })
+  });
 });
