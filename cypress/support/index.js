@@ -23,16 +23,13 @@ import '../utils/plugins/alerting-dashboards-plugin/commands';
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
-// returning false here prevents Cypress from failing the test
-Cypress.on(
-  'uncaught:exception',
-  (err) =>
-    !err.message.includes('ResizeObserver loop limit exceeded') &&
-    !err.message.includes(
-      'Invalid attempt to destructure non-iterable instance'
-    ) &&
-    !err.message.includes('Converting circular structure to JSON')
-);
+const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
+Cypress.on('uncaught:exception', (err) => {
+  /* returning false here prevents Cypress from failing the test */
+  if (resizeObserverLoopErrRe.test(err.message)) {
+    return false;
+  }
+});
 
 // Proxy layer of OpenSearch domain may redirect to login page
 //  if you haven't authenticate
