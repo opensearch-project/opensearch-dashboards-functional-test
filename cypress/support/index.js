@@ -27,7 +27,7 @@ import '../utils/plugins/alerting-dashboards-plugin/commands';
 Cypress.on(
   'uncaught:exception',
   (err) =>
-    !err.message.includes('ResizeObserver loop limit exceeded') ||
+    !err.message.includes('ResizeObserver loop limit exceeded') &&
     !err.message.includes(
       'Invalid attempt to destructure non-iterable instance'
     )
