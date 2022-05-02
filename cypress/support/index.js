@@ -30,7 +30,8 @@ Cypress.on(
     !err.message.includes('ResizeObserver loop limit exceeded') &&
     !err.message.includes(
       'Invalid attempt to destructure non-iterable instance'
-    )
+    ) &&
+    !err.message.includes('Converting circular structure to JSON')
 );
 
 // Proxy layer of OpenSearch domain may redirect to login page
