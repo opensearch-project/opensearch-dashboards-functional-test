@@ -233,7 +233,7 @@ export const moveToCreatePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   cy.get('.euiButton[href="#/application_analytics/create"]').eq(0).click();
   supressResizeObserverIssue();
-  cy.wait(delayTime);
+  cy.wait(delayTime * 2);
   cy.get('[data-test-subj="createPageTitle"]').should(
     'contain',
     'Create application'
@@ -243,6 +243,7 @@ export const moveToCreatePage = () => {
 export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   supressResizeObserverIssue();
+  cy.wait(delayTime * 2);
   cy.get(`[data-test-subj="${name}ApplicationLink"]`).click();
   cy.get('[data-test-subj="applicationTitle"]').should('contain', name);
   changeTimeTo24('years');
