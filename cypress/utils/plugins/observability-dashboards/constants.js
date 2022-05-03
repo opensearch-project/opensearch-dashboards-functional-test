@@ -225,38 +225,39 @@ export const TYPING_DELAY = 1500;
 
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.contains('Applications', { timeout: 60000 }).should('exist');
   cy.wait(delayTime * 3);
+  cy.get('[data-test-subj="applicationHomePageTitle"]').should('exist');
 };
 
 export const moveToCreatePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.wait(delayTime * 2);
-  cy.get('.euiButton__text').contains('Create application').click();
+  cy.get('.euiButton[href="#/application_analytics/create"]').eq(0).click();
   supressResizeObserverIssue();
   cy.wait(delayTime);
-  cy.get('.euiTitle').contains('Create application').should('exist');
+  cy.get('[data-test-subj="createPageTitle"]').should(
+    'contain',
+    'Create application'
+  );
 };
 
 export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   supressResizeObserverIssue();
-  cy.wait(delayTime * 7);
-  cy.contains(name, { timeout: 120000 }).click();
-  cy.wait(delayTime * 2);
-  cy.get('.euiTitle--large', { timeout: 60000 })
-    .contains(name, { timeout: 60000 })
-    .should('exist');
+  cy.get(`[data-test-subj="${name}ApplicationLink"]`).click();
+  cy.get('[data-test-subj="applicationTitle"]').should('contain', name);
   changeTimeTo24('years');
 };
 
 export const moveToEditPage = () => {
   moveToApplication(nameOne);
-  cy.get('.euiTab').contains('Configuration').click();
-  cy.get('.euiButton').contains('Edit').click();
+  cy.get('[data-test-subj="app-analytics-configTab"]').click();
+  cy.get('[data-test-subj="editApplicationButton"]').click();
   supressResizeObserverIssue();
   cy.wait(delayTime);
-  cy.get('.euiTitle').contains('Edit application');
+  cy.get('[data-test-subj="createPageTitle"]').should(
+    'contain',
+    'Edit application'
+  );
 };
 
 export const changeTimeTo24 = (timeUnit) => {
@@ -306,4 +307,4 @@ export const visOneName = 'Flights to Venice';
 export const visTwoName = 'Flights from Seoul';
 export const composition =
   'order, payment, HTTP POST, HTTP GET, client_pay_order';
-export const newName = 'Monterey Cypress';
+export const newName = `Monterey Cypress-${uniqueId}`;
