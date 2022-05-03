@@ -204,8 +204,13 @@ describe('Creating application', () => {
     cy.get('.euiAccordion').contains('Log source').trigger('mouseover').click();
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').click();
     cy.get('[data-test-subj="searchAutocompleteTextArea"]')
+      .trigger('mouseover')
+      .click()
+      .wait(3000)
       .focus()
-      .type(baseQuery, { delayTime: TYPING_DELAY });
+      .type(baseQuery, {
+        delay: TYPING_DELAY,
+      });
     cy.get('.euiAccordion')
       .contains('Services & entities')
       .trigger('mouseover')
@@ -811,13 +816,6 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
-    // if action menu is still visable and close it to refresh the state
-    cy.get('body').then(($body) => {
-      if ($body.find('.euiContextMenuItem').length > 0) {
-        cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
-        cy.wait(delayTime);
-      }
-    });
     cy.wait(delayTime * 4);
     cy.get('.euiPopover--anchorDownCenter').contains('Actions').click();
     cy.wait(delayTime);
