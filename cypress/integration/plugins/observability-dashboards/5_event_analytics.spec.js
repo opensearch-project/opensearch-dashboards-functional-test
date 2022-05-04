@@ -167,6 +167,7 @@ describe('Add/delete/switch explorer top level tabs', () => {
 
   it('Close current selected tab', () => {
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
+    cy.wait(delayTime);
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
     cy.get('[data-test-subj="eventExplorer__topLevelTabbing"]')
       .find('button.euiTab')
@@ -188,6 +189,7 @@ describe('Add/delete/switch explorer top level tabs', () => {
 
   it('Close another unselected tab', () => {
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
+    cy.wait(delayTime);
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
     cy.get('[data-test-subj="eventExplorer__topLevelTabbing"]')
       .find('button.euiTab')
@@ -538,6 +540,7 @@ describe('Live tail stop automatically', () => {
 
   it('Close current selected tab', () => {
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
+    cy.wait(delayTime);
     cy.get('[data-test-subj="eventExplorer__addNewTab"]').click();
     cy.get('[data-test-subj="eventExplorer__topLevelTabbing"]')
       .find('button.euiTab')

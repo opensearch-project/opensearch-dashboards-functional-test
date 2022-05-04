@@ -5,7 +5,11 @@
 
 /// <reference types="cypress" />
 
-import { delay, NOTIFICATIONS_PLUGIN_NAME } from '../../../utils/plugins/notifications-dashboards/constants';
+import {
+  delay,
+  NOTIFICATIONS_PLUGIN_NAME,
+} from '../../../utils/plugins/notifications-dashboards/constants';
+import { BASE_PATH } from '../../../utils/base_constants';
 
 describe('Test create email senders', () => {
   beforeEach(() => {
@@ -103,7 +107,7 @@ describe('Test edit senders', () => {
   });
 
   it('edits ses sender region', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(2).click(); // ses sender
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click(); // ses sender
     cy.get('[data-test-subj="ses-senders-table-edit-button"]').click();
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       '{selectall}{backspace}us-west-2'
@@ -144,7 +148,9 @@ describe('Test delete senders', () => {
 
 describe('Test create, edit and delete recipient group', () => {
   beforeEach(() => {
-    cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`);
+    cy.visit(
+      `${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`
+    );
     cy.wait(delay * 3);
   });
 
@@ -188,8 +194,12 @@ describe('Test create, edit and delete recipient group', () => {
   });
 
   it('edits recipient group description', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click({ force: true }); // recipient group
-    cy.get('[data-test-subj="recipient-groups-table-edit-button"]').click({ force: true });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .last()
+      .click({ force: true }); // recipient group
+    cy.get('[data-test-subj="recipient-groups-table-edit-button"]').click({
+      force: true,
+    });
     cy.get(
       '[data-test-subj="create-recipient-group-form-description-input"]'
     ).type('{selectall}{backspace}Updated group description');
