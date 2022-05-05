@@ -46,14 +46,18 @@ export const supressResizeObserverIssue = () => {
 export const setTimeFilter = (setEndTime = false, refresh = true) => {
   const startTime = 'Mar 25, 2021 @ 10:00:00.000';
   const endTime = 'Mar 25, 2021 @ 11:00:00.000';
-  cy.get('button.euiButtonEmpty[aria-label="Date quick select"]').click();
+  cy.get('button.euiButtonEmpty[aria-label="Date quick select"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   cy.get('.euiQuickSelect__applyButton').click();
   cy.get('.euiSuperDatePicker__prettyFormatLink').click();
   cy.get(
     'button.euiDatePopoverButton--start[data-test-subj="superDatePickerstartDatePopoverButton"]'
   ).click();
   cy.get('.euiTab__content').contains('Absolute').click();
-  cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]')
+  cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
+    timeout: TIMEOUT_DELAY,
+  })
     .focus()
     .type('{selectall}' + startTime, { force: true });
   if (setEndTime) {
@@ -63,7 +67,9 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     ).click();
     cy.wait(delayTime);
     cy.get('.euiTab__content').contains('Absolute').click();
-    cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]')
+    cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
+      timeout: TIMEOUT_DELAY,
+    })
       .focus()
       .type('{selectall}' + endTime, { force: true });
   }
@@ -145,11 +151,17 @@ export const SAVE_QUERY3 = 'Mock Flight count by destination save to panel';
 export const SAVE_QUERY4 = 'Mock Flight peek';
 
 export const querySearch = (query, rangeSelected) => {
-  cy.get('[data-test-subj="searchAutocompleteTextArea"]').type(query);
-  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]').click();
+  cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
+    timeout: TIMEOUT_DELAY,
+  }).type(query);
+  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   cy.wait(delayTime);
   cy.get(rangeSelected).click();
-  cy.get('[data-test-subj="superDatePickerApplyTimeButton"]')
+  cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
+    timeout: TIMEOUT_DELAY,
+  })
     .contains('Refresh')
     .click();
 };
@@ -170,7 +182,9 @@ export const landOnEventVisualizations = () => {
   cy.visit(
     `${BASE_PATH}/app/observability-dashboards#/event_analytics/explorer`
   );
-  cy.get('button[id="main-content-vis"]').contains('Visualizations').click();
+  cy.get('button[id="main-content-vis"]', { timeout: TIMEOUT_DELAY })
+    .contains('Visualizations')
+    .click();
   supressResizeObserverIssue();
   cy.wait(delayTime);
 };
@@ -227,47 +241,63 @@ export const TIMEOUT_DELAY = 30000;
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   cy.wait(delayTime * 3);
-  cy.get('[data-test-subj="applicationHomePageTitle"]').should('exist');
+  cy.get('[data-test-subj="applicationHomePageTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('exist');
 };
 
 export const moveToCreatePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.get('.euiButton[href="#/application_analytics/create"]').eq(0).click();
+  cy.get('.euiButton[href="#/application_analytics/create"]', {
+    timeout: TIMEOUT_DELAY,
+  })
+    .eq(0)
+    .click();
   supressResizeObserverIssue();
   cy.wait(delayTime * 2);
-  cy.get('[data-test-subj="createPageTitle"]').should(
-    'contain',
-    'Create application'
-  );
+  cy.get('[data-test-subj="createPageTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', 'Create application');
 };
 
 export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
   supressResizeObserverIssue();
   cy.wait(delayTime * 2);
-  cy.get(`[data-test-subj="${name}ApplicationLink"]`).click();
-  cy.get('[data-test-subj="applicationTitle"]').should('contain', name);
+  cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
+    timeout: TIMEOUT_DELAY,
+  }).click();
+  cy.get('[data-test-subj="applicationTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', name);
   changeTimeTo24('years');
 };
 
 export const moveToEditPage = () => {
   moveToApplication(nameOne);
-  cy.get('[data-test-subj="app-analytics-configTab"]').click();
-  cy.get('[data-test-subj="editApplicationButton"]').click();
+  cy.get('[data-test-subj="app-analytics-configTab"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
+  cy.get('[data-test-subj="editApplicationButton"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   supressResizeObserverIssue();
   cy.wait(delayTime);
-  cy.get('[data-test-subj="createPageTitle"]').should(
-    'contain',
-    'Edit application'
-  );
+  cy.get('[data-test-subj="createPageTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', 'Edit application');
 };
 
 export const changeTimeTo24 = (timeUnit) => {
-  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]')
+  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]', {
+    timeout: TIMEOUT_DELAY,
+  })
     .trigger('mouseover')
     .click();
   cy.wait(delayTime);
-  cy.get('[aria-label="Time unit"]').select(timeUnit);
+  cy.get('[aria-label="Time unit"]', { timeout: TIMEOUT_DELAY }).select(
+    timeUnit
+  );
   cy.get('.euiButton').contains('Apply').click();
   cy.wait(delayTime);
   cy.get('.euiButton').contains('Refresh').click();
@@ -285,7 +315,9 @@ export const moveToPanelHome = () => {
 
 export const deleteAllSavedApplications = () => {
   moveToHomePage();
-  cy.get('[data-test-subj="checkboxSelectAll"]').click();
+  cy.get('[data-test-subj="checkboxSelectAll"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   cy.get('.euiPopover').contains('Actions').click();
   cy.get('.euiContextMenuItem').contains('Delete').click();
   cy.get('.euiButton__text').contains('Delete').click();
