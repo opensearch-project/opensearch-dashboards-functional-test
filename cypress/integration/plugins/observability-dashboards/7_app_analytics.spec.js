@@ -485,11 +485,6 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
-    cy.get('.euiTableRow')
-      .eq(1)
-      .within(() => {
-        cy.get('.euiCheckbox').click();
-      });
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
       timeout: delayTime * 4,
     }).click();

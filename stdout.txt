@@ -1,0 +1,1008 @@
+
+> opensearch-dashboards-functional-test@2.0.0-rc1 postinstall
+> husky install
+
+husky - Git hooks installed
+
+added 272 packages, and audited 273 packages in 4s
+
+38 packages are looking for funding
+  run `npm fund` for details
+
+1 high severity vulnerability
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+run security enabled tests
+yarn run v1.22.18
+$ env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200 --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/observability-dashboards/*,cypress/integration/plugins/security/*'
+It looks like this is your first time using Cypress: 9.5.4
+
+[STARTED] Task without title.
+[SUCCESS] Task without title.
+
+Opening Cypress...
+The experimentalNetworkStubbing configuration option was removed in Cypress version 6.0.0.
+
+It is no longer necessary for using cy.intercept(). You can safely remove this option from your config.
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        9.5.4                                                                          │
+  │ Browser:        Chromium 99 (headless)                                                         │
+  │ Node Version:   v16.14.2 (/usr/share/opensearch/.nvm/versions/node/v16.14.2/bin/node)          │
+  │ Specs:          17 found (core-opensearch-dashboards/opensearch-dashboards/dashboard_sanity_te │
+  │                 st_spec.js, plugins/observability-dashboards/0_before.spec.js, plugins/observa │
+  │                 bility-dashboards/1_trace_analytics_dashboard.spec.js, plugins/observability-d │
+  │                 ashboards/2_trace_analy...)                                                    │
+  │ Searched:       cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js, cyp │
+  │                 ress/integration/plugins/observability-dashboards/*, cypress/integration/plugi │
+  │                 ns/security/*                                                                  │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  core-opensearch-dashboards/opensearch-dashboards/dashboard_sanity_te           (1 of 17)
+            st_spec.js                                                                              
+
+
+  dashboard sample data validation
+    checking home page
+      ✓ checking opensearch_dashboards_overview display
+      ✓ checking tutorial_directory display
+      ✓ checking management display
+      ✓ checking dev_tools display
+      ✓ settings display
+      ✓ checking feature_directory display
+      ✓ checking navigation display
+      ✓ checking Help menu display
+    adding sample data
+      ✓ checking ecommerce dashboards displayed (11739ms)
+      ✓ checking flights dashboards displayed
+      ✓ checking web logs dashboards displayed
+      checking index patterns
+        ✓ checking ecommerce index patterns are added
+        ✓ checking flights index patterns are added
+        ✓ checking web logs index patterns are added
+      checking saved objects
+        ✓ checking ecommerce object is saved
+        ✓ checking flights object is saved
+        ✓ checking web logs object is saved
+      checking Visualize
+        ✓ checking visualizations list display
+        ✓ checking search bar display
+        ✓ checking create visualization button display
+      checking discover
+        ✓ checking save query button display
+        ✓ checking query input display
+        ✓ checking refresh button display
+        ✓ checking add filter button display
+        ✓ checking index pattern switch button display
+        ✓ checking field filter display
+    checking Dev Tools
+      ✓ checking welcome panel display
+      ✓ checking dismiss button display
+      ✓ checking console input area display
+      ✓ checking console output area display
+    checking stack management
+      ✓ checking Stack Management display
+      ✓ checking index patterns link display
+      ✓ checking saved objects link display
+      ✓ checking advance settings link display
+
+
+  34 passing (29s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        34                                                                               │
+  │ Passing:      34                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     29 seconds                                                                       │
+  │ Spec Ran:     core-opensearch-dashboards/opensearch-dashboards/dashboard_sanity_test_spec.js   │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/co    (2 seconds)
+                          re-opensearch-dashboards/opensearch-dashboards/dashboard_sa               
+                          nity_test_spec.js.mp4                                                     
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/0_before.spec.js                              (2 of 17)
+
+
+  Before
+    ✓ setup completed (6260ms)
+
+
+  1 passing (6s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     plugins/observability-dashboards/0_before.spec.js                                │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/observability-dashboards/0_before.spec.js.mp4                       
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/1_trace_analytics_dashboard.spec.js           (3 of 17)
+
+
+  Testing dashboard table empty state
+    ✓ Renders empty state
+
+  Testing dashboard table
+    ✓ Renders the dashboard table (5487ms)
+    ✓ Has working breadcrumbs (10813ms)
+    ✓ Adds the percentile filters (11928ms)
+    ✓ Opens latency trend popover (17233ms)
+    ✓ Redirects to traces table with filter (10376ms)
+
+  Testing plots
+    ✓ Renders service map (7576ms)
+    ✓ Renders plots
+
+
+  8 passing (1m)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        8                                                                                │
+  │ Passing:      8                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     1 minute, 13 seconds                                                             │
+  │ Spec Ran:     plugins/observability-dashboards/1_trace_analytics_dashboard.spec.js             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (5 seconds)
+                          ugins/observability-dashboards/1_trace_analytics_dashboard.               
+                          spec.js.mp4                                                               
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/2_trace_analytics_services.spec.js            (4 of 17)
+
+
+  Testing services table empty state
+    ✓ Renders empty state
+
+  Testing services table
+    ✓ Renders the services table (5221ms)
+    ✓ Searches correctly (7211ms)
+
+  Testing service view empty state
+    ✓ Renders service view empty state
+
+  Testing service view
+    ✓ Renders service view
+    ✓ Has working breadcrumbs (12111ms)
+    ✓ Renders spans data grid, flyout, filters (8451ms)
+
+
+  7 passing (44s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        7                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     44 seconds                                                                       │
+  │ Spec Ran:     plugins/observability-dashboards/2_trace_analytics_services.spec.js              │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (3 seconds)
+                          ugins/observability-dashboards/2_trace_analytics_services.s               
+                          pec.js.mp4                                                                
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/3_trace_analytics_traces.spec.js              (5 of 17)
+
+
+  Testing traces table empty state
+    ✓ Renders empty state
+
+  Testing traces table
+    ✓ Renders the traces table
+    ✓ Sorts the traces table (5157ms)
+    ✓ Searches correctly (5859ms)
+
+  Testing trace view
+    ✓ Renders the trace view
+    ✓ Has working breadcrumbs (8104ms)
+    ✓ Renders data grid, flyout and filters (7111ms)
+
+
+  7 passing (38s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        7                                                                                │
+  │ Passing:      7                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     37 seconds                                                                       │
+  │ Spec Ran:     plugins/observability-dashboards/3_trace_analytics_traces.spec.js                │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (2 seconds)
+                          ugins/observability-dashboards/3_trace_analytics_traces.spe               
+                          c.js.mp4                                                                  
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/4_panels.spec.js                              (6 of 17)
+
+
+  Creating visualizations
+    ✓ Create first visualization in event analytics (12391ms)
+    ✓ Create second visualization in event analytics (12060ms)
+
+  Testing panels table
+    ✓ Displays error toast for invalid panel name
+    ✓ Creates a panel and redirects to the panel
+    ✓ Duplicates and renames a panel
+    ✓ Searches existing panel (5230ms)
+    ✓ Deletes panels
+
+  Testing a panel
+    ✓ Move to test panel
+    ✓ Opens visualization flyout from empty panel
+    ✓ Redirects to correct page on breadcrumb click
+    ✓ Duplicate the open panel
+    ✓ Rename the open panel
+    ✓ Change date filter of the panel
+    ✓ Add existing visualization #1 (9086ms)
+    ✓ Add existing visualization #2
+    ✓ Add ppl filter to panel (36847ms)
+    ✓ Drag and drop a visualization
+    ✓ Resize a visualization
+    ✓ Delete a visualization
+    ✓ Duplicate a visualization
+    ✓ Replace a visualization
+    ✓ Create new visualization and add to panel (16387ms)
+    ✓ Move to test panel and check visualization edit button (14066ms)
+
+  Clean up all test data
+    ✓ Delete visualizations from event analytics
+    ✓ Deletes test panel
+
+
+  25 passing (2m)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        25                                                                               │
+  │ Passing:      25                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     2 minutes, 29 seconds                                                            │
+  │ Spec Ran:     plugins/observability-dashboards/4_panels.spec.js                                │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+    Compression progress:  95%
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl   (10 seconds)
+                          ugins/observability-dashboards/4_panels.spec.js.mp4                       
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/5_event_analytics.spec.js                     (7 of 17)
+
+
+  Has working breadcrumbs
+    ✓ Redirect to correct page on breadcrumb click (11933ms)
+
+  Search a query on event home
+    ✓ Search a query and redirect to explorer to display query output
+
+  Open flyout for a data row to see details
+    ✓ Should be able to open flyout and see data, json and traces (8053ms)
+    ✓ Should be able to see srrounding docs (7459ms)
+
+  Add/delete/switch explorer top level tabs
+    ✓ Add a new tab
+    ✓ Click to switch to anther tab
+    ✓ Close a tab
+    ✓ Close current selected tab
+    ✓ Close another unselected tab
+
+  Load a saved query from event home
+    ✓ Click on a saved query and redirect to explorer (13685ms)
+
+  Click actions
+    ✓ Actions - click event explorer
+    ✓ Actions - add sample data (6675ms)
+    ✓ Actions - delete saved queries
+
+  Saves a query on explorer page
+    ✓ Saves a query on event tab of explorer page (14640ms)
+    ✓ Saves a visualization on visualization tab of explorer page (16322ms)
+    ✓ Saves a visualization to an existing panel (18250ms)
+
+  Override timestamp for an index
+    ✓ Click override button to override default timestamp
+
+  Toggle sidebar fields
+    ✓ Toggle fields between available and selected section (7217ms)
+
+  Search fields in sidebar
+    ✓ Search a field (6530ms)
+
+  Delete saved objects
+    ✓ Delete visualizations/querys from event analytics (13567ms)
+
+  Click to view field insights
+    ✓ Click a numerical field to view field insights (5556ms)
+    ✓ Click a non-numerical field to view insights (5357ms)
+
+  Switch on and off livetail
+    ✓ Switch on and off in live tail (11011ms)
+
+  Live tail stop automatically
+    ✓ Moving to other tab should stop live tail automatically (7747ms)
+    ✓ Add a new tab
+    ✓ Click to switch to another tab
+    ✓ Close current selected tab
+    ✓ Live tail should be stopped
+
+  Renders noresult chart
+    ✓ It should render no result when there is no data
+
+  Renders bar charts
+    ✓ Renders vertical bar chart (23623ms)
+    ✓ Renders horiztontal bar chart (25579ms)
+
+  Renders line charts
+    ✓ Renders line chart with threshold (15357ms)
+
+  Renders pie charts
+    ✓ Renders pie chart (9166ms)
+
+  Renders heatmap chart
+    ✓ Renders heatmap chart with different z-axes (21579ms)
+
+  Renders markdown chart
+    ✓ Renders markdown chart with test title (14580ms)
+
+  Renders data view
+    ✓ Switch views between data table and visualization workspace (7687ms)
+
+
+  36 passing (5m)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        36                                                                               │
+  │ Passing:      36                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     5 minutes, 9 seconds                                                             │
+  │ Spec Ran:     plugins/observability-dashboards/5_event_analytics.spec.js                       │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+    Compression progress:  46%
+    Compression progress:  93%
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl   (21 seconds)
+                          ugins/observability-dashboards/5_event_analytics.spec.js.mp               
+                          4                                                                         
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/6_notebooks.spec.js                           (8 of 17)
+
+
+  Adding sample visualization
+    ✓ Add sample observability data (6196ms)
+
+  Testing notebooks table
+    ✓ Displays error toast for invalid notebook name (5374ms)
+    ✓ Creates a notebook and redirects to the notebook
+    ✓ Duplicates and renames a notebook (16320ms)
+    ✓ Searches existing notebooks (7488ms)
+    ✓ Deletes notebooks (12190ms)
+
+  Test reporting integration if plugin installed
+    - Create in-context PDF report from notebook
+    - Create in-context PNG report from notebook
+    - Create on-demand report definition from context menu
+    - View reports homepage from context menu
+
+  Testing paragraphs
+    ✓ Goes into a notebook and creates paragraphs (12807ms)
+    ✓ Has working breadcrumbs (6494ms)
+    ✓ Renders markdown
+    ✓ Shows output message (6733ms)
+    ✓ Renders input only mode (5060ms)
+    ✓ Renders output only mode
+    ✓ Duplicates paragraphs (6451ms)
+    ✓ Adds a dashboards visualization paragraph (14185ms)
+    ✓ Adds a SQL query paragraph (15451ms)
+    ✓ Adds an observability visualization paragraph (15287ms)
+    ✓ Adds a PPL query paragraph (16704ms)
+    ✓ Clears outputs (12291ms)
+    ✓ Runs all paragraphs (9678ms)
+    ✓ Adds paragraph to top and bottom (18410ms)
+    ✓ Moves paragraphs (7003ms)
+    ✓ Duplicates and renames the notebook (21538ms)
+    ✓ Deletes paragraphs (11719ms)
+    ✓ Deletes notebook (10187ms)
+    ✓ Cleans up test notebooks (10431ms)
+
+  clean up all test data
+    ✓ Delete visualizations from event analytics (12679ms)
+    ✓ Deletes test panel (10253ms)
+
+
+  27 passing (5m)
+  4 pending
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        31                                                                               │
+  │ Passing:      27                                                                               │
+  │ Failing:      0                                                                                │
+  │ Pending:      4                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     5 minutes, 5 seconds                                                             │
+  │ Spec Ran:     plugins/observability-dashboards/6_notebooks.spec.js                             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+    Compression progress:  47%
+    Compression progress:  96%
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl   (21 seconds)
+                          ugins/observability-dashboards/6_notebooks.spec.js.mp4                    
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/7_app_analytics.spec.js                       (9 of 17)
+
+
+  Creating application
+    ✓ Suggests correct autocompletion (10672ms)
+    ✓ Creates an application and redirects to application (89819ms)
+    ✓ Hides application panels in Operational Panels
+    ✓ Redirects to home page on cancel (5661ms)
+    ✓ Saves current input on reload (91481ms)
+    ✓ Shows clear modals before clearing (85915ms)
+
+  Viewing application
+    ✓ Has working breadcrumbs (10330ms)
+    ✓ Shares time range among tabs (13734ms)
+    ✓ Shows latency variance in dashboards table (12459ms)
+    1) "before each" hook for "Saves time range for each application"
+
+  Separate from other plugins
+    ✓ Hides application visualizations in Event Analytics
+    ✓ Hides application visualizations in Operational Panels (45953ms)
+
+  Editing application
+    2) "before each" hook for "Redirects to application after saving changes"
+
+  Application Analytics home page
+    3) Show correct information in table
+    ✓ Renames application (8085ms)
+    4) Deletes application
+
+
+  12 passing (11m)
+  4 failing
+
+  1) Viewing application
+       "before each" hook for "Saves time range for each application":
+     AssertionError: Timed out retrying after 60000ms: expected '<h1.euiTitle.euiTitle--large>' to contain 'Cypress-1651717685957'
+
+Because this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Viewing application`
+      at moveToApplication (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:1227:49)
+      at Context.eval (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:245:38)
+
+  2) Editing application
+       "before each" hook for "Redirects to application after saving changes":
+     AssertionError: Timed out retrying after 60000ms: Expected to find element: `[data-test-subj="Cypress-1651717685957ApplicationLink"]`, but never found it.
+
+Because this error occurred during a `before each` hook we are skipping the remaining tests in the current suite: `Editing application`
+      at moveToApplication (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:1226:6)
+      at moveToEditPage (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:1234:3)
+      at Context.eval (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:536:35)
+
+  3) Application Analytics home page
+       Show correct information in table:
+     AssertionError: Timed out retrying after 60000ms: expected '<div#compositionColumn.euiText.euiText--medium>' to contain 'order, payment, HTTP POST, HTTP GET, client_pay_order'
+      at Context.eval (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:564:66)
+
+  4) Application Analytics home page
+       Deletes application:
+     AssertionError: Timed out retrying after 60000ms: Expected to find element: `1`, but never found it. Queried from element: <tr.euiTableRow.euiTableRow-isSelectable.euiTableRow-isSelected>
+      at Context.eval (http://localhost:5601/__cypress/tests?p=cypress/integration/plugins/observability-dashboards/7_app_analytics.spec.js:591:28)
+
+
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        26                                                                               │
+  │ Passing:      12                                                                               │
+  │ Failing:      4                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      10                                                                               │
+  │ Screenshots:  4                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     10 minutes, 40 seconds                                                           │
+  │ Spec Ran:     plugins/observability-dashboards/7_app_analytics.spec.js                         │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/screenshots/plugins/observabil     (1280x720)
+     ity-dashboards/7_app_analytics.spec.js/Viewing application -- Saves time range f               
+     or each application -- before each hook (failed).png                                           
+  -  /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/screenshots/plugins/observabil     (1280x720)
+     ity-dashboards/7_app_analytics.spec.js/Editing application -- Redirects to appli               
+     cation after saving changes -- before each hook (failed).png                                   
+  -  /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/screenshots/plugins/observabil     (1280x720)
+     ity-dashboards/7_app_analytics.spec.js/Application Analytics home page -- Show c               
+     orrect information in table (failed).png                                                       
+  -  /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/screenshots/plugins/observabil     (1280x720)
+     ity-dashboards/7_app_analytics.spec.js/Application Analytics home page -- Delete               
+     s application (failed).png                                                                     
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+    Compression progress:  25%
+    Compression progress:  50%
+    Compression progress:  75%
+    Compression progress:  100%
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl   (44 seconds)
+                          ugins/observability-dashboards/7_app_analytics.spec.js.mp4                
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/observability-dashboards/8_after.spec.js                              (10 of 17)
+
+
+  After
+    ✓ clean up complete
+
+
+  1 passing (89ms)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        1                                                                                │
+  │ Passing:      1                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     0 seconds                                                                        │
+  │ Spec Ran:     plugins/observability-dashboards/8_after.spec.js                                 │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/observability-dashboards/8_after.spec.js.mp4                        
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/audit_log_spec.js                                            (11 of 17)
+
+
+  Audit logs page
+    ✓ should load Audit logs page properly
+    ✓ should toggle enable-disable switch for audit logging
+    ✓ should configure general settings successfully
+    ✓ should configure compliance settings successfully
+
+
+  4 passing (6s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     5 seconds                                                                        │
+  │ Spec Ran:     plugins/security/audit_log_spec.js                                               │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/audit_log_spec.js.mp4                                      
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/auth_spec.js                                                 (12 of 17)
+
+
+  Authc and Authz page
+    ✓ authentication and authorization section should exist
+    ✓ View Expression Modal should display and close correctly
+
+
+  2 passing (4s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        2                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     3 seconds                                                                        │
+  │ Spec Ran:     plugins/security/auth_spec.js                                                    │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/auth_spec.js.mp4                                           
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/get_started_spec.js                                          (13 of 17)
+
+
+  Home(Get Started) page
+    ✓ should load Home page properly
+    ✓ should redirect to Auth page
+    ✓ should redirect to view Roles page
+    ✓ should redirect to create Roles page
+    ✓ should redirect to view Users page
+    ✓ should redirect to create Users page
+    ✓ should redirect to Audit Logging page
+    ✓ should purge Cache successfully
+
+
+  8 passing (9s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        8                                                                                │
+  │ Passing:      8                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     9 seconds                                                                        │
+  │ Spec Ran:     plugins/security/get_started_spec.js                                             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/get_started_spec.js.mp4                                    
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/internalusers_spec.js                                        (14 of 17)
+
+
+  Internal users page
+    ✓ should load internal users page properly
+    ✓ should view user edit page when a user is clicked
+    ✓ should redirect to create new users page
+    ✓ should create new user successfully
+
+
+  4 passing (7s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     plugins/security/internalusers_spec.js                                           │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/internalusers_spec.js.mp4                                  
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/permissions_spec.js                                          (15 of 17)
+
+
+  Permissions page
+    ✓ should load Permissions page properly
+    ✓ should expand an action-group when it is clicked
+    ✓ should open modal with options to create new action group page
+    ✓ should create new action group successfully by selecting `Create from blank`
+    ✓ should create new action group successfully by selecting `Create from selection`
+
+
+  5 passing (10s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        5                                                                                │
+  │ Passing:      5                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     9 seconds                                                                        │
+  │ Spec Ran:     plugins/security/permissions_spec.js                                             │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/permissions_spec.js.mp4                                    
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/roles_spec.js                                                (16 of 17)
+
+
+  Roles page
+    ✓ should load Roles page properly
+    ✓ should open Cluster Permissions drop-down menu when clicked
+    ✓ should redirect to create new role page
+    ✓ should create new role successfully
+
+
+  4 passing (6s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        4                                                                                │
+  │ Passing:      4                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     6 seconds                                                                        │
+  │ Spec Ran:     plugins/security/roles_spec.js                                                   │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/roles_spec.js.mp4                                          
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  plugins/security/tenants_spec.js                                              (17 of 17)
+
+
+  Tenants page
+    ✓ should load Tenants page properly
+    ✓ should create new tenant successfully by selecting `Create tenant`
+
+
+  2 passing (5s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        2                                                                                │
+  │ Passing:      2                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  0                                                                                │
+  │ Video:        true                                                                             │
+  │ Duration:     4 seconds                                                                        │
+  │ Spec Ran:     plugins/security/tenants_spec.js                                                 │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Video)
+
+  -  Started processing:  Compressing to 32 CRF                                                     
+  -  Finished processing: /tmp/tmpjwbdahsk/functionalTestDashboards/cypress/videos/pl    (0 seconds)
+                          ugins/security/tenants_spec.js.mp4                                        
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  core-opensearch-dashboards/opensear      00:29       34       34        -        -        - │
+  │    ch-dashboards/dashboard_sanity_test                                                         │
+  │    _spec.js                                                                                    │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/0_      00:06        1        1        -        -        - │
+  │    before.spec.js                                                                              │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/1_      01:13        8        8        -        -        - │
+  │    trace_analytics_dashboard.spec.js                                                           │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/2_      00:44        7        7        -        -        - │
+  │    trace_analytics_services.spec.js                                                            │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/3_      00:37        7        7        -        -        - │
+  │    trace_analytics_traces.spec.js                                                              │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/4_      02:29       25       25        -        -        - │
+  │    panels.spec.js                                                                              │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/5_      05:09       36       36        -        -        - │
+  │    event_analytics.spec.js                                                                     │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/6_      05:05       31       27        -        4        - │
+  │    notebooks.spec.js                                                                           │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✖  plugins/observability-dashboards/7_      10:40       26       12        4        -       10 │
+  │    app_analytics.spec.js                                                                       │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/observability-dashboards/8_       89ms        1        1        -        -        - │
+  │    after.spec.js                                                                               │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/audit_log_spec.js       00:05        4        4        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/auth_spec.js            00:03        2        2        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/get_started_spec.j      00:09        8        8        -        -        - │
+  │    s                                                                                           │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/internalusers_spec      00:06        4        4        -        -        - │
+  │    .js                                                                                         │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/permissions_spec.j      00:09        5        5        -        -        - │
+  │    s                                                                                           │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/roles_spec.js           00:06        4        4        -        -        - │
+  ├────────────────────────────────────────────────────────────────────────────────────────────────┤
+  │ ✔  plugins/security/tenants_spec.js         00:04        2        2        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✖  1 of 17 failed (6%)                      27:21      205      187        4        4       10  
+
+info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
