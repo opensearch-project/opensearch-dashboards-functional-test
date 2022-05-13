@@ -36,7 +36,7 @@
   "homepage": "https://github.com/opensearch-project/opensearch-dashboards-functional-test",
   "dependencies": {
     "@cypress/skip-test": "^2.6.1",
-    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "opensearch-project/opensearch-dashboards-test-library#main",
+    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "git+https://github.com/opensearch-project/opensearch-dashboards-test-library.git#main",
     "brace": "^0.11.1",
     "prettier": "^2.5.1"
   },
