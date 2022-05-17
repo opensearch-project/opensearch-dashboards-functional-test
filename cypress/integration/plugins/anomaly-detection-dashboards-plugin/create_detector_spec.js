@@ -49,6 +49,7 @@ context('Create detector workflow', () => {
     );
     cy.getElementByTestId('indicesFilter').type(`${TEST_INDEX_NAME}{enter}`);
     selectTopItemFromFilter('timestampFilter', false);
+
     cy.getElementByTestId('defineDetectorNextButton').click();
     cy.getElementByTestId('defineOrEditDetectorTitle').should('not.exist');
     cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
