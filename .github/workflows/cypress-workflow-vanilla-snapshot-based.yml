@@ -2,10 +2,10 @@ name: Snapshot based E2E Cypress tests workflow
 on:
   pull_request:
     branches:
-      - 1.2
+      - 1.0
   push:
     branches:
-      - 1.2
+      - 1.0
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -22,19 +22,19 @@ jobs:
           java-version: 14
       - name: Get and run OpenSearch
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.2.0-SNAPSHOT/opensearch-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
-          tar -xzf opensearch-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
-          cd opensearch-1.2.0-SNAPSHOT/
+          wget https://artifacts.opensearch.org/snapshots/core/opensearch/1.0.0-SNAPSHOT/opensearch-min-1.0.0-SNAPSHOT-linux-x64-latest.tar.gz
+          tar -xzf opensearch-min-1.0.0-SNAPSHOT-linux-x64-latest.tar.gz
+          cd opensearch-1.0.0-SNAPSHOT/
           bin/opensearch &
           timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch-dashboards/1.2.0-SNAPSHOT/opensearch-dashboards-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
-          tar -xzf opensearch-dashboards-min-1.2.0-SNAPSHOT-linux-x64-latest.tar.gz
+          wget https://artifacts.opensearch.org/snapshots/core/opensearch-dashboards/1.0.0-SNAPSHOT/opensearch-dashboards-min-1.0.0-SNAPSHOT-linux-x64-latest.tar.gz
+          tar -xzf opensearch-dashboards-min-1.0.0-SNAPSHOT-linux-x64-latest.tar.gz
       - name: Get node and yarn versions
         id: versions
         run: |
-          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-1.2.0-SNAPSHOT-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
+          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-1.0.0-SNAPSHOT-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -42,7 +42,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
         run: |
-          cd opensearch-dashboards-1.2.0-SNAPSHOT-linux-x64
+          cd opensearch-dashboards-1.0.0-SNAPSHOT-linux-x64
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Checkout Monterey test cases
