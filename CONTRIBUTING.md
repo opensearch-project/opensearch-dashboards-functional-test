@@ -134,18 +134,18 @@ Since your release tests have been moved in this repo, to avoid maintain duplica
 
 The tests inside this repo will be executed from OpenSearch build repo. You can verify that by running test script from https://github.com/opensearch-project/opensearch-build/tree/main/src/test_workflow Please refer to the repo to the way of test exeuction. Below is the set of commands you can use based on current situation.
 
-Suppose your plugin is ready for version 1.2.0
+Suppose your plugin is ready for version 1.1.0
 
 ```
-./build.sh manifests/1.2.0/opensearch-1.2.0.yml
+./build.sh manifests/1.1.0/opensearch-1.1.0.yml
 
-./build.sh manifests/1.2.0/opensearch-dashboards-1.2.0.yml
+./build.sh manifests/1.1.0/opensearch-dashboards-1.1.0.yml
 
 ./assemble.sh builds/opensearch/manifest.yml
 
 ./assemble.sh builds/opensearch-dashboards/manifest.yml
 
-./test.sh integ-test manifests/1.2.0/opensearch-dashboards-1.2.0-test.yml
+./test.sh integ-test manifests/1.1.0/opensearch-dashboards-1.1.0-test.yml
 
 ```
 
