@@ -230,7 +230,10 @@ export const moveToHomePage = () => {
 };
 
 export const moveToCreatePage = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
   cy.wait(delayTime * 2);
   cy.get('.euiButton__text').contains('Create application').click();
   supressResizeObserverIssue();
@@ -239,7 +242,10 @@ export const moveToCreatePage = () => {
 };
 
 export const moveToApplication = (name) => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
   supressResizeObserverIssue();
   cy.wait(delayTime * 7);
   cy.contains(name, { timeout: 120000 }).click();
