@@ -10,6 +10,12 @@ const ADMIN_AUTH = {
   password: Cypress.env('password'),
 };
 
+export const supressNoRequestOccurred = () => {
+  cy.on('fail', (err) => {
+    if (err.message.includes('No request ever occurred.')) return false;
+  });
+};
+
 /**
  * This overwrites the default visit command to authenticate before visiting
  * webpages if SECURITY_ENABLED cypress env var is true
@@ -17,6 +23,7 @@ const ADMIN_AUTH = {
 Cypress.Commands.overwrite('visit', (orig, url, options) => {
   if (Cypress.env('SECURITY_ENABLED')) {
     let newOptions = options;
+    let waitForGetTenant = options && options.waitForGetTenant;
     if (options) {
       newOptions['auth'] = ADMIN_AUTH;
     } else {
@@ -25,7 +32,14 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
       };
     }
     newOptions.qs = { security_tenant: 'private' };
-    orig(url, newOptions);
+    if (!waitForGetTenant) {
+      cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
+      orig(url, newOptions);
+      supressNoRequestOccurred();
+      cy.wait('@getTenant');
+    } else {
+      orig(url, newOptions);
+    }
   } else {
     orig(url, options);
   }
