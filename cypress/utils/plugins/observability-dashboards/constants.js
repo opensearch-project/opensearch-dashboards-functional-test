@@ -247,7 +247,11 @@ export const moveToHomePage = () => {
 };
 
 export const moveToCreatePage = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
+  cy.wait(delayTime * 2);
   cy.get('.euiButton[href="#/application_analytics/create"]', {
     timeout: TIMEOUT_DELAY,
   })
@@ -261,7 +265,10 @@ export const moveToCreatePage = () => {
 };
 
 export const moveToApplication = (name) => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
   supressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
