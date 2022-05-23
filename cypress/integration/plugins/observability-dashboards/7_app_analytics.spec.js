@@ -35,11 +35,12 @@ describe('Creating application', () => {
   });
 
   it('Creates an application and redirects to application', () => {
-    expectMessageOnHover('Name is required.');
+    expectMessageOnHover('createButton', 'Name is required.');
     cy.get('[data-test-subj="nameFormRow"]', { timeout: TIMEOUT_DELAY }).type(
       nameOne
     );
     expectMessageOnHover(
+      'createButton',
       'Provide at least one log source, service, entity or trace group.'
     );
     cy.get('[data-test-subj="descriptionFormRow"]', {
@@ -61,6 +62,12 @@ describe('Creating application', () => {
     cy.get('[data-test-subj="logSourceAccordion"]', { timeout: TIMEOUT_DELAY })
       .trigger('mouseover')
       .click();
+    cy.get('[data-test-subj="createButton"]').should('not.be.disabled');
+    cy.get('[data-test-subj="createAndSetButton"]').should('be.disabled');
+    expectMessageOnHover(
+      'createAndSetButton',
+      'Log source is required to set availability.'
+    );
     cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
       timeout: TIMEOUT_DELAY,
     })
@@ -179,10 +186,11 @@ describe('Viewing application', () => {
     cy.get('[data-test-subj="superDatePickerShowDatesButton"]', {
       timeout: TIMEOUT_DELAY,
     }).should('contain', 'Last 24 months');
+    cy.get('.euiTab[id="availability-panel"]').click();
     cy.get('[title="Bar"]', { timeout: TIMEOUT_DELAY }).click();
     cy.focused().type('{downArrow}');
     cy.focused().type('{enter}');
-    cy.get('[data-test-subj="addThresholdButton"]', {
+    cy.get('[data-test-subj="addAvailabilityButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
     cy.get('[data-test-subj="euiColorPickerAnchor"]', {
@@ -258,11 +266,12 @@ describe('Viewing application', () => {
       timeout: TIMEOUT_DELAY,
     }).click();
     supressResizeObserverIssue();
+    cy.get('.euiTab[id="availability-panel"]').click();
     cy.get('[title="Bar"]', { timeout: TIMEOUT_DELAY }).click();
     cy.focused().type('{downArrow}');
     cy.focused().type('{enter}');
     cy.wait(delayTime);
-    cy.get('[data-test-subj="addThresholdButton"]', {
+    cy.get('[data-test-subj="addAvailabilityButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
     cy.get('[data-test-subj="euiColorPickerAnchor"]', {
@@ -285,7 +294,7 @@ describe('Viewing application', () => {
       timeout: TIMEOUT_DELAY,
     }).click();
     cy.wait(delayTime);
-    cy.get('[data-test-subj="addThresholdButton"]', {
+    cy.get('[data-test-subj="addAvailabilityButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
     cy.get('[data-test-subj="euiColorPickerAnchor"]', {
