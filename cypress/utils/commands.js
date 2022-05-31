@@ -32,7 +32,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
       };
     }
     newOptions.qs = { security_tenant: 'private' };
-    if (!waitForGetTenant) {
+    if (waitForGetTenant) {
       cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
       orig(url, newOptions);
       supressNoRequestOccurred();
