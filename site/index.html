@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>OSD Functional Test Repo</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+  <script src="js/dashboard.js"></script>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="icon" type="image/x-icon" href="https://avatars.githubusercontent.com/u/12060704?v=4">
+</head>
+
+<body>
+  <div class="topNav">
+    <span>OpenSearch Dashboards Test Results Explorer</span>
+    <a href="https://github.com/opensearch-project/opensearch-dashboards-functional-test">
+      Github
+    </a>
+    <a href="https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/new?assignees=&labels=enhancement%2C+untriaged&template=FEATURE_REQUEST_TEMPLATE.md&title=%5BFEATURE%5D">
+      Plugin Not Here?
+    </a>
+  </div> 
+  <div id="advancedConfigDiv">
+    <table>
+      <tr>
+        <th>
+          Advanced Configurations
+        </th>
+      </tr>
+      <tr>
+        <td id="advancedConfigTd">
+          <input type="checkbox" id="advancedConfig" onclick="enableAdvancedConfig()">
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div id="descriptionDiv">
+    Welcome to the test results explorer! Please enter the version and build number to view results.
+    <br><br>
+    <i>NOTE: You might need to add an extension to view the results in UTF-8. Otherwise, download directly.</i>
+  </div>
+  <div id="inputsDiv">
+    <table>
+      <tr>
+        <th>Version</th>
+        <th>Build Number</th>
+      </tr>
+      <tr>
+        <td>
+          <input type="text" id="version" value="2.0.0">
+        </td>
+        <td>
+          <input type="text" id="buildNumber" value="3936">
+        </td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Arch</th>
+        <th>Type</th>
+        <th>With Security</th>
+      </tr>
+      <tr>
+        <td>
+          <select id="platform">
+            <option value="linux">Linux</option>
+          </select>
+        </td>
+        <td>
+          <select id="arch">
+            <option value="x64">x64</option>
+            <option value="arm64">arm64</option>
+          </select>
+        </td>
+        <td>
+          <select id="type">
+            <option value="tar">tar</option>
+            <option value="rpm">rpm</option>
+          </select>
+        </td>
+        <td id="securityTd">
+          <input type="checkbox" id="security">
+        </td>
+      </tr>
+    </table>
+    <table id="advancedInputsTable">
+      <tr>
+        <th>Test Number</th>
+      </tr>
+      <tr>
+        <td>
+          <input type="text" id="testNumber" value="1">
+        </td>
+      </tr>
+      <tr>
+        <th>Test Job Name</th>
+      </tr>
+      <tr>
+        <td>
+          <input style="width:50vw" type="text" id="testJobName" value="integ-test-opensearch-dashboards">
+        </td>
+      </tr>
+    </table>
+    <button id="submitButton" onclick="getTestResults()">Submit</button>
+  </div>
+  <div id="testResultsLinksDiv">
+    <h2>Useful Links:</h2>
+    <ul>
+      <li>
+        <a id="testResultLink"></a>
+      </li>
+      <li>
+        <a id="manifestLink"></a>
+      </li>
+      <li>
+        <a id="osdLink"></a>
+      </li>
+      <li>
+        <a id="osLink"></a>
+      </li>
+    </ul>
+    <h2>Plugins:</h2>
+    <table>
+      <tr>
+        <td id="pluginButtonsTd">
+          <button id="alertingDashboardsButton" onclick="getPluginLinks('alerting-dashboards-plugin')">
+            alertingDashboards
+          </button>
+          <button id="anomalyDetectionDashboardsButton" onclick="getPluginLinks('anomaly-detection-dashboards-plugin')">
+            anomalyDetectionDashboards
+          </button>
+          <button id="ganttChartDashboardsButton" onclick="getPluginLinks('gantt-chart-dashboards')">
+            ganttChartDashboards
+          </button>
+          <button id="indexManagementDashboardsButton" onclick="getPluginLinks('index-management-dashboards-plugin')">
+            indexManagementDashboards
+          </button>
+          <button id="notificationsDashboardsButton" onclick="getPluginLinks('notifications-dashboards')">
+            notificationsDashboards
+          </button>
+          <button id="observabilityDashboardsButton" onclick="getPluginLinks('observability-dashboards')">
+            observabilityDashboards
+          </button>
+          <button id="queryWorkbenchDashboardsButton" onclick="getPluginLinks('query-workbench-dashboards')">
+            queryWorkbenchDashboards
+          </button>
+          <button id="reportsDashboardsButton" onclick="getPluginLinks('reports-dashboards')">
+            reportsDashboards
+          </button>
+          <button id="securityDashboardsButton" onclick="getPluginLinks('security')">
+            securityDashboards
+          </button>
+      </tr>
+    </table>
+  </div>
+  <div id="pluginLinksDiv">
+    <button onclick="closePluginLinks()">Close</button>
+    <h2 id="pluginName"></h2>
+    <span><i>NOTE: If you are getting errors accessing these links, please verify the plugin is within the build manifest (within the useful links section).</i></span>
+    <br>
+    <span>If your plugin is not in the build manifest, please verify it has been added to:</span>
+    <span id="githubManifestLink"></span>
+    <br><br>
+    <span id="pluginLink"></span>
+    <ul id="pluginLinksList"></ul>
+  </div>
+  <div id="testResultsDiv">
+    <h2>Test Results:</h2>
+    <iframe id="testResults"><meta charset="utf-8"></iframe>
+  </div>
+</body>
+
+</html>
