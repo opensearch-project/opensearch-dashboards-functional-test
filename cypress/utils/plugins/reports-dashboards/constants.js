@@ -6,7 +6,9 @@
 import { BASE_PATH } from '../../../utils/constants';
 
 export function visitReportingLandingPage() {
-  cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
+  cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+    waitForGetTenant: true,
+  });
   cy.location('pathname', { timeout: 60000 }).should(
     'include',
     '/reports-dashboards'
