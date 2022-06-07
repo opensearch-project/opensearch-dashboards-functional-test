@@ -161,62 +161,112 @@ export const supressResizeObserverIssue = () => {
  * App constants
  */
 
+ export const TYPING_DELAY = 1500;
+ export const TIMEOUT_DELAY = Cypress.env('SECURITY_ENABLED') ? 60000 : 30000;
+ 
  export const moveToHomePage = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.wait(delayTime * 3);
-  cy.get('.euiTitle').contains('Applications').should('exist');
-};
+   cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+   cy.wait(delayTime * 3);
+   cy.get('[data-test-subj="applicationHomePageTitle"]', {
+     timeout: TIMEOUT_DELAY,
+   }).should('exist');
+ };
 
 export const moveToCreatePage = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
   cy.wait(delayTime * 2);
-  cy.get('.euiButton__text').contains('Create application').click();
+  cy.get('.euiButton[href="#/application_analytics/create"]', {
+    timeout: TIMEOUT_DELAY,
+  })
+    .eq(0)
+    .click();
   supressResizeObserverIssue();
-  cy.wait(delayTime);
-  cy.get('.euiTitle').contains('Create application').should('exist');
+  cy.wait(delayTime * 2);
+  cy.get('[data-test-subj="createPageTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', 'Create application');
 };
 
-export const moveToApplication = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
-  cy.wait(delayTime * 5);
-  cy.get('.euiLink').contains(name).click();
-  cy.wait(delayTime);
-  cy.get('.euiTitle').contains(name).should('exist');
+export const moveToApplication = (name) => {
+  cy.visit(
+    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
+    { waitForGetTenant: true }
+  );
+  supressResizeObserverIssue();
+  cy.wait(delayTime * 2);
+  cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
+    timeout: TIMEOUT_DELAY,
+  }).click();
+  cy.get('[data-test-subj="applicationTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', name);
   changeTimeTo24('years');
 };
 
 export const moveToEditPage = () => {
-  moveToApplication();
-  cy.get('.euiTab').contains('Configuration').click();
-  cy.get('.euiButton').contains('Edit').click();
+  moveToApplication(nameOne);
+  cy.get('[data-test-subj="app-analytics-configTab"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
+  cy.get('[data-test-subj="editApplicationButton"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   supressResizeObserverIssue();
   cy.wait(delayTime);
-  cy.get('.euiTitle').contains('Edit application');
+  cy.get('[data-test-subj="createPageTitle"]', {
+    timeout: TIMEOUT_DELAY,
+  }).should('contain', 'Edit application');
 };
 
 export const changeTimeTo24 = (timeUnit) => {
-  cy.get('#QuickSelectPopover').click();
-  cy.get('[aria-label="Time unit"]').select(timeUnit);
+  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]', {
+    timeout: TIMEOUT_DELAY,
+  })
+    .trigger('mouseover')
+    .click();
+  cy.wait(delayTime);
+  cy.get('[aria-label="Time unit"]', { timeout: TIMEOUT_DELAY }).select(
+    timeUnit
+  );
   cy.get('.euiButton').contains('Apply').click();
   cy.wait(delayTime);
+  cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
 };
 
-export const expectMessageOnHover = (message) => {
-  cy.get('.euiToolTipAnchor').contains('Create').click({ force: true });
+export const expectMessageOnHover = (button, message) => {
+  cy.get(`[data-test-subj="${button}"]`).click({ force: true });
   cy.get('.euiToolTipPopover').contains(message).should('exist');
 };
 
+export const moveToPanelHome = () => {
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/operational_panels/`);
+  cy.wait(delayTime * 3);
+};
+
+export const deleteAllSavedApplications = () => {
+  moveToHomePage();
+  cy.get('[data-test-subj="checkboxSelectAll"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
+  cy.get('.euiPopover').contains('Actions').click();
+  cy.get('.euiContextMenuItem').contains('Delete').click();
+  cy.get('.euiButton__text').contains('Delete').click();
+};
+
+export const uniqueId = Date.now();
 export const baseQuery = 'source = opensearch_dashboards_sample_data_flights';
-export const name = 'Cypress';
+export const nameOne = `Cypress-${uniqueId}`;
 export const description = 'This is my application for cypress testing.';
-export const service_one = 'order';
-export const service_two = 'payment';
 export const trace_one = 'HTTP POST';
 export const trace_two = 'HTTP GET';
 export const trace_three = 'client_pay_order';
-export const spanQueryPartOne = 'where DestCityName ';
-export const spanQueryPartTwo = '= "Venice" | stats count() by span( timestamp ';
-export const spanQueryPartThree = ', 6h )';
-export const visName = 'Flights to Venice';
-export const composition = 'order, payment, HTTP POST, HTTP GET, client_pay_order'
-export const newName = 'Monterey Cypress';
+export const query_one =
+  'where DestCityName = "Venice" | stats count() by span( timestamp , 6h )';
+export const query_two =
+  'where OriginCityName = "Seoul" | stats count() by span( timestamp , 6h )';
+export const visOneName = 'Flights to Venice';
+export const visTwoName = 'Flights from Seoul';
+export const newName = `Monterey Cypress-${uniqueId}`;
