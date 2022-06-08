@@ -11,84 +11,109 @@ const defaults = {
 const plugins = {
   'alerting-dashboards-plugin': {
     name: 'alertingDashboards',
-    videos: [
-      'acknowledge_alerts_modal_spec.js',
-      'alert_spec.js',
-      'alerts_dashboard_flyout_spec.js',
-      'bucket_level_monitor_spec.js',
-      'cluster_metrics_monitor_spec.js',
-      'query_level_monitor_spec.js',
-    ],
+    default: {
+      videos: [
+        'acknowledge_alerts_modal_spec.js',
+        'alert_spec.js',
+        'alerts_dashboard_flyout_spec.js',
+        'bucket_level_monitor_spec.js',
+        'cluster_metrics_monitor_spec.js',
+        'query_level_monitor_spec.js',
+      ],
+    },
   },
   'anomaly-detection-dashboards-plugin': {
     name: 'anomalyDetectionDashboards',
-    videos: [
-      'create_detector_spec.js',
-      'dashboard_spec.js',
-      'detector_configuration_spec.js',
-      'detector_list_spec.js',
-      'historical_analysis_spec.js',
-      'overview_spec.js',
-      'real_time_results_spec.js',
-      'sample_detector_spec.js',
-    ],
+    default: {
+      videos: [
+        'create_detector_spec.js',
+        'dashboard_spec.js',
+        'detector_configuration_spec.js',
+        'detector_list_spec.js',
+        'historical_analysis_spec.js',
+        'overview_spec.js',
+        'real_time_results_spec.js',
+        'sample_detector_spec.js',
+      ],
+    },
   },
   'gantt-chart-dashboards': {
     name: 'ganttChartDashboards',
-    videos: ['gantt_ui.spec.js'],
+    default: { videos: ['gantt_ui.spec.js'] },
   },
   'index-management-dashboards-plugin': {
     name: 'indexManagementDashboards',
-    videos: [
-      'indices_spec.js',
-      'managed_indices_spec.js',
-      'policies_spec.js',
-      'rollups_spec.js',
-      'transforms_spec.js',
-    ],
+    default: {
+      videos: [
+        'indices_spec.js',
+        'managed_indices_spec.js',
+        'policies_spec.js',
+        'rollups_spec.js',
+        'transforms_spec.js',
+      ],
+    },
   },
   'notifications-dashboards': {
     name: 'notificationsDashboards',
-    videos: ['1_email_senders_and_groups.spec.js', '2_channels.spec.js'],
+    default: {
+      videos: ['1_email_senders_and_groups.spec.js', '2_channels.spec.js'],
+    },
   },
   'observability-dashboards': {
     name: 'observabilityDashboards',
-    videos: [
-      '0_before.spec.js',
-      '1_trace_analytics_dashboard.spec.js',
-      '2_trace_analytics_services.spec.js',
-      '3_trace_analytics_traces.spec.js',
-      '4_panels.spec.js',
-      '5_event_analytics.spec.js',
-      '6_notebooks.spec.js',
-      '7_app_analytics.spec.js',
-      '8_after.spec.js',
-    ],
+    default: {
+      videos: [
+        '0_before.spec.js',
+        '1_trace_analytics_dashboard.spec.js',
+        '2_trace_analytics_services.spec.js',
+        '3_trace_analytics_traces.spec.js',
+        '4_panels.spec.js',
+        '5_event_analytics.spec.js',
+        '6_notebooks.spec.js',
+        '7_app_analytics.spec.js',
+        '8_after.spec.js',
+      ],
+    },
+    1: {
+      videos: [
+        'trace_analytics_dashboard.spec.js',
+        'trace_analytics_services.spec.js',
+        'trace_analytics_traces.spec.js',
+        'panels.spec.js',
+        'event_analytics.spec.js',
+        'notebooks.spec.js',
+        'app_analytics.spec.js',
+      ],
+    },
   },
   'query-workbench-dashboards': {
     name: 'queryWorkbenchDashboards',
-    videos: ['ui.spec.js'],
+    default: { videos: ['ui.spec.js'] },
   },
   'reports-dashboards': {
     name: 'reportsDashboards',
-    videos: [
-      '01-create.spec.js',
-      '02-edit.spec.js',
-      '03-details.spec.js',
-      '04-download.spec.js',
-    ],
+    default: {
+      videos: [
+        '01-create.spec.js',
+        '02-edit.spec.js',
+        '03-details.spec.js',
+        '04-download.spec.js',
+      ],
+    },
   },
   security: {
     name: 'securityDashboards',
-    videos: [
-      'audit_log_spec.js',
-      'auth_spec.js',
-      'get_started_spec.js',
-      'internalusers_spec.js',
-      'permissions_spec.js',
-      'roles_spec.js',
-      'tenants_spec.js',
-    ],
+    default: {
+      videos: [
+        'audit_log_spec.js',
+        'auth_spec.js',
+        'get_started_spec.js',
+        'internalusers_spec.js',
+        'permissions_spec.js',
+        'roles_spec.js',
+        'tenants_spec.js',
+      ],
+    },
   },
 };
 
@@ -211,7 +236,7 @@ function getPluginLinks(plugin) {
   pluginLink.href = pluginUrl;
   document.getElementById('pluginLink').appendChild(pluginLink);
 
-  const videosBaseUrl =
+  const s3BaseUrl =
     'https://ci.opensearch.org/ci/dbc/' +
     `${testJobName}/` +
     `${version}/` +
@@ -220,10 +245,20 @@ function getPluginLinks(plugin) {
     `${arch}/` +
     `${type}/` +
     `test-results/${testNumber}/integ-test/functionalTestDashboards/` +
-    `${securityEnabled ? 'with-security' : 'without-security'}/` +
-    'test-results/cypress-videos/plugins/' +
-    `${plugin}`;
-  const videos = pluginObject.videos;
+    `${securityEnabled ? 'with-security' : 'without-security'}`;
+  const screenshotBaseUrl = `${s3BaseUrl}/test-results/cypress-screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  const videosBaseUrl = `${s3BaseUrl}/test-results/cypress-videos/plugins/${plugin}`;
+
+  document.getElementById(
+    'baseScreenshotUrlBefore'
+  ).innerHTML = `/tmp/$RANDOM/functionalTestDashboards/cypress/screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  document.getElementById('baseScreenshotUrlAfter').innerHTML =
+    screenshotBaseUrl;
+
+  const majorVersion = version.split('.')[0];
+  const videos = pluginObject[majorVersion]
+    ? pluginObject[majorVersion].videos
+    : pluginObject.default.videos;
   for (const video of videos) {
     var link = document.createElement('a');
     link.textContent = `${videosBaseUrl}/${video}.mp4`;
