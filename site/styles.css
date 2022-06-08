@@ -80,11 +80,16 @@ body {
     transition-duration: 0.1s;
 }
 
+#screenshotHelper code {
+    font-size: 0.75em;
+    background-color: lightgray;
+}
+
 #pluginLinksDiv {
     padding: 8px;
     display: none;
     width: 750px;
-    height: 550px;
+    height: 600px;
     position: absolute;
     left: 50%;
     top: 50%; 
