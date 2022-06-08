@@ -1,6 +1,13 @@
 // Copyright OpenSearch Contributors
 // SPDX-License-Identifier: Apache-2.0
 
+const defaults = {
+  version: '2.0.1',
+  buildNumber: '3958',
+  testNumber: '1',
+  testJobName: 'integ-test-opensearch-dashboards',
+};
+
 const plugins = {
   'alerting-dashboards-plugin': {
     name: 'alertingDashboards',
@@ -231,4 +238,21 @@ function getPluginLinks(plugin) {
 function closePluginLinks() {
   document.getElementById('pluginLinksDiv').style.display = 'none';
   document.getElementById('pluginLinksList').innerHTML = '';
+}
+
+// eslint-disable-next-line no-unused-vars
+function setDefaultValues() {
+  const params = new URLSearchParams(window.location.search);
+  document.getElementById('version').value = params.get('version')
+    ? params.get('version')
+    : defaults.version;
+  document.getElementById('buildNumber').value = params.get('build_number')
+    ? params.get('build_number')
+    : defaults.buildNumber;
+  document.getElementById('testJobName').value = params.get('test_job_name')
+    ? params.get('test_job_name')
+    : defaults.testJobName;
+  document.getElementById('testNumber').value = params.get('test_number')
+    ? params.get('test_number')
+    : defaults.testNumber;
 }
