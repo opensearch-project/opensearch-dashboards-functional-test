@@ -15,7 +15,8 @@ import {
   SAMPLE_PANEL,
   SAMPLE_VISUALIZATIONS_NAMES,
   BASE_PATH,
-  supressResizeObserverIssue
+  supressResizeObserverIssue,
+  TYPING_DELAY
 } from '../../../utils/constants';
 
 const moveToEventsHome = () => {
@@ -37,16 +38,6 @@ const moveToTestPanel = () => {
   cy.get('h1').contains(TEST_PANEL).should('exist');
   cy.wait(panelDelay);
 };
-
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-    cy.wait(panelDelay * 3);
-  });
-});
 
 describe('Creating visualizations', () => {
   beforeEach(() => {
@@ -226,9 +217,9 @@ describe('Testing a panel', () => {
   });
 
   it('Add existing visualization #1', () => {
-    cy.get('.euiButton__text').contains('Add Visualization').click();
+    cy.get('.euiButton__text').contains('Add visualization').click();
     cy.wait(panelDelay);
-    cy.get('.euiContextMenuItem__text').contains('Select Existing Visualization').click();
+    cy.get('.euiContextMenuItem__text').contains('Select existing visualization').click();
     cy.wait(panelDelay);
     cy.get('select').select(PPL_VISUALIZATIONS_NAMES[0]);
     cy.get('button[aria-label="refreshPreview"]').click();
@@ -240,9 +231,9 @@ describe('Testing a panel', () => {
   });
 
   it('Add existing visualization #2', () => {
-    cy.get('.euiButton__text').contains('Add Visualization').click();
+    cy.get('.euiButton__text').contains('Add visualization').click();
     cy.wait(panelDelay);
-    cy.get('.euiContextMenuItem__text').contains('Select Existing Visualization').click();
+    cy.get('.euiContextMenuItem__text').contains('Select existing visualization').click();
     cy.wait(panelDelay);
     cy.get('select').select(PPL_VISUALIZATIONS_NAMES[1]);
     cy.get('button[aria-label="refreshPreview"]').click();
@@ -254,20 +245,7 @@ describe('Testing a panel', () => {
   });
 
   it('Add ppl filter to panel', () => {
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]')
-      .click()
-      .wait(1500)
-      .type('where Carrier ')
-      .wait(1500)
-      .type('= ')
-      .wait(1500)
-      .type("'OpenSearch-Air'")
-      .wait(1500)
-      .type('| where Dest ')
-      .wait(1500)
-      .type('= ')
-      .wait(1500)
-      .type("'Munich Airport'");
+    cy.get('[data-test-subj="searchAutocompleteTextArea"]').type("where Carrier = 'OpenSearch-Air'| where Dest = 'Munich Airport'", { delay: TYPING_DELAY });
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.wait(panelDelay * 3);
     cy.get('.xtick').should('contain', 'OpenSearch-Air');
@@ -353,9 +331,9 @@ describe('Testing a panel', () => {
   });
 
   it('Create new visualization and add to panel', () => {
-    cy.get('.euiButton__text').contains('Add Visualization').click();
+    cy.get('.euiButton__text').contains('Add visualization').click();
     cy.wait(panelDelay);
-    cy.get('.euiContextMenuItem__text').contains('Create New Visualization').click();
+    cy.get('.euiContextMenuItem__text').contains('Create new visualization').click();
     cy.wait(panelDelay * 3);
     cy.url().should('match', new RegExp('(.*)#/event_analytics/explorer'));
     cy.get('[id^=autocomplete-textarea]').type(PPL_VISUALIZATIONS[2]);

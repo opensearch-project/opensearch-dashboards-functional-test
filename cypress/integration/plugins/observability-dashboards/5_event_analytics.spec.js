@@ -43,16 +43,6 @@ const querySearch = (query) => {
   cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').contains('Refresh').click();
 };
 
-describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for event analytics', () => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-    cy.wait(delayTime);
-  });
-});
-
 describe('Search a query on event home', () => {
   it('Search a query and redirect to explorer to display result data', () => {
     landOnEventHome();
@@ -346,7 +336,7 @@ describe('Switch on and off livetail', () => {
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').type(TEST_QUERIES[1].query);
 
     cy.get('[data-test-subj=eventLiveTail]').click();
-    cy.get('[data-test-subj=eventLiveTail__delay10]').click();
+    cy.get('[data-test-subj=eventLiveTail__delay10s]').click();
     cy.wait(delayTime * 2);
     cy.get('.euiToastHeader__title').contains('On').should('exist');
 
@@ -365,7 +355,7 @@ describe('Live tail stop automatically', () => {
     cy.get('[data-test-subj="searchAutocompleteTextArea"]').type(TEST_QUERIES[1].query);
 
     cy.get('[data-test-subj=eventLiveTail]').click();
-    cy.get('[data-test-subj=eventLiveTail__delay10]').click();
+    cy.get('[data-test-subj=eventLiveTail__delay10s]').click();
     cy.wait(delayTime * 2);
     cy.get('.euiToastHeader__title').contains('On').should('exist');
   });

@@ -19,13 +19,6 @@ import {
 import { skipOn } from '@cypress/skip-test';
 
 describe('Adding sample data and visualization', () => {
-  it('Adds sample flights data for visualization paragraph', () => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]')
-      .contains(/(Add|View) data/)
-      .click();
-  });
-
   it.skip('Add sample observability data', () => {
     cy.visit(
       `${BASE_PATH}/app/observability-dashboards#/operational_panels/`
