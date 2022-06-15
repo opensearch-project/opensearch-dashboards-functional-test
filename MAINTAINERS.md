@@ -18,10 +18,13 @@ This document explains who the maintainers are (see below), what they do in this
 
 ## Current Maintainers
 
-| Maintainer               | GitHub ID                               | Affiliation |
-| ------------------------ | --------------------------------------- | ----------- |
-| Henri Yandell            | [hyandell](https://github.com/hyandell) | Amazon      |
-| Daniel "dB." Doubrovkine | [dblock](https://github.com/dblock)     | Amazon      |
+| Maintainer               | GitHub ID                                        | Affiliation |
+| ------------------------ | ------------------------------------------------ | ----------- |
+| Tianle Huang             | [tianleh](https://github.com/tianleh)            | Amazon      |
+| Kawika Avilla            | [kavilla](https://github.com/kavilla)            | Amazon      |
+| Tyler Ohlsen             | [ohltyler](https://github.com/ohltyler)          | Amazon      |
+| Cong Wang                | [CCongWang](https://github.com/CCongWang)        | Amazon      |
+| David Cui                | [davidcui1225](https://github.com/davidcui1225)  | Amazon      |
 
 ## Maintainer Responsibilities
 
