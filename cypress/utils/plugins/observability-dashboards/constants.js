@@ -226,14 +226,15 @@ export const changeTimeTo24 = (timeUnit) => {
     timeout: TIMEOUT_DELAY,
   })
     .trigger('mouseover')
-    .click();
+    .click({ force: true });
   cy.wait(delayTime);
   cy.get('[aria-label="Time unit"]', { timeout: TIMEOUT_DELAY }).select(
-    timeUnit
+    timeUnit,
+    { force: true }
   );
-  cy.get('.euiButton').contains('Apply').click();
+  cy.get('.euiButton').contains('Apply').click({ force: true });
   cy.wait(delayTime);
-  cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
+  cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({ force: true });
 };
 
 export const expectMessageOnHover = (button, message) => {

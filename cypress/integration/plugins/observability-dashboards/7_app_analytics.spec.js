@@ -30,64 +30,6 @@ import {
   testIndexDataSet
 } from '../../../utils/constants';
 
-describe('Dump test data', () => {
-  it('Indexes test data', () => {
-    const dumpDataSet = (mapping_url, data_url, index) => {
-      cy.request({
-        method: 'POST',
-        failOnStatusCode: false,
-        url: 'api/console/proxy',
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          'osd-xsrf': true,
-        },
-        qs: {
-          path: `${index}`,
-          method: 'PUT',
-        },
-      });
-
-      cy.request(mapping_url).then((response) => {
-        cy.request({
-          method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_mapping`,
-            method: 'POST',
-          },
-          body: response.body,
-        });
-      });
-
-      cy.request(data_url).then((response) => {
-        cy.request({
-          method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_bulk`,
-            method: 'POST',
-          },
-          body: response.body,
-        });
-      });
-    };
-
-    testIndexDataSet.forEach(({ mapping_url, data_url, index }) =>
-      dumpDataSet(mapping_url, data_url, index)
-    );
-  });
-});
-
 describe('Creating application', () => {
   beforeEach(() => {
     moveToCreatePage();
@@ -147,12 +89,12 @@ describe('Creating application', () => {
     cy.get('[data-test-subj="createButton"]', {
       timeout: TIMEOUT_DELAY,
     }).should('not.be.disabled');
-    cy.intercept('POST', '/api/observability/application/').as(
+    cy.route2('POST', '/api/observability/application/').as(
       'addApplication'
     );
-    cy.intercept('POST', 'panels').as('addPanels');
-    cy.intercept('PUT', '/api/observability/application/').as('putApplication');
-    cy.intercept('POST', 'query').as('postQuery');
+    cy.route2('POST', 'panels').as('addPanels');
+    cy.route2('PUT', '/api/observability/application/').as('putApplication');
+    cy.route2('POST', 'query').as('postQuery');
     cy.get('[data-test-subj="createButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -173,9 +115,9 @@ describe('Creating application', () => {
 });
 
 describe('Viewing application', () => {
-  beforeEach(() => {
+  before(() => {
     moveToApplication(nameOne);
-  })
+  });
 
   it('Saves visualization #1 to panel', () => {
     cy.get('[data-test-subj="app-analytics-panelTab"]', {
@@ -185,15 +127,16 @@ describe('Viewing application', () => {
       timeout: TIMEOUT_DELAY,
     })
       .first()
-      .click();
+      .click({ force: true });
     cy.wait(delayTime);
     cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
       'exist'
     );
     cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
       timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('.aa-List').find('.aa-Item').should('have.length', 11);
+    })
+      .click({ force: true });
+    cy.get('.aa-List', { timeout: TIMEOUT_DELAY }).find('.aa-Item').should('have.length', 11);
     cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
       timeout: TIMEOUT_DELAY,
     })
@@ -203,31 +146,27 @@ describe('Viewing application', () => {
     cy.wait(delayTime * 2);
     cy.get('[data-test-subj="main-content-visTab"]', {
       timeout: TIMEOUT_DELAY,
-    }).click();
+    }).click({ force: true });
     supressResizeObserverIssue();
     cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]', {
       timeout: TIMEOUT_DELAY,
-    }).click();
+    }).click({ force: true });
     cy.get('[data-test-subj="eventExplorer__querySaveName"]', {
       timeout: TIMEOUT_DELAY,
     })
-      .click()
+      .click({ force: true })
       .type(visOneName);
     cy.wait(delayTime);
     cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]', {
       timeout: TIMEOUT_DELAY,
-    }).click();
+    }).click({ force: true });
     cy.wait(delayTime * 2);
     cy.get('[data-test-subj="app-analytics-panelTab"]', {
       timeout: TIMEOUT_DELAY,
-    }).click();
+    }).click({ force: true });
     cy.get('[data-test-subj="Flights to VeniceVisualizationPanel"]', {
       timeout: TIMEOUT_DELAY,
     }).should('exist');
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'exist'
-    );
-    cy.get('[class="trace bars"]', { timeout: TIMEOUT_DELAY }).should('exist');
   });
 
   it('Adds availability level to visualization #1', () => {
@@ -301,6 +240,12 @@ describe('Viewing application', () => {
   });
 
   it('Saves visualization #2 to panel with availability level', () => {
+    cy.get(`[data-test-subj="${nameOne}ApplicationLink"]`, {
+      timeout: TIMEOUT_DELAY,
+    }).click();
+    cy.get('[data-test-subj="applicationTitle"]', {
+      timeout: TIMEOUT_DELAY,
+    }).should('contain', nameOne);
     changeTimeTo24('months');
     cy.get('[data-test-subj="app-analytics-logTab"]', {
       timeout: TIMEOUT_DELAY,
@@ -405,6 +350,12 @@ describe('Viewing application', () => {
   });
 
   it('Changes availability visualization', () => {
+    cy.get(`[data-test-subj="${nameOne}ApplicationLink"]`, {
+      timeout: TIMEOUT_DELAY,
+    }).click();
+    cy.get('[data-test-subj="applicationTitle"]', {
+      timeout: TIMEOUT_DELAY,
+    }).should('contain', nameOne);
     cy.get('[data-test-subj="app-analytics-configTab"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -415,7 +366,12 @@ describe('Viewing application', () => {
     cy.get(
       '[data-test-subj="AvailableAvailabilityBadge"][style="background-color: rgb(84, 179, 153); color: rgb(0, 0, 0);"]'
     ).should('contain', 'Available');
-    moveToApplication(nameOne);
+    cy.get(`[data-test-subj="${nameOne}ApplicationLink"]`, {
+      timeout: TIMEOUT_DELAY,
+    }).click();
+    cy.get('[data-test-subj="applicationTitle"]', {
+      timeout: TIMEOUT_DELAY,
+    }).should('contain', nameOne);
     cy.get('[data-test-subj="app-analytics-configTab"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -511,6 +467,7 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
+    cy.wait(delayTime);
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -552,18 +509,19 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
+    cy.wait(delayTime);
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
-      timeout: delayTime * 4,
+      timeout: TIMEOUT_DELAY,
     }).click();
     cy.get('[data-test-subj="deleteApplicationContextMenuItem"]', {
-      timeout: delayTime,
+      timeout: TIMEOUT_DELAY,
     }).click();
     cy.get('[data-test-subj="popoverModal__deleteTextInput"').type('delete');
     cy.get('[data-test-subj="popoverModal__deleteButton"]', {
-      timeout: delayTime,
+      timeout: TIMEOUT_DELAY,
     }).click();
     cy.get(`[data-test-subj="${newName}ApplicationLink"]`, {
-      timeout: delayTime,
+      timeout: TIMEOUT_DELAY,
     }).should('not.exist');
   });
 });
