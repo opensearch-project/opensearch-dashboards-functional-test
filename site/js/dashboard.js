@@ -74,17 +74,6 @@ const plugins = {
         '8_after.spec.js',
       ],
     },
-    1: {
-      videos: [
-        'trace_analytics_dashboard.spec.js',
-        'trace_analytics_services.spec.js',
-        'trace_analytics_traces.spec.js',
-        'panels.spec.js',
-        'event_analytics.spec.js',
-        'notebooks.spec.js',
-        'app_analytics.spec.js',
-      ],
-    },
   },
   'query-workbench-dashboards': {
     name: 'queryWorkbenchDashboards',
