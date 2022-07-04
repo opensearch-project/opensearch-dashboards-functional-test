@@ -5,6 +5,7 @@
   - [Run Tests](#run-tests)
   - [Formatting](#formatting)
   - [Onboarding](#onboarding)
+- [Release](#release)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
   - [Bug Reports](#bug-reports)
@@ -154,6 +155,10 @@ Suppose your plugin is ready for version 1.2.0
 ./test.sh integ-test manifests/1.2.0/opensearch-dashboards-1.2.0-test.yml
 
 ```
+
+## Release
+
+This project follows [OpenSearch project branching, labelling, and releasing](https://github.com/opensearch-project/.github/blob/main/RELEASING.md#opensearch-branching) to track 3 releases in parallel.
 
 ## First Things First
 
