@@ -500,7 +500,10 @@ describe('Application Analytics home page', () => {
     cy.get('[data-test-subj="deleteApplicationContextMenuItem"]', {
       timeout: delayTime,
     }).click();
-    cy.get('[data-test-subj="confirmModalConfirmButton"]', {
+    cy.get('[data-test-subj="popoverModal__deleteTextInput"]', {
+      timeout: delayTime,
+    }).type('delete');
+    cy.get('[data-test-subj="popoverModal__deleteButton"', {
       timeout: delayTime,
     }).click();
     cy.get(`[data-test-subj="${newName}ApplicationLink"]`, {
