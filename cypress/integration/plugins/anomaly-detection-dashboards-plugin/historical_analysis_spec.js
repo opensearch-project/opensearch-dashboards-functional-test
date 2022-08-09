@@ -22,7 +22,12 @@ describe('Historical results page', () => {
           expect(parseInt(anomalyOccurrenceCount)).to.be.gte(1);
         });
     });
-    cy.getElementByTestId('anomalyOccurrencesHeader').should(
+
+    cy.getElementByTestId('featureNameHeader').should(
+      'have.class', 'euiTab-isSelected'
+    );
+
+    cy.getElementByTestId('anomalyOccurrencesHeader').click().should(
       'not.contain',
       '(0)'
     );
@@ -44,7 +49,7 @@ describe('Historical results page', () => {
           expect(parseInt(anomalyOccurrenceCount)).to.equal(0);
         });
     });
-    cy.getElementByTestId('anomalyOccurrencesHeader').should('contain', '(0)');
+    cy.getElementByTestId('anomalyOccurrencesHeader').click().should('contain', '(0)');
   };
 
   // Creating a sample detector and visiting the config page
