@@ -23,7 +23,7 @@ describe('Historical results page', () => {
         });
     });
 
-    cy.getElementByTestId('featureNameHeader').should(
+    cy.getElementByTestId('featureBreakdownTab').should(
       'have.class', 'euiTab-isSelected'
     );
 
