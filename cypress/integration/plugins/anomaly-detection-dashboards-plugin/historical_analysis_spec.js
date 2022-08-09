@@ -23,11 +23,12 @@ describe('Historical results page', () => {
         });
     });
 
-    cy.getElementByTestId('featureBreakdownTab').should(
+    cy.get('[data-test-subj="featureBreakdownTab"]').should(
       'have.class', 'euiTab-isSelected'
     );
 
-    cy.getElementByTestId('anomalyOccurrencesHeader').click().should(
+    cy.get('[data-test-subj="anomalyOccurrenceTab"]').click();
+    cy.getElementByTestId('anomalyOccurrencesHeader').should(
       'not.contain',
       '(0)'
     );
@@ -49,7 +50,8 @@ describe('Historical results page', () => {
           expect(parseInt(anomalyOccurrenceCount)).to.equal(0);
         });
     });
-    cy.getElementByTestId('anomalyOccurrencesHeader').click().should('contain', '(0)');
+    cy.get('[data-test-subj="anomalyOccurrenceTab"]').click();
+    cy.getElementByTestId('anomalyOccurrencesHeader').should('contain', '(0)');
   };
 
   // Creating a sample detector and visiting the config page
