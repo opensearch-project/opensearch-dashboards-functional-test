@@ -123,7 +123,7 @@ describe('Historical results page', () => {
     it('Aggregations render anomalies', () => {
       cy.get('body').then(($body) => {
         if ($body.find('[aria-label="Previous time window"]').length > 0) {
-          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click({force: true});
         }
       });
 

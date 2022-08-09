@@ -98,17 +98,17 @@ context('Detector configuration page', () => {
     cy.getElementByTestId('detectorJobsHeader').should('exist');
   });
 
-  it('Delete detector from dropdown, redirects to detector list page', () => {
-    cy.getElementByTestId('detectorSettingsHeader').should('exist');
-    cy.getElementByTestId('modelConfigurationHeader').should('exist');
-    cy.getElementByTestId('detectorJobsHeader').should('exist');
+  // it('Delete detector from dropdown, redirects to detector list page', () => {
+  //   cy.getElementByTestId('detectorSettingsHeader').should('exist');s
+  //   cy.getElementByTestId('modelConfigurationHeader').should('exist');
+  //   cy.getElementByTestId('detectorJobsHeader').should('exist');
 
-    cy.getElementByTestId('actionsButton').click();
-    cy.getElementByTestId('deleteDetectorItem').click();
-    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
-    cy.getElementByTestId('confirmButton').click();
+  //   cy.getElementByTestId('actionsButton').click();
+  //   cy.getElementByTestId('deleteDetectorItem').click();
+  //   cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
+  //   cy.getElementByTestId('confirmButton').click();
 
-    cy.getElementByTestId('detectorListHeader').should('exist');
-    cy.getElementByTestId('detectorListHeader').contains('(0)');
-  });
+  //   cy.getElementByTestId('detectorListHeader').should('exist');
+  //   cy.getElementByTestId('detectorListHeader').contains('(0)');
+  // });
 });
