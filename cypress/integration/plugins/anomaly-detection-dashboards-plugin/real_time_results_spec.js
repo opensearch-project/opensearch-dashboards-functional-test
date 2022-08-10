@@ -25,14 +25,14 @@ context('Real-time results page', () => {
   });
 
   context('Sample detector', () => {
-    it('Start and stop detector from button', () => {
-      // Sample detector will default to initializing upon creation
-      cy.getElementByTestId('detectorStateInitializing').should('exist');
-      cy.getElementByTestId('stopAndStartDetectorButton').click();
-      cy.getElementByTestId('detectorStateStopped').should('exist');
-      cy.getElementByTestId('stopAndStartDetectorButton').click();
-      cy.getElementByTestId('detectorStateInitializing').should('exist');
-    });
+    // it('Start and stop detector from button', () => {
+    //   // Sample detector will default to initializing upon creation
+    //   cy.getElementByTestId('detectorStateInitializing').should('exist');
+    //   cy.getElementByTestId('stopAndStartDetectorButton').click();
+    //   cy.getElementByTestId('detectorStateStopped').should('exist');
+    //   cy.getElementByTestId('stopAndStartDetectorButton').click();
+    //   cy.getElementByTestId('detectorStateInitializing').should('exist');
+    // });
 
     it('Renders no anomalies', () => {
       cy.getElementByTestId('anomalyOccurrenceTab').click();

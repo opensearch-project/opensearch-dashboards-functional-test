@@ -15,6 +15,7 @@ context('Create detector workflow', () => {
 
   // Index some sample data first
   before(() => {
+    cy.deleteAllIndices()
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',
@@ -35,8 +36,7 @@ context('Create detector workflow', () => {
 
   // Clean up created resources
   after(() => {
-    cy.log('Deleting index with name: ' + TEST_INDEX_NAME);
-    cy.deleteIndex(TEST_INDEX_NAME);
+    cy.deleteAllIndices()
   });
 
   it('Full creation - based on real index', () => {
