@@ -37,19 +37,24 @@ context('Overview page', () => {
   before(() => {});
 
   it('Empty dashboard redirects to overview page', () => {
-    cy.visit(AD_URL.DASHBOARD);
-    cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
-      if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
-        cy.getElementByTestId('sampleDetectorButton').click();
-        validatePageElements();
+    cy.visit(AD_URL.DETECTOR_LIST);
+    cy.get('[data-test-subj=detectorListHeader]').then(($body) => {
+      if ($body.find("[data-test-subj=detectorListHeader]").contains('(0)')) {  
+        cy.visit(AD_URL.DASHBOARD);
+        cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
+          if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
+            cy.getElementByTestId('sampleDetectorButton').click();
+            validatePageElements();
+          }
+        })
       }
     })
   });
 
   it('Empty detector list redirects to overview page', () => {
     cy.visit(AD_URL.DETECTOR_LIST);
-    cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
-      if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
+    cy.get('[data-test-subj=detectorListHeader]').then(($body) => {
+      if ($body.find("[data-test-subj=detectorListHeader]").contains('(0)')) {
         cy.getElementByTestId('sampleDetectorButton').click();
         validatePageElements();
       }
