@@ -53,10 +53,36 @@ describe('Historical results page', () => {
   // Creating a sample detector and visiting the config page
   before(() => {
     cy.visit(AD_URL.OVERVIEW);
-    cy.getElementByTestId('createHttpSampleDetectorButton').click();
-    cy.visit(AD_URL.OVERVIEW);
-    cy.getElementByTestId('viewSampleDetectorLink').click();
-    cy.getElementByTestId('historicalTab').click();
+    cy.get('[data-test-subj=createHttpSampleDetectorButton]').then(($btn) => {
+      if ($btn.is(':disabled')) {
+        cy.getElementByTestId('viewSampleDetectorLink').click();
+        cy.getElementByTestId('configurationsTab').click();
+        cy.getElementByTestId('detectorIdCell').within(() => {
+        cy.get('.euiText--medium')
+          .invoke('text')
+          .then((detectorId) => {
+            cy.log('Stopping detector with ID: ' + detectorId);
+            cy.stopDetector(detectorId);
+            cy.wait(10000);
+            cy.log('Deleting detector with ID: ' + detectorId);
+            cy.deleteDetector(detectorId);
+            cy.log('Deleting index with name: ' + indexName);
+            cy.deleteIndex(indexName);
+          });
+          cy.wait(10000);
+          cy.visit(AD_URL.OVERVIEW);
+          cy.getElementByTestId('createHttpSampleDetectorButton').click();
+          cy.visit(AD_URL.OVERVIEW);
+          cy.getElementByTestId('viewSampleDetectorLink').click();
+          cy.getElementByTestId('historicalTab').click();
+        });
+      } else {
+        cy.getElementByTestId('createHttpSampleDetectorButton').click();
+        cy.visit(AD_URL.OVERVIEW);
+        cy.getElementByTestId('viewSampleDetectorLink').click();
+        cy.getElementByTestId('historicalTab').click();
+      }
+    })
   });
 
   // Clean up resources
