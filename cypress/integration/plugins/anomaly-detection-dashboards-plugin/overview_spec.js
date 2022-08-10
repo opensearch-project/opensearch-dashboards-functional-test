@@ -36,30 +36,25 @@ context('Overview page', () => {
 
   before(() => {});
 
-  it('Empty dashboard redirects to overview page', () => {
-    cy.visit(AD_URL.DETECTOR_LIST);
-    cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
-      if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
-        cy.visit(AD_URL.DASHBOARD);
-        cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
-          if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
-            cy.getElementByTestId('sampleDetectorButton').click();
-            validatePageElements();
-          }
-        })
-      }
-    })
-  });
+  // it('Empty dashboard redirects to overview page', () => {
+  //   cy.visit(AD_URL.DASHBOARD);
+  //   cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
+  //     if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
+  //       cy.getElementByTestId('sampleDetectorButton').click();
+  //       validatePageElements();
+  //     }
+  //   })
+  // });
 
-  it('Empty detector list redirects to overview page', () => {
-    cy.visit(AD_URL.DETECTOR_LIST);
-    cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
-      if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
-        cy.getElementByTestId('sampleDetectorButton').click();
-        validatePageElements();
-      }
-    })
-  });
+  // it('Empty detector list redirects to overview page', () => {
+  //   cy.visit(AD_URL.DETECTOR_LIST);
+  //   cy.get('[data-test-subj=emptyDetectorListMessage]').then(($body) => {
+  //     if ($body.find("button[data-cy=sampleDetectorButton]").length > 0) {  
+  //       cy.getElementByTestId('sampleDetectorButton').click();
+  //       validatePageElements();
+  //     }
+  //   })
+  // });
 
   it('Side nav AD button redirects to overview page', () => {
     cy.visit(AD_URL.DETECTOR_LIST);
