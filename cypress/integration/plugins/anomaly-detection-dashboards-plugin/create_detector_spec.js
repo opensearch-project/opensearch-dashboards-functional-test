@@ -19,7 +19,7 @@ context('Create detector workflow', () => {
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',
-        form: true,
+        form: false,
         url: 'api/console/proxy',
         headers: {
           'content-type': 'application/json;charset=UTF-8',
