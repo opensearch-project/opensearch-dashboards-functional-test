@@ -2,6 +2,7 @@
 
 - [Welcome!](#welcome)
 - [Project Resources](#project-resources)
+- [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
 - [License](#license)
 - [Copyright](#copyright)
@@ -17,6 +18,7 @@
 - [Documentation](https://docs-beta.opensearch.org/)
 - Need help? Try [Forums](https://discuss.opendistrocommunity.dev/)
 - [Project Principles](https://opensearch.org/#principles)
+* [Developer Guide](DEVELOPER_GUIDE.md)
 - [Maintainer Responsibilities](MAINTAINERS.md)
 - [Release Management](RELEASING.md)
 - [Admin Responsibilities](ADMINS.md)

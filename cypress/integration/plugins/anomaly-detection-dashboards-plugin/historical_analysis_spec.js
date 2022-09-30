@@ -58,17 +58,18 @@ describe('Historical results page', () => {
         cy.getElementByTestId('viewSampleDetectorLink').click();
         cy.getElementByTestId('configurationsTab').click();
         cy.getElementByTestId('detectorIdCell').within(() => {
-        cy.get('.euiText--medium')
-          .invoke('text')
-          .then((detectorId) => {
-            cy.log('Stopping detector with ID: ' + detectorId);
-            cy.stopDetector(detectorId);
-            cy.wait(10000);
-            cy.log('Deleting detector with ID: ' + detectorId);
-            cy.deleteDetector(detectorId);
-            cy.log('Deleting index with name: ' + indexName);
-            cy.deleteIndex(indexName);
-          });
+          cy.get('.euiText--medium')
+            .invoke('text')
+            .then((detectorId) => {
+              cy.log('Stopping detector with ID: ' + detectorId);
+              cy.stopDetector(detectorId);
+              cy.wait(10000);
+              cy.log('Deleting detector with ID: ' + detectorId);
+              cy.deleteDetector(detectorId);
+              // TODO: indexName does not exist. @Jackie Han will fix this later
+              // cy.log('Deleting index with name: ' + indexName);
+              // cy.deleteIndex(indexName);
+            });
           cy.wait(10000);
           cy.visit(AD_URL.OVERVIEW);
           cy.getElementByTestId('createHttpSampleDetectorButton').click();
@@ -82,7 +83,7 @@ describe('Historical results page', () => {
         cy.getElementByTestId('viewSampleDetectorLink').click();
         cy.getElementByTestId('historicalTab').click();
       }
-    })
+    });
   });
 
   // Clean up resources
@@ -149,7 +150,9 @@ describe('Historical results page', () => {
     it('Aggregations render anomalies', () => {
       cy.get('body').then(($body) => {
         if ($body.find('[aria-label="Previous time window"]').length > 0) {
-          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click({force: true});
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click({
+            force: true,
+          });
         }
       });
 
