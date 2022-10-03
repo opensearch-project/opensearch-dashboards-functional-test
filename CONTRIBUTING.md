@@ -164,7 +164,7 @@ When writing tests for experimental features, please follow these steps.
 
 1. figure out the folder location to put the tests
 
-Similar to the regular tests, OSD Core tests go to `integration/core-opensearch-dashboards/opensearch-dashboards/` and OSD plugin tests go to `cypress/integration/plugins/`.
+Similar to the regular tests, OSD Core tests go to the [folder](integration/core-opensearch-dashboards/opensearch-dashboards/) and OSD plugin tests go to the [folder](cypress/integration/plugins/).
 
 2. develop tests with a flag to turn on and off
 
