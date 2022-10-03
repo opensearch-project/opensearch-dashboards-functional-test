@@ -66,6 +66,7 @@ describe('Historical results page', () => {
               cy.wait(10000);
               cy.log('Deleting detector with ID: ' + detectorId);
               cy.deleteDetector(detectorId);
+              // TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/307
               // cy.log('Deleting index with name: ' + indexName);
               // cy.deleteIndex(indexName);
             });
