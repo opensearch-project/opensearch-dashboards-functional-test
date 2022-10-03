@@ -168,16 +168,16 @@ Similar to the regular tests, OSD Core tests go to `integration/core-opensearch-
 
 2. develop tests with a flag to turn on and off
 
-Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. This is to ensure backward compatibility when integrating with opensearch-build repo whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet. https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py
+Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. This is to ensure backward compatibility when integrating with [opensearch-build repo](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet.
 
 3. set up Github action to run the tests inside the current repo
 
-Create a new workflow by referring to this template https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/release-e2e-workflow-template.yml for OSD plugin or this workflow https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/cypress-workflow-vanilla-snapshot-based.yml for OSD Core. This workflow is to run the OSD from artifact. You could enable your experimental feature through either `./bin/opensearch-dashboards` or through modifying the content of the yml file. In order to run the tests from the source code repo of the feature, you can set up workflows to check out the source code and use `yarn` to start OSD.
+Create a new workflow by referring to [this template](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/release-e2e-workflow-template.yml) for OSD plugin or [this workflow](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/cypress-workflow-vanilla-snapshot-based.yml) for OSD Core. This workflow is to run the OSD from artifact. You could enable your experimental feature through either `./bin/opensearch-dashboards` or through modifying the content of the yml file. (In order to run the tests from the source code repo of the feature, you can set up workflows to check out the source code and use `yarn` to start OSD.)
 
 
 4. run tests from `opensearch-build`
 
-To make the build repo enable your experimental feature when spinning up OSD service, make sure that you update this file https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py You could either modify the start command or the yml file. To avoid a potentially long start command, it is preferred to modify the yml file to turn on the feature.
+To make the build repo enable your experimental feature when spinning up OSD service, make sure that you update [this file](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) You could either modify the start command or the yml file. To avoid a potentially long start command, it is preferred to modify the yml file to turn on the feature.
 
 ## Release
 
