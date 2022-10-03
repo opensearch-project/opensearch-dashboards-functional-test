@@ -174,7 +174,6 @@ Add an environment variable (e.g boolean) to only run tests for the experiementa
 
 Create a new workflow by referring to [this template](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/release-e2e-workflow-template.yml) for OSD plugin or [this workflow](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/cypress-workflow-vanilla-snapshot-based.yml) for OSD Core. This workflow is to run the OSD from artifact. You could enable your experimental feature through either `./bin/opensearch-dashboards` or through modifying the content of the yml file. (In order to run the tests from the source code repo of the feature, you can set up workflows to check out the source code and use `yarn` to start OSD.)
 
-
 4. run tests from `opensearch-build`
 
 To make the build repo enable your experimental feature when spinning up OSD service, make sure that you update [this file](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) You could either modify the start command or the yml file. To avoid a potentially long start command, it is preferred to modify the yml file to turn on the feature.
