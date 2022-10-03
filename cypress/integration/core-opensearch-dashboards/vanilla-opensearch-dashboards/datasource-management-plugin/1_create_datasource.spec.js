@@ -1,10 +1,15 @@
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
+// Get environment variables
+const endPointUrl = Cypress.env('OSD_TEST_DOMAIN_ENDPOINT_URL');
+const invalidEndPointUrl = Cypress.env('OSD_INVALID_ENPOINT_URL');
+const username = Cypress.env('username');
+const password = Cypress.env('password');
 
 describe('Create datasources', () => {
   beforeEach(() => {
-    // visit OSD create page
+    // Visit OSD create page
     miscUtils.visitPage(
       'app/management/opensearch-dashboards/dataSources/create'
     );
@@ -20,7 +25,7 @@ describe('Create datasources', () => {
   // No auth, with all required inputs, no optional description
   it('datasource can be created successfully with no Auth and all required inputs', () => {
     cy.get('[name="dataSourceTitle"]').type('test_noauth1');
-    cy.get('[name="endpoint"]').type('https://test');
+    cy.get('[name="endpoint"]').type(endPointUrl);
     cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').click();
     cy.get('[id="no_auth"]').click();
     cy.get('[type="submit"]').click();
@@ -34,12 +39,12 @@ describe('Create datasources', () => {
   // Basic auth, with all required inputs, no optional description
   it('datasource can be created successfully with basic Auth and all required inputs', () => {
     cy.get('[name="dataSourceTitle"]').type('test_auth1');
-    cy.get('[name="endpoint"]').type('https://test');
+    cy.get('[name="endpoint"]').type(endPointUrl);
     cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
-      'admin'
+      username
     );
     cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
-      'admin'
+      password
     );
     cy.get('[type="submit"]').click();
 
@@ -55,7 +60,7 @@ describe('Create datasources', () => {
     cy.get('[name="dataSourceDescription"]').type(
       'test if can create datasource with no auth successfully'
     );
-    cy.get('[name="endpoint"]').type('https://test');
+    cy.get('[name="endpoint"]').type(endPointUrl);
     cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').click();
     cy.get('[id="no_auth"]').click();
     cy.get('[type="submit"]').click();
@@ -72,12 +77,12 @@ describe('Create datasources', () => {
     cy.get('[name="dataSourceDescription"]').type(
       'test if can create datasource with basic auth successfully'
     );
-    cy.get('[name="endpoint"]').type('https://test');
+    cy.get('[name="endpoint"]').type(endPointUrl);
     cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
-      'admin'
+      username
     );
     cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
-      'admin'
+      password
     );
     cy.get('[type="submit"]').click();
 
@@ -93,6 +98,7 @@ describe('Create datasources', () => {
     cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').click();
     cy.get('[id="no_auth"]').click();
     cy.get('[type="submit"]').click();
+
     cy.get('[class="euiForm__error"]').should(
       'contain.text',
       'Endpoint is not valid'
@@ -102,10 +108,11 @@ describe('Create datasources', () => {
   // No auth, only Endpoint URL is invalid format
   it('datasource cannot be created with no Auth and invalid Endpoint URL', () => {
     cy.get('[name="dataSourceTitle"]').type('test_invalidEndPoint');
-    cy.get('[name="endpoint"]').type('test');
+    cy.get('[name="endpoint"]').type(invalidEndPointUrl);
     cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').click();
     cy.get('[id="no_auth"]').click();
     cy.get('[type="submit"]').click();
+
     cy.get('[class="euiForm__error"]').should(
       'contain.text',
       'Endpoint is not valid'
