@@ -16,6 +16,5 @@
     "password": "admin",
     "ENDPOINT_WITH_PROXY": false,
     "MANAGED_SERVICE_ENDPOINT": false
-  },
-  "experimentalNetworkStubbing": true
+  }
 }
