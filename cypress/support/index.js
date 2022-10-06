@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 // ***********************************************************
 // This example support/index.js is processed and
 // loaded automatically before your test files.

@@ -6,15 +6,15 @@
 /// <reference types="cypress" />
 
 import {
-  delay,
+  BASE_PATH,
+  NOTIFICATIONS_DELAY,
   NOTIFICATIONS_PLUGIN_NAME,
-} from '../../../utils/plugins/notifications-dashboards/constants';
-import { BASE_PATH } from '../../../utils/base_constants';
+} from '../../../utils/constants';
 
 describe('Test create email senders', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('creates ssl sender', () => {
@@ -56,9 +56,9 @@ describe('Test create email senders', () => {
     cy.get('[data-test-subj="create-sender-form-encryption-input"]').click({
       force: true,
     });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text').contains('TLS').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text').contains('Create').click({ force: true });
     cy.contains('successfully created.').should('exist');
@@ -91,7 +91,7 @@ describe('Test create email senders', () => {
 describe('Test edit senders', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('edits sender email address', () => {
@@ -100,7 +100,7 @@ describe('Test edit senders', () => {
     cy.get('[data-test-subj="create-sender-form-email-input"]').type(
       '{selectall}{backspace}edited.test@email.com'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text').contains('Save').click({ force: true });
     cy.contains('successfully updated.').should('exist');
@@ -112,7 +112,7 @@ describe('Test edit senders', () => {
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       '{selectall}{backspace}us-west-2'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text').contains('Save').click({ force: true });
     cy.contains('successfully updated.').should('exist');
@@ -122,14 +122,14 @@ describe('Test edit senders', () => {
 describe('Test delete senders', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('deletes smtp senders', () => {
     cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click(); // ssl sender
     cy.get('[data-test-subj="senders-table-delete-button"]').click();
     cy.get('input[placeholder="delete"]').type('delete');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click();
     cy.contains('successfully deleted.').should('exist');
   });
@@ -138,7 +138,7 @@ describe('Test delete senders', () => {
     cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click(); // ses sender
     cy.get('[data-test-subj="ses-senders-table-delete-button"]').click();
     cy.get('input[placeholder="delete"]').type('delete');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click();
     cy.contains('successfully deleted.').should('exist');
 
@@ -151,7 +151,7 @@ describe('Test create, edit and delete recipient group', () => {
     cy.visit(
       `${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`
     );
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('creates recipient group', () => {
@@ -185,12 +185,12 @@ describe('Test create, edit and delete recipient group', () => {
     cy.get('[data-test-subj="comboBoxInput"]').type(
       'custom.email.6@test.com{enter}'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text').contains('Create').click({ force: true });
     cy.contains('successfully created.').should('exist');
     cy.contains('Test recipient group').should('exist');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
   });
 
   it('edits recipient group description', () => {
@@ -203,7 +203,7 @@ describe('Test create, edit and delete recipient group', () => {
     cy.get(
       '[data-test-subj="create-recipient-group-form-description-input"]'
     ).type('{selectall}{backspace}Updated group description');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text').contains('Save').click({ force: true });
     cy.contains('successfully updated.').should('exist');
@@ -218,7 +218,7 @@ describe('Test create, edit and delete recipient group', () => {
     cy.get('[data-test-subj="checkboxSelectAll"]').last().click();
     cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click();
     cy.get('input[placeholder="delete"]').type('delete');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
       '[data-test-subj="delete-recipient-group-modal-delete-button"]'
     ).click({ force: true });
