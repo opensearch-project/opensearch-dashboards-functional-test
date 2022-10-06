@@ -11,11 +11,11 @@ context('Create detector workflow', () => {
   const TEST_DETECTOR_DESCRIPTION = 'Some test detector description.';
   const TEST_FEATURE_NAME = 'test-feature';
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
-  const TEST_INDEX_NAME = 'ad-cypress-test-index';
+  const TEST_INDEX_NAME = 'sample-ad-index';
 
   // Index some sample data first
   before(() => {
-    cy.deleteAllIndices()
+    cy.deleteAllIndices();
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',
@@ -36,7 +36,7 @@ context('Create detector workflow', () => {
 
   // Clean up created resources
   after(() => {
-    cy.deleteAllIndices()
+    cy.deleteAllIndices();
   });
 
   it('Full creation - based on real index', () => {
@@ -79,6 +79,10 @@ context('Create detector workflow', () => {
     cy.getElementByTestId('timestampNameCell').contains(TEST_TIMESTAMP_NAME);
     cy.getElementByTestId('featureTable').contains(TEST_FEATURE_NAME);
     cy.getElementByTestId('createDetectorButton').click();
+
+    // Wait 5s for the detector to be created and started. By default,
+    // real-time detection will start.
+    cy.wait(5000);
 
     // Lands on the config page by default. Delete the detector to clean up.
     cy.getElementByTestId('actionsButton').click();
