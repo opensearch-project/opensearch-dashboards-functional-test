@@ -1,5 +1,7 @@
-// Copyright OpenSearch Contributors
-// SPDX-License-Identifier: Apache-2.0
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const defaults = {
   version: '2.0.1',
