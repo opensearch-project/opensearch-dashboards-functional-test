@@ -20,6 +20,7 @@
 
 // Import commands.js using ES2015 syntax:
 import '../utils/commands';
+import '../utils/dashboards/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
 import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
 import '../utils/plugins/security/commands';
