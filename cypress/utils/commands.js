@@ -16,6 +16,8 @@ export const supressNoRequestOccurred = () => {
   });
 };
 
+// TODO: Add commands to ./index.d.ts for IDE discoverability
+
 /**
  * This overwrites the default visit command to authenticate before visiting
  * webpages if SECURITY_ENABLED cypress env var is true
@@ -81,10 +83,6 @@ Cypress.Commands.add('login', () => {
   });
 });
 
-Cypress.Commands.add('getElementByTestId', (testId) => {
-  return cy.get(`[data-test-subj=${testId}]`);
-});
-
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.log('Deleting all indices');
   cy.request(
@@ -103,22 +101,6 @@ Cypress.Commands.add('updateIndexSettings', (index, settings) => {
     `${Cypress.env('openSearchUrl')}/${index}/_settings`,
     settings
   );
-});
-
-Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
-  if (policyID != null) {
-    const body = { policy_id: policyID };
-    cy.request(
-      'POST',
-      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
-      body
-    );
-  }
-});
-
-Cypress.Commands.add('deleteIndex', (indexName) => {
-  cy.request('DELETE', `${Cypress.env('openSearchUrl')}/${indexName}`);
 });
 
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
@@ -146,3 +128,171 @@ Cypress.Commands.add('deleteDataStreams', (names) => {
 Cypress.Commands.add('rollover', (target) => {
   cy.request('POST', `${Cypress.env('openSearchUrl')}/${target}/_rollover`);
 });
+
+// --- Typed commands --
+
+Cypress.Commands.add('getElementByTestId', (testId, options = {}) => {
+  return cy.get(`[data-test-subj=${testId}]`, options);
+});
+
+Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
+  if (policyID != null) {
+    const body = { policy_id: policyID };
+
+    cy.request(
+      'POST',
+      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
+      body
+    );
+  }
+});
+
+Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('openSearchUrl')}/${indexName}`,
+    failOnStatusCode: false,
+    ...options,
+  });
+});
+
+Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
+  const sendBulkAPIRequest = (ndjson) => {
+    const url = index
+      ? `${Cypress.env('openSearchUrl')}/${index}/_bulk`
+      : `${Cypress.env('openSearchUrl')}/_bulk`;
+    cy.log('bulkUploadDocs')
+      .request({
+        method: 'POST',
+        url,
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        body: ndjson,
+      })
+      .then((response) => {
+        if (response.body.errors) {
+          console.error(response.body.items);
+          throw new Error('Bulk upload failed');
+        }
+      });
+  };
+
+  cy.fixture(fixturePath).then((ndjson) => {
+    sendBulkAPIRequest(ndjson);
+  });
+});
+
+Cypress.Commands.add('createIndexPattern', (id, attributes) => {
+  const url = `${
+    Cypress.config().baseUrl
+  }/api/saved_objects/index-pattern/${id}`;
+
+  cy.request({
+    method: 'POST',
+    url,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+    },
+    body: JSON.stringify({
+      attributes,
+      references: [],
+    }),
+  });
+});
+
+Cypress.Commands.add('deleteIndexPattern', (id, options = {}) => {
+  const url = `${
+    Cypress.config().baseUrl
+  }/api/saved_objects/index-pattern/${id}`;
+
+  cy.request({
+    method: 'DELETE',
+    url,
+    headers: {
+      'osd-xsrf': true,
+    },
+    failOnStatusCode: false,
+    ...options,
+  });
+});
+
+Cypress.Commands.add(
+  'drag',
+  { prevSubject: true },
+  (source, targetSelector) => {
+    const opts = { log: false };
+    const dataTransfer = new DataTransfer();
+    const DELAY = 5; // in ms
+    const MAX_TRIES = 3;
+    const initalRect = source.get(0).getBoundingClientRect();
+    let target;
+    let count = 0;
+    let moved = false;
+
+    const log = Cypress.log({
+      name: 'Drag and Drop',
+      displayName: 'drag',
+      type: 'child',
+      autoEnd: false,
+      message: targetSelector,
+    });
+
+    const getHasMoved = () => {
+      const currentRect = source.get(0).getBoundingClientRect();
+
+      return !(
+        initalRect.top === currentRect.top &&
+        initalRect.left === currentRect.left
+      );
+    };
+
+    const dragOver = () => {
+      if (count < MAX_TRIES && !moved) {
+        count += 1;
+        return cy
+          .wrap(target, opts)
+          .trigger('dragover', {
+            dataTransfer,
+            eventConstructor: 'DragEvent',
+            ...opts,
+          })
+          .wait(DELAY, opts)
+          .then(() => {
+            moved = getHasMoved();
+            return dragOver();
+          });
+      } else {
+        return true;
+      }
+    };
+
+    cy.get(targetSelector, opts)
+      .then((targetEle) => {
+        target = targetEle;
+
+        return target;
+      })
+      .then(() => {
+        return cy.wrap(source, opts).trigger('dragstart', {
+          dataTransfer,
+          eventConstructor: 'DragEvent',
+          ...opts,
+        });
+      })
+      .then(() => dragOver())
+      .then(() => {
+        return cy.wrap(target, opts).trigger('drop', {
+          dataTransfer,
+          eventConstructor: 'DragEvent',
+          ...opts,
+        });
+      })
+      .then(() => {
+        log.end();
+      });
+  }
+);
