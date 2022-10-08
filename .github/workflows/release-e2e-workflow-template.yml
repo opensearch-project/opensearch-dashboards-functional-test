@@ -8,6 +8,9 @@ on:
       test-command:
         required: true
         type: string
+      osd-serve-args:
+        required: false
+        type: string
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -54,7 +57,7 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
-          bin/opensearch-dashboards serve &
+          bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
           timeout 300 bash -c 'while [[ "$(curl -s -u admin:admin -k localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
         id: cypress_version
