@@ -310,10 +310,6 @@ export const changeTimeTo24 = (timeUnit) => {
   cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
 };
 
-export const expectMessageOnHover = (button, message) => {
-  cy.get(`[data-test-subj="${button}"]`).click({ force: true });
-  cy.get('.euiToolTipPopover').contains(message).should('exist');
-};
 
 export const moveToPanelHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/operational_panels/`);
@@ -339,8 +335,5 @@ export const trace_two = 'HTTP GET';
 export const trace_three = 'client_pay_order';
 export const query_one =
   'where DestCityName = "Venice" | stats count() by span( timestamp , 6h )';
-export const query_two =
-  'where OriginCityName = "Seoul" | stats count() by span( timestamp , 6h )';
-export const visOneName = 'Flights to Venice';
-export const visTwoName = 'Flights from Seoul';
+export const visName = 'Flights to Venice';
 export const newName = `Monterey Cypress-${uniqueId}`;
