@@ -34,17 +34,18 @@ jobs:
         working-directory: cypress-test
         run: |
           echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
-      - name: Get and run OpenSearch
+      - name: Get OpenSearch
+        id: get_opensearch
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
-          cd opensearch-${{ env.VERSION }}/
-          ./opensearch-tar-install.sh &
-          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+          echo "::set-output name=RUN_CMD::$(./../opensearch-${{ env.VERSION }}/opensearch-tar-install.sh)"
       - name: Get OpenSearch-Dashboards
+        id: get_opensearch_dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          echo "::set-output name=RUN_CMD::$(./../opensearch-dashboards-${{ env.VERSION }}/bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }})"
       - name: Get node and yarn versions
         id: versions
         run: |
@@ -54,11 +55,6 @@ jobs:
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
-      - name: Run OpenSearch-Dashboards server
-        run: |
-          cd opensearch-dashboards-${{ env.VERSION }}
-          bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
-          timeout 300 bash -c 'while [[ "$(curl -s -u admin:admin -k localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
         id: cypress_version
         run: |
@@ -78,7 +74,8 @@ jobs:
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
-          wait-on: 'http://localhost:5601'
+          start: ${{ steps.get_opensearch.RUN_CMD }}, ${{ steps.get_opensearch_dashboards.RUN_CMD }}
+          wait-on: 'http://localhost:9200, http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()
