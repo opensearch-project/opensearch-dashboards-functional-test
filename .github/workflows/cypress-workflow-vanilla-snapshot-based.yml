@@ -43,8 +43,18 @@ jobs:
           timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
+          node -v
           wget https://artifacts.opensearch.org/snapshots/core/opensearch-dashboards/${{ env.VERSION }}-SNAPSHOT/opensearch-dashboards-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
           tar -xzf opensearch-dashboards-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
+      - name: Get node and yarn versions
+        id: versions
+        run: |
+          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-SNAPSHOT-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
+      - name: Setup node
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ steps.versions.outputs.node_version }}
+          registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}-SNAPSHOT-linux-x64
