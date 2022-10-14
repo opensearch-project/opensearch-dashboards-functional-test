@@ -6,9 +6,7 @@
 /// <reference types="cypress" />
 
 import { BASE_PATH } from '../../../utils/constants';
-import {
-    MiscUtils,
-  } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
 describe('Verify the presence of import custom map tab in region map plugin', () => {
@@ -31,9 +29,9 @@ describe('Verify the presence of import custom map tab in region map plugin', ()
   it('checks import custom map tab is present', () => {
     // Click on "Import Vector Map" tab, which is part of customImportMap plugin
     cy.contains('Import Vector Map').click({ force: true });
-  })
+  });
 
   after(() => {
     miscUtils.removeSampleData();
-  })
+  });
 });
