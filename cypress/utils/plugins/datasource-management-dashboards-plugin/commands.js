@@ -1,3 +1,8 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import { BASE_PATH } from '../../base_constants';
 import { DS_API } from './contants';
 

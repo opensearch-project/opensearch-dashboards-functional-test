@@ -6,15 +6,15 @@
 /// <reference types="cypress" />
 
 import {
-  delay,
+  BASE_PATH,
+  NOTIFICATIONS_DELAY,
   NOTIFICATIONS_PLUGIN_NAME,
-} from '../../../utils/plugins/notifications-dashboards/constants';
-import { BASE_PATH } from '../../../utils/base_constants';
+} from '../../../utils/constants';
 
 describe('Test create channels', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#create-channel`);
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('creates a slack channel and send test message', () => {
@@ -25,11 +25,11 @@ describe('Test create channels', () => {
     cy.get('[data-test-subj="create-channel-slack-webhook-input"]').type(
       'https://sample-slack-webhook'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="create-channel-send-test-message-button"]').click({
       force: true,
     });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     // This needs some time to appear as it will wait for backend call to timeout
     cy.contains('test message.').should('exist');
 
@@ -43,16 +43,16 @@ describe('Test create channels', () => {
     cy.get('[placeholder="Enter channel name"]').type('Test chime channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text')
       .contains('Chime')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-chime-webhook-input"]').type(
       'https://sample-chime-webhook'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-create-button"]').click();
     cy.contains('successfully created.').should('exist');
@@ -62,11 +62,11 @@ describe('Test create channels', () => {
     cy.get('[placeholder="Enter channel name"]').type('Test email channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text')
       .contains('Email')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     // custom data-test-subj does not work on combo box
     cy.get('[data-test-subj="comboBoxInput"]').eq(0).click({ force: true });
@@ -84,7 +84,7 @@ describe('Test create channels', () => {
     cy.get('[data-test-subj="comboBoxInput"]')
       .last()
       .type('custom.email@test.com{enter}');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
       '[data-test-subj="create-recipient-group-modal-create-button"]'
     ).click();
@@ -100,14 +100,14 @@ describe('Test create channels', () => {
     );
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text')
       .contains('Email')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('input.euiRadio__input#ses_account').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('.euiButton__text')
       .contains('Create SES sender')
@@ -130,7 +130,7 @@ describe('Test create channels', () => {
     // custom data-test-subj does not work on combo box
     cy.get('[data-test-subj="comboBoxInput"]').eq(1).click({ force: true });
     cy.contains('Test recipient group').click();
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-create-button"]').click();
     cy.contains('successfully created.').should('exist');
@@ -140,11 +140,11 @@ describe('Test create channels', () => {
     cy.get('[placeholder="Enter channel name"]').type('Test webhook channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text')
       .contains('Custom webhook')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="custom-webhook-url-input"]').type(
       'https://custom-webhook-test-url.com:8888/test-path?params1=value1&params2=value2&params3=value3&params4=value4&params5=values5&params6=values6&params7=values7'
@@ -158,11 +158,11 @@ describe('Test create channels', () => {
     cy.get('[placeholder="Enter channel name"]').type('test-sns-channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text')
       .contains('Amazon SNS')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="sns-settings-topic-arn-input"]').type(
       'arn:aws:sns:us-west-2:123456789012:notifications-test'
@@ -179,7 +179,7 @@ describe('Test create channels', () => {
 describe('Test channels table', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#channels`);
-    cy.wait(delay * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('displays channels', () => {
@@ -192,13 +192,13 @@ describe('Test channels table', () => {
   it('mutes channels', () => {
     cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click(); // chime channel
     cy.get('.euiButton__text').contains('Actions').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text').contains('Mute').click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="mute-channel-modal-mute-button"]').click({
       force: true,
     });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('successfully muted.').should('exist');
     cy.contains('Muted').should('exist');
   });
@@ -207,7 +207,7 @@ describe('Test channels table', () => {
     cy.get('input[placeholder="Search"]')
       .type('chime{enter}')
       .trigger('search');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('Test chime channel').should('exist');
     cy.contains('Test slack channel').should('not.exist');
     cy.contains('Test email channel').should('not.exist');
@@ -216,7 +216,7 @@ describe('Test channels table', () => {
     cy.get('input[placeholder="Search"]')
       .type('Source{enter}')
       .trigger('search');
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('No channels to display').should('exist');
   });
 });
@@ -261,7 +261,7 @@ describe('Test channel details', () => {
     cy.get('.euiTextArea').type(
       '{selectall}{backspace}Updated custom webhook description'
     );
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('Save').click({ force: true });
 
     cy.contains('successfully updated.').should('exist');

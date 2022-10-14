@@ -1,11 +1,16 @@
-// Copyright OpenSearch Contributors
-// SPDX-License-Identifier: Apache-2.0
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 const defaults = {
   version: '2.0.1',
   buildNumber: '3958',
   testNumber: '1',
   testJobName: 'integ-test-opensearch-dashboards',
+  platform: 'linux',
+  arch: 'x64',
+  type: 'tar',
 };
 
 const plugins = {
@@ -35,6 +40,12 @@ const plugins = {
         'real_time_results_spec.js',
         'sample_detector_spec.js',
       ],
+    },
+  },
+  'custom-import-map-dashboards': {
+    name: 'customImportMapDashboards',
+    default: {
+      videos: ['import_vector_map_tab.spec.js'],
     },
   },
   'gantt-chart-dashboards': {
@@ -131,6 +142,20 @@ function getTestResults() {
   document.getElementById('testResultsLinksDiv').style.display = 'block';
 
   document.getElementById('securityDashboardsButton').hidden = !securityEnabled;
+
+  const resultPageUrl =
+    'https://opensearch-project.github.io/opensearch-dashboards-functional-test/site/?' +
+    `version=${version}&` +
+    `build_number=${buildNumber}&` +
+    `test_number=${testNumber}&` +
+    `platform=${platform}&` +
+    `arch=${arch}&` +
+    `type=${type}`;
+
+  var resultPageLink = document.getElementById('resultPageLink');
+  resultPageLink.textContent = resultPageUrl;
+  resultPageLink.href = resultPageUrl;
+
   var testResultsLink = document.getElementById('testResultLink');
   testResultsLink.textContent = testResultsUrl;
   testResultsLink.href = testResultsUrl;
@@ -279,4 +304,13 @@ function setDefaultValues() {
   document.getElementById('testNumber').value = params.get('test_number')
     ? params.get('test_number')
     : defaults.testNumber;
+  document.getElementById('platform').value = params.get('platform')
+    ? params.get('platform')
+    : defaults.platform;
+  document.getElementById('arch').value = params.get('arch')
+    ? params.get('arch')
+    : defaults.arch;
+  document.getElementById('type').value = params.get('type')
+    ? params.get('type')
+    : defaults.type;
 }
