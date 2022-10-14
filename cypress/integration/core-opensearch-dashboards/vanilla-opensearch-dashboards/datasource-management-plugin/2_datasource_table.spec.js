@@ -33,7 +33,7 @@ describe('Datasource Management: Table', () => {
 
   /* Create button*/
   it('should navigate to create data source on button click', () => {
-    cy.getElementByTestId('createDataSourceButton').click();
+    cy.getElementByTestId('createDataSourceButton').first().click();
     cy.location('pathname').should(
       'eq',
       '/app/management/opensearch-dashboards/dataSources/create'
