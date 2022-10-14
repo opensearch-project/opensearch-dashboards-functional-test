@@ -6,6 +6,7 @@
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
+
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Table', () => {
     beforeEach(() => {
