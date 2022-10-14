@@ -4,22 +4,24 @@ const miscUtils = new MiscUtils(cy);
 
 describe('Datasource Management: Table', () => {
   beforeEach(() => {
-    // Set welcome screen tracking to false
-    localStorage.setItem('home:welcome:show', 'false');
-
-    // Visit ISM OSD
+    // Visit Data Sources OSD
     miscUtils.visitPage('app/management/opensearch-dashboards/dataSources');
 
     // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
     cy.contains(
-      'Create and manage the data sources that help you retrieve your data from multiple Elasticsearch clusters',
+      'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
       { timeout: 60000 }
     );
   });
 
+  after(() => {
+    // Clean up after all test are run
+    cy.deleteAllDataSources();
+  });
+
   it('should successfully load the page', () => {
     cy.contains(
-      'Create and manage the data sources that help you retrieve your data from multiple Elasticsearch clusters',
+      'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
       { timeout: 60000 }
     );
   });
@@ -33,9 +35,28 @@ describe('Datasource Management: Table', () => {
     );
   });
 
+  /* Experimental Callout */
+  it('should display experimental call out', () => {
+    cy.contains('Experimental Feature').should('exist');
+    cy.contains(
+      'The feature is experimental and should not be used in a production environment. Any index patterns, visualization, and observability panels will be impacted if the feature is deactivated. For more information see Data Source Documentation(opens in a new tab or window)To leave feedback, visit OpenSearch Forum'
+    ).should('exist');
+  });
+
+  describe('Empty State', () => {
+    before(() => {
+      // Clean up table before other tests run
+      cy.deleteAllDataSources();
+    });
+    it('should show empty table state when no data sources are created yet', () => {
+      cy.contains('No Data Source Connections have been created yet.').should(
+        'exist'
+      );
+    });
+  });
+
   describe('Sorting', () => {
     before(() => {
-      cy.deleteAllDataSources();
       // Create 25+ data sources that can be sorted alphabetically by using letters a-z
       for (let i = 97; i < 123; i++) {
         const char = String.fromCharCode(i);
@@ -130,7 +151,7 @@ describe('Datasource Management: Table', () => {
       });
     });
     // case 3: No match
-    it('should not display any rows when serach finds NO MATCH', () => {
+    it('should not display any rows when search finds NO MATCH', () => {
       // clear & Type in testNoMaTCH in search input
       cy.get(`input[type="search"]`).focus().clear();
       cy.get(`input[type="search"]`).focus().type('testNoMaTCH');
@@ -237,7 +258,7 @@ describe('Datasource Management: Table', () => {
       );
       cy.getElementByTestId('deleteDataSourceConnections').should(
         'contain.text',
-        'Delete  connection'
+        'Delete  '
       );
     });
 
@@ -296,7 +317,7 @@ describe('Datasource Management: Table', () => {
       cy.contains('ds_a').should('not.exist');
       cy.getElementByTestId('deleteDataSourceConnections').should(
         'contain.text',
-        'Delete  connection'
+        'Delete  '
       );
     });
 
@@ -334,7 +355,7 @@ describe('Datasource Management: Table', () => {
       cy.contains('ds_b').should('not.exist');
       cy.getElementByTestId('deleteDataSourceConnections').should(
         'contain.text',
-        'Delete  connection'
+        'Delete  '
       );
       cy.get('li.euiPagination__item').should(($li) => {
         expect($li).to.have.length(2); // 2 pages
