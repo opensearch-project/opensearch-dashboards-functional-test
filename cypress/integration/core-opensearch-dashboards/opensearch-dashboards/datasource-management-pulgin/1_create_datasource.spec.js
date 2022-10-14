@@ -1,0 +1,260 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
+const miscUtils = new MiscUtils(cy);
+// Get environment variables
+const endPointUrl = Cypress.env('OSD_TEST_DOMAIN_ENDPOINT_URL');
+const invalidEndPointUrl = Cypress.env('OSD_INVALID_ENPOINT_URL');
+const username = Cypress.env('username');
+const password = Cypress.env('password');
+
+if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+  describe('Create datasources', () => {
+    beforeEach(() => {
+      // Visit OSD create page
+      miscUtils.visitPage(
+        'app/management/opensearch-dashboards/dataSources/create'
+      );
+    });
+
+    it('should successfully load the page', () => {
+      cy.contains(
+        'Create a new data source connection to help you retrieve data from an external OpenSearch compatible source.',
+        { timeout: 60000 }
+      );
+    });
+
+    it('should successfully show the experimental feature callout', () => {
+      cy.contains('Experimental Feature').should('exist');
+      cy.contains(
+        'The feature is experimental and should not be used in a production environment. Any index patterns, visualization, and observability panels will be impacted if the feature is deactivated. For more information see Data Source Documentation(opens in a new tab or window)To leave feedback, visit OpenSearch Forum'
+      ).should('exist');
+    });
+
+    describe('Datasource can be created successfully', () => {
+      // No auth, with all required inputs, no optional description
+      it('with no auth and all required inputs', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_noauth');
+        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[for="no_auth"]').click();
+        cy.get('[type="submit"]').click();
+
+        cy.location('pathname', { timeout: 6000 }).should(
+          'include',
+          'app/management/opensearch-dashboards/dataSources'
+        );
+      });
+
+      //Basic auth, with all required inputs, no optional description
+      it('with basic auth and all required inputs', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_auth');
+        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
+          username
+        );
+        cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
+          password
+        );
+        cy.get('[type="submit"]').click();
+
+        cy.location('pathname', { timeout: 6000 }).should(
+          'include',
+          'app/management/opensearch-dashboards/dataSources'
+        );
+      });
+
+      // No auth, with all inputs
+      it('with no auth and all inputs', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_noauth_with_all_Inputs');
+        cy.get('[name="dataSourceDescription"]').type(
+          'test if can create datasource with no auth successfully'
+        );
+        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[for="no_auth"]').click();
+        cy.get('[type="submit"]').click();
+
+        cy.location('pathname', { timeout: 6000 }).should(
+          'include',
+          'app/management/opensearch-dashboards/dataSources'
+        );
+      });
+
+      // Basic auth, with all inputs
+      it('with basic auth and all inputs', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_auth_with_all_Inputs');
+        cy.get('[name="dataSourceDescription"]').type(
+          'test if can create datasource with basic auth successfully'
+        );
+        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
+          username
+        );
+        cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
+          password
+        );
+        cy.get('[type="submit"]').click();
+
+        cy.location('pathname', { timeout: 6000 }).should(
+          'include',
+          'app/management/opensearch-dashboards/dataSources'
+        );
+      });
+    });
+
+    //Title field validation
+    describe('Title validation', () => {
+      it('validate that title is a required field', () => {
+        cy.get('[name="dataSourceTitle"]').focus().blur();
+        cy.get('input[name="dataSourceTitle"]:invalid').should(
+          'have.length',
+          1
+        );
+      });
+
+      it('validate that title cannot use existing datasource name', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_auth').blur();
+        cy.get('input[name="dataSourceTitle"]:invalid').should(
+          'have.length',
+          1
+        );
+        cy.contains('This title is already in use').should('exist');
+      });
+
+      it('validate that title field does not show any error if title is valid and unique', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_unique_title').blur();
+        cy.get('input[name="dataSourceTitle"]:valid').should('have.length', 1);
+      });
+    });
+
+    //Description field validation
+    describe('Description validation', () => {
+      it('validate that description field does not show any error if the field is empty', () => {
+        cy.get('[name="dataSourceDescription"]').focus().blur();
+        cy.get('input[name="dataSourceDescription"]:valid').should(
+          'have.length',
+          1
+        );
+      });
+
+      it('validate that description field does not show any error if there is a description', () => {
+        cy.get('[name="dataSourceDescription"]')
+          .type('test description field')
+          .blur();
+        cy.get('input[name="dataSourceDescription"]:valid').should(
+          'have.length',
+          1
+        );
+      });
+    });
+
+    //Endpoint field validation
+    describe('Endpoint validation', () => {
+      it('validate that endpoint is a required field', () => {
+        cy.get('[name="endpoint"]').focus().blur();
+        cy.get('input[name="endpoint"]:invalid').should('have.length', 1);
+      });
+
+      it('validate that endpoint field cannot use invalid format of URL', () => {
+        cy.get('[name="endpoint"]').type(invalidEndPointUrl).blur();
+        cy.get('input[name="endpoint"]:invalid').should('have.length', 1);
+      });
+
+      it('validate that endpoint field does not show any error if URL is valid', () => {
+        cy.get('[name="endpoint"]').type(endPointUrl).blur();
+        cy.get('input[name="endpoint"]:valid').should('have.length', 1);
+      });
+    });
+
+    //Username field validation
+    describe('Username validation', () => {
+      it('validate that username field does not show when auth type is no auth', () => {
+        cy.get('[for="no_auth"]').click();
+        cy.get('[data-test-subj="createDataSourceFormUsernameField"]').should(
+          'not.exist'
+        );
+      });
+
+      it('validate that username is a required field when auth type is username & password', () => {
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormUsernameField"]')
+          .focus()
+          .blur();
+        cy.get(
+          'input[data-test-subj="createDataSourceFormUsernameField"]:invalid'
+        ).should('have.length', 1);
+      });
+
+      it('validate that username field does not show any error when auth type is username & password and field is not empty', () => {
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormUsernameField"]')
+          .type(username)
+          .blur();
+        cy.get(
+          'input[data-test-subj="createDataSourceFormUsernameField"]:valid'
+        ).should('have.length', 1);
+      });
+    });
+
+    //Password field validation
+    describe('Password validation', () => {
+      it('validate that password field does not show when auth type is no auth', () => {
+        cy.get('[for="no_auth"]').click();
+        cy.get('[data-test-subj="createDataSourceFormPasswordField"]').should(
+          'not.exist'
+        );
+      });
+
+      it('validate that password is a required field when auth type is username & password', () => {
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
+          .focus()
+          .blur();
+        cy.get(
+          'input[data-test-subj="createDataSourceFormPasswordField"]:invalid'
+        ).should('have.length', 1);
+      });
+
+      it('validate that password field does not show any error when auth type is username & password and field is not empty', () => {
+        cy.get('[for="username_password"]').click();
+        cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
+          .type(password)
+          .blur();
+        cy.get(
+          'input[data-test-subj="createDataSourceFormPasswordField"]:valid'
+        ).should('have.length', 1);
+      });
+    });
+
+    //Validate if create datasource button is disabled
+    describe('Create datasource button', () => {
+      it('validate if create data source connection button is disabled when first visit this page', () => {
+        miscUtils.visitPage(
+          'app/management/opensearch-dashboards/dataSources/create'
+        );
+        cy.get('[type="submit"]').should('be.disabled');
+      });
+
+      it('validate if create data source connection button is disabled when there is any field error', () => {
+        cy.get('[name="dataSourceTitle"]').focus().blur();
+        cy.get('input[name="dataSourceTitle"]:invalid').should(
+          'have.length',
+          1
+        );
+        cy.get('[type="submit"]').should('be.disabled');
+      });
+
+      it('validate if create data source connection button is not disabled only if there is no any field error', () => {
+        cy.get('[name="dataSourceTitle"]').type('test_create_button');
+        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[for="no_auth"]').click();
+        cy.get('[type="submit"]').should('not.be.disabled');
+      });
+    });
+  });
+}
