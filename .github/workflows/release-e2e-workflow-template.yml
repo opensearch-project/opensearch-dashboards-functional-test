@@ -75,7 +75,7 @@ jobs:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           start: ${{ steps.get_opensearch.RUN_CMD }}, ${{ steps.get_opensearch_dashboards.RUN_CMD }}
-          wait-on: 'http://localhost:9200, http://localhost:5601'
+          wait-on: 'https://localhost:9200, http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
         if: failure()
