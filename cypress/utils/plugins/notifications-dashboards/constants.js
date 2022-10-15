@@ -4,4 +4,4 @@
  */
 
 export const NOTIFICATIONS_PLUGIN_NAME = 'notifications-dashboards';
-export const delay = 1000;
+export const NOTIFICATIONS_DELAY = 1000;
