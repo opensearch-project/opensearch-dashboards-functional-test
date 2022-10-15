@@ -38,7 +38,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.contains(QUERY_MONITOR, { timeout: TWENTY_SECONDS });
 
     // Wait 1 minute for the test monitors to trigger alerts, then go to the 'Alerts by trigger' dashboard page to view alerts
-    cy.wait(60000);
+    cy.wait(60001);
   });
 
   beforeEach(() => {
