@@ -28,6 +28,7 @@ export const SEC_UI_AUTH_PATH = BASE_SEC_UI_PATH + '/auth';
 
 export const SEC_UI_ROLES_PATH = BASE_SEC_UI_PATH + '/roles';
 export const SEC_UI_ROLES_CREATE_PATH = SEC_UI_ROLES_PATH + '/create';
+export const SEC_UI_ROLE_EDIT_PATH = SEC_UI_ROLES_PATH + '/edit';
 
 export const SEC_UI_INTERNAL_USERS_PATH = BASE_SEC_UI_PATH + '/users';
 export const SEC_UI_USER_EDIT_PATH = SEC_UI_INTERNAL_USERS_PATH + '/edit';
@@ -64,3 +65,9 @@ export const SEC_API_CACHE_PURGE_PATH = BASE_SEC_API_PATH + '/cache';
 
 export const SEC_API_AUTHINFO_PATH = BASE_PATH + '/api/v1/auth/authinfo';
 export const SEC_API_TENANT_PATH = BASE_PATH + '/api/v1/multitenancy/tenant';
+
+// STACK MANAGEMENT PATH
+export const STACK_MANAGEMENT_PATH = BASE_PATH + '/app/management';
+
+export const INDEX_PATTERN_PATH = STACK_MANAGEMENT_PATH + '/opensearch-dashboards/indexPatterns';
+export const SAVED_OBJECTS_PATH = STACK_MANAGEMENT_PATH + '/opensearch-dashboards/objects';

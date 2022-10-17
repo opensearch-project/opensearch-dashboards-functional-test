@@ -5,10 +5,23 @@
 
 import { BASE_PATH, IM_API } from './constants';
 
-const ADMIN_AUTH = {
+export const ADMIN_AUTH = {
   username: Cypress.env('username'),
   password: Cypress.env('password'),
+  set newUser(changedUsername) {
+    this.username = changedUsername
+  },
+  set newPassword(changedPassword) {
+    this.password = changedPassword;
+  },
 };
+
+export const CURRENT_TENANT = {
+  defaultTenant:'private',
+  set newTenant(changedTenant) {
+    this.defaultTenant = changedTenant; 
+  },
+}
 
 export const supressNoRequestOccurred = () => {
   cy.on('fail', (err) => {
@@ -33,7 +46,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
-    newOptions.qs = { security_tenant: 'private' };
+    newOptions.qs = { security_tenant: CURRENT_TENANT.defaultTenant };
     if (waitForGetTenant) {
       cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
       orig(url, newOptions);
