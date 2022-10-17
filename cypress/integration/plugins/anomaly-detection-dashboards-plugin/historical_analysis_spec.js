@@ -131,18 +131,22 @@ describe('Historical results page', () => {
     });
 
     it('Filtering by date range', () => {
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click({
+        force: true,
+      });
       cy.get(`[aria-label="Next time window"]`).click();
-      cy.contains('Refresh').click();
+      cy.contains('Refresh').click({ force: true });
       verifyNoAnomaliesInCharts();
 
       cy.get('body').then(($body) => {
         if ($body.find('[aria-label="Previous time window"]').length == 0) {
-          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click({
+            force: true,
+          });
         }
 
         cy.get(`[aria-label="Previous time window"]`).click();
-        cy.contains('Refresh').click();
+        cy.contains('Refresh').click({ force: true });
         verifyAnomaliesInCharts();
       });
     });
@@ -156,7 +160,7 @@ describe('Historical results page', () => {
         }
       });
 
-      cy.contains('Refresh').click();
+      cy.contains('Refresh').click({ force: true });
       cy.wait(2000);
       cy.contains('Daily max').click();
       verifyAnomaliesInCharts();
