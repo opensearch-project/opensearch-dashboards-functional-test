@@ -135,6 +135,7 @@ describe('Historical results page', () => {
         force: true,
       });
       cy.get(`[aria-label="Next time window"]`).click();
+      cy.wait(5000);
       cy.contains('Refresh').click({ force: true });
       verifyNoAnomaliesInCharts();
 
@@ -146,6 +147,7 @@ describe('Historical results page', () => {
         }
 
         cy.get(`[aria-label="Previous time window"]`).click();
+        cy.wait(5000);
         cy.contains('Refresh').click({ force: true });
         verifyAnomaliesInCharts();
       });
@@ -160,6 +162,7 @@ describe('Historical results page', () => {
         }
       });
 
+      cy.wait(5000);
       cy.contains('Refresh').click({ force: true });
       cy.wait(2000);
       cy.contains('Daily max').click();
