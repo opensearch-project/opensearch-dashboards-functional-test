@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - dev-*
+      - 2.x
   push:
     branches:
       - main
