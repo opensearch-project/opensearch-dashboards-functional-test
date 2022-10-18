@@ -3,22 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-
-const miscUtils = new MiscUtils(cy);
 const searchFieldIdentifier = 'input[type="search"]';
 const tableHeadIdentifier = 'thead > tr > th';
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Table', () => {
-    beforeEach(() => {
+    before(() => {
       // Visit Data Sources OSD
-      miscUtils.visitPage('app/management/opensearch-dashboards/dataSources');
-
-      // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.contains(
-        'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
-        { timeout: 60000 }
-      );
+      cy.visitDataSourcesListingPage();
     });
 
     after(() => {
@@ -33,27 +24,18 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       );
     });
 
-    /* Create button*/
-    it('should navigate to create data source on button click', () => {
-      cy.getElementByTestId('createDataSourceButton').first().click();
-      cy.location('pathname').should(
-        'eq',
-        '/app/management/opensearch-dashboards/dataSources/create'
-      );
-    });
-
     /* Experimental Callout */
     it('should display experimental call out', () => {
-      cy.contains('Experimental Feature').should('exist');
-      cy.contains(
-        'The feature is experimental and should not be used in a production environment. Any index patterns, visualization, and observability panels will be impacted if the feature is deactivated. For more information see Data Source Documentation(opens in a new tab or window)To leave feedback, visit OpenSearch Forum'
-      ).should('exist');
+      cy.get('[data-test-subj="data-source-experimental-call"]').should(
+        'exist'
+      );
     });
 
     describe('Empty State', () => {
       before(() => {
         // Clean up table before other tests run
         cy.deleteAllDataSources();
+        cy.visitDataSourcesListingPage();
       });
       it('should show empty table state when no data sources are created yet', () => {
         cy.contains('No Data Source Connections have been created yet.').should(
@@ -85,6 +67,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           }
           cy.createDataSource(dataSourceJSON);
         }
+        cy.visitDataSourcesListingPage();
       });
 
       // Sort by title - by default
@@ -121,6 +104,19 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.contains('test ds_description_z').should('exist');
       });
 
+      // sort Ascending by data source title
+      it('should be sorted in ascending order by Datasource title', () => {
+        // Get the datasource table header and click it to sort sscending first
+        cy.getColumnHeaderByNameAndClickForSorting(
+          tableHeadIdentifier,
+          'Datasource'
+        );
+
+        // Confirm we have ds_a in view and not ds_z
+        cy.contains('ds_a');
+        cy.contains('ds_z').should('not.exist');
+      });
+
       // sort descending by data source title
       it('should be sorted in descending order by Datasource title', () => {
         // Get the datasource table header and click it to sort descending first
@@ -132,6 +128,12 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Confirm we have ds_z in view and not ds_a
         cy.contains('ds_z');
         cy.contains('ds_a').should('not.exist');
+
+        // sort to ascending order for next steps
+        cy.getColumnHeaderByNameAndClickForSorting(
+          tableHeadIdentifier,
+          'Datasource'
+        );
       });
     });
 
@@ -178,6 +180,13 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.contains('Rows Per Page').should('not.exist');
 
         cy.get(searchFieldIdentifier).focus().clear();
+      });
+      it('should show all rows when search is cleared', () => {
+        cy.get(searchFieldIdentifier).focus().clear();
+        // Confirm that only 10 rows are shown
+        cy.get('tbody > tr').should(($tr) => {
+          expect($tr).to.have.length(10);
+        });
       });
     });
 
@@ -261,15 +270,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.contains('ds_a').should('not.exist');
         cy.contains('ds_z').should('exist');
 
-        // click on page numbers to navigate - first page
-        cy.get('li.euiPagination__item').first().click();
-        cy.contains('ds_a').should('exist');
-        cy.contains('ds_z').should('not.exist');
-
         // click on page numbers to navigate - second page
         cy.get('li.euiPagination__item').eq(1).click();
         cy.contains('ds_m').should('exist');
         cy.contains('ds_a').should('not.exist');
+        cy.contains('ds_z').should('not.exist');
+
+        // click on page numbers to navigate - first page
+        cy.get('li.euiPagination__item').first().click();
+        cy.contains('ds_a').should('exist');
         cy.contains('ds_z').should('not.exist');
       });
     });
@@ -449,6 +458,17 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'be.disabled'
+        );
+      });
+    });
+
+    /* Create button*/
+    describe('create button', () => {
+      it('should navigate to create data source on button click', () => {
+        cy.getElementByTestId('createDataSourceButton').first().click();
+        cy.location('pathname').should(
+          'eq',
+          '/app/management/opensearch-dashboards/dataSources/create'
         );
       });
     });
