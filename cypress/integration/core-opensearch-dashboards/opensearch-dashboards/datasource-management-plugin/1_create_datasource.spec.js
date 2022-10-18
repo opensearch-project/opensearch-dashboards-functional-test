@@ -4,11 +4,13 @@
  */
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  OSD_TEST_DOMAIN_ENDPOINT_URL,
+  OSD_INVALID_ENPOINT_URL,
+} from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 
 const miscUtils = new MiscUtils(cy);
 // Get environment variables
-const endPointUrl = Cypress.env('OSD_TEST_DOMAIN_ENDPOINT_URL');
-const invalidEndPointUrl = Cypress.env('OSD_INVALID_ENPOINT_URL');
 const username = Cypress.env('username');
 const password = Cypress.env('password');
 
@@ -29,17 +31,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     });
 
     it('should successfully show the experimental feature callout', () => {
-      cy.contains('Experimental Feature').should('exist');
-      cy.contains(
-        'The feature is experimental and should not be used in a production environment. Any index patterns, visualization, and observability panels will be impacted if the feature is deactivated. For more information see Data Source Documentation(opens in a new tab or window)To leave feedback, visit OpenSearch Forum'
-      ).should('exist');
+      cy.get('[data-test-subj="data-source-experimental-call"]').should(
+        'exist'
+      );
     });
 
     describe('Datasource can be created successfully', () => {
-      // No auth, with all required inputs, no optional description
       it('with no auth and all required inputs', () => {
         cy.get('[name="dataSourceTitle"]').type('test_noauth');
-        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
         cy.get('[type="submit"]').click();
 
@@ -49,10 +49,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
       });
 
-      //Basic auth, with all required inputs, no optional description
       it('with basic auth and all required inputs', () => {
         cy.get('[name="dataSourceTitle"]').type('test_auth');
-        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="username_password"]').click();
         cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
           username
@@ -68,13 +67,12 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
       });
 
-      // No auth, with all inputs
       it('with no auth and all inputs', () => {
         cy.get('[name="dataSourceTitle"]').type('test_noauth_with_all_Inputs');
         cy.get('[name="dataSourceDescription"]').type(
           'test if can create datasource with no auth successfully'
         );
-        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
         cy.get('[type="submit"]').click();
 
@@ -84,13 +82,12 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
       });
 
-      // Basic auth, with all inputs
       it('with basic auth and all inputs', () => {
         cy.get('[name="dataSourceTitle"]').type('test_auth_with_all_Inputs');
         cy.get('[name="dataSourceDescription"]').type(
           'test if can create datasource with basic auth successfully'
         );
-        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="username_password"]').click();
         cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
           username
@@ -107,7 +104,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
-    //Title field validation
     describe('Title validation', () => {
       it('validate that title is a required field', () => {
         cy.get('[name="dataSourceTitle"]').focus().blur();
@@ -132,7 +128,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
-    //Description field validation
     describe('Description validation', () => {
       it('validate that description field does not show any error if the field is empty', () => {
         cy.get('[name="dataSourceDescription"]').focus().blur();
@@ -153,7 +148,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
-    //Endpoint field validation
     describe('Endpoint validation', () => {
       it('validate that endpoint is a required field', () => {
         cy.get('[name="endpoint"]').focus().blur();
@@ -161,17 +155,16 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('validate that endpoint field cannot use invalid format of URL', () => {
-        cy.get('[name="endpoint"]').type(invalidEndPointUrl).blur();
+        cy.get('[name="endpoint"]').type(OSD_INVALID_ENPOINT_URL).blur();
         cy.get('input[name="endpoint"]:invalid').should('have.length', 1);
       });
 
       it('validate that endpoint field does not show any error if URL is valid', () => {
-        cy.get('[name="endpoint"]').type(endPointUrl).blur();
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL).blur();
         cy.get('input[name="endpoint"]:valid').should('have.length', 1);
       });
     });
 
-    //Username field validation
     describe('Username validation', () => {
       it('validate that username field does not show when auth type is no auth', () => {
         cy.get('[for="no_auth"]').click();
@@ -201,7 +194,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
-    //Password field validation
     describe('Password validation', () => {
       it('validate that password field does not show when auth type is no auth', () => {
         cy.get('[for="no_auth"]').click();
@@ -231,7 +223,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
-    //Validate if create datasource button is disabled
     describe('Create datasource button', () => {
       it('validate if create data source connection button is disabled when first visit this page', () => {
         miscUtils.visitPage(
@@ -251,7 +242,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('validate if create data source connection button is not disabled only if there is no any field error', () => {
         cy.get('[name="dataSourceTitle"]').type('test_create_button');
-        cy.get('[name="endpoint"]').type(endPointUrl);
+        cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
         cy.get('[type="submit"]').should('not.be.disabled');
       });
