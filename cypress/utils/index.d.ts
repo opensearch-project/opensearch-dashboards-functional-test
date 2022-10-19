@@ -44,6 +44,35 @@ declare namespace Cypress {
     ): Chainable<S>;
 
     /**
+     * Import saved objects
+     * @example
+     * cy.importSavedObject('plugins/test/exported_data.ndjson')
+     */
+    importSavedObjects<S = any>(
+      fixturePath: string,
+      overwrite?: boolean
+    ): Chainable<S>;
+
+    /**
+     * Delete a saved object
+     * @example
+     * cy.deleteSavedObject('index-pattern', 'id')
+     */
+    deleteSavedObject<S = any>(type: string, id: string): Chainable<S>;
+
+    /**
+     * Delete all saved objects of a particular type
+     * Optionally, narrow down the results using search
+     * @example
+     * cy.deleteSavedObjectByType('index-pattern')
+     * cy.deleteSavedObjectByType('index-pattern', 'search string')
+     */
+    deleteSavedObjectByType<S = any>(
+      type: string,
+      search?: string
+    ): Chainable<S>;
+
+    /**
      * Adds an index pattern
      * @example
      * cy.createIndexPattern('patterId', { title: 'patt*', timeFieldName: 'timestamp' })
@@ -64,6 +93,14 @@ declare namespace Cypress {
      * cy.createIndexPattern('patterId')
      */
     deleteIndexPattern<S = any>(id: string): Chainable<S>;
+
+    /**
+     * Set advanced setting values
+     * tip: setting the value to null set's it to its default value
+     * @example
+     * cy.setAdvancedSetting({ 'visualize:enableLabs' : true })
+     */
+    setAdvancedSetting<S = any>(changes: { [key: string]: any }): Chainable<S>;
 
     /**
      * Performs drag and drop action

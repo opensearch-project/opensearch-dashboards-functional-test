@@ -16,5 +16,15 @@ declare namespace Cypress {
      * cy.vbSelectVisType('Bar')
      */
     vbSelectVisType(type: string): Chainable<any>;
+
+    /**
+     * Edit an aggregation
+     * @example
+     * cy.vbEditAgg('aggTestSubj', [{ 'customLabel', 'input', 'Test' }])
+     */
+    vbEditAgg(
+      aggTestSubj: string,
+      fields: [{ testSubj: string; type: 'input'; value: 'string' }]
+    ): Chainable<any>;
   }
 }
