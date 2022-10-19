@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { TIMEOUT_OPTS } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
+
 const searchFieldIdentifier = 'input[type="search"]';
 const tableHeadIdentifier = 'thead > tr > th';
 
@@ -21,15 +23,13 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     it('should successfully load the page', () => {
       cy.contains(
         'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
-        { timeout: 60000 }
+        TIMEOUT_OPTS
       );
     });
 
     /* Experimental Callout */
     it('should display experimental call out', () => {
-      cy.get('[data-test-subj="data-source-experimental-call"]').should(
-        'exist'
-      );
+      cy.getElementByTestId('data-source-experimental-call').should('exist');
     });
 
     describe('Empty State', () => {

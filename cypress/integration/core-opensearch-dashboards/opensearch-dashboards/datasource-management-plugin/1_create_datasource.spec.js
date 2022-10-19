@@ -7,7 +7,7 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 import {
   OSD_TEST_DOMAIN_ENDPOINT_URL,
   OSD_INVALID_ENPOINT_URL,
-} from '../../../../utils/dashboards/datasource-management-dashboards-plugin/cosntants';
+} from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 
 const miscUtils = new MiscUtils(cy);
 // Get environment variables
@@ -23,6 +23,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       );
     });
 
+    after(() => {
+      // Clean up after all test are run
+      cy.deleteAllDataSources();
+    });
+
     it('should successfully load the page', () => {
       cy.contains(
         'Create a new data source connection to help you retrieve data from an external OpenSearch compatible source.',
@@ -31,9 +36,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     });
 
     it('should successfully show the experimental feature callout', () => {
-      cy.get('[data-test-subj="data-source-experimental-call"]').should(
-        'exist'
-      );
+      cy.getElementByTestId('data-source-experimental-call').should('exist');
     });
 
     describe('Datasource can be created successfully', () => {
