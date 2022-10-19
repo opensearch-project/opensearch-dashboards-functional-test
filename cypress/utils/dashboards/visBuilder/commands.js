@@ -35,24 +35,32 @@ Cypress.Commands.add('vbSelectVisType', (type) => {
   cy.getElementByTestId('confirmModalConfirmButton', opts).click(opts);
 });
 
-Cypress.Commands.add('vbEditAgg', (aggTestSubj, fields = []) => {
-  const opts = { log: false };
-
+Cypress.Commands.add('vbEditAgg', (fields = []) => {
   Cypress.log({
     name: 'Vis Builder: Edit Aggregation',
     displayName: 'edit agg',
-    message: aggTestSubj,
   });
-
-  cy.getElementByTestId(aggTestSubj, opts).click(opts);
 
   fields.forEach(({ testSubj, type, value }) => {
     // TODO: Impliment controls for other input types
-    if (type === 'input') {
-      cy.getElementByTestId(testSubj)
-        .type(`${value}{enter}`)
-        .wait(VB_DEBOUNCE)
-        .blur();
+    switch (type) {
+      case 'input':
+        cy.getElementByTestId(testSubj)
+          .type(`${value}{enter}`)
+          .wait(VB_DEBOUNCE)
+          .blur();
+        break;
+
+      case 'select':
+        cy.getElementByTestId(testSubj).click();
+        cy.getElementByTestId(`comboBoxOptionsList ${testSubj}-optionsList`)
+          .find(`[title="${value}"]`)
+          .click()
+          .wait(VB_DEBOUNCE);
+        break;
+
+      default:
+        break;
     }
   });
 

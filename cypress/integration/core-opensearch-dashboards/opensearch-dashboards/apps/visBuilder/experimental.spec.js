@@ -3,13 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH, toTestId } from '../../../../../utils/constants';
+import {
+  BASE_PATH,
+  toTestId,
+  VB_DASHBOARD_ID,
+  VB_METRIC_VIS_TITLE,
+} from '../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Experimental settings', () => {
-    const TEST_VISUALIZATION_NAME = `VB: Basic Metric Chart`;
-    const DASHBOARD_ID = '7869d5d0-4ec1-11ed-840c-8d2a846d32d2';
-
     before(() => {
       cy.importSavedObjects(
         'dashboard/opensearch_dashboards/visBuilder/vb_dashboard.ndjson'
@@ -29,7 +31,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check experimental icon in visualize list
       cy.visit(`${BASE_PATH}/app/visualize`);
-      cy.get('input[type="search"]').type(`${TEST_VISUALIZATION_NAME}{enter}`);
+      cy.get('input[type="search"]').type(`${VB_METRIC_VIS_TITLE}{enter}`);
       cy.getElementByTestId('itemsInMemTable')
         .find('.visListingTable__experimentalIcon')
         .should('exist');
@@ -46,9 +48,9 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check visualize listing
       cy.visit(`${BASE_PATH}/app/visualize`);
-      cy.get('input[type="search"]').type(`${TEST_VISUALIZATION_NAME}{enter}`);
+      cy.get('input[type="search"]').type(`${VB_METRIC_VIS_TITLE}{enter}`);
       cy.getElementByTestId(
-        `visListingTitleLink-${toTestId(TEST_VISUALIZATION_NAME)}`
+        `visListingTitleLink-${toTestId(VB_METRIC_VIS_TITLE)}`
       ).should('exist');
 
       // Check Create visualization modal
@@ -56,7 +58,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId(['visType-wizard']).should('exist');
 
       // Check Dashboard
-      cy.visit(`${BASE_PATH}/app/dashboards#/view/${DASHBOARD_ID}`);
+      cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
       cy.getElementByTestId('wizardLoader').should('exist');
     });
 
@@ -65,9 +67,9 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check visualize listing
       cy.visit(`${BASE_PATH}/app/visualize`);
-      cy.get('input[type="search"]').type(`${TEST_VISUALIZATION_NAME}{enter}`);
+      cy.get('input[type="search"]').type(`${VB_METRIC_VIS_TITLE}{enter}`);
       cy.getElementByTestId(
-        `visListingTitleLink-${toTestId(TEST_VISUALIZATION_NAME)}`
+        `visListingTitleLink-${toTestId(VB_METRIC_VIS_TITLE)}`
       ).should('not.exist');
 
       // Check Create visualization modal
@@ -75,7 +77,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId(['visType-wizard']).should('not.exist');
 
       // Check Dashboard
-      cy.visit(`${BASE_PATH}/app/dashboards#/view/${DASHBOARD_ID}`);
+      cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
       cy.getElementByTestId('disabledVisBuilderVis').should('exist');
     });
 

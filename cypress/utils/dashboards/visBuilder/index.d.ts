@@ -20,11 +20,10 @@ declare namespace Cypress {
     /**
      * Edit an aggregation
      * @example
-     * cy.vbEditAgg('aggTestSubj', [{ 'customLabel', 'input', 'Test' }])
+     * cy.vbEditAgg([{ 'customLabel', 'input', 'Test' }])
      */
     vbEditAgg(
-      aggTestSubj: string,
-      fields: [{ testSubj: string; type: 'input'; value: 'string' }]
+      fields: [{ testSubj: string; type: 'input' | 'select'; value: string }]
     ): Chainable<any>;
   }
 }

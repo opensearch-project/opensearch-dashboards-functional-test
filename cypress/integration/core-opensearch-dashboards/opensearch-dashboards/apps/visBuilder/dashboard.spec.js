@@ -32,7 +32,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       cy.setTopNavDate(
         'Jan 1, 2022 @ 00:00:00.000',
-        'Jan 16, 2022 @ 00:00:00.000'
+        'Jan 18, 2022 @ 00:00:00.000'
       );
     });
 
@@ -89,7 +89,9 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('confirmSaveSavedObjectButton').click();
 
       // Check to see if the new vis is present in the dashboard
-      cy.getElementByTestId(`embeddablePanelHeading-${toTestId(visTitle, '')}`);
+      cy.getElementByTestId(
+        `embeddablePanelHeading-${toTestId(visTitle, '')}`
+      ).should('exist');
 
       // Cleanup
       cy.getElementByTestId('dashboardViewOnlyMode').click();
@@ -110,7 +112,8 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Edit visualization
       const newLabel = 'Editied Label';
-      cy.vbEditAgg('dropBoxField-metric-0', [
+      cy.getElementByTestId('dropBoxField-metric-0').click();
+      cy.vbEditAgg([
         {
           testSubj: 'visEditorStringInput1customLabel',
           type: 'input',
@@ -128,7 +131,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
     });
 
     after(() => {
-      //   cy.deleteIndex(INDEX_ID);
+      cy.deleteIndex(VB_INDEX_ID);
     });
   });
 }

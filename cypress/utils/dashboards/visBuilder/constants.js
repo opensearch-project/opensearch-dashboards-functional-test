@@ -13,4 +13,8 @@ export const VB_DASHBOARD_ID = '7869d5d0-4ec1-11ed-840c-8d2a846d32d2';
 export const VB_METRIC_EMBEDDABLE_ID = '2e23449f-fef6-4baf-8ee4-dcdd9799c74f';
 export const VB_BAR_EMBEDDABLE_ID = '722e797d-59ea-4c86-8548-9fcb8e72da33';
 
+export const VB_METRIC_VIS_TITLE = 'VB: Basic Metric Chart';
+export const VB_BAR_VIS_TITLE = 'VB: Basic Bar Chart';
+export const VB_LINE_VIS_TITLE = 'VB: Basic Line Chart';
+
 export const toTestId = (str, replace = '-') => str.replace(/\s+/g, replace);
