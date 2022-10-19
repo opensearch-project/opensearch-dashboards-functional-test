@@ -57,6 +57,16 @@ declare namespace Cypress {
       }
     ): Chainable<S>;
 
+    createIndexPatternWithTenantHeader<S = any>(
+      id: string,
+      attributes: {
+        title: string;
+        timeFieldName?: string;
+        [key: string]: any;
+      },
+      header: string,
+    ): Chainable<S>;
+
     /**
      * Delete an index pattern
      * @example
