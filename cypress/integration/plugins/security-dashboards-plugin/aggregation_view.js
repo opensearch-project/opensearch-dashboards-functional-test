@@ -5,7 +5,7 @@
 
 import {
   SAVED_OBJECTS_PATH,
-} from '../../../utils/constants';
+} from '../../../utils/dashboards/constants';
 
 import { 
   ADMIN_AUTH,
@@ -37,6 +37,17 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.server();
       cy.createTenant(tenantName, tenantDescription);
 
+      cy.createIndexPattern('index-pattern1', {
+        title: 's*',
+        timeFieldName: 'timestamp',
+      });
+      cy.createIndexPattern('index-pattern2', {
+        title: 'se*',
+        timeFieldName: 'timestamp',
+      },
+      indexPatternTenantHeaderSetUp        
+      );
+      
       cy.createInternalUser(userName1, testUsersSetUp);
       cy.createInternalUser(userName2, testUsersSetUp);
 
@@ -47,16 +58,7 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.createRoleMapping(roleName1, roleWithTestMappingSetUp);
       cy.createRoleMapping(roleName2, roleWithoutTestMappingSetUp);
 
-      cy.createIndexPattern('index-pattern1', {
-        title: 's*',
-        timeFieldName: 'timestamp',
-      });
-      cy.createIndexPatternWithTenantHeader('index-pattern2', {
-        title: 'se*',
-        timeFieldName: 'timestamp',
-      },
-      indexPatternTenantHeaderSetUp        
-      );
+      cy.wait(300000);
     });
     
     it('should check the saved objects as global tenant', () => {

@@ -65,9 +65,3 @@ export const SEC_API_CACHE_PURGE_PATH = BASE_SEC_API_PATH + '/cache';
 
 export const SEC_API_AUTHINFO_PATH = BASE_PATH + '/api/v1/auth/authinfo';
 export const SEC_API_TENANT_PATH = BASE_PATH + '/api/v1/multitenancy/tenant';
-
-// STACK MANAGEMENT PATH
-export const STACK_MANAGEMENT_PATH = BASE_PATH + '/app/management';
-
-export const INDEX_PATTERN_PATH = STACK_MANAGEMENT_PATH + '/opensearch-dashboards/indexPatterns';
-export const SAVED_OBJECTS_PATH = STACK_MANAGEMENT_PATH + '/opensearch-dashboards/objects';

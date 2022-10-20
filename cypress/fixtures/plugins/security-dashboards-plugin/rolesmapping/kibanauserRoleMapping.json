@@ -1,4 +1,4 @@
 {
-    "backend_roles" : [ "kibanauser" ],
-    "users" : [ "test1", "test2" ]
-  }
+  "backend_roles" : [ "kibanauser" ],
+  "users" : [ "test1", "test2" ]
+}

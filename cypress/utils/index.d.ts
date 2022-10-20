@@ -46,18 +46,9 @@ declare namespace Cypress {
     /**
      * Adds an index pattern
      * @example
-     * cy.createIndexPattern('patterId', 'patt*', 'timestamp')
+     * cy.createIndexPattern('patterId', { title: 'patt*', timeFieldName: 'timestamp' })
      */
     createIndexPattern<S = any>(
-      id: string,
-      attributes: {
-        title: string;
-        timeFieldName?: string;
-        [key: string]: any;
-      }
-    ): Chainable<S>;
-
-    createIndexPatternWithTenantHeader<S = any>(
       id: string,
       attributes: {
         title: string;

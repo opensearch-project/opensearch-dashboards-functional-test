@@ -2,19 +2,19 @@
   "cluster_permissions": [
       "cluster_all"
     ],
-    "index_permissions": [{
-      "index_patterns": [
-        "*"
-      ],
-      "dls": "",
-      "fls": [],
-      "masked_fields": [],
-      "allowed_actions": [
-        "indices_all"
-      ]
-    }],
-    "tenant_permissions": [{
-      "tenant_patterns": [],
-      "allowed_actions": []
-    }]
-  }
+  "index_permissions": [{
+    "index_patterns": [
+      "*"
+    ],
+    "dls": "",
+    "fls": [],
+    "masked_fields": [],
+    "allowed_actions": [
+      "indices_all"
+    ]
+  }],
+  "tenant_permissions": [{
+    "tenant_patterns": [],
+    "allowed_actions": []
+  }]
+}

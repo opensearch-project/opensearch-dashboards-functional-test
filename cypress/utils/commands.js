@@ -198,26 +198,7 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   });
 });
 
-Cypress.Commands.add('createIndexPattern', (id, attributes) => {
-  const url = `${
-    Cypress.config().baseUrl
-  }/api/saved_objects/index-pattern/${id}`;
-
-  cy.request({
-    method: 'POST',
-    url,
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    body: JSON.stringify({
-      attributes,
-      references: [],
-    }),
-  });
-});
-
-Cypress.Commands.add('createIndexPatternWithTenantHeader', (id, attributes, header = {}) => {
+Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
   const url = `${
     Cypress.config().baseUrl
   }/api/saved_objects/index-pattern/${id}`;

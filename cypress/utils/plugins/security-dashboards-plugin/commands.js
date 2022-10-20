@@ -17,6 +17,7 @@ import { SEC_API } from '../../constants';
     `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
     tenantJson
   );
+  cy.wait(10000);
 });
 
 Cypress.Commands.add('createInternalUser', (userID, userJson) => {
@@ -25,6 +26,7 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
     `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
     userJson
   );
+  cy.wait(10000);
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
@@ -33,6 +35,7 @@ Cypress.Commands.add('createRole', (roleID, roleJson) => {
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
     roleJson
   );
+  cy.wait(10000);
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
@@ -41,5 +44,5 @@ Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
     rolemappingJson
   );
+  cy.wait(10000);
 });
-
