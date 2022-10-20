@@ -110,7 +110,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Get the datasource table header and click it to sort sscending first
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Datasource'
+          'Title'
         );
 
         // Confirm we have ds_a in view and not ds_z
@@ -123,7 +123,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Get the datasource table header and click it to sort descending first
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Datasource'
+          'Title'
         );
 
         // Confirm we have ds_z in view and not ds_a
@@ -133,7 +133,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // sort to ascending order for next steps
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Datasource'
+          'Title'
         );
       });
     });
