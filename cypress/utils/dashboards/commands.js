@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import './visBuilder/commands';
+import './vis_builder/commands';
 
 Cypress.Commands.add('setTopNavQuery', (value, submit = true) => {
   const opts = { log: false };

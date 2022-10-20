@@ -10,36 +10,34 @@ import {
   VB_METRIC_EMBEDDABLE_ID,
   VB_BAR_EMBEDDABLE_ID,
   toTestId,
+  VB_INDEX_DOC_COUNT,
+  VB_INDEX_START_TIME,
+  VB_INDEX_END_TIME,
+  VB_PATH_INDEX_DATA,
+  VB_PATH_SO_DATA,
+  VB_LINE_VIS_TITLE,
 } from '../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
       cy.deleteIndex(VB_INDEX_ID);
-      cy.bulkUploadDocs(
-        'dashboard/opensearch_dashboards/visBuilder/vis_builder.data.txt',
-        VB_INDEX_ID
-      );
+      cy.bulkUploadDocs(VB_PATH_INDEX_DATA, VB_INDEX_ID);
 
-      cy.importSavedObjects(
-        'dashboard/opensearch_dashboards/visBuilder/vb_dashboard.ndjson'
-      );
+      cy.importSavedObjects(VB_PATH_SO_DATA);
 
       cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
 
       // Wait for page to load
       cy.getElementByTestId('homeIcon');
 
-      cy.setTopNavDate(
-        'Jan 1, 2022 @ 00:00:00.000',
-        'Jan 18, 2022 @ 00:00:00.000'
-      );
+      cy.setTopNavDate(VB_INDEX_START_TIME, VB_INDEX_END_TIME);
     });
 
     it('Should have valid visualizations', () => {
       cy.get(`[data-test-embeddable-id="${VB_METRIC_EMBEDDABLE_ID}"]`)
         .find('.mtrVis__value')
-        .should('contain.text', `9,121`);
+        .should('contain.text', VB_INDEX_DOC_COUNT); // Total no of record in the sample daa
       cy.get(`[data-test-embeddable-id="${VB_BAR_EMBEDDABLE_ID}"]`)
         .find('.visLegend__valueTitle')
         .should('contain.text', `Count`);
@@ -47,18 +45,17 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
     it('Should be able to add a visualization', () => {
       // Add Vis Builder Visualisation to dashboard
-      const lineChartTitle = 'VB: Basic Line Chart';
       cy.getElementByTestId('dashboardEditMode').click();
       cy.getElementByTestId('dashboardAddPanelButton').click();
       cy.getElementByTestId('savedObjectFinderSearchInput').type(
-        `${lineChartTitle}{enter}`
+        `${VB_LINE_VIS_TITLE}{enter}`
       );
       cy.getElementByTestId(
-        `savedObjectTitle${toTestId(lineChartTitle)}`
+        `savedObjectTitle${toTestId(VB_LINE_VIS_TITLE)}`
       ).click();
       cy.getElementByTestId('euiFlyoutCloseButton').click();
       cy.getElementByTestId(
-        `embeddablePanelHeading-${toTestId(lineChartTitle, '')}`
+        `embeddablePanelHeading-${toTestId(VB_LINE_VIS_TITLE, '')}`
       ).should('exist');
 
       // Cleanup
@@ -108,7 +105,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('embeddablePanelAction-editPanel').click();
       cy.getElementByTestId('visualizationLoader')
         .find('.mtrVis__value')
-        .should('contain.text', `9,121`);
+        .should('contain.text', VB_INDEX_DOC_COUNT);
 
       // Edit visualization
       const newLabel = 'Editied Label';

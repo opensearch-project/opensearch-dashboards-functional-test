@@ -13,4 +13,4 @@ export const INDEX_PATTERN_PATH =
 export const SAVED_OBJECTS_PATH =
   STACK_MANAGEMENT_PATH + '/opensearch-dashboards/objects';
 
-export * from './visBuilder/constants';
+export * from './vis_builder/constants';

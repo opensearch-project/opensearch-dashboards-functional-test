@@ -6,21 +6,21 @@
 import {
   BASE_PATH,
   toTestId,
+  VB_APP_URL,
   VB_DASHBOARD_ID,
   VB_METRIC_VIS_TITLE,
+  VB_PATH_SO_DATA,
 } from '../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Experimental settings', () => {
     before(() => {
-      cy.importSavedObjects(
-        'dashboard/opensearch_dashboards/visBuilder/vb_dashboard.ndjson'
-      );
+      cy.importSavedObjects(VB_PATH_SO_DATA);
     });
 
     it('Sould show experimental banner', () => {
       cy.setAdvancedSetting({ 'visualize:enableLabs': true });
-      cy.visit(`${BASE_PATH}/app/wizard`);
+      cy.visit(VB_APP_URL);
 
       // Check experimental banner
       cy.getElementByTestId('experimentalVisInfo').should('exist');
