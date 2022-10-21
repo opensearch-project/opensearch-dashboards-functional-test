@@ -28,6 +28,7 @@ export const SEC_UI_AUTH_PATH = BASE_SEC_UI_PATH + '/auth';
 
 export const SEC_UI_ROLES_PATH = BASE_SEC_UI_PATH + '/roles';
 export const SEC_UI_ROLES_CREATE_PATH = SEC_UI_ROLES_PATH + '/create';
+export const SEC_UI_ROLE_EDIT_PATH = SEC_UI_ROLES_PATH + '/edit';
 
 export const SEC_UI_INTERNAL_USERS_PATH = BASE_SEC_UI_PATH + '/users';
 export const SEC_UI_USER_EDIT_PATH = SEC_UI_INTERNAL_USERS_PATH + '/edit';
