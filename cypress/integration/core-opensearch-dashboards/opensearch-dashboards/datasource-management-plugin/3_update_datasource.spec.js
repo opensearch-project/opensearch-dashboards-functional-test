@@ -559,9 +559,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           .should('exist')
           .click(FORCE_CLICK_OPTS);
 
-        cy.getElementByTestId('editDatasourceDeleteConfirmModal').should(
-          'exist'
-        );
+        cy.getElementByTestId(
+          'editDatasourceDeleteConfirmModal',
+          TIMEOUT_OPTS
+        ).should('exist');
         cy.getElementByTestId('confirmModalCancelButton').should('exist');
         cy.getElementByTestId('confirmModalConfirmButton').should('exist');
         cy.contains(
