@@ -12,3 +12,4 @@ export * from './plugins/reports-dashboards/constants';
 export * from './plugins/query-workbench-dashboards/constants';
 export * from './plugins/security/constants';
 export * from './plugins/notifications-dashboards/constants';
+export * from './plugins/security-dashboards-plugin/constants';
