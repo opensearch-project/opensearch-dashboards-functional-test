@@ -145,7 +145,7 @@ Cypress.Commands.add('rollover', (target) => {
 // --- Typed commands --
 
 Cypress.Commands.add('getElementByTestId', (testId, options = {}) => {
-  return cy.get(`[data-test-subj=${testId}]`, options);
+  return cy.get(`[data-test-subj="${testId}"]`, options);
 });
 
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
@@ -170,6 +170,7 @@ Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
   });
 });
 
+// TODO: Impliment chunking
 Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   const sendBulkAPIRequest = (ndjson) => {
     const url = index
@@ -193,8 +194,83 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
       });
   };
 
-  cy.fixture(fixturePath).then((ndjson) => {
+  cy.fixture(fixturePath, 'utf8').then((ndjson) => {
     sendBulkAPIRequest(ndjson);
+  });
+
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('openSearchUrl')}/_all/_refresh`,
+  });
+});
+
+Cypress.Commands.add('importSavedObjects', (fixturePath, overwrite = true) => {
+  const sendImportRequest = (ndjson) => {
+    const url = `${Cypress.config().baseUrl}/api/saved_objects/_import?${
+      overwrite ? `overwrite=true` : ''
+    }`;
+
+    const formData = new FormData();
+    formData.append('file', ndjson, 'savedObject.ndjson');
+
+    cy.log('importSavedObject')
+      .request({
+        method: 'POST',
+        url,
+        headers: {
+          'content-type': 'multipart/form-data',
+          'osd-xsrf': true,
+        },
+        body: formData,
+      })
+      .then((response) => {
+        if (response.body.errors) {
+          console.error(response.body.items);
+          throw new Error('Import failed');
+        }
+      });
+  };
+
+  cy.fixture(fixturePath)
+    .then((file) => Cypress.Blob.binaryStringToBlob(file))
+    .then((ndjson) => {
+      sendImportRequest(ndjson);
+    });
+});
+
+Cypress.Commands.add('deleteSavedObject', (type, id, options = {}) => {
+  const url = `${Cypress.config().baseUrl}/api/saved_objects/${type}/${id}`;
+
+  return cy.request({
+    method: 'DELETE',
+    url,
+    headers: {
+      'osd-xsrf': true,
+    },
+    failOnStatusCode: false,
+    ...options,
+  });
+});
+
+Cypress.Commands.add('deleteSavedObjectByType', (type, search) => {
+  const searchParams = new URLSearchParams({
+    fields: 'id',
+    type,
+  });
+
+  if (search) {
+    searchParams.set('search', search);
+  }
+
+  const url = `${
+    Cypress.config().baseUrl
+  }/api/opensearch-dashboards/management/saved_objects/_find?${searchParams.toString()}`;
+
+  return cy.request(url).then((response) => {
+    console.log('response', response);
+    response.body.saved_objects.map(({ type, id }) => {
+      cy.deleteSavedObject(type, id);
+    });
   });
 });
 
@@ -218,20 +294,28 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
   });
 });
 
-Cypress.Commands.add('deleteIndexPattern', (id, options = {}) => {
-  const url = `${
-    Cypress.config().baseUrl
-  }/api/saved_objects/index-pattern/${id}`;
+Cypress.Commands.add('deleteIndexPattern', (id, options = {}) =>
+  cy.deleteSavedObject('index-pattern', id, options)
+);
 
-  cy.request({
-    method: 'DELETE',
-    url,
-    headers: {
-      'osd-xsrf': true,
-    },
-    failOnStatusCode: false,
-    ...options,
-  });
+Cypress.Commands.add('setAdvancedSetting', (changes) => {
+  const url = `${Cypress.config().baseUrl}/api/opensearch-dashboards/settings`;
+  cy.log('setAdvancedSetting')
+    .request({
+      method: 'POST',
+      url,
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+        'osd-xsrf': true,
+      },
+      body: { changes },
+    })
+    .then((response) => {
+      if (response.body.errors) {
+        console.error(response.body.items);
+        throw new Error('Setting advanced setting failed');
+      }
+    });
 });
 
 Cypress.Commands.add(
