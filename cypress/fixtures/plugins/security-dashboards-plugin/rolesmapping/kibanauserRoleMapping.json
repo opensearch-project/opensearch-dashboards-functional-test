@@ -1,0 +1,4 @@
+{
+  "backend_roles" : [ "kibanauser" ],
+  "users" : [ "test1", "test2" ]
+}
