@@ -260,18 +260,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.password,
           passwordFieldIdentifier
         );
-        cy.getElementByTestId('datasource-edit-saveButton').should(
-          'be.enabled'
-        );
-        cy.getElementByTestId('datasource-edit-saveButton').click();
-        cy.location('pathname', TIMEOUT_OPTS).should(
-          'equal',
-          '/app/management/opensearch-dashboards/dataSources'
-        );
+        cy.getElementByTestId('datasource-edit-saveButton')
+          .should('be.enabled')
+          .click();
+        cy.getElementByTestId(
+          'datasource-edit-saveButton',
+          TIMEOUT_OPTS
+        ).should('not.exist');
       });
-      it('should navigate to details page and verify that changes were updated successfully', () => {
-        checkIfTableIsLoaded();
-        clickOnTableRowTitleColumnByValue(DS_JSON.attributes.title);
+      it('should verify that changes were updated successfully', () => {
         cy.get('[type="radio"]').last().should('be.checked'); // credential: Username & password
         cy.get('[name="datasourceUsername"]').should(
           'have.value',
@@ -520,37 +517,29 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           force: true,
         });
         cy.get('.euiModal', TIMEOUT_OPTS).should('not.exist');
-        cy.location('pathname', TIMEOUT_OPTS).should(
-          'equal',
-          '/app/management/opensearch-dashboards/dataSources'
+        cy.contains('Password updated successfully.', TIMEOUT_OPTS).should(
+          'exist'
         );
       });
     });
-    describe('bottom bar: Cancel & Save Changes -> "Change Credential Type & few fields"', () => {
+    describe('bottom bar: Save Changes -> "Change Credential Type & few fields"', () => {
       it('should change credential to "No Authentication" & save changes with valid form', () => {
-        checkIfTableIsLoaded();
-        clickOnTableRowTitleColumnByValue(DS_JSON.attributes.title);
         // credential: No Authentication
         cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
-        cy.get('[name="dataSourceTitle"]')
-          .clear()
-          .focus()
-          .type(DS_JSON_UNIQUE_VALUES.attributes.title)
-          .blur();
-        cy.getElementByTestId('datasource-edit-saveButton').should(
-          'be.enabled'
+        typeInInputFieldAndBlur(
+          'dataSourceTitle',
+          DS_JSON_UNIQUE_VALUES.attributes.title,
+          ''
         );
-        cy.getElementByTestId('datasource-edit-saveButton').click();
-        cy.location('pathname', TIMEOUT_OPTS).should(
-          'equal',
-          '/app/management/opensearch-dashboards/dataSources'
-        );
+        cy.getElementByTestId('datasource-edit-saveButton')
+          .should('be.enabled')
+          .click();
+        cy.getElementByTestId(
+          'datasource-edit-saveButton',
+          TIMEOUT_OPTS
+        ).should('not.exist');
       });
-      it('should navigate to details page and verify that changes were updated successfully', () => {
-        checkIfTableIsLoaded();
-        clickOnTableRowTitleColumnByValue(
-          DS_JSON_UNIQUE_VALUES.attributes.title
-        );
+      it('should verify that changes were updated successfully', () => {
         cy.get('[name="dataSourceTitle"]').should(
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.title
@@ -570,9 +559,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           .should('exist')
           .click(FORCE_CLICK_OPTS);
 
-        cy.getElementByTestId('editDatasourceDeleteConfirmModal').should(
-          'exist'
-        );
+        cy.getElementByTestId(
+          'editDatasourceDeleteConfirmModal',
+          TIMEOUT_OPTS
+        ).should('exist');
         cy.getElementByTestId('confirmModalCancelButton').should('exist');
         cy.getElementByTestId('confirmModalConfirmButton').should('exist');
         cy.contains(
