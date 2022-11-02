@@ -5,6 +5,7 @@
 
 /// <reference types="cypress" />
 
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   SEARCH_RELEVANCE_PLUGIN_NAME,
   SAMPLE_INDEX,
@@ -13,29 +14,11 @@ import {
   NO_RESULTS,
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
-import { testDataSet } from '../../../utils/constants';
 
-describe('Dump test data', () => {
-  it('Indexes test data for SQL and PPL', () => {
-    const dumpDataSet = (url, index) =>
-      cy.request(url).then((response) => {
-        cy.request({
-          method: 'POST',
-          form: true,
-          url: 'api/console/proxy',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
-          qs: {
-            path: `${index}/_bulk`,
-            method: 'POST',
-          },
-          body: response.body,
-        });
-      });
-
-    testDataSet.forEach(({ url, index }) => dumpDataSet(url, index));
+describe('Add sample data', () => {
+  before(() => {
+    const miscUtils = new MiscUtils(cy);
+    miscUtils.addSampleData();
   });
 });
 
@@ -88,10 +71,9 @@ describe('Compare queries', () => {
   });
 });
 
-describe('After', () => {
-  before(() => {
-    cy.deleteAllIndices();
+describe('Remove sample data', () => {
+  const miscUtils = new MiscUtils(cy);
+  after(() => {
+    miscUtils.removeSampleData();
   });
-
-  it('clean up complete', () => {});
 });
