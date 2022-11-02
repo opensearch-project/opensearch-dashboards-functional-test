@@ -15,20 +15,20 @@ import {
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
 
-describe('Add sample data', () => {
+describe('Compare queries', () => {
   before(() => {
     const miscUtils = new MiscUtils(cy);
     miscUtils.addSampleData();
   });
-});
 
-describe('Compare queries', () => {
-  beforeEach(() => {
-    // Visit Search Relevance OpenSearch Dashboards
-    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}/`);
+  after(() => {
+    const miscUtils = new MiscUtils(cy);
+    miscUtils.removeSampleData();
   });
 
   it('Should get comparison results', () => {
+    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}/`);
+
     // Type search text in search box
     cy.get('input[type="search"]').type(SAMPLE_SEARCH_TEXT, {
       force: true,
@@ -68,12 +68,5 @@ describe('Compare queries', () => {
     cy.get(
       '.search-relevance-result-panel:nth-child(2) > div > div:nth-child(2) > h2'
     ).should('not.equal', NO_RESULTS);
-  });
-});
-
-describe('Remove sample data', () => {
-  const miscUtils = new MiscUtils(cy);
-  after(() => {
-    miscUtils.removeSampleData();
   });
 });
