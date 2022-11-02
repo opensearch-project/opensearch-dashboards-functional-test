@@ -8,12 +8,36 @@
 import {
   SEARCH_RELEVANCE_PLUGIN_NAME,
   SAMPLE_INDEX,
+  SAMPLE_SEARCH_TEXT,
+  SAMPLE_QUERY_TEXT,
+  NO_RESULTS,
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
+import { testDataSet } from '../../../utils/constants';
 
-const SAMPLE_SEARCH_TEXT = 'basic';
-const SAMPLE_QUERY_TEXT = `{"query":{"match":{"products.product_name":"%SearchText%"}}}`;
-const NO_RESULTS = `0 results`;
+describe('Dump test data', () => {
+  it('Indexes test data for SQL and PPL', () => {
+    const dumpDataSet = (url, index) =>
+      cy.request(url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_bulk`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+
+    testDataSet.forEach(({ url, index }) => dumpDataSet(url, index));
+  });
+});
 
 describe('Compare queries', () => {
   beforeEach(() => {
@@ -62,4 +86,12 @@ describe('Compare queries', () => {
       '.search-relevance-result-panel:nth-child(2) > div > div:nth-child(2) > h2'
     ).should('not.equal', NO_RESULTS);
   });
+});
+
+describe('After', () => {
+  before(() => {
+    cy.deleteAllIndices();
+  });
+
+  it('clean up complete', () => {});
 });
