@@ -17,13 +17,13 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Vis Builder: Line Chart', () => {
     before(() => {
       cy.deleteIndex(VB_INDEX_ID);
-      cy.bulkUploadDocs(VB_PATH_INDEX_DATA, VB_INDEX_ID);
+      cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
       cy.importSavedObjects(VB_PATH_SO_DATA);
 
       cy.visit(VB_APP_URL);
 
       // Wait for page to load
-      cy.getElementByTestId('homeIcon');
+      cy.waitForLoader();
       cy.vbSelectDataSource(VB_INDEX_PATTERN);
 
       // Set Top nav
@@ -33,13 +33,13 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
     });
 
     it('Basic test', () => {
-      cy.getElementByTestId('field-age-showDetails').drag(
+      cy.getElementByTestId('field-salary-showDetails').drag(
         '[data-test-subj="dropBoxAddField-metric"]'
       );
-      cy.getElementByTestId('field-genre.keyword-showDetails').drag(
+      cy.getElementByTestId('field-categories.keyword-showDetails').drag(
         '[data-test-subj="dropBoxAddField-segment"]'
       );
-      testAreaValues([53, 57, 53, 54, 55]);
+      testAreaValues([11250, 13750, 18750, 16250]);
     });
 
     after(() => {

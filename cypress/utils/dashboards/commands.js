@@ -5,6 +5,18 @@
 
 import './vis_builder/commands';
 
+Cypress.Commands.add('waitForLoader', () => {
+  const opts = { log: false };
+
+  Cypress.log({
+    name: 'waitForPageLoad',
+    displayName: 'wait',
+    message: 'page load',
+  });
+
+  cy.getElementByTestId('homeIcon', opts); // Update to `homeLoader` once useExpandedHeader is enabled
+});
+
 Cypress.Commands.add('setTopNavQuery', (value, submit = true) => {
   const opts = { log: false };
 
