@@ -57,7 +57,7 @@ describe('Compare queries', () => {
     });
 
     // Click search button
-    cy.get('.search-relevance-flex button.euiButton--primary').click({
+    cy.get('button[aria-label="searchRelevance-searchButton"]').click({
       force: true,
     });
 
