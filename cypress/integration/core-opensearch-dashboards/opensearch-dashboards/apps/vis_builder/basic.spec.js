@@ -15,28 +15,33 @@ import {
   VB_METRIC_VIS_TITLE,
   VB_PATH_INDEX_DATA,
   VB_PATH_SO_DATA,
+  VB_SO_TYPE,
 } from '../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Base Tests', () => {
     before(() => {
       cy.deleteIndex(VB_INDEX_ID);
-      cy.bulkUploadDocs(VB_PATH_INDEX_DATA, VB_INDEX_ID);
+      cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
       cy.importSavedObjects(VB_PATH_SO_DATA);
     });
 
-    it('Show existing visualizations in Visualize', () => {
+    it('Show existing visualizations in Visualize and navigate to it', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
       cy.get('input[type="search"]').type(`${VB_METRIC_VIS_TITLE}{enter}`);
+      cy.get('.euiBasicTable-loading').should('not.exist'); // wait for the loading to stop
       cy.getElementByTestId(
         `visListingTitleLink-${toTestId(VB_METRIC_VIS_TITLE)}`
-      ).should('exist');
+      )
+        .should('exist')
+        .click();
+      cy.location('pathname').should('contain', VB_APP_PATH);
     });
 
-    it('Navigate to Visualization Builder from Visualize', () => {
+    it('Navigate to Visualization Builder from Create Visualization', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
       cy.getElementByTestId('newItemButton').click();
-      cy.getElementByTestId('visType-wizard').click();
+      cy.getElementByTestId('visType-vis-builder').click();
       cy.location('pathname').should('eq', VB_APP_PATH);
     });
 
@@ -44,7 +49,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.visit(VB_APP_URL);
 
       // Wait for page to load
-      cy.getElementByTestId('homeIcon');
+      cy.waitForLoader();
       cy.vbSelectDataSource(VB_INDEX_PATTERN);
 
       // Set Top nav
@@ -59,19 +64,19 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
         .should('contain.text', VB_INDEX_DOC_COUNT);
 
       // Update Topnav
-      cy.setTopNavQuery('age < 50');
+      cy.setTopNavQuery('salary < 15000');
 
       // See if the value updated
       cy.getElementByTestId('visualizationLoader')
         .find('.mtrVis__value')
-        .should('contain.text', `4,390`);
+        .should('contain.text', `5,000`);
     });
 
     it('Be able to add/ edit and remove a field', () => {
       cy.visit(VB_APP_URL);
 
       // Wait for page to load
-      cy.getElementByTestId('homeIcon');
+      cy.waitForLoader();
       cy.vbSelectDataSource(VB_INDEX_PATTERN);
       cy.vbSelectVisType('Metric');
 
@@ -85,14 +90,19 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
         {
           testSubj: 'defaultEditorAggSelect',
           type: 'select',
-          value: 'Average',
+          value: 'Min',
+        },
+        {
+          testSubj: 'visDefaultEditorField',
+          type: 'select',
+          value: 'age',
         },
       ]);
 
       // Check if add worked
       cy.getElementByTestId('visualizationLoader')
         .find('.mtrVis__value')
-        .should('contain.text', '54.912');
+        .should('contain.text', '10');
 
       cy.getElementByTestId('dropBoxField-metric-0').click();
       cy.vbEditAgg([
@@ -114,6 +124,33 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check id remove worked
       cy.getElementByTestId('emptyWorkspace').should('exist');
+    });
+
+    it('Be able to save a visualization', () => {
+      cy.visit(VB_APP_URL);
+
+      // Wait for page to load
+      cy.waitForLoader();
+      cy.vbSelectDataSource(VB_INDEX_PATTERN);
+
+      // Create basic vis
+      cy.getElementByTestId('field-undefined-showDetails').drag(
+        '[data-test-subj=dropBoxAddField-metric]'
+      );
+
+      // Save
+      const cleanupKey = Date.now();
+      const title = `VB: vb${cleanupKey}`;
+      cy.getElementByTestId('visBuilderSaveButton')
+        .should('not.be.disabled')
+        .click();
+      cy.getElementByTestId('savedObjectTitle').type(title + '{enter}');
+
+      // Verify save
+      cy.location('pathname').should('contain', VB_APP_PATH + '/edit');
+
+      // Cleanup
+      cy.deleteSavedObjectByType(VB_SO_TYPE, `vb${cleanupKey}`);
     });
 
     after(() => {
