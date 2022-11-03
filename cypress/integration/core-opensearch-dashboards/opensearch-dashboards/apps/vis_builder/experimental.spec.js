@@ -38,7 +38,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check Create visualization modal
       cy.getElementByTestId('newItemButton').click();
-      cy.getElementByTestId(['visType-wizard'])
+      cy.getElementByTestId(['visType-vis-builder'])
         .find('.euiKeyPadMenuItem__betaBadge')
         .should('exist');
     });
@@ -55,11 +55,11 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check Create visualization modal
       cy.getElementByTestId('newItemButton').click();
-      cy.getElementByTestId(['visType-wizard']).should('exist');
+      cy.getElementByTestId(['visType-vis-builder']).should('exist');
 
       // Check Dashboard
       cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
-      cy.getElementByTestId('wizardLoader').should('exist');
+      cy.getElementByTestId('visBuilderLoader').should('exist');
     });
 
     it('Sould handle experimental setting turned off', () => {
@@ -74,7 +74,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Check Create visualization modal
       cy.getElementByTestId('newItemButton').click();
-      cy.getElementByTestId(['visType-wizard']).should('not.exist');
+      cy.getElementByTestId(['visType-vis-builder']).should('not.exist');
 
       // Check Dashboard
       cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);

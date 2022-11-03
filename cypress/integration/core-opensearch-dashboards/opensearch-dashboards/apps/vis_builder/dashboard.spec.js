@@ -7,8 +7,6 @@ import {
   VB_INDEX_PATTERN,
   VB_INDEX_ID,
   VB_DASHBOARD_ID,
-  VB_METRIC_EMBEDDABLE_ID,
-  VB_BAR_EMBEDDABLE_ID,
   toTestId,
   VB_INDEX_DOC_COUNT,
   VB_INDEX_START_TIME,
@@ -16,31 +14,42 @@ import {
   VB_PATH_INDEX_DATA,
   VB_PATH_SO_DATA,
   VB_LINE_VIS_TITLE,
+  VB_SO_TYPE,
+  VB_METRIC_VIS_TITLE,
+  VB_BAR_VIS_TITLE,
 } from '../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
       cy.deleteIndex(VB_INDEX_ID);
-      cy.bulkUploadDocs(VB_PATH_INDEX_DATA, VB_INDEX_ID);
+      cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
 
       cy.importSavedObjects(VB_PATH_SO_DATA);
 
       cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
 
       // Wait for page to load
-      cy.getElementByTestId('homeIcon');
+      cy.waitForLoader();
 
       cy.setTopNavDate(VB_INDEX_START_TIME, VB_INDEX_END_TIME);
     });
 
     it('Should have valid visualizations', () => {
-      cy.get(`[data-test-embeddable-id="${VB_METRIC_EMBEDDABLE_ID}"]`)
+      cy.getElementByTestId(
+        `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
+      )
+        .should('contain.text', VB_METRIC_VIS_TITLE)
+        .siblings('.embPanel__content')
         .find('.mtrVis__value')
         .should('contain.text', VB_INDEX_DOC_COUNT); // Total no of record in the sample daa
-      cy.get(`[data-test-embeddable-id="${VB_BAR_EMBEDDABLE_ID}"]`)
+      cy.getElementByTestId(
+        `embeddablePanelHeading-${toTestId(VB_BAR_VIS_TITLE, '')}`
+      )
+        .should('contain.text', VB_BAR_VIS_TITLE)
+        .siblings('.embPanel__content')
         .find('.visLegend__valueTitle')
-        .should('contain.text', `Count`);
+        .should('contain.text', `Median`);
     });
 
     it('Should be able to add a visualization', () => {
@@ -67,7 +76,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       // Create new Vis Builder Visualisation
       cy.getElementByTestId('dashboardEditMode').click();
       cy.getElementByTestId('dashboardAddNewPanelButton').click();
-      cy.getElementByTestId('visType-wizard').click();
+      cy.getElementByTestId('visType-vis-builder').click();
 
       // Create a metric visualisation
       cy.vbSelectDataSource(VB_INDEX_PATTERN);
@@ -79,7 +88,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       // Save and return
       const cleanupKey = Date.now();
       const visTitle = `VB: New Dashboard Visualization - vb${cleanupKey}`;
-      cy.getElementByTestId('wizardSaveButton')
+      cy.getElementByTestId('visBuilderSaveButton')
         .should('not.be.disabled')
         .click();
       cy.getElementByTestId('savedObjectTitle').type(visTitle);
@@ -93,13 +102,15 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       // Cleanup
       cy.getElementByTestId('dashboardViewOnlyMode').click();
       cy.getElementByTestId('confirmModalConfirmButton').click();
-      cy.deleteSavedObjectByType('wizard', `vb${cleanupKey}`);
+      cy.deleteSavedObjectByType(VB_SO_TYPE, `vb${cleanupKey}`);
     });
 
     it('Should be able to edit a visualization', () => {
       // Navigate to vis builder
       cy.getElementByTestId('dashboardEditMode').click();
-      cy.get(`[data-test-embeddable-id="${VB_METRIC_EMBEDDABLE_ID}"]`)
+      cy.getElementByTestId(
+        `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
+      )
         .find('[data-test-subj="embeddablePanelToggleMenuIcon"]')
         .click();
       cy.getElementByTestId('embeddablePanelAction-editPanel').click();
@@ -119,7 +130,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       ]);
 
       // Save and return
-      cy.getElementByTestId('wizardsaveAndReturnButton').click();
+      cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
 
       cy.getElementByTestId('visualizationLoader').should(
         'contain.text',
