@@ -5,6 +5,9 @@
   - [Run Tests](#run-tests)
   - [Formatting](#formatting)
   - [Onboarding](#onboarding)
+  - [Test Development](#test-development)
+    - [Experimental Features](#experimental-features)
+- [Release](#release)
 - [First Things First](#first-things-first)
 - [Ways to Contribute](#ways-to-contribute)
   - [Bug Reports](#bug-reports)
@@ -171,7 +174,7 @@ Add an environment variable (e.g boolean) to only run tests for the experiementa
 
 3. Set up Github action to run the tests inside the current repo
 
-Create a new workflow by referring to [this template](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/release-e2e-workflow-template.yml) for OSD plugin or [this workflow](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/cypress-workflow-vanilla-snapshot-based.yml) for OSD Core. This workflow is to run the OSD from artifact. You could enable your experimental feature through either `./bin/opensearch-dashboards --wizard.enabled` or through modifying the content of the yml file. (In order to run the tests from the source code repo of the feature, you can set up workflows to check out the source code and use `yarn` to start OSD.)
+Create a new workflow by referring to [this template](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/release-e2e-workflow-template.yml) for OSD plugin or [this workflow](https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/.github/workflows/cypress-workflow-vanilla-snapshot-based.yml) for OSD Core. This workflow is to run the OSD from artifact. You could enable your experimental feature through either `./bin/opensearch-dashboards --vis_builder.enabled` or through modifying the content of the yml file. (In order to run the tests from the source code repo of the feature, you can set up workflows to check out the source code and use `yarn` to start OSD.)
 
 4. Run tests from `opensearch-build`
 
