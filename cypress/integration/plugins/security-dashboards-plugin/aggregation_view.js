@@ -69,6 +69,23 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.contains('a', 'se*');
     });
 
+    it('should check the saved objects by applying filter', () => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.visit(SAVED_OBJECTS_PATH);
+      cy.contains('a', 'Saved objects');
+
+      cy.get('span[title="Tenant"]').first().click({ force: true });
+      cy.get('span').contains('Private').click();
+      cy.contains('a', 's*');
+      cy.contains('a', 'se*').should('not.exist');
+
+      cy.wait(3000);
+
+      cy.get('span').contains('test').click();
+      cy.contains('a', 's*');
+      cy.contains('a', 'se*');
+    });
+
     it('should login as test1 and check saved object', () =>{
       CURRENT_TENANT.newTenant = 'private';
       ADMIN_AUTH.newUser = userName1;
