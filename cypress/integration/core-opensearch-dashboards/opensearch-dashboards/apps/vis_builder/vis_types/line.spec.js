@@ -48,13 +48,16 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
   });
 }
 
-export const testLineValues = (values) => {
+export const testLineValues = (values, delta = 10) => {
   cy.getElementByTestId('visualizationLoader')
     .find('.points.line circle.circle')
     .should('have.length', values.length)
     .and(($rect) => {
       values.forEach((value, index) => {
-        expect(Math.round($rect.get(index).__data__.y)).to.equal(value);
+        expect(Math.round($rect.get(index).__data__.y)).to.be.closeTo(
+          value,
+          delta
+        );
       });
     });
 };
