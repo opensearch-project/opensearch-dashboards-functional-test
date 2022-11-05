@@ -115,6 +115,14 @@ const plugins = {
       ],
     },
   },
+  'security-analytics-dashboards-plugin': {
+    name: 'securityAnalyticsDashboards',
+    default: {
+      videos: [
+        'rules_spec.js',
+      ],
+    },
+  },
 };
 
 // eslint-disable-next-line no-unused-vars
