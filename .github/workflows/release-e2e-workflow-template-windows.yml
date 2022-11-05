@@ -30,8 +30,7 @@ jobs:
       - name: Get package version
         working-directory: cypress-test
         run: |
-          #echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
-          echo "VERSION=2.4.0" >> $GITHUB_ENV
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
           echo "PLATFORM=windows" >> $GITHUB_ENV
         shell: bash
       - name: Get and run OpenSearch
