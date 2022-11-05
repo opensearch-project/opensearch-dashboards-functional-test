@@ -17,7 +17,7 @@
     "password": "admin",
     "ENDPOINT_WITH_PROXY": false,
     "MANAGED_SERVICE_ENDPOINT": false,
-    "VISBUILDER_ENABLED": false,
+    "VISBUILDER_ENABLED": true,
     "DATASOURCE_MANAGEMENT_ENABLED": false
   }
 }

@@ -48,13 +48,16 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
   });
 }
 
-export const testBarValues = (values) => {
+export const testBarValues = (values, delta = 10) => {
   cy.getElementByTestId('visualizationLoader')
     .find('.histogram rect')
     .should('have.length', values.length)
     .and(($rect) => {
       values.forEach((value, index) => {
-        expect(Math.round($rect.get(index).__data__.y)).to.equal(value);
+        expect(Math.round($rect.get(index).__data__.y)).to.be.closeTo(
+          value,
+          delta
+        );
       });
     });
 };
