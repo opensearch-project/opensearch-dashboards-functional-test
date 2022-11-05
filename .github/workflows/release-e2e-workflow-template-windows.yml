@@ -62,8 +62,11 @@ jobs:
         run: |
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
           cd opensearch-dashboards-${{ env.VERSION }}
+          # Temporary solution to add vis_builder and data_source enabled parameters
           echo "vis_builder.enabled: true" >> config/opensearch_dashboards.yml
           echo "data_source.enabled: true" >> config/opensearch_dashboards.yml
+          # Not useful now as error shows when trying to force a background run with parameters on Windows
+          bin/opensearch-dashboards.bat serve ${{ inputs.osd-serve-args }} &
           bin/opensearch-dashboards.bat &
           timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status -u admin:admin | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
           curl -sk localhost:5601/api/status -u admin:admin | jq
