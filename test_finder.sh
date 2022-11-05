@@ -19,6 +19,7 @@ OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
                          "notificationsDashboards:notifications-dashboards"
                          "customImportMapDashboards:custom-import-map-dashboards"
                          "searchRelevanceDashboards:search-relevance-dashboards"
+                         "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
                        )
 
 [ -f $OSD_BUILD_MANIFEST ] && TEST_TYPE="manifest" || TEST_TYPE="default"
