@@ -4,6 +4,7 @@
  */
 
 import { PLUGIN_NAME, TWENTY_SECONDS_TIMEOUT } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants'
+import {BASE_PATH} from "../../../utils/base_constants";
 
 const SAMPLE_RULE = {
   name: 'Cypress test rule',
@@ -33,7 +34,7 @@ describe('Rules', () => {
   });
   beforeEach(() => {
     // Visit Rules page
-    cy.visit(`${Cypress.env('opensearch_dashboards')}/app/${PLUGIN_NAME}#/rules`);
+    cy.visit(`${BASE_PATH}/app/${PLUGIN_NAME}#/rules`);
   });
 
   describe('Can be created', () => {
