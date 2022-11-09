@@ -26,4 +26,5 @@ jobs:
         working-directory: cypress-test
         run: |
           echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
+          npm install
           yarn lint
