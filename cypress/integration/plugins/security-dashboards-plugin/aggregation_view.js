@@ -22,7 +22,7 @@ const userName2 = 'test2';
 const password = 'password';
 const roleName1 = 'roleWithTest';
 const roleName2 = 'roleWithoutTest';
-const kibanaRoleName = 'kibana_user';
+const kibanaRoleName = 'kibana_user'
 
 if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
   describe('Saved objects table test', () => {
