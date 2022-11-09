@@ -9,7 +9,7 @@ export const ADMIN_AUTH = {
   username: Cypress.env('username'),
   password: Cypress.env('password'),
   set newUser(changedUsername) {
-    this.username = changedUsername
+    this.username = changedUsername;
   },
   set newPassword(changedPassword) {
     this.password = changedPassword;
@@ -17,11 +17,11 @@ export const ADMIN_AUTH = {
 };
 
 export const CURRENT_TENANT = {
-  defaultTenant:'private',
+  defaultTenant: 'private',
   set newTenant(changedTenant) {
-    this.defaultTenant = changedTenant; 
+    this.defaultTenant = changedTenant;
   },
-}
+};
 
 export const supressNoRequestOccurred = () => {
   cy.on('fail', (err) => {
