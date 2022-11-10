@@ -3,14 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  SAVED_OBJECTS_PATH,
-} from '../../../utils/dashboards/constants';
+import { SAVED_OBJECTS_PATH } from '../../../utils/dashboards/constants';
 
-import { 
-  ADMIN_AUTH,
-  CURRENT_TENANT,
- } from '../../../utils/commands';
+import { ADMIN_AUTH, CURRENT_TENANT } from '../../../utils/commands';
 
 import tenantDescription from '../../../fixtures/plugins/security-dashboards-plugin/tenants/testTenant';
 import testUsersSetUp from '../../../fixtures/plugins/security-dashboards-plugin/users/testUser';
@@ -27,7 +22,7 @@ const userName2 = 'test2';
 const password = 'password';
 const roleName1 = 'roleWithTest';
 const roleName2 = 'roleWithoutTest';
-const kibanaRoleName = 'kibana_user'
+const kibanaRoleName = 'kibana_user';
 
 if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
   describe('Saved objects table test', () => {
@@ -41,13 +36,15 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
         title: 's*',
         timeFieldName: 'timestamp',
       });
-      cy.createIndexPattern('index-pattern2', {
-        title: 'se*',
-        timeFieldName: 'timestamp',
-      },
-      indexPatternTenantHeaderSetUp        
+      cy.createIndexPattern(
+        'index-pattern2',
+        {
+          title: 'se*',
+          timeFieldName: 'timestamp',
+        },
+        indexPatternTenantHeaderSetUp
       );
-      
+
       cy.createInternalUser(userName1, testUsersSetUp);
       cy.createInternalUser(userName2, testUsersSetUp);
 
@@ -60,7 +57,7 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
 
       cy.wait(300000);
     });
-    
+
     it('should check the saved objects as global tenant', () => {
       CURRENT_TENANT.newTenant = 'global';
       cy.visit(SAVED_OBJECTS_PATH);
@@ -86,7 +83,7 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.contains('a', 'se*');
     });
 
-    it('should login as test1 and check saved object', () =>{
+    it('should login as test1 and check saved object', () => {
       CURRENT_TENANT.newTenant = 'private';
       ADMIN_AUTH.newUser = userName1;
       ADMIN_AUTH.newPassword = password;
@@ -95,13 +92,13 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.url().should((url) => {
         expect(url).to.contain('/management');
       });
-      
+
       cy.wait(5000);
       cy.contains('a', 'se*');
       cy.contains('a', 's*').should('not.exist');
     });
 
-    it('should login as test2 and check saved object', () =>{
+    it('should login as test2 and check saved object', () => {
       CURRENT_TENANT.newTenant = 'private';
       ADMIN_AUTH.newUser = userName2;
       ADMIN_AUTH.newPassword = password;

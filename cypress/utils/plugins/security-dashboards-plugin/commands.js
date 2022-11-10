@@ -11,7 +11,7 @@ import { SEC_API } from '../../constants';
  *****************************
  */
 
- Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
+Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
   cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
