@@ -1,0 +1,30 @@
+# Copyright OpenSearch Contributors
+# SPDX-License-Identifier: Apache-2.0
+
+name: Lint Checker
+on:
+  pull_request:
+    branches:
+      - main
+      - dev-*
+jobs:
+  tests:
+    name: Lint Checker
+    runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
+    steps:
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: cypress-test
+      - name: Run Lint
+        working-directory: cypress-test
+        run: |
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
+          npm install
+          yarn lint
