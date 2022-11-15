@@ -9,10 +9,12 @@ import {
   TEST_QUERIES,
   SAVE_QUERY1,
   SAVE_QUERY2,
+  SAVE_QUERY3,
   querySearch,
   YEAR_TO_DATE_DOM_ID,
   landOnEventHome,
   landOnEventExplorer,
+  landOnPanels,
   supressResizeObserverIssue,
   clearText,
 } from '../../../utils/constants';
@@ -108,6 +110,42 @@ describe('Saves a query on explorer page', () => {
       .first()
       .contains(SAVE_QUERY2);
   });
+
+  it('Saves a visualization to an existing panel', () => {
+    landOnPanels();
+
+    cy.get('[data-test-subj="customPanels__createNewPanels"]').click();
+    cy.get('input.euiFieldText').type(TESTING_PANEL);
+    cy.get('.euiButton__text')
+      .contains(/^Create$/)
+      .click();
+    cy.wait(delayTime);
+
+    landOnEventExplorer();
+    clearText('searchAutocompleteTextArea');
+    querySearch(TEST_QUERIES[1].query, TEST_QUERIES[1].dateRangeDOM);
+    cy.wait(delayTime);
+
+    supressResizeObserverIssue();
+    cy.get('button[id="main-content-vis"]').contains('Visualizations').click();
+    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]').click();
+    cy.wait(delayTime * 2);
+    cy.get(
+      '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
+    ).click();
+    cy.get('[data-test-subj="eventExplorer__querySaveName"]').type(SAVE_QUERY3);
+    cy.get('[data-test-subj="eventExplorer__querySaveComboBox"]').type(
+      TESTING_PANEL
+    );
+    cy.get(`input[value="${TESTING_PANEL}"]`).click();
+    cy.get(
+      '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
+    ).click();
+    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]').click();
+    cy.wait(delayTime);
+
+    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
+  });
 });
 
 describe('Delete saved objects', () => {
@@ -156,5 +194,24 @@ describe('Click to view field insights', () => {
     cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
       .contains('Minimum overtime')
       .should('exist');
+  });
+
+  it('Click a non-numerical field to view insights', () => {
+    cy.get('[data-test-subj="field-host-showDetails"]').click();
+    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
+      .contains('Top values')
+      .should('exist');
+    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
+      .contains('Rare values')
+      .should('exist');
+    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
+      .contains('Average overtime')
+      .should('not.exist');
+    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
+      .contains('Maximum overtime')
+      .should('not.exist');
+    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
+      .contains('Minimum overtime')
+      .should('not.exist');
   });
 });
