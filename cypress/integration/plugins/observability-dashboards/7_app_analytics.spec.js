@@ -20,9 +20,7 @@ import {
   trace_two,
   trace_three,
   query_one,
-  query_two,
   visOneName,
-  visTwoName,
   newName,
   TYPING_DELAY,
   TIMEOUT_DELAY,
@@ -70,9 +68,7 @@ describe('Creating application', () => {
     );
     cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
       timeout: TIMEOUT_DELAY,
-    })
-      .focus()
-      .type(baseQuery, { delay: TYPING_DELAY });
+    }).type(baseQuery, { delay: TYPING_DELAY });
     cy.get('[data-test-subj="traceGroupsAccordion"]', {
       timeout: TIMEOUT_DELAY,
     })
@@ -138,9 +134,7 @@ describe('Viewing application', () => {
     cy.get('.aa-List').find('.aa-Item').should('have.length', 11);
     cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
       timeout: TIMEOUT_DELAY,
-    })
-      .focus()
-      .type(query_one, { delay: TYPING_DELAY });
+    }).type(query_one, { delay: TYPING_DELAY });
     changeTimeTo24('months');
     cy.wait(delayTime * 2);
     cy.get('[data-test-subj="main-content-visTab"]', {
@@ -170,199 +164,6 @@ describe('Viewing application', () => {
       'exist'
     );
     cy.get('[class="trace bars"]', { timeout: TIMEOUT_DELAY }).should('exist');
-  });
-
-  it('Adds availability level to visualization #1', () => {
-    cy.get('[data-test-subj="app-analytics-panelTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[aria-label="actionMenuButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="editVizContextMenuItem"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    supressResizeObserverIssue();
-    cy.get('[data-test-subj="superDatePickerShowDatesButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).should('contain', 'Last 24 months');
-    cy.get('.euiTab[id="availability-panel"]').click();
-    cy.get('[title="Bar"]', { timeout: TIMEOUT_DELAY }).click();
-    cy.focused().type('{downArrow}');
-    cy.focused().type('{enter}');
-    cy.get('[data-test-subj="addAvailabilityButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="euiColorPickerAnchor"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[aria-label="Select #54B399 as the color"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="nameFieldText"]', { timeout: TIMEOUT_DELAY })
-      .click()
-      .type('Available');
-    cy.get('option').contains('≥').should('exist');
-    cy.get('option').contains('≤').should('exist');
-    cy.get('option').contains('>').should('exist');
-    cy.get('option').contains('<').should('exist');
-    cy.get('option').contains('=').should('exist');
-    cy.get('option').contains('≠').should('exist');
-    cy.get('[data-test-subj="expressionSelect"]', {
-      timeout: TIMEOUT_DELAY,
-    }).select('>');
-    cy.get('[data-test-subj="valueFieldNumber"]', { timeout: TIMEOUT_DELAY })
-      .clear()
-      .type('0.5');
-    cy.get('[data-test-subj="visualizeEditorRenderButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="app-analytics-panelTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'exist'
-    );
-    cy.get('[class="lines"]', { timeout: TIMEOUT_DELAY }).should('exist');
-    cy.get('.textpoint').contains('Available').should('exist');
-    cy.get('.euiBreadcrumb[href="#/application_analytics"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="AvailableAvailabilityBadge"]', {
-      timeout: TIMEOUT_DELAY,
-    }).should('contain', 'Available');
-    cy.get(
-      '[data-test-subj="AvailableAvailabilityBadge"][style="background-color: rgb(84, 179, 153); color: rgb(0, 0, 0);"]'
-    ).should('exist');
-  });
-
-  it('Saves visualization #2 to panel with availability level', () => {
-    changeTimeTo24('months');
-    cy.get('[data-test-subj="app-analytics-logTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'exist'
-    );
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
-      timeout: TIMEOUT_DELAY,
-    }).clear();
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .focus()
-      .type(query_two, { delay: TYPING_DELAY });
-    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="main-content-visTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    supressResizeObserverIssue();
-    cy.get('.euiTab[id="availability-panel"]').click();
-    cy.get('[title="Bar"]', { timeout: TIMEOUT_DELAY }).click();
-    cy.focused().type('{downArrow}');
-    cy.focused().type('{enter}');
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="addAvailabilityButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="euiColorPickerAnchor"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[aria-label="Select #9170B8 as the color"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="nameFieldText"]', { timeout: TIMEOUT_DELAY })
-      .click()
-      .type('Super');
-    cy.get('[data-test-subj="expressionSelect"]', {
-      timeout: TIMEOUT_DELAY,
-    }).select('<');
-    cy.get('[data-test-subj="valueFieldNumber"]', { timeout: TIMEOUT_DELAY })
-      .clear()
-      .type('5.5');
-    cy.get('[data-test-subj="visualizeEditorRenderButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="addAvailabilityButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="euiColorPickerAnchor"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .first()
-      .click();
-    cy.get('[aria-label="Select #CA8EAE as the color"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="nameFieldText"]', { timeout: TIMEOUT_DELAY })
-      .first()
-      .click()
-      .type('Cool');
-    cy.get('[data-test-subj="expressionSelect"]', { timeout: TIMEOUT_DELAY })
-      .first()
-      .select('>');
-    cy.get('[data-test-subj="valueFieldNumber"]', { timeout: TIMEOUT_DELAY })
-      .first()
-      .clear()
-      .type('0');
-    cy.get('[data-test-subj="visualizeEditorRenderButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .click()
-      .type(visTwoName);
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="app-analytics-panelTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'have.length',
-      2
-    );
-    moveToHomePage();
-    cy.get(
-      '[data-test-subj="SuperAvailabilityBadge"][style="background-color: rgb(145, 112, 184); color: rgb(0, 0, 0);"]'
-    ).should('contain', 'Super');
-  });
-
-  it('Changes availability visualization', () => {
-    cy.get('[data-test-subj="app-analytics-configTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('select').select(visOneName);
-    cy.wait(delayTime);
-    moveToHomePage();
-    cy.get(
-      '[data-test-subj="AvailableAvailabilityBadge"][style="background-color: rgb(84, 179, 153); color: rgb(0, 0, 0);"]'
-    ).should('contain', 'Available');
-    moveToApplication(nameOne);
-    cy.get('[data-test-subj="app-analytics-configTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('select').find('option:selected').should('have.text', visOneName);
   });
 });
 
@@ -453,6 +254,7 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
+    cy.wait(delayTime);
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -494,6 +296,7 @@ describe('Application Analytics home page', () => {
       .within(() => {
         cy.get('.euiCheckbox').click();
       });
+    cy.wait(delayTime);
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
       timeout: delayTime * 4,
     }).click();
