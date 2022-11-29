@@ -2,22 +2,21 @@
 
 Most features added to OpenSearch Dashboards and its Plugins will require functional tests. Many of it components are quite similar. This doc should make it easier to setup your test correctly and make the test more useful and follow best practices.
 
-<!-- TOC depthfrom:2 -->
 
-- [Adding and using data](#adding-and-using-data)
+- [Writing tests](#writing-tests)
+  - [Adding and using data](#adding-and-using-data)
     - [Generating/Using test data](#generatingusing-test-data)
-        - [Generating data with script](#generating-data-with-script)
+      - [Generating data with script](#generating-data-with-script)
     - [Indexing data](#indexing-data)
-        - [Upload](#upload)
+      - [Upload](#upload)
     - [Createing an index pattern](#createing-an-index-pattern)
     - [Cleaning up data](#cleaning-up-data)
-- [Saved objects](#saved-objects)
+  - [Saved objects](#saved-objects)
     - [Generating seed saved objects](#generating-seed-saved-objects)
     - [Seeding saved object data](#seeding-saved-object-data)
-- [Useful commands](#useful-commands)
-- [Best practices](#best-practices)
+  - [Useful commands](#useful-commands)
+  - [Best practices](#best-practices)
 
-<!-- /TOC -->
 
 ## Adding and using data
 
