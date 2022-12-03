@@ -1,9 +1,7 @@
 name: Gantt Chart Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
-    branches:
-      - main
-      - dev-*
+    branches: [ '**' ]
 jobs:
   changes:
     runs-on: ubuntu-latest
