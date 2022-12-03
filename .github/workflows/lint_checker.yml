@@ -4,9 +4,7 @@
 name: Lint Checker
 on:
   pull_request:
-    branches:
-      - main
-      - dev-*
+    branches: [ '**' ]
 jobs:
   tests:
     name: Lint Checker
