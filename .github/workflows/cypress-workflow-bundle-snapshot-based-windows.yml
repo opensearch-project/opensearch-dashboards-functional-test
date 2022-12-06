@@ -1,0 +1,40 @@
+name: Bundle Snapshot based E2E Cypress tests workflow for core Dashboards (Windows)
+on:
+  pull_request:
+    branches: [ '**' ]
+  push:
+    branches: [ '**' ]
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.filter.outputs.tests }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tests:
+              - 'cypress/**/core-opensearch-dashboards/**'
+
+  tests-with-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+    with:
+      test-name: Core Dashboards using Bundle Snapshot
+      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      # not useful now as the windows e2e template currently do not allow serving parameters
+      #osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
+
+  tests-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+    with:
+      test-name: Core Dashboards using Bundle Snapshot
+      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      # not useful now as the windows e2e template currently do not allow serving parameters
+      #osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
+      security-enabled: false
