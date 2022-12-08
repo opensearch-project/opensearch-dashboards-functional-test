@@ -83,9 +83,6 @@ jobs:
         run: |
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
           cd opensearch-dashboards-${{ env.VERSION }}
-          # Temporary solution to add vis_builder and data_source enabled parameters
-          echo "vis_builder.enabled: true" >> config/opensearch_dashboards.yml
-          echo "data_source.enabled: true" >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKeyName: 'changeme'" >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKeyNamespace: 'changeme'" >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKey: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]" >> config/opensearch_dashboards.yml
