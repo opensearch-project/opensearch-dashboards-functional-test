@@ -19,6 +19,7 @@ describe('Dump test data', () => {
     const dumpDataSet = (ndjson, index) =>
       cy.request({
         method: 'POST',
+        form: false,
         url: 'api/console/proxy',
         headers: {
           'content-type': 'application/json;charset=UTF-8',

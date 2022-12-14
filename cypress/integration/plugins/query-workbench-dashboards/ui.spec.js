@@ -20,6 +20,7 @@ describe('Dump test data', () => {
       cy.request(url).then((response) => {
         cy.request({
           method: 'POST',
+          form: false,
           url: 'api/console/proxy',
           headers: {
             'content-type': 'application/json;charset=UTF-8',
@@ -195,6 +196,7 @@ describe('Test and verify SQL downloads', () => {
     it(title, () => {
       cy.request({
         method: 'POST',
+        form: false,
         url: url,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
