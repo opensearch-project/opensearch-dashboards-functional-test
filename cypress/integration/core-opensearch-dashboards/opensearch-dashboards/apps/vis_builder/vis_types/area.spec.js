@@ -14,7 +14,7 @@ import {
 } from '../../../../../../utils/constants';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
-  describe('Vis Builder: Line Chart', () => {
+  describe('Vis Builder: Area Chart', () => {
     before(() => {
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
