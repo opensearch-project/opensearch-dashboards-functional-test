@@ -4,59 +4,59 @@
 declare namespace Cypress {
     interface Chainable<Subject> {
       // Common functions
-      removeAggregation(id: number): Chainable<any>;
-      removeAllAggregations(total: number): Chainable<any>;
-      isUpdateAggregationSettingsEnabled(): Chainable<any>;
-      isUpdateAggregationSettingsDisabled(): Chainable<any>;
-      discardAggregationSettings(): Chainable<any>;
-      updateAggregationSettings(): Chainable<any>;
+      tbRemoveAggregation(id: number): Chainable<any>;
+      tbRemoveAllAggregations(total: number): Chainable<any>;
+      tbIsUpdateAggregationSettingsEnabled(): Chainable<any>;
+      tbIsUpdateAggregationSettingsDisabled(): Chainable<any>;
+      tbDiscardAggregationSettings(): Chainable<any>;
+      tbUpdateAggregationSettings(): Chainable<any>;
       // Inspector
-      openInspector(): Chainable<any>;
-      closeInspector(): Chainable<any>;
-      getTableDataFromInspectPanel(): Chainable<any>;
+      tbOpenInspector(): Chainable<any>;
+      tbCloseInspector(): Chainable<any>;
+      tbGetTableDataFromInspectPanel(): Chainable<any>;
       // Functions for data panel
-      openDataPanel(): Chainable<any>;
-      toggleOpenEditor(id: number): Chainable<any>;
-      addMetricsAggregation(): Chainable<any>;
-      addBucketsAggregation(): Chainable<any>;
-      splitRows(): Chainable<any>;
-      splitTables(): Chainable<any>;
-      splitTablesInRows(): Chainable<any>;
-      splitTablesInColumns(): Chainable<any>;
-      selectAggregationType(agg: string, id: number): Chainable<any>;
-      selectSubAggregationType(agg: string, id: number, type: string): Chainable<any>;
-      selectAggregationField(field: string, id: number): Chainable<any>;
-      selectSubAggregationField(field: string, id: number, type: string): Chainable<any>;
+      tbOpenDataPanel(): Chainable<any>;
+      tbToggleOpenEditor(id: number): Chainable<any>;
+      tbAddMetricsAggregation(): Chainable<any>;
+      tbAddBucketsAggregation(): Chainable<any>;
+      tbSplitRows(): Chainable<any>;
+      tbSplitTables(): Chainable<any>;
+      tbSplitTablesInRows(): Chainable<any>;
+      tbSplitTablesInColumns(): Chainable<any>;
+      tbSelectAggregationType(agg: string, id: number): Chainable<any>;
+      tbSelectSubAggregationType(agg: string, id: number, type: string): Chainable<any>;
+      tbSelectAggregationField(field: string, id: number): Chainable<any>;
+      tbSelectSubAggregationField(field: string, id: number, type: string): Chainable<any>;
       // Functions for buckets aggregation
       // Histogram Aggregation
-      enableHistogramInterval(id:number): Chainable<any>;
-      setHistogramInterval(interval: string, id: number): Chainable<any>;
-      isHistogramIntervalSet(interval: string, id: number): Chainable<any>;
-      setupHistogramAggregation(field: string, interval: string, id: number): Chainable<any>;
+      tbEnableHistogramInterval(id:number): Chainable<any>;
+      tbSetHistogramInterval(interval: string, id: number): Chainable<any>;
+      tbIsHistogramIntervalSet(interval: string, id: number): Chainable<any>;
+      tbSetupHistogramAggregation(field: string, interval: string, id: number): Chainable<any>;
       // Terms Aggregation
-      toggleOtherBucket(request: string): Chainable<any>;
-      toggleMissingBucket(request: string): Chainable<any>;
-      setupTermsAggregation(field: string, sort: string, size: string, id: number): Chainable<any>;
+      tbToggleOtherBucket(request: string): Chainable<any>;
+      tbToggleMissingBucket(request: string): Chainable<any>;
+      tbSetupTermsAggregation(field: string, sort: string, size: string, id: number): Chainable<any>;
       // Range Aggregation
-      addRange(): Chainable<any>;
-      setupRange(range: Array<Array<string>>, id: number): Chainable<any>;
-      setupRangeAggregation(field: string, range: Array<Array<string>>, id: number): Chainable<any>;
+      tbAddRange(): Chainable<any>;
+      tbSetupRange(range: Array<Array<string>>, id: number): Chainable<any>;
+      tbSetupRangeAggregation(field: string, range: Array<Array<string>>, id: number): Chainable<any>;
       // Date Histogram
-      setupMinimumlInterval(interval: string, id: number): Chainable<any>;
-      setupDateHistogramAggregation(field: string, interval: string, id: number): Chainable<any>;
+      tbSetupMinimumlInterval(interval: string, id: number): Chainable<any>;
+      tbSetupDateHistogramAggregation(field: string, interval: string, id: number): Chainable<any>;
       // Functions for table visualizations
-      getTableDataFromVisualization(): Chainable<any>;
-      getAllTableDataFromVisualization(total: number): Chainable<any>;
-      getTotalValueFromTable(): Chainable<any>;
-      selectSortColumn(tableIndex: number, colIndex: number, dir: string): Chainable<any>;
-      getColumnWidth(tableIndex: number, colIndex: number, name: string): Chainable<any>;
-      adjustColumnWidth(totalColumn: number, tableIndex: number, colIndex: number, size: number): Chainable<any>;
-      clickTableCellAction(tableIndex: number, totalColumn: number, rowIndex: number, colIndex: number, action: string): Chainable<any>;
-      clickFilterFromExpand(action: string): Chainable<any>;
+      tbGetTableDataFromVisualization(): Chainable<any>;
+      tbGetAllTableDataFromVisualization(total: number): Chainable<any>;
+      tbGetTotalValueFromTable(): Chainable<any>;
+      tbSelectSortColumn(tableIndex: number, colIndex: number, dir: string): Chainable<any>;
+      tbGetColumnWidth(tableIndex: number, colIndex: number, name: string): Chainable<any>;
+      tbAdjustColumnWidth(totalColumn: number, tableIndex: number, colIndex: number, size: number): Chainable<any>;
+      tbClickTableCellAction(tableIndex: number, totalColumn: number, rowIndex: number, colIndex: number, action: string): Chainable<any>;
+      tbClickFilterFromExpand(action: string): Chainable<any>;
       // Functions for Options Panel
-      openOptionsPanel(): Chainable<any>;
-      toggleOptionByName(option: string, request: string): Chainable<any>;
-      selectTotalFunctionByName(fun: string): Chainable<any>;
-      selectPercentageColumn(agg: string): Chainable<any>;
+      tbOpenOptionsPanel(): Chainable<any>;
+      tbToggleOptionByName(option: string, request: string): Chainable<any>;
+      tbSelectTotalFunctionByName(fun: string): Chainable<any>;
+      tbSelectPercentageColumn(agg: string): Chainable<any>;
     }
   }

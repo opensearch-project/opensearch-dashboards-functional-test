@@ -35,26 +35,23 @@ describe('table visualization basic functions', () => {
 
     cy.log('create a new table visualization: ', TABLE_CREATE_URL);
     cy.visit(TABLE_CREATE_URL);
-
-    // Wait for page to load
-    cy.waitForLoader();
-
     // Select index pattern and load table visualization
     cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
+    // Wait for page to load
+    cy.waitForLoader();
+  });
+
+  it('Should apply changed params and allow to reset', () => {
     // Set a Histogram Aggregation
-    cy.addBucketsAggregation();
-    cy.splitRows();
-    cy.setupHistogramAggregation('age', '20', 2);
-  });
-
-  it('Should allow applying changed params', () => {
-    cy.setHistogramInterval('201', 2);
-    cy.isUpdateAggregationSettingsEnabled();
-  });
-
-  it('Should allow reseting changed params', () => {
-    cy.discardAggregationSettings();
-    cy.isHistogramIntervalSet('20', 2);
+    cy.tbAddBucketsAggregation();
+    cy.tbSplitRows();
+    cy.tbSetupHistogramAggregation('age', '20', 2);
+    // Update Historgram interval
+    cy.tbSetHistogramInterval('201', 2);
+    cy.tbIsUpdateAggregationSettingsEnabled();
+    // Discard the updated interval
+    cy.tbDiscardAggregationSettings();
+    cy.tbIsHistogramIntervalSet('20', 2);
   });
 
   it('Should be able to save and load', () => {
@@ -101,11 +98,11 @@ describe('table visualization basic functions', () => {
       '100',
       '115',
     ];
-    cy.openInspector();
-    cy.getTableDataFromInspectPanel().then((data) => {
+    cy.tbOpenInspector();
+    cy.tbGetTableDataFromInspectPanel().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });
-    cy.closeInspector();
+    cy.tbCloseInspector();
   });
 
   after(() => {

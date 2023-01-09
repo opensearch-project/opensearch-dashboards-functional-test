@@ -3,15 +3,15 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-Cypress.Commands.add('openInspector', () => {
+Cypress.Commands.add('tbOpenInspector', () => {
   cy.getElementByTestId('openInspectorButton').click();
 });
 
-Cypress.Commands.add('closeInspector', () => {
+Cypress.Commands.add('tbCloseInspector', () => {
   cy.getElementByTestId('euiFlyoutCloseButton').click();
 });
 
-Cypress.Commands.add('getTableDataFromInspectPanel', () => {
+Cypress.Commands.add('tbGetTableDataFromInspectPanel', () => {
   let data = [];
   cy.get('[class="euiTableRowCell"]')
     .find('[class="euiFlexItem euiFlexItem--flexGrowZero"]')

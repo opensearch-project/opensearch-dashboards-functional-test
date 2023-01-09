@@ -82,23 +82,23 @@ describe('Split table', () => {
   });
 
   it('Should have a splitted table in rows', () => {
-    cy.addBucketsAggregation();
-    cy.splitTables();
-    cy.splitTablesInRows();
-    cy.setupTermsAggregation('age', 'Descending', '3', 2);
+    cy.tbAddBucketsAggregation();
+    cy.tbSplitTables();
+    cy.tbSplitTablesInRows();
+    cy.tbSetupTermsAggregation('age', 'Descending', '3', 2);
     cy.waitForLoader();
-    cy.toggleOpenEditor(2, 'false');
-    cy.addBucketsAggregation();
-    cy.splitRows();
-    cy.setupTermsAggregation('categories.keyword', 'Descending', '2', 3);
+    cy.tbToggleOpenEditor(2, 'false');
+    cy.tbAddBucketsAggregation();
+    cy.tbSplitRows();
+    cy.tbSetupTermsAggregation('categories.keyword', 'Descending', '2', 3);
     cy.waitForLoader();
-    cy.toggleOpenEditor(3, 'false');
-    cy.addBucketsAggregation();
-    cy.splitRows();
-    cy.setupTermsAggregation('salary', 'Descending', '2', 4);
-    cy.toggleOpenEditor(4, 'false');
+    cy.tbToggleOpenEditor(3, 'false');
+    cy.tbAddBucketsAggregation();
+    cy.tbSplitRows();
+    cy.tbSetupTermsAggregation('salary', 'Descending', '2', 4);
+    cy.tbToggleOpenEditor(4, 'false');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
   });
@@ -109,25 +109,25 @@ describe('Split table', () => {
       ['Hawk', '17,544', '1', 'Hawk', '17,648', '1'],
       ['Hawk', '17,503', '1', 'Hawk', '17,515', '1'],
     ];
-    cy.clickTableCellAction(0, 3, 2, 0, 'filter for');
+    cy.tbClickTableCellAction(0, 3, 2, 0, 'filter for');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
     });
     cy.get('[aria-label="Delete"]').click();
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
-    cy.clickTableCellAction(0, 3, 2, 0, 'expand');
-    cy.clickFilterFromExpand('filter for');
+    cy.tbClickTableCellAction(0, 3, 2, 0, 'expand');
+    cy.tbClickFilterFromExpand('filter for');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
     });
     cy.get('[aria-label="Delete"]').click();
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
   });
@@ -177,25 +177,25 @@ describe('Split table', () => {
         '1',
       ],
     ];
-    cy.clickTableCellAction(0, 3, 2, 0, 'filter out');
+    cy.tbClickTableCellAction(0, 3, 2, 0, 'filter out');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
     });
     cy.get('[aria-label="Delete"]').click();
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
-    cy.clickTableCellAction(0, 3, 2, 0, 'expand');
-    cy.clickFilterFromExpand('filter out');
+    cy.tbClickTableCellAction(0, 3, 2, 0, 'expand');
+    cy.tbClickFilterFromExpand('filter out');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
     });
     cy.get('[aria-label="Delete"]').click();
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
   });
@@ -257,11 +257,11 @@ describe('Split table', () => {
         '1',
       ],
     ];
-    cy.openOptionsPanel();
-    cy.toggleOptionByName('showMetricsAtAllLevels', 'true');
-    cy.updateAggregationSettings();
+    cy.tbOpenOptionsPanel();
+    cy.tbToggleOptionByName('showMetricsAtAllLevels', 'true');
+    cy.tbUpdateAggregationSettings();
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(3).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectData);
     });
   });
@@ -305,13 +305,13 @@ describe('Split table', () => {
         '1',
       ],
     ];
-    cy.openDataPanel();
-    cy.toggleOpenEditor(2, 'true');
-    cy.splitTablesInColumns();
-    cy.setupTermsAggregation('age', 'Descending', '2', 2);
+    cy.tbOpenDataPanel();
+    cy.tbToggleOpenEditor(2, 'true');
+    cy.tbSplitTablesInColumns();
+    cy.tbSetupTermsAggregation('age', 'Descending', '2', 2);
     cy.waitForLoader();
     cy.get('[class="visTable visTable__groupInColumns"]').should('exist');
-    cy.getAllTableDataFromVisualization(2).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(2).then((data) => {
       expect(data).to.deep.eq(expectData);
     });
   });
@@ -355,22 +355,22 @@ describe('Split table', () => {
         '1',
       ],
     ];
-    cy.selectSortColumn(1, 0, 'asc');
+    cy.tbSelectSortColumn(1, 0, 'asc');
     cy.waitForLoader();
-    cy.getAllTableDataFromVisualization(2).then((data) => {
+    cy.tbGetAllTableDataFromVisualization(2).then((data) => {
       expect(data).to.deep.eq(expectData);
     });
   });
 
   it('Should adjust column width in all tables', () => {
-    cy.getColumnWidth(0, 1, 't0col0WidthBefore').then((first) => {
-      cy.getColumnWidth(1, 1, 't1col0WidthBefore').then((second) => {
+    cy.tbGetColumnWidth(0, 1, 't0col0WidthBefore').then((first) => {
+      cy.tbGetColumnWidth(1, 1, 't1col0WidthBefore').then((second) => {
         expect(second).to.eq(first);
       });
     });
-    cy.adjustColumnWidth(4, 1, 1, -50);
-    cy.getColumnWidth(0, 1, 't0col0WidthAfter').then((first) => {
-      cy.getColumnWidth(1, 1, 't1col0WidthAfter').then((second) => {
+    cy.tbAdjustColumnWidth(4, 1, 1, -50);
+    cy.tbGetColumnWidth(0, 1, 't0col0WidthAfter').then((first) => {
+      cy.tbGetColumnWidth(1, 1, 't1col0WidthAfter').then((second) => {
         expect(second).to.eq(first);
       });
     });

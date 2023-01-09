@@ -53,9 +53,9 @@ describe('Table visualization options', () => {
     ];
 
     it('Should show correct range', () => {
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupRangeAggregation(
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupRangeAggregation(
         'age',
         [
           ['0', '20'],
@@ -64,35 +64,35 @@ describe('Table visualization options', () => {
         2
       );
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
     });
 
     it('Should show percentage columns', () => {
-      cy.openOptionsPanel();
-      cy.selectPercentageColumn('Count');
-      cy.updateAggregationSettings();
+      cy.tbOpenOptionsPanel();
+      cy.tbSelectPercentageColumn('Count');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedDataWithPercentage);
       });
     });
 
     it('Should remove percentage columns', () => {
-      cy.selectPercentageColumn('Don’t show');
-      cy.updateAggregationSettings();
+      cy.tbSelectPercentageColumn('Don’t show');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.openDataPanel();
-      cy.removeAllAggregations(2);
-      cy.updateAggregationSettings();
+      cy.tbOpenDataPanel();
+      cy.tbRemoveAllAggregations(2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });
@@ -158,112 +158,112 @@ describe('Table visualization options', () => {
     ];
 
     before(() => {
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupTermsAggregation('categories.keyword', 'Ascending', '2', 2);
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupTermsAggregation('categories.keyword', 'Ascending', '2', 2);
       cy.waitForLoader();
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupTermsAggregation('age', 'Descending', '2', 3);
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupTermsAggregation('age', 'Descending', '2', 3);
       cy.waitForLoader();
     });
 
     it('Should show correct data without showMetricsAtAllLevels', () => {
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectData);
       });
     });
 
     it('Should show correct data without showMetricsAtAllLevels even if showPartialRows is selected', () => {
-      cy.openOptionsPanel();
-      cy.toggleOptionByName('showPartialRows', 'true');
-      cy.updateAggregationSettings();
+      cy.tbOpenOptionsPanel();
+      cy.tbToggleOptionByName('showPartialRows', 'true');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectData);
       });
     });
 
     it('Should show metrics on each level', () => {
-      cy.openOptionsPanel();
-      cy.toggleOptionByName('showMetricsAtAllLevels', 'true');
-      cy.updateAggregationSettings();
+      cy.tbOpenOptionsPanel();
+      cy.tbToggleOptionByName('showMetricsAtAllLevels', 'true');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectShowAllData);
       });
     });
 
     it('Should show metrics other than count on each level', () => {
-      cy.openDataPanel();
-      cy.addMetricsAggregation();
-      cy.selectAggregationType('Average', 4);
-      cy.selectAggregationField('age', 4);
-      cy.updateAggregationSettings();
+      cy.tbOpenDataPanel();
+      cy.tbAddMetricsAggregation();
+      cy.tbSelectAggregationType('Average', 4);
+      cy.tbSelectAggregationField('age', 4);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectAverageData);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.removeAllAggregations(4);
-      cy.updateAggregationSettings();
+      cy.tbRemoveAllAggregations(4);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });
 
   describe('Show Total', () => {
     before(() => {
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupTermsAggregation('categories.keyword', 'Descending', '3', 2);
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupTermsAggregation('categories.keyword', 'Descending', '3', 2);
       cy.waitForLoader();
     });
 
     it('Should not show total function if not enabled', () => {
-      cy.openOptionsPanel();
+      cy.tbOpenOptionsPanel();
       cy.getElementByTestId('showTotal')
         .invoke('attr', 'aria-checked')
         .should('eq', 'false');
     });
 
     it('Should show total function if enabled', () => {
-      cy.openOptionsPanel();
-      cy.toggleOptionByName('showTotal', 'true');
+      cy.tbOpenOptionsPanel();
+      cy.tbToggleOptionByName('showTotal', 'true');
       cy.getElementByTestId('showTotal')
         .invoke('attr', 'aria-checked')
         .should('eq', 'true');
-      cy.updateAggregationSettings();
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
 
     it('Should show correct data if Count is selected', () => {
       const expectData = ['3', '3'];
-      cy.selectTotalFunctionByName('Count');
-      cy.updateAggregationSettings();
+      cy.tbSelectTotalFunctionByName('Count');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTotalValueFromTable().then((data) => {
+      cy.tbGetTotalValueFromTable().then((data) => {
         expect(data).to.deep.eq(expectData);
       });
     });
 
     it('Should show correct data if Average is selected', () => {
       const expectData = ['', '2,500'];
-      cy.selectTotalFunctionByName('Average');
-      cy.updateAggregationSettings();
+      cy.tbSelectTotalFunctionByName('Average');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTotalValueFromTable().then((data) => {
+      cy.tbGetTotalValueFromTable().then((data) => {
         expect(data).to.deep.eq(expectData);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.openDataPanel();
-      cy.removeAllAggregations(2);
-      cy.updateAggregationSettings();
+      cy.tbOpenDataPanel();
+      cy.tbRemoveAllAggregations(2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });

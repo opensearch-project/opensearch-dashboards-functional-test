@@ -56,9 +56,9 @@ describe('table visualization data', () => {
     ];
 
     it('Should show correct range', () => {
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupRangeAggregation(
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupRangeAggregation(
         'age',
         [
           ['0', '20'],
@@ -67,27 +67,27 @@ describe('table visualization data', () => {
         2
       );
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
     });
 
     it('Should show correct average metrics', () => {
-      cy.openDataPanel();
-      cy.addMetricsAggregation();
-      cy.selectAggregationType('Average', 3);
-      cy.selectAggregationField('age', 3);
-      cy.updateAggregationSettings();
+      cy.tbOpenDataPanel();
+      cy.tbAddMetricsAggregation();
+      cy.tbSelectAggregationType('Average', 3);
+      cy.tbSelectAggregationField('age', 3);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedAverageData);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.removeAllAggregations(3);
-      cy.updateAggregationSettings();
+      cy.tbRemoveAllAggregations(3);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });
@@ -95,22 +95,22 @@ describe('table visualization data', () => {
   describe('Check Average Pipeline aggregation', () => {
     it('Should show correct data when using average pipeline aggregation', () => {
       const expectedData = ['10,000', '128.2'];
-      cy.addMetricsAggregation();
-      cy.selectAggregationType('Average Bucket', 2);
-      cy.selectSubAggregationType('Terms', 2, 'buckets');
-      cy.selectSubAggregationField('age', 2, 'buckets');
-      cy.selectSubAggregationType('Count', 2, 'metrics');
-      cy.updateAggregationSettings();
+      cy.tbAddMetricsAggregation();
+      cy.tbSelectAggregationType('Average Bucket', 2);
+      cy.tbSelectSubAggregationType('Terms', 2, 'buckets');
+      cy.tbSelectSubAggregationField('age', 2, 'buckets');
+      cy.tbSelectSubAggregationType('Count', 2, 'metrics');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.removeAllAggregations(2);
-      cy.updateAggregationSettings();
+      cy.tbRemoveAllAggregations(2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });
@@ -118,18 +118,18 @@ describe('table visualization data', () => {
   describe('Check Date Histogram aggregation and filter functons', () => {
     it('Should show correct data for a data table with date histogram', () => {
       const expectedData = ['2021', '13', '2022', '9,987'];
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupDateHistogramAggregation('timestamp', 'Year', 2);
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupDateHistogramAggregation('timestamp', 'Year', 2);
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
     });
     it('Should correctly filter for applied time filter on the main timefield', () => {
       commonUI.addFilterRetrySelection('timestamp', 'is', '2022-05-30');
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '37']);
       });
       commonUI.removeFilter('timestamp');
@@ -139,14 +139,14 @@ describe('table visualization data', () => {
         '2022-08-30',
       ]);
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
     });
     it('Should correctly filter for pinned filters', () => {
       commonUI.pinFilter('timestamp');
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
       commonUI.removeFilter('timestamp');
@@ -155,8 +155,8 @@ describe('table visualization data', () => {
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.removeAllAggregations(2);
-      cy.updateAggregationSettings();
+      cy.tbRemoveAllAggregations(2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });
@@ -164,7 +164,7 @@ describe('table visualization data', () => {
   describe('Check Terms aggregation and missing values', () => {
     it('Should show correct data before and after adding doc', () => {
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,000']);
       });
       // add a doc with missing values
@@ -173,7 +173,7 @@ describe('table visualization data', () => {
         username: 'missing',
       });
       cy.reload();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,001']);
       });
     });
@@ -204,17 +204,17 @@ describe('table visualization data', () => {
         '126',
         '9,359',
       ];
-      cy.addBucketsAggregation();
-      cy.splitRows();
-      cy.setupTermsAggregation('age', 'Descending', '5', 2);
+      cy.tbAddBucketsAggregation();
+      cy.tbSplitRows();
+      cy.tbSetupTermsAggregation('age', 'Descending', '5', 2);
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeGroupInOther);
       });
-      cy.toggleOtherBucket('true');
-      cy.updateAggregationSettings();
+      cy.tbToggleOtherBucket('true');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterGroupInOther);
       });
     });
@@ -246,24 +246,24 @@ describe('table visualization data', () => {
         '2',
         '9,991',
       ];
-      cy.selectAggregationField('email.keyword', 2);
-      cy.updateAggregationSettings();
+      cy.tbSelectAggregationField('email.keyword', 2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeMissing);
       });
-      cy.toggleMissingBucket('true');
-      cy.updateAggregationSettings();
+      cy.tbToggleMissingBucket('true');
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.getTableDataFromVisualization().then((data) => {
+      cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterMissing);
       });
     });
 
     after(() => {
       cy.log('clean out all metrics and buckets aggregations');
-      cy.removeAllAggregations(2);
-      cy.updateAggregationSettings();
+      cy.tbRemoveAllAggregations(2);
+      cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
     });
   });

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-Cypress.Commands.add('getAllTableDataFromVisualization', (total) => {
+Cypress.Commands.add('tbGetAllTableDataFromVisualization', (total) => {
   let data = [];
   for (let i = 0; i < total; i++) {
     data.push([]);
@@ -18,7 +18,7 @@ Cypress.Commands.add('getAllTableDataFromVisualization', (total) => {
   return cy.wrap(data);
 });
 
-Cypress.Commands.add('getTableDataFromVisualization', () => {
+Cypress.Commands.add('tbGetTableDataFromVisualization', () => {
   let data = [];
   cy.getElementByTestId('dataGridWrapper')
     .find('[data-test-subj="dataGridRowCell"]')
@@ -28,7 +28,7 @@ Cypress.Commands.add('getTableDataFromVisualization', () => {
   return cy.wrap(data);
 });
 
-Cypress.Commands.add('getTotalValueFromTable', () => {
+Cypress.Commands.add('tbGetTotalValueFromTable', () => {
   let data = [];
   cy.getElementByTestId('dataGridRow')
     .find('[data-test-subj="dataGridRowCell"]')
@@ -41,7 +41,7 @@ Cypress.Commands.add('getTotalValueFromTable', () => {
   return cy.wrap(data);
 });
 
-Cypress.Commands.add('selectSortColumn', (tableIndex, colIndex, dir) => {
+Cypress.Commands.add('tbSelectSortColumn', (tableIndex, colIndex, dir) => {
   expect(dir).to.be.oneOf(['asc', 'desc']);
   const dirIndex = dir == 'asc' ? 0 : 1;
   cy.get('[class="visTable__group"]')
@@ -53,7 +53,7 @@ Cypress.Commands.add('selectSortColumn', (tableIndex, colIndex, dir) => {
   cy.get('[class="euiListGroupItem__button"]').eq(dirIndex).click();
 });
 
-Cypress.Commands.add('getColumnWidth', (tableIndex, colIndex, name) => {
+Cypress.Commands.add('tbGetColumnWidth', (tableIndex, colIndex, name) => {
   cy.get('[class="visTable__group"]')
     .eq(tableIndex)
     .find('[data-test-subj="dataGridHeader"]')
@@ -68,7 +68,7 @@ Cypress.Commands.add('getColumnWidth', (tableIndex, colIndex, name) => {
 });
 
 Cypress.Commands.add(
-  'adjustColumnWidth',
+  'tbAdjustColumnWidth',
   (totalColumn, tableIndex, colIndex, size) => {
     const resizerIndex = totalColumn * tableIndex + colIndex;
     cy.getElementByTestId('dataGridColumnResizer')
@@ -80,7 +80,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'clickTableCellAction',
+  'tbClickTableCellAction',
   (tableIndex, totalColumn, rowIndex, colIndex, action) => {
     expect(action).to.be.oneOf(['filter for', 'filter out', 'expand']);
     const filterFor = '[data-test-subj="filterForValue"]';
@@ -104,7 +104,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('clickFilterFromExpand', (action) => {
+Cypress.Commands.add('tbClickFilterFromExpand', (action) => {
   expect(action).to.be.oneOf(['filter for', 'filter out']);
   const actionButton =
     action == 'filter for' ? 'filterForValue' : 'filterOutValue';

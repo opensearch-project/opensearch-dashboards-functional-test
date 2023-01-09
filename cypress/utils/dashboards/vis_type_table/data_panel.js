@@ -3,20 +3,30 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-Cypress.Commands.add('addMetricsAggregation', () => {
+export const tbSelectFromOptionsList = (type, opt) => {
+  cy.log(`Select an ${type} option`);
+  expect(type).to.be.oneOf(['agg', 'field']);
+  const select =
+    type == 'field' ? 'visDefaultEditorField' : 'defaultEditorAggSelect';
+  cy.getElementByTestId(`comboBoxOptionsList ${select}-optionsList`)
+    .find(`[title="${opt}"]`)
+    .trigger('click');
+};
+
+Cypress.Commands.add('tbAddMetricsAggregation', () => {
   cy.getElementByTestId('visEditorAdd_metrics').click();
   cy.getElementByTestId('visEditorAdd_metrics_Metric').click();
 });
 
-Cypress.Commands.add('addBucketsAggregation', () => {
+Cypress.Commands.add('tbAddBucketsAggregation', () => {
   cy.getElementByTestId('visEditorAdd_buckets').click();
 });
 
-Cypress.Commands.add('openDataPanel', () => {
+Cypress.Commands.add('tbOpenDataPanel', () => {
   cy.getElementByTestId('visEditorTab__data').click();
 });
 
-Cypress.Commands.add('toggleOpenEditor', (id, request) => {
+Cypress.Commands.add('tbToggleOpenEditor', (id, request) => {
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find(`[aria-controls="visEditorAggAccordion${id}"]`)
     .invoke('attr', 'aria-expanded')
@@ -30,34 +40,24 @@ Cypress.Commands.add('toggleOpenEditor', (id, request) => {
     });
 });
 
-Cypress.Commands.add('splitRows', () => {
+Cypress.Commands.add('tbSplitRows', () => {
   cy.getElementByTestId('visEditorAdd_buckets_Split rows').click();
 });
 
-Cypress.Commands.add('splitTables', () => {
+Cypress.Commands.add('tbSplitTables', () => {
   cy.getElementByTestId('visEditorAdd_buckets_Split table').click();
 });
-Cypress.Commands.add('splitTablesInRows', () => {
+Cypress.Commands.add('tbSplitTablesInRows', () => {
   cy.getElementByTestId('visEditorSplitBy__true').click({ force: true });
 });
 
-Cypress.Commands.add('splitTablesInColumns', () => {
+Cypress.Commands.add('tbSplitTablesInColumns', () => {
   cy.getElementByTestId('visEditorSplitBy__false').click({ force: true });
 });
 
-export const selectFromOptionsList = (type, opt) => {
-  cy.log(`Select an ${type} option`);
-  expect(type).to.be.oneOf(['agg', 'field']);
-  const select =
-    type == 'field' ? 'visDefaultEditorField' : 'defaultEditorAggSelect';
-  cy.getElementByTestId(`comboBoxOptionsList ${select}-optionsList`)
-    .find(`[title="${opt}"]`)
-    .trigger('click');
-};
-
-Cypress.Commands.add('selectAggregationType', (agg, id) => {
+Cypress.Commands.add('tbSelectAggregationType', (agg, id) => {
   const opts = { log: false };
-  cy.toggleOpenEditor(id, 'true');
+  cy.tbToggleOpenEditor(id, 'true');
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visAggEditorParams"]', opts)
     .find('[data-test-subj="defaultEditorAggSelect"]', opts)
@@ -65,10 +65,10 @@ Cypress.Commands.add('selectAggregationType', (agg, id) => {
     .click(opts)
     .clear(opts)
     .type(agg);
-  selectFromOptionsList('agg', agg);
+  tbSelectFromOptionsList('agg', agg);
 });
 
-Cypress.Commands.add('selectAggregationField', (field, id) => {
+Cypress.Commands.add('tbSelectAggregationField', (field, id) => {
   const opts = { log: false };
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visAggEditorParams"]', opts)
@@ -78,14 +78,14 @@ Cypress.Commands.add('selectAggregationField', (field, id) => {
     .clear(opts)
     .type(field);
   // select aggregation field
-  selectFromOptionsList('field', field);
+  tbSelectFromOptionsList('field', field);
 });
 
-Cypress.Commands.add('selectSubAggregationType', (agg, id, type) => {
+Cypress.Commands.add('tbSelectSubAggregationType', (agg, id, type) => {
   const opts = { log: false };
   expect(type).to.be.oneOf(['buckets', 'metrics']);
   const order = type == 'buckets' ? 0 : 1;
-  cy.toggleOpenEditor(id, 'true');
+  cy.tbToggleOpenEditor(id, 'true');
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visAggEditorParams"]', opts)
     .find('[data-test-subj="visAggEditorParams"]', opts)
@@ -98,14 +98,14 @@ Cypress.Commands.add('selectSubAggregationType', (agg, id, type) => {
         .clear(opts)
         .type(agg);
     });
-  selectFromOptionsList('agg', agg);
+  tbSelectFromOptionsList('agg', agg);
 });
 
-Cypress.Commands.add('selectSubAggregationField', (field, id, type) => {
+Cypress.Commands.add('tbSelectSubAggregationField', (field, id, type) => {
   const opts = { log: false };
   expect(type).to.be.oneOf(['buckets', 'metrics']);
   const order = type == 'buckets' ? 0 : 1;
-  cy.toggleOpenEditor(id, 'true');
+  cy.tbToggleOpenEditor(id, 'true');
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visAggEditorParams"]', opts)
     .find('[data-test-subj="visAggEditorParams"]', opts)
@@ -118,28 +118,28 @@ Cypress.Commands.add('selectSubAggregationField', (field, id, type) => {
         .clear(opts)
         .type(field);
     });
-  selectFromOptionsList('field', field);
+  tbSelectFromOptionsList('field', field);
 });
 
-Cypress.Commands.add('isAggregationTypeSelected', (type, id) => {
+Cypress.Commands.add('tbIsAggregationTypeSelected', (type, id) => {
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="defaultEditorAggSelect"]')
     .find('[class="euiComboBoxPill euiComboBoxPill--plainText"]')
     .should('contain.text', type);
 });
 
-Cypress.Commands.add('isAggregationFieldSelected', (field, id) => {
+Cypress.Commands.add('tbIsAggregationFieldSelected', (field, id) => {
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visDefaultEditorField"]')
     .find('[class="euiComboBoxPill euiComboBoxPill--plainText"]')
     .should('contain.text', field);
 });
 
-Cypress.Commands.add('discardAggregationSettings', () => {
+Cypress.Commands.add('tbDiscardAggregationSettings', () => {
   cy.getElementByTestId('visualizeEditorResetButton').click();
 });
 
-Cypress.Commands.add('isUpdateAggregationSettingsEnabled', () => {
+Cypress.Commands.add('tbIsUpdateAggregationSettingsEnabled', () => {
   cy.getElementByTestId('visualizeEditorRenderButton')
     .invoke('attr', 'class')
     .should(
@@ -148,7 +148,7 @@ Cypress.Commands.add('isUpdateAggregationSettingsEnabled', () => {
     );
 });
 
-Cypress.Commands.add('isUpdateAggregationSettingsDisabled', () => {
+Cypress.Commands.add('tbIsUpdateAggregationSettingsDisabled', () => {
   cy.getElementByTestId('visualizeEditorRenderButton')
     .invoke('attr', 'class')
     .should(
@@ -157,26 +157,26 @@ Cypress.Commands.add('isUpdateAggregationSettingsDisabled', () => {
     );
 });
 
-Cypress.Commands.add('updateAggregationSettings', () => {
+Cypress.Commands.add('tbUpdateAggregationSettings', () => {
   cy.getElementByTestId('visualizeEditorRenderButton').click();
 });
 
-Cypress.Commands.add('removeAggregation', (id) => {
+Cypress.Commands.add('tbRemoveAggregation', (id) => {
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="removeDimensionBtn"]')
     .click();
 });
 
-Cypress.Commands.add('removeAllAggregations', (total) => {
+Cypress.Commands.add('tbRemoveAllAggregations', (total) => {
   // remove all buckets and metrics aggregation
   // except the default metrics aggregation
   if (total > 1) {
     for (let i = 2; i <= total; i++) {
-      cy.removeAggregation(i);
+      cy.tbRemoveAggregation(i);
     }
   }
   cy.log('Open default metrics selection panel');
-  cy.toggleOpenEditor(1, 'true');
+  cy.tbToggleOpenEditor(1, 'true');
   cy.log('Reset to Count');
-  cy.selectAggregationType('Count', 1);
+  cy.tbSelectAggregationType('Count', 1);
 });

@@ -7,7 +7,7 @@
  * Terms Aggregation
  */
 
-Cypress.Commands.add('toggleOtherBucket', (request) => {
+Cypress.Commands.add('tbToggleOtherBucket', (request) => {
   expect(request).to.be.oneOf(['true', 'false']);
   cy.getElementByTestId('otherBucketSwitch')
     .invoke('attr', 'aria-checked')
@@ -18,7 +18,7 @@ Cypress.Commands.add('toggleOtherBucket', (request) => {
     });
 });
 
-Cypress.Commands.add('toggleMissingBucket', (request) => {
+Cypress.Commands.add('tbToggleMissingBucket', (request) => {
   expect(request).to.be.oneOf(['true', 'false']);
   cy.getElementByTestId('missingBucketSwitch')
     .invoke('attr', 'disabled')
@@ -34,7 +34,7 @@ Cypress.Commands.add('toggleMissingBucket', (request) => {
 
 // size is a aggregation param only for Terms and Significant Terms Aggregation
 // it is used to set the displayed row size
-Cypress.Commands.add('setTermsSize', (size, id) => {
+Cypress.Commands.add('tbSetTermsSize', (size, id) => {
   const opts = { log: false };
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="sizeParamEditor"]')
@@ -45,7 +45,7 @@ Cypress.Commands.add('setTermsSize', (size, id) => {
 
 // sort is a aggregation param for Terms Aggregation
 // it is a direction param which sort the term column in ascending or descending
-Cypress.Commands.add('setTermsSort', (sort, id) => {
+Cypress.Commands.add('tbSetTermsSort', (sort, id) => {
   expect(['Ascending', 'Descending']).to.contain(sort);
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[class="visEditorAggParam--half visEditorAggParam--half-order"]')
@@ -53,21 +53,21 @@ Cypress.Commands.add('setTermsSort', (sort, id) => {
     .select(sort);
 });
 
-Cypress.Commands.add('setupTermsAggregation', (field, sort, size, id) => {
+Cypress.Commands.add('tbSetupTermsAggregation', (field, sort, size, id) => {
   cy.log('Set up Buckets Aggregation');
   cy.log('Set up aggregation type Terms');
   // set aggregation type to `Terms`
-  cy.selectAggregationType('Terms', id);
-  cy.isAggregationTypeSelected('Terms', id);
+  cy.tbSelectAggregationType('Terms', id);
+  cy.tbIsAggregationTypeSelected('Terms', id);
   // set aggregation field
   cy.log('Set up aggregation field: ', field);
-  cy.selectAggregationField(field, id);
-  cy.isAggregationFieldSelected(field, id);
+  cy.tbSelectAggregationField(field, id);
+  cy.tbIsAggregationFieldSelected(field, id);
   // set Terms aggregation unique params
-  cy.setTermsSort(sort, id);
-  cy.setTermsSize(size, id);
-  cy.updateAggregationSettings();
-  cy.isUpdateAggregationSettingsDisabled();
+  cy.tbSetTermsSort(sort, id);
+  cy.tbSetTermsSize(size, id);
+  cy.tbUpdateAggregationSettings();
+  cy.tbIsUpdateAggregationSettingsDisabled();
 });
 
 /*
@@ -76,14 +76,14 @@ Cypress.Commands.add('setupTermsAggregation', (field, sort, size, id) => {
 
 // interval is a aggregation param for Histogram Aggregation
 // it is the width of each bucket
-Cypress.Commands.add('enableHistogramInterval', (id) => {
+Cypress.Commands.add('tbEnableHistogramInterval', (id) => {
   cy.getElementByTestId(`visEditorIntervalSwitch${id}`)
     .invoke('attr', 'aria-checked')
     .should('eq', 'true');
   cy.getElementByTestId(`visEditorIntervalSwitch${id}`).click();
 });
 
-Cypress.Commands.add('setHistogramInterval', (interval, id) => {
+Cypress.Commands.add('tbSetHistogramInterval', (interval, id) => {
   const opts = { log: false };
   cy.getElementByTestId(`visEditorInterval${id}`)
     .click(opts)
@@ -91,42 +91,42 @@ Cypress.Commands.add('setHistogramInterval', (interval, id) => {
     .type(interval);
 });
 
-Cypress.Commands.add('isHistogramIntervalSet', (interval, id) => {
+Cypress.Commands.add('tbIsHistogramIntervalSet', (interval, id) => {
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find(`[data-test-subj="visEditorInterval${id}"]`)
     .invoke('attr', 'value')
     .should('eq', interval);
 });
 
-Cypress.Commands.add('setupHistogramAggregation', (field, interval, id) => {
+Cypress.Commands.add('tbSetupHistogramAggregation', (field, interval, id) => {
   cy.log('Set up Buckets Aggregation');
   cy.log('Set up aggregation type Histogram');
   // set aggregation type to `Histogram`
-  cy.selectAggregationType('Histogram', id);
-  cy.isAggregationTypeSelected('Histogram', id);
+  cy.tbSelectAggregationType('Histogram', id);
+  cy.tbIsAggregationTypeSelected('Histogram', id);
   // set aggregation field
   cy.log('Set up aggregation field: ', field);
-  cy.selectAggregationField(field, id);
-  cy.isAggregationFieldSelected(field, id);
+  cy.tbSelectAggregationField(field, id);
+  cy.tbIsAggregationFieldSelected(field, id);
   // set Histogram aggregation interval params
   if (interval) {
-    cy.enableHistogramInterval(id);
-    cy.setHistogramInterval(interval, id);
+    cy.tbEnableHistogramInterval(id);
+    cy.tbSetHistogramInterval(interval, id);
   }
   // update aggregation settings
-  cy.updateAggregationSettings();
-  cy.isHistogramIntervalSet(interval, id);
+  cy.tbUpdateAggregationSettings();
+  cy.tbIsHistogramIntervalSet(interval, id);
 });
 
 /*
  * Range Aggregation
  */
 
-Cypress.Commands.add('addRange', () => {
+Cypress.Commands.add('tbAddRange', () => {
   cy.getElementByTestId('range__addRangeButton').click();
 });
 
-Cypress.Commands.add('setupRange', (range, id) => {
+Cypress.Commands.add('tbSetupRange', (range, id) => {
   const numOfRange = range.length;
   expect(numOfRange).to.be.at.least(1);
   if (numOfRange == 1) {
@@ -139,7 +139,7 @@ Cypress.Commands.add('setupRange', (range, id) => {
       .click();
   } else if (numOfRange > 2) {
     for (let i = 2; i < numOfRange; i++) {
-      cy.addRange();
+      cy.tbAddRange();
     }
   }
 
@@ -155,26 +155,26 @@ Cypress.Commands.add('setupRange', (range, id) => {
   }
 });
 
-Cypress.Commands.add('setupRangeAggregation', (field, range, id) => {
+Cypress.Commands.add('tbSetupRangeAggregation', (field, range, id) => {
   cy.log('Set up Buckets Aggregation');
   cy.log('Set up aggregation type Range');
   // set aggregation type to `Range`
-  cy.selectAggregationType('Range', id);
-  cy.isAggregationTypeSelected('Range', id);
+  cy.tbSelectAggregationType('Range', id);
+  cy.tbIsAggregationTypeSelected('Range', id);
   // set aggregation field
   cy.log('Set up aggregation field: ', field);
-  cy.selectAggregationField(field, id);
-  cy.isAggregationFieldSelected(field, id);
+  cy.tbSelectAggregationField(field, id);
+  cy.tbIsAggregationFieldSelected(field, id);
   // set Range aggregation range params
-  cy.setupRange(range, id);
+  cy.tbSetupRange(range, id);
   // update aggregation settings
-  cy.updateAggregationSettings();
+  cy.tbUpdateAggregationSettings();
 });
 
 /*
  * Date Histogram Aggregation
  */
-Cypress.Commands.add('setupMinimumlInterval', (interval, id) => {
+Cypress.Commands.add('tbSetupMinimumlInterval', (interval, id) => {
   const opts = { log: false };
   cy.getElementByTestId(`visEditorAggAccordion${id}`)
     .find('[data-test-subj="visEditorInterval"]')
@@ -188,20 +188,20 @@ Cypress.Commands.add('setupMinimumlInterval', (interval, id) => {
 });
 
 Cypress.Commands.add(
-  'setupDateHistogramAggregation',
+  'tbSetupDateHistogramAggregation',
   (field, interval, id) => {
     cy.log('Set up Buckets Aggregation');
     cy.log('Set up aggregation type Date Histogram');
     // set aggregation type to `Range`
-    cy.selectAggregationType('Date Histogram', id);
-    cy.isAggregationTypeSelected('Date Histogram', id);
+    cy.tbSelectAggregationType('Date Histogram', id);
+    cy.tbIsAggregationTypeSelected('Date Histogram', id);
     // set aggregation field
     cy.log('Set up aggregation field: ', field);
-    cy.selectAggregationField(field, id);
-    cy.isAggregationFieldSelected(field, id);
+    cy.tbSelectAggregationField(field, id);
+    cy.tbIsAggregationFieldSelected(field, id);
     // set Range aggregation range params
-    cy.setupMinimumlInterval(interval, id);
+    cy.tbSetupMinimumlInterval(interval, id);
     // update aggregation settings
-    cy.updateAggregationSettings();
+    cy.tbUpdateAggregationSettings();
   }
 );

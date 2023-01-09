@@ -5,11 +5,11 @@
 
 import { TABLE_OPTIONS, TABLE_TOTAL_FUNCTIONS } from './constants';
 
-Cypress.Commands.add('openOptionsPanel', () => {
+Cypress.Commands.add('tbOpenOptionsPanel', () => {
   cy.getElementByTestId('visEditorTab__options').click();
 });
 
-Cypress.Commands.add('toggleOptionByName', (option, request) => {
+Cypress.Commands.add('tbToggleOptionByName', (option, request) => {
   expect(option).to.be.oneOf(TABLE_OPTIONS);
   cy.getElementByTestId(option)
     .invoke('attr', 'aria-checked')
@@ -20,7 +20,7 @@ Cypress.Commands.add('toggleOptionByName', (option, request) => {
     });
 });
 
-Cypress.Commands.add('selectTotalFunctionByName', (fun) => {
+Cypress.Commands.add('tbSelectTotalFunctionByName', (fun) => {
   expect(fun).to.be.oneOf(TABLE_TOTAL_FUNCTIONS);
   cy.getElementByTestId('showTotal')
     .invoke('attr', 'aria-checked')
@@ -28,6 +28,6 @@ Cypress.Commands.add('selectTotalFunctionByName', (fun) => {
   cy.getElementByTestId('totalFunctionOptions').select(fun);
 });
 
-Cypress.Commands.add('selectPercentageColumn', (agg) => {
+Cypress.Commands.add('tbSelectPercentageColumn', (agg) => {
   cy.getElementByTestId('datatableVisualizationPercentageCol').select(agg);
 });
