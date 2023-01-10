@@ -81,7 +81,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'tbClickTableCellAction',
-  (tableIndex, totalColumn, rowIndex, colIndex, action) => {
+  (totalColumn, rowIndex, colIndex, action, tableIndex = 0, embed = false) => {
     expect(action).to.be.oneOf(['filter for', 'filter out', 'expand']);
     const filterFor = '[data-test-subj="filterForValue"]';
     const filterOut = '[data-test-subj="filterOutValue"]';
@@ -93,14 +93,22 @@ Cypress.Commands.add(
         : action == 'filter out'
         ? filterOut
         : expand;
-    cy.get('[class="visTable__group"]')
-      .eq(tableIndex)
-      .find('[data-test-subj="dataGridWrapper"]')
-      .find('[data-test-subj="dataGridRowCell"]')
-      .eq(rowIndex * totalColumn + colIndex)
-      .click()
-      .find(actionButton)
-      .click({ force: true });
+    if (embed == true) {
+      cy.get('[data-test-subj="dataGridRowCell"]')
+        .eq(rowIndex * totalColumn + colIndex)
+        .click()
+        .find(actionButton)
+        .click({ force: true });
+    } else {
+      cy.get('[class="visTable__group"]')
+        .eq(tableIndex)
+        .find('[data-test-subj="dataGridWrapper"]')
+        .find('[data-test-subj="dataGridRowCell"]')
+        .eq(rowIndex * totalColumn + colIndex)
+        .click()
+        .find(actionButton)
+        .click({ force: true });
+    }
   }
 );
 

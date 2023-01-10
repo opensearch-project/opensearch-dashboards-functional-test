@@ -34,7 +34,7 @@ describe('table visualization data', () => {
     )
       .should('exist')
       .click();
-    cy.url().should('contain', TABLE_VIS_APP_PATH + '/edit');
+    cy.url().should('contain', TABLE_VIS_APP_PATH);
     cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
     cy.waitForLoader();
   });
@@ -126,6 +126,7 @@ describe('table visualization data', () => {
         expect(data).to.deep.eq(expectedData);
       });
     });
+
     it('Should correctly filter for applied time filter on the main timefield', () => {
       commonUI.addFilterRetrySelection('timestamp', 'is', '2022-05-30');
       cy.waitForLoader();
@@ -143,6 +144,7 @@ describe('table visualization data', () => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
     });
+
     it('Should correctly filter for pinned filters', () => {
       commonUI.pinFilter('timestamp');
       cy.waitForLoader();

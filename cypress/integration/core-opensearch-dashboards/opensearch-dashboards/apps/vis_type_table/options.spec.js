@@ -31,7 +31,7 @@ describe('Table visualization options', () => {
     )
       .should('exist')
       .click();
-    cy.url().should('contain', TABLE_VIS_APP_PATH + '/edit');
+    cy.url().should('contain', TABLE_VIS_APP_PATH);
     cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
     cy.waitForLoader();
   });

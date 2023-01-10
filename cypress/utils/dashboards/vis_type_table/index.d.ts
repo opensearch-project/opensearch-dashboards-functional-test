@@ -51,7 +51,7 @@ declare namespace Cypress {
       tbSelectSortColumn(tableIndex: number, colIndex: number, dir: string): Chainable<any>;
       tbGetColumnWidth(tableIndex: number, colIndex: number, name: string): Chainable<any>;
       tbAdjustColumnWidth(totalColumn: number, tableIndex: number, colIndex: number, size: number): Chainable<any>;
-      tbClickTableCellAction(tableIndex: number, totalColumn: number, rowIndex: number, colIndex: number, action: string): Chainable<any>;
+      tbClickTableCellAction(totalColumn: number, rowIndex: number, colIndex: number, action: string, tableIndex?: number, embed?: boolean): Chainable<any>;
       tbClickFilterFromExpand(action: string): Chainable<any>;
       // Functions for Options Panel
       tbOpenOptionsPanel(): Chainable<any>;

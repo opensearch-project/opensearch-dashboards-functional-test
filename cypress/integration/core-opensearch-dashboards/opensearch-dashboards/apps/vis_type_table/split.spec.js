@@ -76,7 +76,7 @@ describe('Split table', () => {
     )
       .should('exist')
       .click();
-    cy.url().should('contain', TABLE_VIS_APP_PATH + '/edit');
+    cy.url().should('contain', TABLE_VIS_APP_PATH);
     cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
     cy.waitForLoader();
   });
@@ -109,7 +109,7 @@ describe('Split table', () => {
       ['Hawk', '17,544', '1', 'Hawk', '17,648', '1'],
       ['Hawk', '17,503', '1', 'Hawk', '17,515', '1'],
     ];
-    cy.tbClickTableCellAction(0, 3, 2, 0, 'filter for');
+    cy.tbClickTableCellAction(3, 2, 0, 'filter for');
     cy.waitForLoader();
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
@@ -119,7 +119,7 @@ describe('Split table', () => {
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
-    cy.tbClickTableCellAction(0, 3, 2, 0, 'expand');
+    cy.tbClickTableCellAction(3, 2, 0, 'expand');
     cy.tbClickFilterFromExpand('filter for');
     cy.waitForLoader();
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {
@@ -177,7 +177,7 @@ describe('Split table', () => {
         '1',
       ],
     ];
-    cy.tbClickTableCellAction(0, 3, 2, 0, 'filter out');
+    cy.tbClickTableCellAction(3, 2, 0, 'filter out');
     cy.waitForLoader();
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataAfterFilter);
@@ -187,7 +187,7 @@ describe('Split table', () => {
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {
       expect(data).to.deep.eq(expectDataInitial);
     });
-    cy.tbClickTableCellAction(0, 3, 2, 0, 'expand');
+    cy.tbClickTableCellAction(3, 2, 0, 'expand');
     cy.tbClickFilterFromExpand('filter out');
     cy.waitForLoader();
     cy.tbGetAllTableDataFromVisualization(3).then((data) => {

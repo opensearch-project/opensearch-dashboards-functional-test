@@ -35,6 +35,7 @@ describe('table visualization basic functions', () => {
 
     cy.log('create a new table visualization: ', TABLE_CREATE_URL);
     cy.visit(TABLE_CREATE_URL);
+    cy.url().should('contain', TABLE_VIS_APP_PATH);
     // Select index pattern and load table visualization
     cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
     // Wait for page to load
@@ -65,7 +66,6 @@ describe('table visualization basic functions', () => {
     cy.getElementByTestId('savedObjectTitle').type(title);
     cy.getElementByTestId('confirmSaveSavedObjectButton').click();
     // Verify save
-    cy.url().should('contain', TABLE_VIS_APP_PATH + '/edit');
     cy.getElementByTestId('breadcrumb last')
       .invoke('attr', 'title')
       .should('equal', title);
