@@ -20,7 +20,10 @@ describe('Default OpenSearch base map layer', () => {
   it('check if default OpenSearch map layer can be open', () => {
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
     cy.contains('Create map').click();
-    cy.get('[data-test-subj="layerControlPanel"]').should('contain', 'Default map');
+    cy.get('[data-test-subj="layerControlPanel"]').should(
+      'contain',
+      'Default map'
+    );
     cy.get('canvas.maplibregl-canvas').trigger('mousemove', {
       x: 100,
       y: 100,
@@ -32,7 +35,9 @@ describe('Default OpenSearch base map layer', () => {
       force: true,
     });
     for (let i = 0; i < 21; i++) {
-      cy.wait(1000).get('canvas.maplibregl-canvas').trigger('dblclick', { force: true });
+      cy.wait(1000)
+        .get('canvas.maplibregl-canvas')
+        .trigger('dblclick', { force: true });
     }
     cy.get('[data-test-subj="mapStatusBar"]').should('contain', 'zoom: 22');
   });

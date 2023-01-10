@@ -24,7 +24,9 @@ describe('Documents layer', () => {
     cy.contains('Create map').click();
     cy.get("button[data-test-subj='addLayerButton']").click();
     cy.contains('Documents').click();
-    cy.contains('Select data source', { timeout: 60000 }).click({ force: true });
+    cy.contains('Select data source', { timeout: 60000 }).click({
+      force: true,
+    });
     cy.contains('opensearch_dashboards_sample_data_flights').click();
     cy.contains('Select data field', { timeout: 60000 }).click({ force: true });
     cy.contains('DestLocation').click();
@@ -32,7 +34,10 @@ describe('Documents layer', () => {
       'contain',
       'opensearch_dashboards_sample_data_flights'
     );
-    cy.get('[data-test-subj="geoFieldSelect"]').should('contain', 'DestLocation');
+    cy.get('[data-test-subj="geoFieldSelect"]').should(
+      'contain',
+      'DestLocation'
+    );
     cy.get(`button[testSubj="styleTab"]`).click();
     cy.contains('Fill color').click();
     cy.get(`button[aria-label="Select #E7664C as the color"]`).click();
@@ -41,16 +46,24 @@ describe('Documents layer', () => {
     cy.get(`button[testSubj="settingsTab"]`).click();
     cy.get('[name="layerName"]').clear().type('Documents layer 1');
     cy.get(`button[data-test-subj="updateButton"]`).click();
-    cy.get('[data-test-subj="layerControlPanel"]').should('contain', 'Documents layer 1');
+    cy.get('[data-test-subj="layerControlPanel"]').should(
+      'contain',
+      'Documents layer 1'
+    );
     cy.wait(5000).get('[data-test-subj="top-nav"]').click();
     cy.wait(5000).get('[data-test-subj="savedObjectTitle"]').type(uniqueName);
-    cy.wait(5000).get('[data-test-subj="confirmSaveSavedObjectButton"]').click();
+    cy.wait(5000)
+      .get('[data-test-subj="confirmSaveSavedObjectButton"]')
+      .click();
   });
 
   it('Open saved map with documents layer', () => {
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
     cy.get('[data-test-subj="mapListingPage"]').should('contain', uniqueName);
     cy.contains(uniqueName).click();
-    cy.get('[data-test-subj="layerControlPanel"]').should('contain', 'Documents layer 1');
+    cy.get('[data-test-subj="layerControlPanel"]').should(
+      'contain',
+      'Documents layer 1'
+    );
   });
 });
