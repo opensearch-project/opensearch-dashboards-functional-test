@@ -42,9 +42,13 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       it('with no auth and all required inputs', () => {
         cy.get('[name="dataSourceTitle"]').type('test_noauth');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
+<<<<<<< HEAD
         cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
           'no_auth'
         );
+=======
+        cy.get('[for="no_auth"]').click();
+>>>>>>> Fix multiple submit bug
         cy.getElementByTestId('createDataSourceButton').click();
 
         cy.location('pathname', { timeout: 6000 }).should(

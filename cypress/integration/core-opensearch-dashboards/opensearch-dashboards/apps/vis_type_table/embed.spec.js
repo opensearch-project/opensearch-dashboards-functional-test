@@ -32,7 +32,7 @@ const commonUI = new CommonUI(cy);
  * Test that table visualization can filter out value. Same as filter for value.
  */
 
-describe('table visualization basic functions', () => {
+describe('table visualization in embedded mode', () => {
   const expectedData = [
     '0',
     '1,059',
