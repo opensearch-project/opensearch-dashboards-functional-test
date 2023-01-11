@@ -48,6 +48,18 @@ Cypress.Commands.add('createPolicy', (policyId, policyJSON) => {
   );
 });
 
+Cypress.Commands.add('getIndexSettings', (index) => {
+  cy.request('GET', `${Cypress.env('openSearchUrl')}/${index}/_settings`);
+});
+
+Cypress.Commands.add('updateIndexSettings', (index, settings) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}/${index}/_settings`,
+    settings
+  );
+});
+
 Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
   // TODO directly changing system index will not be supported, need to introduce new way
   // Creating closure over startTime so it's not calculated until actual update_by_query call
@@ -74,12 +86,58 @@ Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
   });
 });
 
+Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
+  if (policyID != null) {
+    const body = { policy_id: policyID };
+    cy.request(
+      'POST',
+      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
+      body
+    );
+  }
+});
+
 Cypress.Commands.add('createRollup', (rollupId, rollupJSON) => {
   cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${IM_API.ROLLUP_JOBS_BASE}/${rollupId}`,
     rollupJSON
   );
+});
+
+Cypress.Commands.add('createIndexTemplate', (name, template) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    template
+  );
+});
+
+Cypress.Commands.add('deleteTemplate', (name) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    failOnStatusCode: false,
+    method: 'DELETE',
+  });
+});
+
+Cypress.Commands.add('createDataStream', (name) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${name}`
+  );
+});
+
+Cypress.Commands.add('deleteDataStreams', (names) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${names}`
+  );
+});
+
+Cypress.Commands.add('rollover', (target) => {
+  cy.request('POST', `${Cypress.env('openSearchUrl')}/${target}/_rollover`);
 });
 
 Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
@@ -89,6 +147,14 @@ Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
       IM_API.TRANSFORM_JOBS_BASE
     }/${transformId}`,
     transformJSON
+  );
+});
+
+Cypress.Commands.add('createPipeline', (pipelineId, pipelineJSON) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}/_ingest/pipeline/${pipelineId}`,
+    pipelineJSON
   );
 });
 
@@ -108,4 +174,53 @@ Cypress.Commands.add('disableJitter', () => {
     `${Cypress.env('openSearchUrl')}/_cluster/settings`,
     jitterJson
   );
+});
+
+Cypress.Commands.add('deleteAllIndices', () => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env(
+      'openSearchUrl'
+    )}/index*,sample*,opensearch_dashboards*,test*`
+  );
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`
+  );
+});
+
+Cypress.Commands.add('addAlias', (alias, index) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    method: 'POST',
+    body: {
+      actions: [
+        {
+          add: {
+            index,
+            alias,
+          },
+        },
+      ],
+    },
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('removeAlias', (alias) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    method: 'POST',
+    body: {
+      actions: [
+        {
+          remove: {
+            index: '*',
+            alias,
+          },
+        },
+      ],
+    },
+    failOnStatusCode: false,
+  });
 });
