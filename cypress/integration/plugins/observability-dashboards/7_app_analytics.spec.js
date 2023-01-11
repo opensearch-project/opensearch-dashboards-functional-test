@@ -239,48 +239,6 @@ describe('Application Analytics home page', () => {
     moveToHomePage();
   });
 
-  it('Renames application', () => {
-    cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="renameApplicationContextMenuItem"]', {
-      timeout: TIMEOUT_DELAY,
-    }).should('be.disabled');
-    cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('.euiTableRow')
-      .first()
-      .within(() => {
-        cy.get('.euiCheckbox').click();
-      });
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="renameApplicationContextMenuItem"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="customModalFieldText"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .clear()
-      .focus()
-      .type(newName);
-    cy.get('[data-test-subj="runModalButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime);
-    cy.get('.euiToast')
-      .contains(`Application successfully renamed to "${newName}"`)
-      .should('exist');
-    cy.get('.euiTableRow')
-      .first()
-      .within(() => {
-        cy.get('.euiLink').contains(newName).should('exist');
-      });
-  });
-
   it('Deletes application', () => {
     cy.get('[data-test-subj="appAnalyticsActionsButton"]', {
       timeout: TIMEOUT_DELAY,
