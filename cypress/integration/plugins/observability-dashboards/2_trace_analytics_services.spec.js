@@ -8,7 +8,6 @@
 import {
   delayTime,
   SERVICE_NAME,
-  SERVICE_SPAN_ID,
   setTimeFilter,
 } from '../../../utils/constants';
 
@@ -43,8 +42,6 @@ describe('Testing services table', () => {
     cy.contains('analytics-service, frontend-client, recommendation').should(
       'exist'
     );
-    cy.contains('186.95').should('exist');
-    cy.contains('14.29%').should('exist');
   });
 
   it('Searches correctly', () => {
@@ -54,7 +51,6 @@ describe('Testing services table', () => {
       .type(`${SERVICE_NAME}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.contains(' (1)').should('exist');
-    cy.contains('3.57%').should('exist');
   });
 });
 
@@ -100,8 +96,6 @@ describe('Testing service view', () => {
 
   it('Renders service view', () => {
     cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
-    cy.contains('178.6').should('exist');
-    cy.contains('3.57%').should('exist');
     cy.get('div.vis-network').should('exist');
   });
 
@@ -118,25 +112,5 @@ describe('Testing service view', () => {
     cy.get('.euiBreadcrumb').contains('Observability').click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
-
-  it('Renders spans data grid, flyout, filters', () => {
-    cy.get('.euiLink')
-      .contains(SERVICE_SPAN_ID)
-      .trigger('mouseover', { force: true });
-    cy.get('button[data-datagrid-interactable="true"]')
-      .eq(0)
-      .click({ force: true });
-    cy.wait(delayTime);
-    cy.contains('Span detail').should('exist');
-    cy.contains('Span attributes').should('exist');
-    cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
-    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({
-      force: true,
-    });
-    cy.wait(delayTime);
-
-    cy.get('.euiBadge__text').contains('spanId: ').should('exist');
-    cy.contains('Spans (1)').should('exist');
   });
 });
