@@ -44,7 +44,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get('[name="dataSourceTitle"]').type('test_noauth');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
-        cy.get('[type="submit"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
 
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
@@ -62,7 +62,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
           password
         );
-        cy.get('[type="submit"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
 
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
@@ -77,7 +77,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
-        cy.get('[type="submit"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
 
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
@@ -98,7 +98,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
           password
         );
-        cy.get('[type="submit"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
 
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
@@ -231,7 +231,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         miscUtils.visitPage(
           'app/management/opensearch-dashboards/dataSources/create'
         );
-        cy.get('[type="submit"]').should('be.disabled');
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
       });
 
       it('validate if create data source connection button is disabled when there is any field error', () => {
@@ -240,14 +240,16 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'have.length',
           1
         );
-        cy.get('[type="submit"]').should('be.disabled');
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
       });
 
       it('validate if create data source connection button is not disabled only if there is no any field error', () => {
         cy.get('[name="dataSourceTitle"]').type('test_create_button');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
         cy.get('[for="no_auth"]').click();
-        cy.get('[type="submit"]').should('not.be.disabled');
+        cy.getElementByTestId('createDataSourceButton').should(
+          'not.be.disabled'
+        );
       });
     });
   });
