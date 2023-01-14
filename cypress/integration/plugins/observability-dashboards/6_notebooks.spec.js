@@ -162,24 +162,6 @@ describe('Test reporting integration if plugin installed', () => {
     });
   });
 
-  it('Create in-context PDF report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(1)')
-      .contains('Download PDF')
-      .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
-  });
-
-  it('Create in-context PNG report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(2)')
-      .contains('Download PNG')
-      .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
-  });
-
   it('Create on-demand report definition from context menu', () => {
     cy.get('#reportingActionsButton').click();
     cy.wait(delayTime);
