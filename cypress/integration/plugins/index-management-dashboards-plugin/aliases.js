@@ -19,13 +19,13 @@ describe('Aliases', () => {
     }
     cy.createIndex(EDIT_INDEX, null);
     for (let i = 0; i < 30; i++) {
-      cy.addAlias(
+      cy.addIndexAlias(
         `${SAMPLE_ALIAS_PREFIX}-${i}`,
         `${SAMPLE_INDEX_PREFIX}-${i % 11}`
       );
     }
-    cy.removeAlias(`${SAMPLE_ALIAS_PREFIX}-0`);
-    cy.addAlias(`${SAMPLE_ALIAS_PREFIX}-0`, `${SAMPLE_INDEX_PREFIX}-*`);
+    cy.removeIndexAlias(`${SAMPLE_ALIAS_PREFIX}-0`);
+    cy.addIndexAlias(`${SAMPLE_ALIAS_PREFIX}-0`, `${SAMPLE_INDEX_PREFIX}-*`);
   });
 
   beforeEach(() => {
@@ -131,8 +131,8 @@ describe('Aliases', () => {
   after(() => {
     cy.deleteAllIndices();
     for (let i = 0; i < 30; i++) {
-      cy.removeAlias(`${SAMPLE_ALIAS_PREFIX}-${i}`);
+      cy.removeIndexAlias(`${SAMPLE_ALIAS_PREFIX}-${i}`);
     }
-    cy.removeAlias(CREATE_ALIAS);
+    cy.removeIndexAlias(CREATE_ALIAS);
   });
 });
