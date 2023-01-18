@@ -48,18 +48,6 @@ Cypress.Commands.add('createPolicy', (policyId, policyJSON) => {
   );
 });
 
-Cypress.Commands.add('getIndexSettings', (index) => {
-  cy.request('GET', `${Cypress.env('openSearchUrl')}/${index}/_settings`);
-});
-
-Cypress.Commands.add('updateIndexSettings', (index, settings) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('openSearchUrl')}/${index}/_settings`,
-    settings
-  );
-});
-
 Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
   // TODO directly changing system index will not be supported, need to introduce new way
   // Creating closure over startTime so it's not calculated until actual update_by_query call
