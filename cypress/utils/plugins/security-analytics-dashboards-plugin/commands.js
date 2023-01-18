@@ -18,13 +18,20 @@ const { NODE_API } = require('./constants');
 //
 // -- This is a parent command --
 
-
 Cypress.Commands.add('createRule', (ruleJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`, ruleJSON);
+  cy.request(
+    'POST',
+    `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`,
+    ruleJSON
+  );
 });
 
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`, ruleJSON);
+  cy.request(
+    'PUT',
+    `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`,
+    ruleJSON
+  );
 });
 
 Cypress.Commands.add('deleteRule', (ruleName) => {
@@ -44,7 +51,9 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   };
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
+    url: `${Cypress.env('opensearch')}${
+      NODE_API.RULES_BASE
+    }/_search?pre_packaged=false`,
     failOnStatusCode: false,
     body,
   }).then((response) => {
@@ -53,10 +62,11 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
         if (hit._source.title === ruleName)
           cy.request(
             'DELETE',
-            `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
+            `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${
+              hit._id
+            }?forced=true`
           );
       }
     }
   });
 });
-
