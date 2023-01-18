@@ -144,6 +144,7 @@ Cypress.Commands.add('addAlias', (alias, index) => {
   });
 });
 
+
 Cypress.Commands.add('removeAlias', (alias) => {
   cy.request({
     url: `${Cypress.env('openSearchUrl')}/_aliases`,
