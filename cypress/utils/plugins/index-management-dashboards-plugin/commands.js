@@ -126,7 +126,7 @@ Cypress.Commands.add('disableJitter', () => {
   );
 });
 
-Cypress.Commands.add('addAlias', (alias, index) => {
+Cypress.Commands.add('addIndexAlias', (alias, index) => {
   cy.request({
     url: `${Cypress.env('openSearchUrl')}/_aliases`,
     method: 'POST',
@@ -145,7 +145,7 @@ Cypress.Commands.add('addAlias', (alias, index) => {
 });
 
 
-Cypress.Commands.add('removeAlias', (alias) => {
+Cypress.Commands.add('removeIndexAlias', (alias) => {
   cy.request({
     url: `${Cypress.env('openSearchUrl')}/_aliases`,
     method: 'POST',
