@@ -4,9 +4,9 @@
  */
 
 const defaults = {
-  version: '2.0.1',
-  buildNumber: '3958',
-  testNumber: '1',
+  version: '2.5.0',
+  buildNumber: '5367',
+  testNumber: '2993',
   testJobName: 'integ-test-opensearch-dashboards',
   platform: 'linux',
   arch: 'x64',
@@ -45,7 +45,11 @@ const plugins = {
   'custom-import-map-dashboards': {
     name: 'customImportMapDashboards',
     default: {
-      videos: ['import_vector_map_tab.spec.js'],
+      videos: [
+        'documentsLayer.spec.js',
+        'import_vector_map_tab.spec.js',
+        `opensearchMapLayer.spec.js`,
+      ],
     },
   },
   'gantt-chart-dashboards': {
@@ -101,6 +105,12 @@ const plugins = {
       ],
     },
   },
+  'search-relevance-dashboards': {
+    name: 'searchRelevanceDashboards',
+    default: {
+      videos: ['1_query_compare.spec.js'],
+    },
+  },
   security: {
     name: 'securityDashboards',
     default: {
@@ -113,6 +123,12 @@ const plugins = {
         'roles_spec.js',
         'tenants_spec.js',
       ],
+    },
+  },
+  'security-analytics-dashboards-plugin': {
+    name: 'securityAnalyticsDashboards',
+    default: {
+      videos: ['rules_spec.js'],
     },
   },
 };
@@ -199,6 +215,14 @@ function getTestResults() {
   var osLink = document.getElementById('osLink');
   osLink.textContent = osUrl;
   osLink.href = osUrl;
+
+  const jenkinsUrl =
+    'https://build.ci.opensearch.org/job/' +
+    `${testJobName}/` +
+    `${testNumber}`;
+  var jenkinsLink = document.getElementById('jenkinsLink');
+  jenkinsLink.textContent = jenkinsUrl;
+  jenkinsLink.href = jenkinsUrl;
 
   document.getElementById('testResultsDiv').style.display = 'block';
   document.getElementById('testResults').src =
