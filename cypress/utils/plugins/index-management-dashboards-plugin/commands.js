@@ -86,31 +86,11 @@ Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
   });
 });
 
-Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
-  if (policyID != null) {
-    const body = { policy_id: policyID };
-    cy.request(
-      'POST',
-      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
-      body
-    );
-  }
-});
-
 Cypress.Commands.add('createRollup', (rollupId, rollupJSON) => {
   cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${IM_API.ROLLUP_JOBS_BASE}/${rollupId}`,
     rollupJSON
-  );
-});
-
-Cypress.Commands.add('createIndexTemplate', (name, template) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
-    template
   );
 });
 
@@ -120,24 +100,6 @@ Cypress.Commands.add('deleteTemplate', (name) => {
     failOnStatusCode: false,
     method: 'DELETE',
   });
-});
-
-Cypress.Commands.add('createDataStream', (name) => {
-  cy.request(
-    'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${name}`
-  );
-});
-
-Cypress.Commands.add('deleteDataStreams', (names) => {
-  cy.request(
-    'DELETE',
-    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${names}`
-  );
-});
-
-Cypress.Commands.add('rollover', (target) => {
-  cy.request('POST', `${Cypress.env('openSearchUrl')}/${target}/_rollover`);
 });
 
 Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
@@ -173,19 +135,6 @@ Cypress.Commands.add('disableJitter', () => {
     'PUT',
     `${Cypress.env('openSearchUrl')}/_cluster/settings`,
     jitterJson
-  );
-});
-
-Cypress.Commands.add('deleteAllIndices', () => {
-  cy.request(
-    'DELETE',
-    `${Cypress.env(
-      'openSearchUrl'
-    )}/index*,sample*,opensearch_dashboards*,test*`
-  );
-  cy.request(
-    'DELETE',
-    `${Cypress.env('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`
   );
 });
 
