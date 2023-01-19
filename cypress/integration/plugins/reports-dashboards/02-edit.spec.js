@@ -42,7 +42,9 @@ describe('Cypress', () => {
   });
 
   it('Visit edit page, change report trigger', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/reports-dashboards'
@@ -73,7 +75,9 @@ describe('Cypress', () => {
   });
 
   it('Visit edit page, change report trigger back', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
       '/reports-dashboards'
