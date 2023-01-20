@@ -17,10 +17,14 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
 });
 
 Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
-  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}`).realPress('Enter');
+  cy.get(`[placeholder="${placeholder}"]`).type(
+      `{selectall}${text}`
+  ).realPress('Enter');
 });
 
-Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
+Cypress.Commands.add('' +
+    'waitForPageLoad',
+    (url, { timeout = 10000, contains = null }) => {
   const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
   Cypress.log({
     message: `Wait for url: ${fullUrl} to be loaded.`,
@@ -30,7 +34,8 @@ Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null
       .then(() => {
         contains && cy.contains(contains);
       });
-});
+}
+);
 
 Cypress.Commands.add('deleteAllDetectors', () => {
   cy.request({
@@ -41,7 +46,11 @@ Cypress.Commands.add('deleteAllDetectors', () => {
 });
 
 Cypress.Commands.add('createDetector', (detectorJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
+  cy.request(
+      'POST',
+      `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`,
+      detectorJSON
+  );
 });
 
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
@@ -75,7 +84,10 @@ Cypress.Commands.add('deleteDetector', (detectorName) => {
   }).then((response) => {
     if (response.status === 200) {
       for (let hit of response.body.hits.hits) {
-        cy.request('DELETE', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`);
+        cy.request(
+            'DELETE',
+            `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`
+        );
       }
     }
   });
@@ -96,7 +108,7 @@ Cypress.Commands.add(
         body: body,
       });
     }
-);
+    );
 
 Cypress.Commands.add('createRule', (ruleJSON) => {
   return cy.request({
@@ -107,7 +119,11 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
 });
 
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
-  cy.request('PUT', `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`, ruleJSON);
+  cy.request(
+      'PUT',
+      `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`,
+      ruleJSON
+  );
 });
 
 Cypress.Commands.add('deleteRule', (ruleName) => {
@@ -127,7 +143,9 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   };
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
+    url: `${Cypress.env('opensearch')}${
+      NODE_API.RULES_BASE
+    }/_search?pre_packaged=false`,
     failOnStatusCode: false,
     body,
   }).then((response) => {
@@ -136,7 +154,9 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
         if (hit._source.title === ruleName)
           cy.request(
               'DELETE',
-              `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
+             `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${
+                hit._id
+              }?forced=true`
           );
       }
     }
