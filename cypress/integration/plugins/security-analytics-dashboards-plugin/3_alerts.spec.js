@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import moment from 'moment';
 import {
   DETECTOR_TRIGGER_TIMEOUT,
   OPENSEARCH_DASHBOARDS_URL
@@ -40,7 +39,14 @@ const testDetector = {
 
 // The exact minutes/seconds for the start and last updated time will be difficult to predict,
 // but all of the alert time fields should all contain the date in this format.
-const date = moment(moment.now()).format('MM/DD/YY');
+
+// Moment is not available in this repository, so refactored this variable to use Date.
+// const date = moment(moment.now()).format('MM/DD/YY');
+const now = new Date(Date.now());
+const month = (now.getMonth() + 1) < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`;
+const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
+const year = `${now.getFullYear()}`.substr(1);
+const date = `${month}/${day}/${year}`
 
 const docCount = 4;
 describe('Alerts', () => {
