@@ -55,7 +55,7 @@ describe('Alerts', () => {
     // Delete any pre-existing test detectors
     cy.cleanUpTests()
       // Create test index
-      .then(() => cy.createIndex(testIndex, sample_index_settings))
+      .then(() => cy.createIndex(testIndex, null, sample_index_settings))
 
       // Create field mappings
       .then(() =>
