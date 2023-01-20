@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
+import {OPENSEARCH_DASHBOARDS_URL} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";
+import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 
 const testMappings = {
   properties: {

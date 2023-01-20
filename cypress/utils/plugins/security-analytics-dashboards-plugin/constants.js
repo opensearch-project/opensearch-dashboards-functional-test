@@ -4,6 +4,7 @@
  */
 
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
+export const DETECTOR_TRIGGER_TIMEOUT = 65000;
 
 export const INDICES = {
   DETECTORS_INDEX: '.opensearch-detectors-config',

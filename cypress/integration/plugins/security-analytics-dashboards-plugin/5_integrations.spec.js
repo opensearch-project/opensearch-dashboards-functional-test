@@ -3,17 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
-import sample_dns_settings from '../fixtures/integration_tests/index/create_dns_settings.json';
-import windows_usb_rule_data from '../fixtures/integration_tests/rule/create_windows_usb_rule.json';
-import dns_rule_data from '../fixtures/integration_tests/rule/create_dns_rule.json';
-import usb_detector_data from '../fixtures/integration_tests/detector/create_usb_detector_data.json';
-import usb_detector_data_mappings from '../fixtures/integration_tests/detector/create_usb_detector_mappings_data.json';
-import dns_detector_data_mappings from '../fixtures/integration_tests/detector/create_dns_detector_mappings_data.json';
-import dns_detector_data from '../fixtures/integration_tests/detector/create_dns_detector_data.json';
-import add_windows_index_data from '../fixtures/integration_tests/index/add_windows_index_data.json';
-import add_dns_index_data from '../fixtures/integration_tests/index/add_dns_index_data.json';
+import {
+  DETECTOR_TRIGGER_TIMEOUT,
+  OPENSEARCH_DASHBOARDS_URL
+} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
+import sample_dns_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/create_dns_settings.json';
+import windows_usb_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_windows_usb_rule.json';
+import dns_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule.json';
+import usb_detector_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_data.json';
+import usb_detector_data_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_mappings_data.json';
+import dns_detector_data_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_dns_detector_mappings_data.json';
+import dns_detector_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_dns_detector_data.json';
+import add_windows_index_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/add_windows_index_data.json';
+import add_dns_index_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/add_dns_index_data.json';
 
 describe('Integration tests', () => {
   const indexName = 'cypress-index-windows';
