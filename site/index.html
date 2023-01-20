@@ -47,10 +47,10 @@
       </tr>
       <tr>
         <td>
-          <input type="text" id="version" value="2.0.0">
+          <input type="text" id="version" value="2.5.0">
         </td>
         <td>
-          <input type="text" id="buildNumber" value="3936">
+          <input type="text" id="buildNumber" value="5367">
         </td>
       </tr>
     </table>
@@ -65,6 +65,7 @@
         <td>
           <select id="platform">
             <option value="linux">Linux</option>
+            <option value="windows">Windows</option>
           </select>
         </td>
         <td>
@@ -83,16 +84,16 @@
           <input type="checkbox" id="security">
         </td>
       </tr>
-    </table>
-    <table id="advancedInputsTable">
       <tr>
         <th>Test Number</th>
       </tr>
       <tr>
         <td>
-          <input type="text" id="testNumber" value="1">
+          <input type="text" id="testNumber" value="2993">
         </td>
       </tr>
+    </table>
+    <table id="advancedInputsTable">
       <tr>
         <th>Test Job Name</th>
       </tr>
@@ -121,6 +122,9 @@
       </li>
       <li>
         <a id="osLink"></a>
+      </li>
+      <li>
+        <a id="jenkinsLink"></a>
       </li>
     </ul>
     <h2>Plugins:</h2>
@@ -154,8 +158,14 @@
           <button id="reportsDashboardsButton" onclick="getPluginLinks('reports-dashboards')">
             reportsDashboards
           </button>
+          <button id="searchRelevanceDashboardsButton" onclick="getPluginLinks('search-relevance-dashboards')">
+            searchRelevanceDashboards
+          </button>
           <button id="securityDashboardsButton" onclick="getPluginLinks('security')">
             securityDashboards
+          </button>
+          <button id="securityAnalyticsDashboardsButton" onclick="getPluginLinks('security-analytics-dashboards-plugin')">
+            securityAnalyticsDashboards
           </button>
       </tr>
     </table>
