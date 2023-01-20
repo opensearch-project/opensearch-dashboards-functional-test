@@ -3,11 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const {
-  NODE_API,
-  OPENSEARCH_DASHBOARDS,
-  OPENSEARCH_DASHBOARDS_URL,
-} = require('./constants');
+const { NODE_API, OPENSEARCH_DASHBOARDS, OPENSEARCH_DASHBOARDS_URL } = require('../../../../cypress/utils/plugins/security-analytics-dashboards-plugin/constants');
 
 Cypress.Commands.add('cleanUpTests', () => {
   cy.deleteAllCustomRules();
