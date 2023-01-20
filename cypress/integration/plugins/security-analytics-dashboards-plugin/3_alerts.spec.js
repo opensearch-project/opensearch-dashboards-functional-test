@@ -43,8 +43,8 @@ const testDetector = {
 // Moment is not available in this repository, so refactored this variable to use Date.
 // const date = moment(moment.now()).format('MM/DD/YY');
 const now = new Date(Date.now());
-const month = (
-    now.getMonth() + 1) < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`;
+const month =
+  now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`;
 const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
 const year = `${now.getFullYear()}`.substr(1);
 const date = `${month}/${day}/${year}`;
@@ -60,10 +60,10 @@ describe('Alerts', () => {
       // Create field mappings
       .then(() =>
         cy.createAliasMappings(
-            testIndex,
-            testDetector.detector_type,
-            sample_alias_mappings,
-            true
+          testIndex,
+          testDetector.detector_type,
+          sample_alias_mappings,
+          true
         )
       )
 
@@ -111,18 +111,18 @@ describe('Alerts', () => {
 
     // Adjust the date range picker to display alerts from today
     cy.get(
-        '[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]'
+      '[class="euiButtonEmpty__text euiQuickSelectPopover__buttonText"]'
     ).click({ force: true });
-    cy.get(
-        '[data-test-subj="superDatePickerCommonlyUsed_Today"]'
-    ).click({ force: true });
+    cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({
+      force: true,
+    });
   });
 
   it('are generated', () => {
     // Refresh the table
-    cy.get(
-        '[data-test-subj="superDatePickerApplyTimeButton"]'
-    ).click({ force: true });
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({
+      force: true,
+    });
 
     // Confirm there are alerts created
     cy.get('tbody > tr')
@@ -153,33 +153,33 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Confirm alert condition name
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-trigger-name"]'
+        '[data-test-subj="text-details-group-content-alert-trigger-name"]'
       ).contains(testDetector.triggers[0].name);
 
       // Confirm alert status
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-status"]'
+        '[data-test-subj="text-details-group-content-alert-status"]'
       ).contains('Active');
 
       // Confirm alert severity
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-severity"]'
+        '[data-test-subj="text-details-group-content-alert-severity"]'
       ).contains('4 (Low)');
 
       // Confirm alert start time is present
       cy.get(
-          '[data-test-subj="text-details-group-content-start-time"]'
+        '[data-test-subj="text-details-group-content-start-time"]'
       ).contains(date);
 
       // Confirm alert last updated time is present
       cy.get(
-          '[data-test-subj="text-details-group-content-last-updated-time"]'
+        '[data-test-subj="text-details-group-content-last-updated-time"]'
       ).contains(date);
 
       // Confirm alert detector name
-      cy.get(
-          '[data-test-subj="text-details-group-content-detector"]'
-      ).contains(testDetector.name);
+      cy.get('[data-test-subj="text-details-group-content-detector"]').contains(
+        testDetector.name
+      );
 
       // Wait for the findings table to finish loading
       cy.contains('Findings (1)');
@@ -194,9 +194,9 @@ describe('Alerts', () => {
       });
 
       // Close the flyout
-      cy.get(
-          '[data-test-subj="alert-details-flyout-close-button"]'
-      ).click({ force: true });
+      cy.get('[data-test-subj="alert-details-flyout-close-button"]').click({
+        force: true,
+      });
     });
 
     // Confirm flyout has been closed
@@ -234,60 +234,60 @@ describe('Alerts', () => {
         .then((text) => expect(text).to.have.length.greaterThan(1));
 
       // Confirm finding timestamp
-      cy.get(
-          '[data-test-subj="finding-details-flyout-timestamp"]'
-      ).contains(date);
+      cy.get('[data-test-subj="finding-details-flyout-timestamp"]').contains(
+        date
+      );
 
       // Confirm finding detector name
       cy.get(
-          '[data-test-subj="finding-details-flyout-detector-link"]'
+        '[data-test-subj="finding-details-flyout-detector-link"]'
       ).contains(testDetector.name);
 
       // Confirm there's only 1 rule details accordion
       cy.get(
-          '[data-test-subj="finding-details-flyout-rule-accordion-1"]'
+        '[data-test-subj="finding-details-flyout-rule-accordion-1"]'
       ).should('not.exist');
 
       // Check the rule details accordion for the expected values
       cy.get(
-          '[data-test-subj="finding-details-flyout-rule-accordion-0"]'
+        '[data-test-subj="finding-details-flyout-rule-accordion-0"]'
       ).within(() => {
         // Confirm the accordion button contains the expected text
         cy.get(
-            '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
+          '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
         ).contains('USB Device Plugged');
         cy.get(
-            '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
+          '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
         ).contains('Severity: Low');
 
         // Confirm the rule name
         cy.get(
-            '[data-test-subj="finding-details-flyout-USB Device Plugged-details"]'
+          '[data-test-subj="finding-details-flyout-USB Device Plugged-details"]'
         ).contains('USB Device Plugged');
 
         // Confirm the rule severity
         cy.get(
-            '[data-test-subj="finding-details-flyout-rule-severity"]'
+          '[data-test-subj="finding-details-flyout-rule-severity"]'
         ).contains('Low');
 
         // Confirm the rule category
         cy.get(
-            '[data-test-subj="finding-details-flyout-rule-category"]'
+          '[data-test-subj="finding-details-flyout-rule-category"]'
         ).contains('Windows');
 
         // Confirm the rule description
         cy.get(
-            '[data-test-subj="finding-details-flyout-rule-description"]'
+          '[data-test-subj="finding-details-flyout-rule-description"]'
         ).contains('Detects plugged USB devices');
 
         // Confirm the rule tags
         ['low', 'windows', 'attack.initial_access', 'attack.t1200'].forEach(
-            (tag) => {
-              cy.get(
-                  '[data-test-subj="finding-details-flyout-rule-tags"]'
-              ).contains(tag);
-            }
-            );
+          (tag) => {
+            cy.get(
+              '[data-test-subj="finding-details-flyout-rule-tags"]'
+            ).contains(tag);
+          }
+        );
       });
 
       // Confirm the rule document ID is present
@@ -297,7 +297,7 @@ describe('Alerts', () => {
 
       // Confirm the rule index
       cy.get(
-          '[data-test-subj="finding-details-flyout-rule-document-index"]'
+        '[data-test-subj="finding-details-flyout-rule-document-index"]'
       ).contains(testIndex);
 
       // Confirm the rule document matches
@@ -323,19 +323,19 @@ describe('Alerts', () => {
           if (expectedLine.trimStart().startsWith('"id": "')) {
             expectedLine = '"id": "';
             expect(line, `document JSON line ${lineIndex}`).to.contain(
-                expectedLine
+              expectedLine
             );
           } else {
             line = line.replaceAll('\n', '');
             expect(line, `document JSON line ${lineIndex}`).to.equal(
-                expectedLine
+              expectedLine
             );
           }
         });
 
       // Press the "back" button
       cy.get('[data-test-subj="finding-details-flyout-back-button"]').click({
-        force: true
+        force: true,
       });
     });
 
@@ -345,10 +345,8 @@ describe('Alerts', () => {
     // Confirm the expected alert details flyout rendered
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-trigger-name"]'
-      ).contains(
-          testDetector.triggers[0].name
-      );
+        '[data-test-subj="text-details-group-content-alert-trigger-name"]'
+      ).contains(testDetector.triggers[0].name);
     });
   });
 
@@ -451,22 +449,22 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Confirm the alert is currently "Active"
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-status"]'
+        '[data-test-subj="text-details-group-content-alert-status"]'
       ).contains('Active');
 
       // Click the "Acknowledge" button on the flyout
       cy.get(
-          '[data-test-subj="alert-details-flyout-acknowledge-button"]'
+        '[data-test-subj="alert-details-flyout-acknowledge-button"]'
       ).click({ force: true });
 
       // Confirm the alert is now "Acknowledged"
       cy.get(
-          '[data-test-subj="text-details-group-content-alert-status"]'
+        '[data-test-subj="text-details-group-content-alert-status"]'
       ).contains('Active');
 
       // Confirm the "Acknowledge" button is disabled
       cy.get(
-          '[data-test-subj="alert-details-flyout-acknowledge-button"]'
+        '[data-test-subj="alert-details-flyout-acknowledge-button"]'
       ).should('be.disabled');
     });
   });
@@ -504,7 +502,7 @@ describe('Alerts', () => {
 
     // Confirm the detector details page is for the expected detector
     cy.get('[data-test-subj="detector-details-detector-name"]').contains(
-        testDetector.name
+      testDetector.name
     );
   });
 

@@ -101,7 +101,7 @@ Cypress.Commands.add('deleteAllIndices', () => {
   cy.request(
     'DELETE',
     `${Cypress.env(
-        'openSearchUrl'
+      'openSearchUrl'
     )}/index*,sample*,opensearch_dashboards*,test*,cypress*`
   );
 });

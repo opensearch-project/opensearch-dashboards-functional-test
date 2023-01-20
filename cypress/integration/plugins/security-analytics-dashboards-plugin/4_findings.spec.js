@@ -71,9 +71,9 @@ describe('Findings', () => {
     cy.contains('Rule details');
 
     // Close Flyout
-    cy.get(
-        '.euiFlexItem--flexGrowZero > .euiButtonIcon'
-    ).click({ force: true });
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   it('displays finding details flyout when user clicks on Finding ID', () => {
@@ -82,7 +82,7 @@ describe('Findings', () => {
 
     // Click findingId to trigger Finding details flyout
     cy.getTableFirstRow(
-        '[data-test-subj="finding-details-flyout-button"]'
+      '[data-test-subj="finding-details-flyout-button"]'
     ).then(($el) => {
       cy.get($el).click({ force: true });
     });
@@ -92,9 +92,9 @@ describe('Findings', () => {
     cy.contains('Rule details');
 
     // Close Flyout
-    cy.get(
-        '.euiFlexItem--flexGrowZero > .euiButtonIcon'
-    ).click({ force: true });
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   it('allows user to view details about rules that were triggered', () => {
@@ -106,9 +106,9 @@ describe('Findings', () => {
 
     // open rule details inside flyout
     cy.get('button', { timeout: 1000 });
-    cy.get(
-        `[data-test-subj="finding-details-flyout-rule-accordion-0"]`
-    ).click({ force: true });
+    cy.get(`[data-test-subj="finding-details-flyout-rule-accordion-0"]`).click({
+      force: true,
+    });
 
     // Confirm content
     cy.contains('Documents');
@@ -136,13 +136,13 @@ describe('Findings', () => {
 
     // Click rule link
     cy.get(
-        `[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`
+      `[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`
     ).click({ force: true });
 
     // Validate flyout appearance
     cy.get('[data-test-subj="rule_flyout_USB Device Plugged"]').within(() => {
       cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(
-          'USB Device Plugged'
+        'USB Device Plugged'
       );
     });
   });
@@ -177,8 +177,8 @@ describe('Findings', () => {
         .then(() => {
           // Confirm arrival at detectors page
           cy.get('[data-test-subj="editButton"]')
-              .contains('Delete')
-              .click({ force: true });
+            .contains('Delete')
+            .click({ force: true });
 
           // Search for sample_detector, presumably deleted
           cy.triggerSearchField('Search threat detectors', 'sample_detector');
