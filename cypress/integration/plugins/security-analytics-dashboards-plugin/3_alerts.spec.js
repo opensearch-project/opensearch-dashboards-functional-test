@@ -4,11 +4,14 @@
  */
 
 import moment from 'moment';
-import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
-import sample_alias_mappings from '../fixtures/sample_alias_mappings.json';
-import sample_detector from '../fixtures/sample_detector.json';
-import sample_document from '../fixtures/sample_document.json';
+import {
+  DETECTOR_TRIGGER_TIMEOUT,
+  OPENSEARCH_DASHBOARDS_URL
+} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";
+import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
+import sample_alias_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
+import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
+import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
 
 const testIndex = 'sample_alerts_spec_cypress_test_index';
 const testDetectorName = 'alerts_spec_cypress_test_detector';

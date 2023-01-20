@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
+const {OPENSEARCH_DASHBOARDS_URL} = require("../../../utils/plugins/security-analytics-dashboards-plugin/constants");
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {

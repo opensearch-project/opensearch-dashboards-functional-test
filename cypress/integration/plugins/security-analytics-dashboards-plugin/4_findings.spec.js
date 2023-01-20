@@ -3,11 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { DETECTOR_TRIGGER_TIMEOUT, OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import sample_document from '../fixtures/sample_document.json';
-import sample_index_settings from '../fixtures/sample_index_settings.json';
-import sample_field_mappings from '../fixtures/sample_field_mappings.json';
-import sample_detector from '../fixtures/sample_detector.json';
+import {
+  DETECTOR_TRIGGER_TIMEOUT,
+  OPENSEARCH_DASHBOARDS_URL
+} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";
+import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
+import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
+import sample_field_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_field_mappings.json';
+import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
