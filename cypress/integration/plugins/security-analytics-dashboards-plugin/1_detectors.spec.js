@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  OPENSEARCH_DASHBOARDS_URL,
-} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";
+import { OPENSEARCH_DASHBOARDS_URL } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 
 const testMappings = {
@@ -67,12 +65,12 @@ describe('Detectors', () => {
 
     // Enter a name for the detector in the appropriate input
     cy.get(`input[placeholder="Enter a name for the detector."]`).type(
-        'test detector{enter}'
+      'test detector{enter}'
     );
 
     // Select our pre-seeded data source (check indexName)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`).type(
-        `${indexName}{enter}`
+      `${indexName}{enter}`
     );
 
     // Select threat detector type (Windows logs)
@@ -115,8 +113,8 @@ describe('Detectors', () => {
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappings-select"]`)
-            .click()
-            .type(mappedTo);
+          .click()
+          .type(mappedTo);
       });
     }
 
@@ -128,17 +126,17 @@ describe('Detectors', () => {
 
     // Type name of new trigger
     cy.get(`input[placeholder="Enter a name for the alert condition."]`).type(
-        'test_trigger'
+      'test_trigger'
     );
 
     // Type in (or select) tags for the alert condition
     cy.get(`[data-test-subj="alert-tags-combo-box"]`).type(
-        'attack.defense_evasion{enter}'
+      'attack.defense_evasion{enter}'
     );
 
     // Select applicable severity levels
     cy.get(`[data-test-subj="security-levels-combo-box"]`).click({
-      force: true
+      force: true,
     });
     cy.contains('1 (Highest)').click({ force: true });
 
@@ -198,7 +196,7 @@ describe('Detectors', () => {
 
     // Click "Edit" button in detector details
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({
-      force: true
+      force: true,
     });
 
     // Confirm arrival at "Edit detector details" page
@@ -211,7 +209,7 @@ describe('Detectors', () => {
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`).type(
-        'Edited description'
+      'Edited description'
     );
 
     // Change input source
@@ -221,13 +219,13 @@ describe('Detectors', () => {
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`).type(
-        '{selectall}10'
+      '{selectall}10'
     );
     cy.get(`[data-test-subj="detector-schedule-unit-select"]`).select('Hours');
 
     // Save changes to detector details
     cy.get(`[data-test-subj="save-basic-details-edits"]`).click({
-      force: true
+      force: true,
     });
 
     // Confirm taken to detector details page
@@ -278,7 +276,7 @@ describe('Detectors', () => {
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({
-      force: true
+      force: true,
     });
 
     // Confirm 1 rule has been removed from detector
@@ -303,7 +301,7 @@ describe('Detectors', () => {
 
     // Save changes
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({
-      force: true
+      force: true,
     });
     cy.waitForPageLoad('detector-details', {
       contains: detectorName,
