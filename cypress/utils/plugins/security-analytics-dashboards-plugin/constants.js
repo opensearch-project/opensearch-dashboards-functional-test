@@ -14,7 +14,7 @@ export const INDICES = {
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const BASE_API_PATH = '/_plugins/_security_analytics';
-export const { opensearch_dashboards: OPENSEARCH_DASHBOARDS } = Cypress.env();
+export const { opensearch_dashboards: OPENSEARCH_DASHBOARDS } = Cypress.env('openSearchUrl');
 export const OPENSEARCH_DASHBOARDS_URL = `${OPENSEARCH_DASHBOARDS}/app/${PLUGIN_NAME}#`;
 
 export const NODE_API = {
