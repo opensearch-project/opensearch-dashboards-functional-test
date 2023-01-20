@@ -7,7 +7,7 @@ const {
   NODE_API,
   OPENSEARCH_DASHBOARDS,
   OPENSEARCH_DASHBOARDS_URL,
-} = require('../../../../cypress/utils/plugins/security-analytics-dashboards-plugin/constants');
+} = require('./constants');
 
 Cypress.Commands.add('cleanUpTests', () => {
   cy.deleteAllCustomRules();
