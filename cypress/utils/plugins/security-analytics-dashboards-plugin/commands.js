@@ -3,24 +3,107 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { NODE_API } = require('./constants');
+const { NODE_API, OPENSEARCH_DASHBOARDS, OPENSEARCH_DASHBOARDS_URL } = require('./constants');
 
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
+Cypress.Commands.add('cleanUpTests', () => {
+  cy.deleteAllCustomRules();
+  cy.deleteAllDetectors();
+  cy.deleteAllIndices();
+});
 
+Cypress.Commands.add('getTableFirstRow', (selector) => {
+  if (!selector) return cy.get('tbody > tr').first();
+  return cy.get('tbody > tr:first').find(selector);
+});
+
+Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
+  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}`).realPress('Enter');
+});
+
+Cypress.Commands.add('waitForPageLoad', (url, { timeout = 10000, contains = null }) => {
+  const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
+  Cypress.log({
+    message: `Wait for url: ${fullUrl} to be loaded.`,
+  });
+  cy.url({ timeout: timeout })
+      .should('include', fullUrl)
+      .then(() => {
+        contains && cy.contains(contains);
+      });
+});
+
+Cypress.Commands.add('deleteAllDetectors', () => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('createDetector', (detectorJSON) => {
+  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`, detectorJSON);
+});
+
+Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
+  cy.request(
+      'PUT',
+      `${Cypress.env('opensearch')}/${NODE_API.DETECTORS_BASE}/${detectorId}`,
+      detectorJSON
+  );
+});
+
+Cypress.Commands.add('deleteDetector', (detectorName) => {
+  const body = {
+    from: 0,
+    size: 5000,
+    query: {
+      nested: {
+        path: 'detector',
+        query: {
+          bool: {
+            must: [{ match: { 'detector.name': detectorName } }],
+          },
+        },
+      },
+    },
+  };
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/_search`,
+    failOnStatusCode: false,
+    body,
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request('DELETE', `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`);
+      }
+    }
+  });
+});
+
+Cypress.Commands.add(
+    'createAliasMappings',
+    (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
+      const body = {
+        index_name: indexName,
+        rule_topic: ruleTopic,
+        partial: partial,
+        alias_mappings: aliasMappingsBody,
+      };
+      cy.request({
+        method: 'POST',
+        url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
+        body: body,
+      });
+    }
+);
 
 Cypress.Commands.add('createRule', (ruleJSON) => {
-  cy.request('POST', `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}`, ruleJSON);
+  return cy.request({
+    method: 'POST',
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
+    body: JSON.stringify(ruleJSON),
+  });
 });
 
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
@@ -52,11 +135,19 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
       for (let hit of response.body.hits.hits) {
         if (hit._source.title === ruleName)
           cy.request(
-            'DELETE',
-            `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
+              'DELETE',
+              `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
           );
       }
     }
   });
 });
 
+Cypress.Commands.add('deleteAllCustomRules', () => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-custom-rules-config`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  });
+});
