@@ -5,8 +5,9 @@
 
 import {
   DETECTOR_TRIGGER_TIMEOUT,
-  OPENSEARCH_DASHBOARDS_URL
-} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
+  OPENSEARCH_DASHBOARDS_URL,
+} from "../../../utils/plugins/security-analytics-dashboards-plugin/constants";
+import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 import sample_dns_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/create_dns_settings.json';
 import windows_usb_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_windows_usb_rule.json';
 import dns_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule.json';
@@ -26,11 +27,13 @@ describe('Integration tests', () => {
 
     // Create custom rules
     cy.createRule(windows_usb_rule_data).then((response) => {
-      usb_detector_data.inputs[0].detector_input.custom_rules[0].id = response.body.response._id;
+      usb_detector_data.inputs[0].detector_input.custom_rules[0].id =
+          response.body.response._id;
       usb_detector_data.triggers[0].ids.push(response.body.response._id);
     });
     cy.createRule(dns_rule_data).then((response) => {
-      dns_detector_data.inputs[0].detector_input.custom_rules[0].id = response.body.response._id;
+      dns_detector_data.inputs[0].detector_input.custom_rules[0].id =
+          response.body.response._id;
       dns_detector_data.triggers[0].ids.push(response.body.response._id);
     });
 
@@ -59,7 +62,11 @@ describe('Integration tests', () => {
       `${Cypress.env('opensearch')}/${indexName}/_doc/101`,
       add_windows_index_data
     );
-    cy.request('POST', `${Cypress.env('opensearch')}/${dnsName}/_doc/101`, add_dns_index_data);
+    cy.request(
+        'POST',
+        `${Cypress.env('opensearch')}/${dnsName}/_doc/101`,
+        add_dns_index_data
+    );
 
     // Wait for detector interval to pass
     cy.wait(DETECTOR_TRIGGER_TIMEOUT);
@@ -91,12 +98,16 @@ describe('Integration tests', () => {
               .then((hash) => {
                 const detectorId = hash.replace('#/findings/', '');
                 if (!detectorId) {
-                  throw new Error('Navigating to findings page should contain detector ID');
+                  throw new Error(
+                      'Navigating to findings page should contain detector ID'
+                  );
                 } else {
                   cy.wait('@getFindings').then((interception) => {
                     const url = new URL(interception.request.url);
                     // The request query param detectorId should match the hash param from the url
-                    expect(url.searchParams.get('detectorId')).to.eq(detectorId);
+                    expect(url.searchParams.get('detectorId')).to.eq(
+                        detectorId
+                    );
                   });
 
                   // There should be only one call to the API
@@ -124,12 +135,16 @@ describe('Integration tests', () => {
               .then((hash) => {
                 const detectorId = hash.replace('#/alerts/', '');
                 if (!detectorId) {
-                  throw new Error('Navigating to alerts page should contain detector ID');
+                  throw new Error(
+                      'Navigating to alerts page should contain detector ID'
+                  );
                 } else {
                   cy.wait('@getAlerts').then((interception) => {
                     const url = new URL(interception.request.url);
                     // The request query param detectorId should match the hash param from the url
-                    expect(url.searchParams.get('detector_id')).to.eq(detectorId);
+                    expect(url.searchParams.get('detector_id')).to.eq(
+                        detectorId
+                    );
                   });
 
                   // There should be only one call to the API

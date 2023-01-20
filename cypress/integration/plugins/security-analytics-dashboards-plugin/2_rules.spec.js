@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const {OPENSEARCH_DASHBOARDS_URL} = require("../../../utils/plugins/security-analytics-dashboards-plugin/constants");
+const {
+    OPENSEARCH_DASHBOARDS_URL,
+} = require("../../../utils/plugins/security-analytics-dashboards-plugin/constants");
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -20,7 +22,11 @@ const SAMPLE_RULE = {
     'condition: selection',
   ],
   severity: 'critical',
-  tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
+  tags: [
+      'attack.persistence',
+      'attack.privilege_escalation',
+      'attack.t1543.003'
+  ],
   references: 'https://nohello.com',
   falsePositive: 'unknown',
   author: 'Cypress Test Runner',
@@ -45,7 +51,9 @@ const YAML_RULE_LINES = [
   `- '${SAMPLE_RULE.references}'`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
-  ...SAMPLE_RULE.detection.replaceAll('  ', '').replaceAll('{backspace}', '').split('\n'),
+  ...SAMPLE_RULE.detection.replaceAll('  ', '')
+      .replaceAll('{backspace}', '')
+      .split('\n'),
 ];
 
 describe('Rules', () => {
@@ -73,10 +81,14 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_type_dropdown"]').type(SAMPLE_RULE.logType);
 
     // Enter the description
-    cy.get('[data-test-subj="rule_description_field"]').type(SAMPLE_RULE.description);
+    cy.get('[data-test-subj="rule_description_field"]').type(
+        SAMPLE_RULE.description
+    );
 
     // Enter the severity
-    cy.get('[data-test-subj="rule_severity_dropdown"]').type(SAMPLE_RULE.severity);
+    cy.get('[data-test-subj="rule_severity_dropdown"]').type(
+        SAMPLE_RULE.severity
+    );
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
@@ -84,10 +96,14 @@ describe('Rules', () => {
     );
 
     // Enter the reference
-    cy.get('[data-test-subj="rule_references_field_0"]').type(SAMPLE_RULE.references);
+    cy.get('[data-test-subj="rule_references_field_0"]').type(
+        SAMPLE_RULE.references
+    );
 
     // Enter the false positive cases
-    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(SAMPLE_RULE.falsePositive);
+    cy.get('[data-test-subj="rule_false_positives_field_0"]').type(
+        SAMPLE_RULE.falsePositive
+    );
 
     // Enter the author
     cy.get('[data-test-subj="rule_author_field"]').type(SAMPLE_RULE.author);
@@ -96,14 +112,18 @@ describe('Rules', () => {
     cy.get('[data-test-subj="rule_status_dropdown"]').type(SAMPLE_RULE.status);
 
     // Enter the detection
-    cy.get('[data-test-subj="rule_detection_field"]').type(SAMPLE_RULE.detection);
+    cy.get('[data-test-subj="rule_detection_field"]').type(
+        SAMPLE_RULE.detection
+    );
 
     // Switch to YAML editor
     cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
       force: true,
     });
 
-    YAML_RULE_LINES.forEach((line) => cy.get('[data-test-subj="rule_yaml_editor"]').contains(line));
+    YAML_RULE_LINES.forEach((line) => cy.get(
+        '[data-test-subj="rule_yaml_editor"]').contains(line)
+    );
 
     cy.intercept({
       url: '/rules',
@@ -124,29 +144,41 @@ describe('Rules', () => {
     cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
-    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true
+    });
 
     // Confirm the flyout contains the expected values
     cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
       .click({ force: true })
       .within(() => {
         // Validate name
-        cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(SAMPLE_RULE.name);
+        cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(
+            SAMPLE_RULE.name
+        );
 
         // Validate log type
-        cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(SAMPLE_RULE.logType);
+        cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(
+            SAMPLE_RULE.logType
+        );
 
         // Validate description
-        cy.get('[data-test-subj="rule_flyout_rule_description"]').contains(SAMPLE_RULE.description);
+        cy.get('[data-test-subj="rule_flyout_rule_description"]').contains(
+            SAMPLE_RULE.description
+        );
 
         // Validate author
-        cy.get('[data-test-subj="rule_flyout_rule_author"]').contains(SAMPLE_RULE.author);
+        cy.get('[data-test-subj="rule_flyout_rule_author"]').contains(
+            SAMPLE_RULE.author
+        );
 
         // Validate source is "custom"
         cy.get('[data-test-subj="rule_flyout_rule_source"]').contains('Custom');
 
         // Validate severity
-        cy.get('[data-test-subj="rule_flyout_rule_severity"]').contains(SAMPLE_RULE.severity);
+        cy.get('[data-test-subj="rule_flyout_rule_severity"]').contains(
+            SAMPLE_RULE.severity
+        );
 
         // Validate tags
         SAMPLE_RULE.tags.forEach((tag) =>
@@ -154,7 +186,9 @@ describe('Rules', () => {
         );
 
         // Validate references
-        cy.get('[data-test-subj="rule_flyout_rule_references"]').contains(SAMPLE_RULE.references);
+        cy.get('[data-test-subj="rule_flyout_rule_references"]').contains(
+            SAMPLE_RULE.references
+        );
 
         // Validate false positives
         cy.get('[data-test-subj="rule_flyout_rule_false_positives"]').contains(
@@ -162,15 +196,19 @@ describe('Rules', () => {
         );
 
         // Validate status
-        cy.get('[data-test-subj="rule_flyout_rule_status"]').contains(SAMPLE_RULE.status);
+        cy.get('[data-test-subj="rule_flyout_rule_status"]').contains(
+            SAMPLE_RULE.status
+        );
 
         // Validate detection
         SAMPLE_RULE.detectionLine.forEach((line) =>
           cy.get('[data-test-subj="rule_flyout_rule_detection"]').contains(line)
         );
 
-        cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
-          force: true,
+        cy.get(
+            '[data-test-subj="change-editor-type"] label:nth-child(2)'
+        ).click({
+            force: true
         });
 
         cy.get('[data-test-subj="rule_flyout_yaml_rule"]')
@@ -186,9 +224,13 @@ describe('Rules', () => {
             // so this test just checks that the line starts with the ID key.
             if (expectedLine.startsWith('id:')) {
               expectedLine = 'id:';
-              expect(line, `Sigma rule line ${lineIndex}`).to.contain(expectedLine);
+              expect(line, `Sigma rule line ${lineIndex}`).to.contain(
+                  expectedLine
+              );
             } else {
-              expect(line, `Sigma rule line ${lineIndex}`).to.equal(expectedLine);
+              expect(line, `Sigma rule line ${lineIndex}`).to.equal(
+                  expectedLine
+              );
             }
           });
 
@@ -207,7 +249,9 @@ describe('Rules', () => {
     cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
-    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({ force: true });
+    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true
+    });
 
     cy.get('.euiButton')
       .contains('Action')
