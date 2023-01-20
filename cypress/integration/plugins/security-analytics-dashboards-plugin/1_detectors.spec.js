@@ -39,7 +39,7 @@ describe('Detectors', () => {
     cy.cleanUpTests();
 
     // Create test index
-    cy.createIndex(indexName, sample_index_settings);
+    cy.createIndex(indexName, null, sample_index_settings);
 
     cy.contains(detectorName).should('not.exist');
   });

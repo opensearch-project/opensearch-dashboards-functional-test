@@ -23,7 +23,7 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // create test index, mappings, and detector
-    cy.createIndex(indexName, sample_index_settings);
+    cy.createIndex(indexName, null, sample_index_settings);
     cy.createAliasMappings(indexName, 'windows', sample_field_mappings, true);
     cy.createDetector(sample_detector);
 

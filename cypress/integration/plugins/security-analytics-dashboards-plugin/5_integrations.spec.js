@@ -38,8 +38,8 @@ describe('Integration tests', () => {
     });
 
     // Create test index
-    cy.createIndex(indexName, sample_index_settings);
-    cy.createIndex(dnsName, sample_dns_settings);
+    cy.createIndex(indexName, null, sample_index_settings);
+    cy.createIndex(dnsName, null, sample_dns_settings);
 
     // Create detectors
     cy.createAliasMappings(
