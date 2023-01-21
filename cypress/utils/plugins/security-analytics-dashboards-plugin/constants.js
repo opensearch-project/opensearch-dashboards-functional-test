@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { BASE_PATH } from '../../../../cypress/utils/base_constants';
+
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
 export const DETECTOR_TRIGGER_TIMEOUT = 65000;
 
@@ -16,7 +18,7 @@ export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const BASE_API_PATH = '/_plugins/_security_analytics';
 
 // OPENSEARCH_DASHBOARDS constant differs here from in the plugin as the Cypress env is configured differently.
-export const OPENSEARCH_DASHBOARDS = Cypress.env('openSearchUrl');
+export const OPENSEARCH_DASHBOARDS = BASE_PATH;
 
 export const OPENSEARCH_DASHBOARDS_URL = `${OPENSEARCH_DASHBOARDS}/app/${PLUGIN_NAME}#`;
 
