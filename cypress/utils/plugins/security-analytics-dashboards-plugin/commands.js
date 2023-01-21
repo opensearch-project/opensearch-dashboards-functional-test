@@ -44,7 +44,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('deleteAllDetectors', () => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    url: `${OPENSEARCH_DASHBOARDS}/.opensearch-sap-detectors-config`,
     failOnStatusCode: false,
   });
 });
@@ -52,7 +52,7 @@ Cypress.Commands.add('deleteAllDetectors', () => {
 Cypress.Commands.add('createDetector', (detectorJSON) => {
   cy.request(
     'POST',
-    `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}`,
+    `${OPENSEARCH_DASHBOARDS}${NODE_API.DETECTORS_BASE}`,
     detectorJSON
   );
 });
@@ -60,7 +60,7 @@ Cypress.Commands.add('createDetector', (detectorJSON) => {
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('opensearch')}/${NODE_API.DETECTORS_BASE}/${detectorId}`,
+    `${OPENSEARCH_DASHBOARDS}/${NODE_API.DETECTORS_BASE}/${detectorId}`,
     detectorJSON
   );
 });
@@ -82,7 +82,7 @@ Cypress.Commands.add('deleteDetector', (detectorName) => {
   };
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/_search`,
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.DETECTORS_BASE}/_search`,
     failOnStatusCode: false,
     body,
   }).then((response) => {
@@ -90,7 +90,7 @@ Cypress.Commands.add('deleteDetector', (detectorName) => {
       for (let hit of response.body.hits.hits) {
         cy.request(
           'DELETE',
-          `${Cypress.env('opensearch')}${NODE_API.DETECTORS_BASE}/${hit._id}`
+          `${OPENSEARCH_DASHBOARDS}${NODE_API.DETECTORS_BASE}/${hit._id}`
         );
       }
     }
@@ -108,7 +108,7 @@ Cypress.Commands.add(
     };
     cy.request({
       method: 'POST',
-      url: `${Cypress.env('opensearch')}${NODE_API.MAPPINGS_BASE}`,
+      url: `${OPENSEARCH_DASHBOARDS}${NODE_API.MAPPINGS_BASE}`,
       body: body,
     });
   }
@@ -125,7 +125,7 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
 Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('opensearch')}/${NODE_API.RULES_BASE}/${ruleId}`,
+    `${OPENSEARCH_DASHBOARDS}/${NODE_API.RULES_BASE}/${ruleId}`,
     ruleJSON
   );
 });
@@ -147,7 +147,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   };
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('opensearch')}${
+    url: `${OPENSEARCH_DASHBOARDS}${
       NODE_API.RULES_BASE
     }/_search?pre_packaged=false`,
     failOnStatusCode: false,
@@ -158,7 +158,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
         if (hit._source.title === ruleName)
           cy.request(
             'DELETE',
-            `${Cypress.env('opensearch')}${NODE_API.RULES_BASE}/${
+            `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}/${
               hit._id
             }?forced=true`
           );
@@ -170,7 +170,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
 Cypress.Commands.add('deleteAllCustomRules', () => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/.opensearch-sap-custom-rules-config`,
+    url: `${OPENSEARCH_DASHBOARDS}/.opensearch-sap-custom-rules-config`,
     failOnStatusCode: false,
     body: { query: { match_all: {} } },
   });
