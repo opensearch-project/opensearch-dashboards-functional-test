@@ -147,9 +147,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   };
   cy.request({
     method: 'POST',
-    url: `${OPENSEARCH_DASHBOARDS}${
-      NODE_API.RULES_BASE
-    }/_search?pre_packaged=false`,
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
     failOnStatusCode: false,
     body,
   }).then((response) => {
@@ -158,9 +156,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
         if (hit._source.title === ruleName)
           cy.request(
             'DELETE',
-            `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}/${
-              hit._id
-            }?forced=true`
+            `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}/${hit._id}?forced=true`
           );
       }
     }
