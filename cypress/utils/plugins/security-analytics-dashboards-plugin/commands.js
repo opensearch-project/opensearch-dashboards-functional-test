@@ -34,7 +34,7 @@ Cypress.Commands.add(
       message: `Wait for url: ${fullUrl} to be loaded.`,
     });
     cy.url({ timeout: timeout })
-      .should('include', fullUrl)
+      .should('match', new RegExp(`(.*)#/${url}`))
       .then(() => {
         contains && cy.contains(contains);
       });
