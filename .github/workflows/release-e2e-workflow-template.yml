@@ -52,7 +52,7 @@ jobs:
           cd opensearch-${{ env.VERSION }}/
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove OpenSearch Security"
-              echo "plugins.security.disabled: true" >> config/opensearch.yml
+              [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
               ./opensearch-tar-install.sh &
               timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' http://localhost:9200)" != "200" ]]; do sleep 5; done'
               curl http://localhost:9200
