@@ -20,9 +20,7 @@ export const BASE_API_PATH = '/_plugins/_security_analytics';
 // OPENSEARCH_DASHBOARDS constant differs here from in the plugin as the Cypress env is configured differently.
 export const OPENSEARCH_DASHBOARDS = BASE_PATH;
 
-export const OPENSEARCH_DASHBOARDS_URL = Cypress.env('SECURITY_ENABLED')
-    ? `${OPENSEARCH_DASHBOARDS}/app/${PLUGIN_NAME}?security_tenant=private#`
-    : `${OPENSEARCH_DASHBOARDS}/app/${PLUGIN_NAME}#`;
+export const OPENSEARCH_DASHBOARDS_URL = `${OPENSEARCH_DASHBOARDS}/app/${PLUGIN_NAME}#`;
 
 export const NODE_API = {
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
