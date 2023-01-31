@@ -21,9 +21,7 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
 });
 
 Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
-  cy.get(`[placeholder="${placeholder}"]`)
-    .type(`{selectall}${text}`)
-    .realPress('Enter');
+  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}{enter}`);
 });
 
 Cypress.Commands.add(
