@@ -118,9 +118,7 @@ const plugins = {
   'security-analytics-dashboards-plugin': {
     name: 'securityAnalyticsDashboards',
     default: {
-      videos: [
-        'rules_spec.js',
-      ],
+      videos: ['rules_spec.js'],
     },
   },
 };
