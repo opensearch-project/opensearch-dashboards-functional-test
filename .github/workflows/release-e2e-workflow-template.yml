@@ -50,53 +50,65 @@ jobs:
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
+          [ -d "plugins/opensearch-security" ] && echo "SECURITY_PLUGIN_INSTALLED=true" >> $GITHUB_ENV || && echo "SECURITY_PLUGIN_INSTALLED=false" >> $GITHUB_ENV
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove OpenSearch Security"
-              [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
+              [ ${{ env.SECURITY_PLUGIN_INSTALLED }} = 'true' ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
               ./opensearch-tar-install.sh &
               timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' http://localhost:9200)" != "200" ]]; do sleep 5; done'
               curl http://localhost:9200
-          else
+          elif [ ${{ env.SECURITY_PLUGIN_INSTALLED }} = 'true' ]; then
               echo "Keep OpenSearch Security"
               ./opensearch-tar-install.sh &
               timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
               curl https://localhost:9200 -u admin:admin --insecure
+          else
+              echo "Skipping security tests because OpenSearch Security plugin not installed"
           fi
       - name: Get OpenSearch-Dashboards
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Get node and yarn versions
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         id: versions
         run: |
           echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")"
       - name: Setup node
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
       - name: Run OpenSearch-Dashboards server
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
+          [ -d "plugins/securityDashboards" ] && echo "SECURITY_DASHBOARDS_PLUGIN_INSTALLED=true" >> $GITHUB_ENV || && echo "SECURITY_DASHBOARDS_PLUGIN_INSTALLED=false" >> $GITHUB_ENV
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove Dashboards Security"
-              ./bin/opensearch-dashboards-plugin remove securityDashboards
+              [ ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} = 'true' ]  && ./bin/opensearch-dashboards-plugin remove securityDashboards
               sed -i /^opensearch_security/d config/opensearch_dashboards.yml
               sed -i 's/https/http/' config/opensearch_dashboards.yml
               bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status
-          else
+          elif [ ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} = 'true' ]; then
               echo "Keep Dashboards Security"
               bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl -u admin:admin -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status -u admin:admin --insecure
+          else
+              echo "Skipping security tests because OpenSearch Dashboards Security plugin not installed"
           fi
       - name: Get Cypress version
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         id: cypress_version
         run: |
           echo "::set-output name=cypress_version::$(cat ./cypress-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
       - name: Cache Cypress
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         id: cache-cypress
         uses: actions/cache@v1
         with:
@@ -105,8 +117,11 @@ jobs:
         env:
           CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
       - run: npx cypress cache list
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
       - run: npx cypress cache path
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
       - name: Cypress tests
+        if: (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         uses: cypress-io/github-action@v2
         with:
           working-directory: cypress-test
@@ -114,19 +129,19 @@ jobs:
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
-        if: failure()
+        if: failure() && (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         with:
           name: cypress-screenshots
           path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
-        if: always()
+        if: always() && (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         with:
           name: cypress-videos
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
-        if: always()
+        if: always() && (${{ env.SECURITY_ENABLED }} == 'true' && ${{ env.SECURITY_PLUGIN_INSTALLED }} == 'true') && ${{ env.SECURITY_DASHBOARDS_PLUGIN_INSTALLED }} == 'true') || ${{ env.SECURITY_ENABLED }} == 'false'
         with:
           name: cypress-results
           path: cypress-test/cypress/results
