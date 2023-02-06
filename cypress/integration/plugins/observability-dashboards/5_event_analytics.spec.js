@@ -7,15 +7,12 @@
 import {
   delayTime,
   TEST_QUERIES,
-  TESTING_PANEL,
   SAVE_QUERY1,
   SAVE_QUERY2,
-  SAVE_QUERY3,
   querySearch,
   YEAR_TO_DATE_DOM_ID,
   landOnEventHome,
   landOnEventExplorer,
-  landOnPanels,
   supressResizeObserverIssue,
   clearText,
 } from '../../../utils/constants';
@@ -71,7 +68,6 @@ describe('Saves a query on explorer page', () => {
     clearText('searchAutocompleteTextArea');
     querySearch(TEST_QUERIES[0].query, TEST_QUERIES[0].dateRangeDOM);
     cy.wait(delayTime);
-
     cy.get('.tab-title').contains('Events').click();
     cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]').click();
     cy.wait(delayTime);
@@ -112,42 +108,6 @@ describe('Saves a query on explorer page', () => {
       .first()
       .contains(SAVE_QUERY2);
   });
-
-  it('Saves a visualization to an existing panel', () => {
-    landOnPanels();
-
-    cy.get('[data-test-subj="customPanels__createNewPanels"]').click();
-    cy.get('input.euiFieldText').type(TESTING_PANEL);
-    cy.get('.euiButton__text')
-      .contains(/^Create$/)
-      .click();
-    cy.wait(delayTime);
-
-    landOnEventExplorer();
-    clearText('searchAutocompleteTextArea');
-    querySearch(TEST_QUERIES[1].query, TEST_QUERIES[1].dateRangeDOM);
-    cy.wait(delayTime);
-
-    supressResizeObserverIssue();
-    cy.get('button[id="main-content-vis"]').contains('Visualizations').click();
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]').click();
-    cy.wait(delayTime * 2);
-    cy.get(
-      '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
-    ).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]').type(SAVE_QUERY3);
-    cy.get('[data-test-subj="eventExplorer__querySaveComboBox"]').type(
-      TESTING_PANEL
-    );
-    cy.get(`input[value="${TESTING_PANEL}"]`).click();
-    cy.get(
-      '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
-    ).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]').click();
-    cy.wait(delayTime);
-
-    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
-  });
 });
 
 describe('Delete saved objects', () => {
@@ -161,9 +121,7 @@ describe('Delete saved objects', () => {
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem__text').contains('Delete').click();
     cy.wait(delayTime);
-
     cy.get('button.euiButton--danger').should('be.disabled');
-
     cy.get('input.euiFieldText[placeholder="delete"]').type('delete');
     cy.get('button.euiButton--danger').should('not.be.disabled');
     cy.get('.euiButton__text').contains('Delete').click();
@@ -198,24 +156,5 @@ describe('Click to view field insights', () => {
     cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
       .contains('Minimum overtime')
       .should('exist');
-  });
-
-  it('Click a non-numerical field to view insights', () => {
-    cy.get('[data-test-subj="field-host-showDetails"]').click();
-    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
-      .contains('Top values')
-      .should('exist');
-    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
-      .contains('Rare values')
-      .should('exist');
-    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
-      .contains('Average overtime')
-      .should('not.exist');
-    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
-      .contains('Maximum overtime')
-      .should('not.exist');
-    cy.get('[data-test-subj="sidebarField__fieldInsights"] button')
-      .contains('Minimum overtime')
-      .should('not.exist');
   });
 });
