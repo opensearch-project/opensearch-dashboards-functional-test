@@ -19,6 +19,11 @@ body {
     text-align: left;
 }
 
+#inputsDiv table td select {
+    width: 100%;
+}
+
+
 #inputsDiv table #securityTd {
     text-align: center;
 }
@@ -130,6 +135,7 @@ body {
 
 #testResultsDiv {
     display: none;
+    margin-top: 8px;
 }
 
 #testResults {
