@@ -5,7 +5,7 @@
 
 /// <reference types="cypress" />
 
-import { WAIT_TIME, BASE_PATH } from '../../../utils/constants';
+import { WAIT_TIME, BASE_PATH, TIMEOUT } from '../../../utils/constants';
 
 describe('Cypress', () => {
   // remove sample data
@@ -28,8 +28,10 @@ describe('Cypress', () => {
   });
 
   it('Download from reporting homepage', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
-    cy.location('pathname', { timeout: 60000 }).should(
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
+    cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
     );
@@ -112,8 +114,10 @@ describe('Cypress', () => {
   it('Download from Report definition details page', () => {
     // create an on-demand report definition
 
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
-    cy.location('pathname', { timeout: 60000 }).should(
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
+    cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
     );
