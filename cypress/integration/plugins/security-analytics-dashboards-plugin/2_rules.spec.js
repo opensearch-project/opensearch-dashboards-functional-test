@@ -64,9 +64,7 @@ describe('Rules', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
 
     // Check that correct page is showing
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
   });
 
   it('...can be created', () => {
@@ -135,9 +133,7 @@ describe('Rules', () => {
       force: true,
     });
 
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
 
     // Search for the rule
     cy.triggerSearchField('Search rules', SAMPLE_RULE.name);

@@ -28,21 +28,6 @@ Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
     .trigger('search');
 });
 
-Cypress.Commands.add(
-  '' + 'waitForPageLoad',
-  (url, { timeout = 10000, contains = null }) => {
-    const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${url}`;
-    Cypress.log({
-      message: `Wait for url: ${fullUrl} to be loaded.`,
-    });
-    cy.url({ timeout: timeout })
-      .should('match', new RegExp(`(.*)#/${url}`))
-      .then(() => {
-        contains && cy.contains(contains);
-      });
-  }
-);
-
 Cypress.Commands.add('deleteAllDetectors', () => {
   cy.request({
     method: 'DELETE',

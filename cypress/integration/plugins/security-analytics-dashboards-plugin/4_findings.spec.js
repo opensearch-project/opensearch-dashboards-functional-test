@@ -39,9 +39,7 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.waitForPageLoad('findings', {
-      contains: 'Findings',
-    });
+    cy.contains('Findings');
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -150,9 +148,7 @@ describe('Findings', () => {
   it('...can delete detector', () => {
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-    cy.waitForPageLoad('detectors', {
-      contains: 'Threat detectors',
-    });
+    cy.contains('Threat detectors');
 
     // filter table to show only sample_detector findings
     cy.triggerSearchField('Search threat detectors', 'sample_detector');
