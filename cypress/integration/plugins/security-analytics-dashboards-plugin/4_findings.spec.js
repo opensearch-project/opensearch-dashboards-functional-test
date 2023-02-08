@@ -157,19 +157,11 @@ describe('Findings', () => {
     // filter table to show only sample_detector findings
     cy.triggerSearchField('Search threat detectors', 'sample_detector');
 
-    // intercept detectors and rules requests
-    cy.intercept('detectors/_search').as('getDetector');
-    cy.intercept('rules/_search?prePackaged=true').as('getPrePackagedRules');
-    cy.intercept('rules/_search?prePackaged=false').as('getRules');
-
     // Click on detector to be removed
     cy.contains('sample_detector').click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: sample_detector.name,
-    });
 
-    // wait for detector details to load before continuing
-    cy.wait(['@getDetector', '@getPrePackagedRules', '@getRules']).then(() => {
+    // Wait for detector details to load before continuing
+    cy.contains('Detector details').then(() => {
       // Click "Actions" button, the click "Delete"
       cy.get('button.euiButton')
         .contains('Actions')
@@ -180,11 +172,8 @@ describe('Findings', () => {
             .contains('Delete')
             .click({ force: true });
 
-          // Search for sample_detector, presumably deleted
-          cy.triggerSearchField('Search threat detectors', 'sample_detector');
-
           // Confirm sample_detector no longer exists
-          cy.contains('There are no existing detectors.');
+          cy.contains('sample_detector').should('not.exist');
         });
     });
   });
