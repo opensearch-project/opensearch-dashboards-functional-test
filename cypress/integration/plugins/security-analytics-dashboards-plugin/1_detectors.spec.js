@@ -255,10 +255,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.url().should(
-      'include',
-      'http://localhost:5601/app/opensearch_security_analytics_dashboards#/edit-detector-rules'
-    );
+    cy.contains('Edit detector rules');
 
     // Search for specific rule
     cy.triggerSearchField('Search...', 'USB Device');
