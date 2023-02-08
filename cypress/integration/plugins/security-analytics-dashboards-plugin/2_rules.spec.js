@@ -139,8 +139,6 @@ describe('Rules', () => {
       contains: 'Rules',
     });
 
-    cy.wait('@getRules');
-
     // Search for the rule
     cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
 
@@ -243,10 +241,6 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    cy.intercept({
-      url: '/rules',
-    }).as('deleteRule');
-
     cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
@@ -269,10 +263,9 @@ describe('Rules', () => {
             cy.get('.euiButton').contains('Delete').click();
           });
 
-        cy.wait('@deleteRule');
-
         // Search for sample_detector, presumably deleted
         cy.triggerSearchField('Search rules', SAMPLE_RULE.name);
+
         // Click the rule link to open the details flyout
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
       });

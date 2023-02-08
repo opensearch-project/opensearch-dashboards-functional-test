@@ -46,7 +46,7 @@ const now = new Date(Date.now());
 const month =
   now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`;
 const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
-const year = `${now.getFullYear()}`.substr(1);
+const year = `${now.getFullYear()}`.substr(2);
 const date = `${month}/${day}/${year}`;
 
 const docCount = 4;
@@ -377,6 +377,7 @@ describe('Alerts', () => {
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Acknowledged').click({ force: true });
     });
+    cy.get('[data-text="Status"]').click({ force: true });
 
     // Confirm there is an "Acknowledged" alert
     cy.get('tbody > tr').should(($tr) => {
@@ -385,10 +386,11 @@ describe('Alerts', () => {
     });
 
     // Filter the table to show only "Active" alerts
-    cy.get('[data-text="Status"]');
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Acknowledged').click({ force: true });
     });
+    cy.get('[data-text="Status"]').click({ force: true });
 
     // Confirm there are now 2 "Acknowledged" alerts
     cy.get('tbody > tr')
@@ -403,6 +405,7 @@ describe('Alerts', () => {
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
     });
+    cy.get('[data-text="Status"]').click({ force: true });
 
     cy.get('tbody > tr')
       .filter(`:contains(${testDetectorAlertCondition})`)
@@ -420,11 +423,12 @@ describe('Alerts', () => {
       .should('have.length', 2);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[data-text="Status"]');
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
     });
+    cy.get('[data-text="Status"]').click({ force: true });
 
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
@@ -438,6 +442,7 @@ describe('Alerts', () => {
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
     });
+    cy.get('[data-text="Status"]').click({ force: true });
 
     cy.get('tbody > tr')
       .first()

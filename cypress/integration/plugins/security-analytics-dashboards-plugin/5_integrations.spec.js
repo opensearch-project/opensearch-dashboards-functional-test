@@ -57,16 +57,8 @@ describe('Integration tests', () => {
     ).then(() => cy.createDetector(dns_detector_data));
 
     // Ingest docs
-    cy.request(
-      'POST',
-      `${Cypress.env('opensearch')}/${indexName}/_doc/101`,
-      add_windows_index_data
-    );
-    cy.request(
-      'POST',
-      `${Cypress.env('opensearch')}/${dnsName}/_doc/101`,
-      add_dns_index_data
-    );
+    cy.insertDocumentToIndex(indexName, '101', add_windows_index_data);
+    cy.insertDocumentToIndex(dnsName, '101', add_dns_index_data);
 
     // Wait for detector interval to pass
     cy.wait(DETECTOR_TRIGGER_TIMEOUT);

@@ -21,7 +21,11 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
 });
 
 Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
-  cy.get(`[placeholder="${placeholder}"]`).type(`{selectall}${text}{enter}`);
+  cy.get(`input[type="search"]`)
+    .first()
+    .focus()
+    .type(`{selectall}${text}{enter}`)
+    .trigger('search');
 });
 
 Cypress.Commands.add(
@@ -48,11 +52,14 @@ Cypress.Commands.add('deleteAllDetectors', () => {
 });
 
 Cypress.Commands.add('createDetector', (detectorJSON) => {
-  cy.request(
-    'POST',
-    `${OPENSEARCH_DASHBOARDS}${NODE_API.DETECTORS_BASE}`,
-    detectorJSON
-  );
+  cy.request({
+    method: 'POST',
+    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.DETECTORS_BASE}`,
+    body: detectorJSON,
+    headers: {
+      'osd-xsrf': true,
+    },
+  });
 });
 
 Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
@@ -108,6 +115,9 @@ Cypress.Commands.add(
       method: 'POST',
       url: `${OPENSEARCH_DASHBOARDS}${NODE_API.MAPPINGS_BASE}`,
       body: body,
+      headers: {
+        'osd-xsrf': true,
+      },
     });
   }
 );
@@ -117,6 +127,9 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
     method: 'POST',
     url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
+    headers: {
+      'osd-xsrf': true,
+    },
   });
 });
 
@@ -148,6 +161,9 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
     url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}/_search?pre_packaged=false`,
     failOnStatusCode: false,
     body,
+    headers: {
+      'osd-xsrf': true,
+    },
   }).then((response) => {
     if (response.status === 200) {
       for (let hit of response.body.hits.hits) {
@@ -169,3 +185,54 @@ Cypress.Commands.add('deleteAllCustomRules', () => {
     body: { query: { match_all: {} } },
   });
 });
+
+Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('opensearch')}/${NODE_API.DETECTORS_BASE}/${detectorId}`,
+    detectorJSON
+  );
+});
+
+Cypress.Commands.add('deleteAllDetectors', () => {
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    failOnStatusCode: false,
+  }).as('deleteAllDetectors');
+});
+
+Cypress.Commands.add(
+  'ospSearch',
+  {
+    prevSubject: true,
+  },
+  (subject, text) => {
+    return cy.get(subject).clear().ospType(text).realPress('Enter');
+  }
+);
+
+Cypress.Commands.add(
+  'ospClear',
+  {
+    prevSubject: true,
+  },
+  (subject) => {
+    return cy
+      .get(subject)
+      .wait(100)
+      .type('{selectall}{backspace}')
+      .clear({ force: true })
+      .invoke('val', '');
+  }
+);
+
+Cypress.Commands.add(
+  'ospType',
+  {
+    prevSubject: true,
+  },
+  (subject, text) => {
+    return cy.get(subject).wait(10).focus().realType(text);
+  }
+);
