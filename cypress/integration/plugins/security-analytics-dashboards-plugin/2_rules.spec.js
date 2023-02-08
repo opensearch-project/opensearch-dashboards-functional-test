@@ -91,7 +91,10 @@ describe('Rules', () => {
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
-      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}{esc}`)
+      cy
+        .get('[data-test-subj="rule_tags_dropdown"]')
+        .type(`${tag}{enter}{esc}`)
+        .blur()
     );
 
     // Enter the reference

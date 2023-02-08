@@ -41,6 +41,12 @@ describe('Detectors', () => {
     // Create test index
     cy.createIndex(indexName, null, sample_index_settings);
 
+    // Visit Detectors page
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+
+    // Check that correct page is showing
+    cy.contains('Threat detectors');
+
     cy.contains(detectorName).should('not.exist');
   });
 
