@@ -86,15 +86,12 @@ describe('Rules', () => {
 
     // Enter the severity
     cy.get('[data-test-subj="rule_severity_dropdown"]').type(
-      SAMPLE_RULE.severity
+      `${SAMPLE_RULE.severity}{downarrow}{enter}`
     );
 
     // Enter the tags
     SAMPLE_RULE.tags.forEach((tag) =>
-      cy
-        .get('[data-test-subj="rule_tags_dropdown"]')
-        .type(`${tag}{enter}{esc}`)
-        .blur()
+      cy.get('[data-test-subj="rule_tags_dropdown"]').type(`${tag}{enter}{esc}`)
     );
 
     // Enter the reference

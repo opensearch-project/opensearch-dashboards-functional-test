@@ -203,7 +203,9 @@ describe('Detectors', () => {
     cy.contains('Edit detector details');
 
     // Change detector name
-    cy.get(`[data-test-subj="define-detector-detector-name"]`).type('_edited');
+    cy.get(`[data-test-subj="define-detector-detector-name"]`)
+      .clear()
+      .type(`${detectorName}_edited`);
 
     // Change detector description
     cy.get(`[data-test-subj="define-detector-detector-description"]`).type(
