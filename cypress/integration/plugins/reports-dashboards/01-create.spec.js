@@ -7,6 +7,7 @@ import {
   visitReportingLandingPage,
   WAIT_TIME,
   BASE_PATH,
+  TIMEOUT,
 } from '../../../utils/constants';
 
 describe('Cypress', () => {
@@ -218,7 +219,7 @@ function visitCreateReportDefinitionPage() {
   cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
     waitForGetTenant: true,
   });
-  cy.location('pathname', { timeout: 60000 }).should(
+  cy.location('pathname', { timeout: TIMEOUT }).should(
     'include',
     '/reports-dashboards'
   );
