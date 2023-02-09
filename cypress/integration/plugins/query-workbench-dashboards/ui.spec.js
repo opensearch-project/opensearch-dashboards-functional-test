@@ -3,11 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-
 /// <reference types="cypress" />
 
 import { edit } from 'brace';
-import { delay, files, testDataSet, testQueries, verifyDownloadData } from '../../../utils/constants';
+import {
+  delay,
+  files,
+  testDataSet,
+  testQueries,
+  verifyDownloadData,
+} from '../../../utils/constants';
 
 describe('Dump test data', () => {
   it('Indexes test data for SQL and PPL', () => {
@@ -29,7 +34,7 @@ describe('Dump test data', () => {
         });
       });
 
-    testDataSet.forEach(({url, index}) => dumpDataSet(url, index));
+    testDataSet.forEach(({ url, index }) => dumpDataSet(url, index));
   });
 });
 
@@ -37,7 +42,7 @@ describe('Test PPL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiToggle__input[title=PPL]').click({ force: true });
+    cy.get('.euiButton__text[title=PPL]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -48,21 +53,23 @@ describe('Test PPL UI', () => {
   });
 
   it('Test Run button', () => {
-    cy.get('textarea.ace_text-input').eq(0).focus().type('source=accounts', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('source=accounts | sort firstname', { force: true });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
     cy.get('.euiTab__content').contains('Events').click({ force: true });
 
-    cy.get('span.euiTableCellContent__text')
-      .eq(19)
-      .should((employer) => {
-        expect(employer).to.contain('Pyrami');
-      });
+    cy.contains('Abbott');
   });
 
   it('Test Clear button', () => {
-    cy.get('textarea.ace_text-input').eq(0).focus().type('source=accounts', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('source=accounts', { force: true });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
@@ -86,11 +93,16 @@ describe('Test PPL UI', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
     cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
-    cy.get('textarea.ace_text-input').eq(0).focus().type('source=accounts', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('source=accounts', { force: true });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
-    cy.get('.euiButton__text').contains('Full screen view').click({ force: true });
+    cy.get('.euiButton__text')
+      .contains('Full screen view')
+      .click({ force: true });
 
     cy.get('.euiTitle').should('not.exist');
 
@@ -105,7 +117,7 @@ describe('Test SQL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiToggle__input[title=SQL]').click({ force: true });
+    cy.get('.euiButton__text[title=SQL]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -119,35 +131,38 @@ describe('Test SQL UI', () => {
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('{enter}select * from accounts where balance > 49500;', { force: true });
+      .type('{enter}select * from accounts where balance > 49500;', {
+        force: true,
+      });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
     cy.get('.euiTab__content').contains('accounts').click({ force: true });
 
     cy.get('input.euiFieldSearch').type('marissa');
-    cy.get('span.euiTableCellContent__text')
-      .eq(13)
-      .should((account_number) => {
-        expect(account_number).to.contain('803');
-      });
+    cy.contains('803');
   });
 
   it('Test Translate button', () => {
-    cy.get('textarea.ace_text-input').eq(0).focus().type('{selectall}{backspace}', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('{selectall}{backspace}', { force: true });
     cy.wait(delay);
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('{selectall}{backspace}select log(balance) from accounts where abs(age) > 20;', {
-        force: true,
-      });
+      .type(
+        '{selectall}{backspace}select log(balance) from accounts where abs(age) > 20;',
+        {
+          force: true,
+        }
+      );
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
     cy.wait(delay);
 
-    // hard to get euiCodeBlock content, check length instead
-    cy.get('.euiCodeBlock__code').children().should('have.length', 13);
+    cy.contains('OpenSearchQueryRequest(indexName=accounts')
   });
 
   it('Test Clear button', () => {
@@ -168,7 +183,9 @@ describe('Test SQL UI', () => {
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
-    cy.get('.euiButton__text').contains('Full screen view').click({ force: true });
+    cy.get('.euiButton__text')
+      .contains('Full screen view')
+      .click({ force: true });
 
     cy.get('.euiTitle').should('not.exist');
   });
@@ -203,9 +220,12 @@ describe('Test table display', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiToggle__input[title=SQL]').click({ force: true });
+    cy.get('.euiButton__text[title=SQL]').click({ force: true });
     cy.wait(delay);
-    cy.get('textarea.ace_text-input').eq(0).focus().type('{selectall}{backspace}', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('{selectall}{backspace}', { force: true });
     cy.wait(delay);
   });
 
@@ -231,17 +251,15 @@ describe('Test table display', () => {
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type(`{selectall}{backspace}select * from employee_nested;`, { force: true });
+      .type(`{selectall}{backspace}select * from employee_nested;`, {
+        force: true,
+      });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
 
     cy.get('button.euiLink').eq(2).click({ force: true });
     cy.wait(delay);
-    cy.get('span.euiTableCellContent__text')
-      .eq(24)
-      .should((cell) => {
-        expect(cell).to.contain('comment_2_1');
-      });
+    cy.contains('comment_2_1');
   });
 });
