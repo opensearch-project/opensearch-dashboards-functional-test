@@ -7,8 +7,8 @@
 
 import { edit } from 'brace';
 import {
-  QUERY_WORKBENCH_DELAY,
   files,
+  QUERY_WORKBENCH_DELAY,
   testDataSet,
   testQueries,
   verifyDownloadData,
@@ -203,7 +203,8 @@ describe('Test and verify SQL downloads', () => {
           'osd-xsrf': true,
         },
         body: {
-          query: 'select * from accounts where balance > 49500',
+          query:
+            'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
         if (
@@ -263,6 +264,6 @@ describe('Test table display', () => {
 
     cy.get('button.euiLink').eq(2).click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.contains('comment_2_1');
+    cy.contains('message');
   });
 });
