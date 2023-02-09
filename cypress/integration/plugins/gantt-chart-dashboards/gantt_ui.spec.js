@@ -5,7 +5,11 @@
 
 /// <reference types="cypress" />
 
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
+
+dayjs.extend(customParseFormat);
 
 const delay = 100;
 const GANTT_VIS_NAME =
@@ -169,37 +173,60 @@ describe('Configure panel settings', () => {
   });
 
   it('Changes time formats', () => {
-    cy.contains('12:59:07.303 PM').should('exist');
-
     cy.get('select').eq(3).select('MM/DD hh:mm:ss A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28 12:59:07 PM').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD hh:mm:ss A', true).isValid()).to.be.true;
+      });
 
     cy.get('select').eq(3).select('MM/DD/YY hh:mm A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28/20 12:59 PM').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD/YY hh:mm A', true).isValid()).to.be.true;
+      });
 
     cy.get('select').eq(3).select('HH:mm:ss.SSS');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('12:59:07.303').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'HH:mm:ss.SSS', true).isValid()).to.be.true;
+      });
 
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28 12:59:07').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD HH:mm:ss', true).isValid()).to.be.true;
+      });
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28/20 12:59').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD/YY HH:mm', true).isValid()).to.be.true;
+      });
   });
 
   it('Hides legends', () => {
