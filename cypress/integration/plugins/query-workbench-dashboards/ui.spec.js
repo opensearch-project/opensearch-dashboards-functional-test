@@ -7,8 +7,8 @@
 
 import { edit } from 'brace';
 import {
-  delay,
   files,
+  QUERY_WORKBENCH_DELAY,
   testDataSet,
   testQueries,
   verifyDownloadData,
@@ -41,9 +41,9 @@ describe('Dump test data', () => {
 describe('Test PPL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text[title=PPL]').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
   });
 
   it('Confirm results are empty', () => {
@@ -57,9 +57,9 @@ describe('Test PPL UI', () => {
       .eq(0)
       .focus()
       .type('source=accounts | sort firstname', { force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiTab__content').contains('Events').click({ force: true });
 
     cy.contains('Abbott');
@@ -70,13 +70,13 @@ describe('Test PPL UI', () => {
       .eq(0)
       .focus()
       .type('source=accounts', { force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiTab__content').contains('Events').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Clear').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
 
     cy.get('.euiTextAlign')
       .contains('Enter a query in the query editor above to see results.')
@@ -97,9 +97,9 @@ describe('Test PPL UI', () => {
       .eq(0)
       .focus()
       .type('source=accounts', { force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
@@ -107,7 +107,7 @@ describe('Test PPL UI', () => {
     cy.get('.euiTitle').should('not.exist');
 
     cy.get('button#exit-fullscreen-button').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Full screen view').should('exist');
     cy.get('.euiTitle').contains('Query Workbench').should('exist');
   });
@@ -116,9 +116,9 @@ describe('Test PPL UI', () => {
 describe('Test SQL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text[title=SQL]').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
   });
 
   it('Confirm results are empty', () => {
@@ -134,9 +134,9 @@ describe('Test SQL UI', () => {
       .type('{enter}select * from accounts where balance > 49500;', {
         force: true,
       });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiTab__content').contains('accounts').click({ force: true });
 
     cy.get('input.euiFieldSearch').type('marissa');
@@ -148,7 +148,7 @@ describe('Test SQL UI', () => {
       .eq(0)
       .focus()
       .type('{selectall}{backspace}', { force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
@@ -158,16 +158,16 @@ describe('Test SQL UI', () => {
           force: true,
         }
       );
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
 
     cy.contains('OpenSearchQueryRequest(indexName=accounts');
   });
 
   it('Test Clear button', () => {
     cy.get('.euiButton__text').contains('Clear').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
 
     cy.get('.ace_content')
       .eq(0)
@@ -182,7 +182,7 @@ describe('Test SQL UI', () => {
     cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
@@ -203,7 +203,8 @@ describe('Test and verify SQL downloads', () => {
           'osd-xsrf': true,
         },
         body: {
-          query: 'select * from accounts where balance > 49500',
+          query:
+            'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
         if (
@@ -222,14 +223,14 @@ describe('Test and verify SQL downloads', () => {
 describe('Test table display', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text[title=SQL]').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
       .type('{selectall}{backspace}', { force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
   });
 
   testQueries.map(({ title, query, cell_idx, expected_string }) => {
@@ -238,9 +239,9 @@ describe('Test table display', () => {
         .eq(0)
         .focus()
         .type(`{selectall}{backspace}${query}`, { force: true });
-      cy.wait(delay);
+      cy.wait(QUERY_WORKBENCH_DELAY);
       cy.get('.euiButton__text').contains('Run').click({ force: true });
-      cy.wait(delay);
+      cy.wait(QUERY_WORKBENCH_DELAY);
 
       cy.get('span.euiTableCellContent__text')
         .eq(cell_idx)
@@ -257,12 +258,12 @@ describe('Test table display', () => {
       .type(`{selectall}{backspace}select * from employee_nested;`, {
         force: true,
       });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(delay);
+    cy.wait(QUERY_WORKBENCH_DELAY);
 
     cy.get('button.euiLink').eq(2).click({ force: true });
-    cy.wait(delay);
-    cy.contains('comment_2_1');
+    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.contains('message');
   });
 });
