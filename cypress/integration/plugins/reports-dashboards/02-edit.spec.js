@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../../../utils/constants';
+import { BASE_PATH, TIMEOUT } from '../../../utils/constants';
 
 describe('Cypress', () => {
   it('Visit edit page, update name and description', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
-    cy.location('pathname', { timeout: 60000 }).should(
+    cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
     );
@@ -42,8 +42,10 @@ describe('Cypress', () => {
   });
 
   it('Visit edit page, change report trigger', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
-    cy.location('pathname', { timeout: 60000 }).should(
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
+    cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
     );
@@ -73,8 +75,10 @@ describe('Cypress', () => {
   });
 
   it('Visit edit page, change report trigger back', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
-    cy.location('pathname', { timeout: 60000 }).should(
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
+    cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
     );
