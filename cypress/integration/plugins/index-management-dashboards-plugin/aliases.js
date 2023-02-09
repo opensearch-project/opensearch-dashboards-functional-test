@@ -118,15 +118,14 @@ describe('Aliases', () => {
       cy.get('[data-test-subj="deleteConfirmButton"]').should(
         'not.be.disabled'
       );
+      cy.wait(500);
       // click to delete
-      cy.get('[data-test-subj="deleteConfirmButton"]', {
-        timeout: 20000,
-      }).click({ force: true });
+      cy.get('[data-test-subj="deleteConfirmButton"]').click();
       // the alias should not exist
       cy.wait(500);
-      cy.get(`#_selection_column_${SAMPLE_ALIAS_PREFIX}-0-checkbox`, {
-        timeout: 20000,
-      }).should('not.exist');
+      cy.get(`#_selection_column_${SAMPLE_ALIAS_PREFIX}-0-checkbox`).should(
+        'not.exist'
+      );
     });
   });
 
