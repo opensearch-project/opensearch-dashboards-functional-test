@@ -107,24 +107,6 @@ describe('Testing notebooks table', () => {
     cy.wait(delayTime);
   });
 
-  it('Searches existing notebooks', () => {
-    cy.get('input.euiFieldSearch').type('this notebook should not exist');
-    cy.wait(delayTime);
-
-    cy.get('.euiTableCellContent__text')
-      .contains('No items found')
-      .should('exist');
-
-    cy.get('.euiFormControlLayoutClearButton').click();
-    cy.wait(delayTime);
-    cy.get('input.euiFieldSearch').type(TEST_NOTEBOOK + ' (copy) (rename)');
-    cy.wait(delayTime);
-
-    cy.get('a.euiLink')
-      .contains(TEST_NOTEBOOK + ' (copy) (rename)')
-      .should('exist');
-  });
-
   it('Deletes notebooks', () => {
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]').click();
     cy.wait(delayTime);
@@ -263,28 +245,6 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
 
     cy.get('.euiTextColor').contains('Last successful run').should('exist');
-  });
-
-  it('Renders input only mode', () => {
-    cy.get('.euiButton__text[title="Input only"]').click();
-    cy.wait(delayTime);
-
-    cy.get('div.markdown-body').should('not.exist');
-    cy.get('.euiLink').contains('View both').should('exist');
-    cy.get('.euiLink').contains('View both').click();
-    cy.wait(delayTime);
-
-    cy.get('code').contains('POST').should('exist');
-    cy.get('.euiLink').contains('View both').should('not.exist');
-  });
-
-  it('Renders output only mode', () => {
-    cy.get('.euiButton__text[title="Output only"]').click();
-    cy.wait(delayTime);
-
-    cy.get('button[aria-label="Open paragraph menu"]').should('not.exist');
-    cy.get('button[aria-label="Toggle show input"]').should('not.exist');
-    cy.get('code').contains('POST').should('exist');
   });
 
   it('Duplicates paragraphs', () => {

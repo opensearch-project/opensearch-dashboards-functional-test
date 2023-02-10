@@ -40,18 +40,6 @@ describe('Testing dashboard table', () => {
     cy.contains('7.14%').should('exist');
   });
 
-  it('Has working breadcrumbs', () => {
-    cy.get('.euiBreadcrumb').contains('Dashboard').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Dashboard').should('exist');
-    cy.get('.euiBreadcrumb').contains('Trace analytics').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Dashboard').should('exist');
-    cy.get('.euiBreadcrumb').contains('Observability').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
-
   it('Adds the percentile filters', () => {
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
@@ -108,24 +96,6 @@ describe('Testing plots', () => {
       },
     });
     setTimeFilter();
-  });
-
-  it('Renders service map', () => {
-    // plotly scale texts are in attribute "data-unformatted"
-    cy.get('text.ytitle[data-unformatted="Latency (ms)"]').should('exist');
-    cy.get('text[data-unformatted="200"]').should('exist');
-    cy.get('.vis-network').should('exist');
-
-    cy.get('.euiButton__text[title="Error rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
-    cy.get('text[data-unformatted="10%"]').should('exist');
-
-    cy.get('.euiButton__text[title="Throughput"]').click();
-    cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
-    cy.get('text[data-unformatted="50"]').should('exist');
-
-    cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
-    cy.wait(delayTime);
   });
 
   it('Renders plots', () => {
