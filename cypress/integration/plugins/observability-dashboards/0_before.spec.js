@@ -21,9 +21,14 @@ describe('Before', () => {
     cy.get(`button[data-test-subj="addSampleDataSetflights"]`).click({
       force: true,
     });
+    // Load sample logs data
+    cy.get(`button[data-test-subj="addSampleDataSetlogs"]`).click({
+      force: true,
+    });
 
     // Verify that sample data is add by checking toast notification
     cy.contains('Sample flight data installed', { timeout: 60000 });
+    cy.contains('Sample web logs installed', { timeout: 60000 });
 
     const dumpDataSet = (mapping_url, data_url, index) => {
       cy.request({

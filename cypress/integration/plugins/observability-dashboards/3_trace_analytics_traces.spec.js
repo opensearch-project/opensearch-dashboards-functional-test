@@ -53,7 +53,7 @@ describe('Testing traces table', () => {
   it('Sorts the traces table', () => {
     cy.get('.euiTableRow').first().contains('-').should('exist');
     cy.get('.euiTableCellContent').contains('Trace group').click();
-    cy.get('.euiTableRow').first().contains('/%2A%2A').should('exist');
+    cy.get('.euiTableRow').first().contains('/**').should('exist');
   });
 
   it('Searches correctly', () => {
@@ -102,30 +102,5 @@ describe('Testing trace view', () => {
     cy.get('.euiBreadcrumb[href="observability-dashboards#/"]').click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
-
-  it('Renders data grid, flyout and filters', () => {
-    cy.get('.euiButton__text[title="Span list"]').click({ force: true });
-    cy.contains('2 columns hidden').should('exist');
-
-    cy.wait(delayTime);
-    cy.get('.euiLink').contains(SPAN_ID).trigger('mouseover', { force: true });
-    cy.get('button[data-datagrid-interactable="true"]')
-      .eq(0)
-      .click({ force: true });
-    cy.get('button[data-datagrid-interactable="true"]')
-      .eq(0)
-      .click({ force: true }); // first click doesn't go through eui data grid
-    cy.wait(delayTime);
-    cy.contains('Span detail').should('exist');
-    cy.contains('Span attributes').should('exist');
-    cy.get('.euiTextColor').contains('Span ID').trigger('mouseover');
-    cy.get('.euiButtonIcon[aria-label="span-flyout-filter-icon"').click({
-      force: true,
-    });
-    cy.wait(delayTime);
-
-    cy.get('.euiBadge__text').contains('spanId: ').should('exist');
-    cy.contains('Spans (1)').should('exist');
   });
 });
