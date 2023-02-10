@@ -114,11 +114,11 @@ describe('Aliases', () => {
       // The confirm button should be disabled
       cy.get('[data-test-subj="deleteConfirmButton"]').should('be.disabled');
       // type delete
-      cy.wait(500);
-      cy.get('[data-test-subj="deleteInput"]').type('delete');
+      cy.wait(500).get('[data-test-subj="deleteInput"]').type('delete');
       cy.get('[data-test-subj="deleteConfirmButton"]').should(
         'not.be.disabled'
       );
+      cy.wait(5000);
       // click to delete
       cy.get('[data-test-subj="deleteConfirmButton"]').click();
       // the alias should not exist
