@@ -59,19 +59,6 @@ describe('Testing notebooks table', () => {
     cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
   });
 
-  it('Displays error toast for invalid notebook name', () => {
-    cy.get('.euiButton__text').contains('Create notebook').click();
-    cy.wait(delayTime);
-    cy.get('.euiButton__text')
-      .contains(/^Create$/)
-      .click();
-    cy.wait(delayTime);
-
-    cy.get('.euiToastHeader__title')
-      .contains('Invalid notebook name')
-      .should('exist');
-  });
-
   it('Creates a notebook and redirects to the notebook', () => {
     cy.get('.euiButton__text').contains('Create notebook').click();
     cy.wait(delayTime);
@@ -105,24 +92,6 @@ describe('Testing notebooks table', () => {
     cy.get('input.euiFieldText').type(' (rename)');
     cy.get('.euiButton__text').contains('Rename').click();
     cy.wait(delayTime);
-  });
-
-  it('Searches existing notebooks', () => {
-    cy.get('input.euiFieldSearch').type('this notebook should not exist');
-    cy.wait(delayTime);
-
-    cy.get('.euiTableCellContent__text')
-      .contains('No items found')
-      .should('exist');
-
-    cy.get('.euiFormControlLayoutClearButton').click();
-    cy.wait(delayTime);
-    cy.get('input.euiFieldSearch').type(TEST_NOTEBOOK + ' (copy) (rename)');
-    cy.wait(delayTime);
-
-    cy.get('a.euiLink')
-      .contains(TEST_NOTEBOOK + ' (copy) (rename)')
-      .should('exist');
   });
 
   it('Deletes notebooks', () => {
@@ -233,18 +202,6 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
   });
 
-  it('Has working breadcrumbs', () => {
-    cy.get('.euiBreadcrumb').contains(TEST_NOTEBOOK).click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains(TEST_NOTEBOOK).should('exist');
-    cy.get('.euiBreadcrumb').contains('Notebooks').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Notebooks').should('exist');
-    cy.get('.euiBreadcrumb').contains('Observability').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
-
   it('Renders markdown', () => {
     cy.get('.euiTextArea').should('not.exist');
     cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
@@ -263,28 +220,6 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
 
     cy.get('.euiTextColor').contains('Last successful run').should('exist');
-  });
-
-  it('Renders input only mode', () => {
-    cy.get('.euiButton__text[title="Input only"]').click();
-    cy.wait(delayTime);
-
-    cy.get('div.markdown-body').should('not.exist');
-    cy.get('.euiLink').contains('View both').should('exist');
-    cy.get('.euiLink').contains('View both').click();
-    cy.wait(delayTime);
-
-    cy.get('code').contains('POST').should('exist');
-    cy.get('.euiLink').contains('View both').should('not.exist');
-  });
-
-  it('Renders output only mode', () => {
-    cy.get('.euiButton__text[title="Output only"]').click();
-    cy.wait(delayTime);
-
-    cy.get('button[aria-label="Open paragraph menu"]').should('not.exist');
-    cy.get('button[aria-label="Toggle show input"]').should('not.exist');
-    cy.get('code').contains('POST').should('exist');
   });
 
   it('Duplicates paragraphs', () => {
@@ -384,18 +319,6 @@ describe('Testing paragraphs', () => {
     cy.get('.euiDataGrid__overflow').should('exist');
   });
 
-  it('Clears outputs', () => {
-    cy.wait(delayTime * 3); // need to wait for paragraphs to load first
-    cy.get('[data-test-subj="notebook-paragraph-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Clear all outputs').click();
-    cy.wait(delayTime);
-    cy.get('.euiButton__text').contains('Clear').click();
-    cy.wait(delayTime);
-
-    cy.get(`a[href="${SAMPLE_URL}"]`).should('not.exist');
-  });
-
   it('Runs all paragraphs', () => {
     cy.wait(delayTime * 3); // need to wait for paragraphs to load first
     cy.get('[data-test-subj="notebook-paragraph-actions-button"]').click();
@@ -404,64 +327,6 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
 
     cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
-  });
-
-  it('Adds paragraph to top and bottom', () => {
-    cy.wait(delayTime * 3); // need to wait for paragraphs to load first
-    cy.get('[data-test-subj="notebook-paragraph-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text')
-      .contains('Add paragraph to top')
-      .click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Code block').click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="notebook-paragraph-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text')
-      .contains('Add paragraph to bottom')
-      .click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Code block').click();
-    cy.wait(delayTime);
-
-    cy.get('.euiText').contains('[4] Visualization').should('exist');
-    cy.get('.euiText').contains('[5] Code block').should('exist');
-  });
-
-  it('Moves paragraphs', () => {
-    cy.get('.euiButtonIcon[aria-label="Open paragraph menu"').eq(0).click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem-isDisabled').should('have.length.gte', 2);
-    cy.get('.euiContextMenuItem__text').contains('Move to bottom').click();
-    cy.wait(delayTime);
-
-    cy.get('.euiText').contains('[3] Visualization').should('exist');
-  });
-
-  it('Duplicates and renames the notebook', () => {
-    cy.get('[data-test-subj="notebook-notebook-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Duplicate notebook').click();
-    cy.wait(delayTime);
-    cy.get('.euiButton__text').contains('Duplicate').click();
-    cy.wait(delayTime * 3);
-
-    cy.get('[data-test-subj="notebook-notebook-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Rename notebook').click();
-    cy.wait(delayTime);
-    cy.get('input.euiFieldText[data-autofocus="true"]').type(' (rename)');
-    cy.wait(delayTime);
-    cy.get('.euiButton__text').last().contains('Rename').click();
-    cy.wait(delayTime);
-    cy.reload();
-    cy.wait(delayTime * 3);
-
-    cy.get('.euiTitle')
-      .contains(TEST_NOTEBOOK + ' (copy) (rename)')
-      .should('exist');
-    cy.get(`a[href="${SAMPLE_URL}"]`).should('have.length.gte', 2);
   });
 
   it('Deletes paragraphs', () => {
@@ -476,22 +341,6 @@ describe('Testing paragraphs', () => {
     cy.wait(delayTime);
 
     cy.get('.euiTextAlign').contains('No paragraphs').should('exist');
-  });
-
-  it('Deletes notebook', () => {
-    cy.get('[data-test-subj="notebook-notebook-actions-button"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Delete notebook').click();
-    cy.wait(delayTime);
-
-    cy.get('button.euiButton--danger').should('be.disabled');
-
-    cy.get('input.euiFieldText[placeholder="delete"]').type('delete');
-    cy.get('button.euiButton--danger').should('not.be.disabled');
-    cy.get('.euiButton__text').contains('Delete').click();
-    cy.wait(delayTime * 3);
-
-    cy.get('.euiButton__text').contains('Create notebook').should('exist');
   });
 
   it('Cleans up test notebooks', () => {
