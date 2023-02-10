@@ -330,6 +330,12 @@ export const deleteAllSavedApplications = () => {
   cy.get('.euiButton__text').contains('Delete').click();
 };
 
+export const clearText = (testSubjectName) => {
+  cy.get(`[data-test-subj="${testSubjectName}"]`, {
+    timeout: TIMEOUT_DELAY,
+  }).clear({ force: true });
+};
+
 export const uniqueId = Date.now();
 export const baseQuery = 'source = opensearch_dashboards_sample_data_flights';
 export const nameOne = `Cypress-${uniqueId}`;
