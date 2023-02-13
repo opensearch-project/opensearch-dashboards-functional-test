@@ -183,7 +183,7 @@ describe('Test SQL UI', () => {
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text')
+    cy.get('.euiButton__text', { withinSubject: null })
       .contains('Full screen view')
       .click({ force: true });
 
