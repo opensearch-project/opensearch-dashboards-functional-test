@@ -1,0 +1,16 @@
+{
+  "properties": {
+    "dns-answers-type": {
+      "type": "alias",
+      "path": "DnsAnswerType"
+    },
+    "dns-question-name": {
+      "type": "alias",
+      "path": "DnsQuestionName"
+    },
+    "dns-question-registered_domain": {
+      "type": "alias",
+      "path": "DnsQuestionRegisteredDomain"
+    }
+  }
+}
