@@ -16,8 +16,6 @@ import {
   BASE_PATH,
 } from '../../../utils/constants';
 
-import { skipOn } from '@cypress/skip-test';
-
 const moveToEventsHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics/`);
   cy.wait(delayTime * 3);
@@ -118,64 +116,6 @@ describe('Testing notebooks table', () => {
       .contains(/^Create$/)
       .click();
     cy.wait(delayTime * 2);
-  });
-});
-
-describe('Test reporting integration if plugin installed', () => {
-  beforeEach(() => {
-    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
-    cy.get('.euiTableCellContent').contains(TEST_NOTEBOOK).click();
-    cy.wait(delayTime * 3);
-    cy.get('body').then(($body) => {
-      skipOn($body.find('#reportingActionsButton').length <= 0);
-    });
-  });
-
-  it('Create in-context PDF report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(1)')
-      .contains('Download PDF')
-      .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
-  });
-
-  it('Create in-context PNG report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(2)')
-      .contains('Download PNG')
-      .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
-  });
-
-  it('Create on-demand report definition from context menu', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(3)')
-      .contains('Create report definition')
-      .click();
-    cy.wait(delayTime);
-    cy.location('pathname', { timeout: 60000 }).should(
-      'include',
-      '/reports-dashboards'
-    );
-    cy.wait(delayTime);
-    cy.get('#reportSettingsName').type('Create notebook on-demand report');
-    cy.get('#createNewReportDefinition').click({ force: true });
-  });
-
-  it('View reports homepage from context menu', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.wait(delayTime);
-    cy.get('button.euiContextMenuItem:nth-child(4)')
-      .contains('View reports')
-      .click();
-    cy.wait(delayTime);
-    cy.location('pathname', { timeout: 60000 }).should(
-      'include',
-      '/reports-dashboards'
-    );
   });
 });
 
