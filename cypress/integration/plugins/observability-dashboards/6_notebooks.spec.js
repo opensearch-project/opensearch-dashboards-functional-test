@@ -40,14 +40,10 @@ describe('Adding sample visualization', () => {
       .contains('Add samples')
       .should('exist');
     cy.wait(100);
-    cy.intercept(
-      'POST',
-      '/api/observability/operational_panels/panels/addSamplePanels'
-    ).as('addSamples');
     cy.get('.euiButton__text').contains('Yes').trigger('mouseover').click();
-    cy.wait('@addSamples').then(() => {
-      cy.get('.euiTableCellContent').contains(SAMPLE_PANEL).should('exist');
-    });
+    cy.get('.euiTableCellContent', { timeout: delayTime })
+      .contains(SAMPLE_PANEL)
+      .should('exist');
     cy.wait(100);
   });
 });
