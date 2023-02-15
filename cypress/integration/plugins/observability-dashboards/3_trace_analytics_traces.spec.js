@@ -35,7 +35,7 @@ describe('Testing traces table', () => {
 
   it('Renders the traces table', () => {
     cy.contains(' (108)').should('exist');
-    cy.contains('03/25/2021 10:23:45').should('exist');
+    cy.contains('03/25/2021 17:23:45').should('exist');
     cy.contains('03f9c770db5ee2f1caac0...').should('exist');
     cy.contains('224.99').should('exist');
 
@@ -55,7 +55,7 @@ describe('Testing traces table', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.contains(' (1)').should('exist');
-    cy.contains('03/25/2021 10:21:22').should('exist');
+    cy.contains('03/25/2021 17:21:22').should('exist');
   });
 });
 
