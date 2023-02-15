@@ -82,6 +82,14 @@ Cypress.Commands.add('createRollup', (rollupId, rollupJSON) => {
   );
 });
 
+Cypress.Commands.add('deleteTemplate', (name) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    failOnStatusCode: false,
+    method: 'DELETE',
+  });
+});
+
 Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
   cy.request(
     'PUT',
@@ -89,6 +97,14 @@ Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
       IM_API.TRANSFORM_JOBS_BASE
     }/${transformId}`,
     transformJSON
+  );
+});
+
+Cypress.Commands.add('createPipeline', (pipelineId, pipelineJSON) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}/_ingest/pipeline/${pipelineId}`,
+    pipelineJSON
   );
 });
 
@@ -108,4 +124,40 @@ Cypress.Commands.add('disableJitter', () => {
     `${Cypress.env('openSearchUrl')}/_cluster/settings`,
     jitterJson
   );
+});
+
+Cypress.Commands.add('addIndexAlias', (alias, index) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    method: 'POST',
+    body: {
+      actions: [
+        {
+          add: {
+            index,
+            alias,
+          },
+        },
+      ],
+    },
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('removeIndexAlias', (alias) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    method: 'POST',
+    body: {
+      actions: [
+        {
+          remove: {
+            index: '*',
+            alias,
+          },
+        },
+      ],
+    },
+    failOnStatusCode: false,
+  });
 });
