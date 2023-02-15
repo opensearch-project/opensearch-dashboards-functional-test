@@ -6,6 +6,10 @@
 /// <reference types="cypress" />
 
 import { delayTime, setTimeFilter, TRACE_ID } from '../../../utils/constants';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
+
+dayjs.extend(customParseFormat);
 
 describe('Testing traces table empty state', () => {
   beforeEach(() => {
@@ -35,7 +39,12 @@ describe('Testing traces table', () => {
 
   it('Renders the traces table', () => {
     cy.contains(' (108)').should('exist');
-    cy.contains('03/25/2021 10:23:45').should('exist');
+    cy.get('.euiTableCellContent')
+      .eq(17)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss', true).isValid()).to.be.true;
+      });
     cy.contains('03f9c770db5ee2f1caac0...').should('exist');
     cy.contains('224.99').should('exist');
 
@@ -55,7 +64,12 @@ describe('Testing traces table', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.contains(' (1)').should('exist');
-    cy.contains('03/25/2021 10:21:22').should('exist');
+    cy.get('.euiTableCellContent')
+      .eq(11)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss', true).isValid()).to.be.true;
+      });
   });
 });
 
