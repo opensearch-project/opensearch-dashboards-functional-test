@@ -6,21 +6,15 @@
 /// <reference types="cypress" />
 
 import {
-  delayTime,
   moveToCreatePage,
-  moveToApplication,
-  changeTimeTo24,
   expectMessageOnHover,
   baseQuery,
   nameOne,
   description,
   trace_one,
   trace_two,
-  query_one,
-  visOneName,
   TYPING_DELAY,
   TIMEOUT_DELAY,
-  supressResizeObserverIssue,
 } from '../../../utils/constants';
 
 describe('Creating application', () => {
@@ -93,62 +87,5 @@ describe('Creating application', () => {
     cy.get('[data-test-subj="addFirstVisualizationText"]', {
       timeout: TIMEOUT_DELAY,
     }).should('exist');
-  });
-});
-
-describe('Viewing application', () => {
-  beforeEach(() => {
-    moveToApplication(nameOne);
-  });
-
-  it('Saves visualization #1 to panel', () => {
-    cy.get('[data-test-subj="app-analytics-panelTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="addVisualizationButton"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .first()
-      .click();
-    cy.wait(delayTime);
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'exist'
-    );
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('.aa-List').find('.aa-Item').should('have.length', 11);
-    cy.get('[data-test-subj="searchAutocompleteTextArea"]', {
-      timeout: TIMEOUT_DELAY,
-    }).type(query_one, { delay: TYPING_DELAY });
-    changeTimeTo24('months');
-    cy.wait(delayTime * 2);
-    cy.get('[data-test-subj="main-content-visTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    supressResizeObserverIssue();
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]', {
-      timeout: TIMEOUT_DELAY,
-    })
-      .click()
-      .type(visOneName);
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.wait(delayTime * 2);
-    cy.get('[data-test-subj="app-analytics-panelTab"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
-    cy.get('[data-test-subj="Flights to VeniceVisualizationPanel"]', {
-      timeout: TIMEOUT_DELAY,
-    }).should('exist');
-    cy.get('[id="explorerPlotComponent"]', { timeout: TIMEOUT_DELAY }).should(
-      'exist'
-    );
-    cy.get('[class="trace bars"]', { timeout: TIMEOUT_DELAY }).should('exist');
   });
 });

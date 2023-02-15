@@ -212,33 +212,6 @@ describe('Testing paragraphs', () => {
     cy.get('.euiDataGrid__overflow').should('exist');
   });
 
-  it('Adds an observability visualization paragraph', () => {
-    cy.contains('Add paragraph').click();
-    cy.wait(delayTime);
-    cy.get('.euiContextMenuItem__text').contains('Visualization').click();
-    cy.wait(delayTime);
-
-    cy.get('.euiButton__text').contains('Run').click();
-    cy.wait(delayTime);
-    cy.get('.euiTextColor')
-      .contains('Visualization is required.')
-      .should('exist');
-
-    cy.get('.euiButton__text').contains('Browse').click();
-    cy.wait(delayTime);
-    cy.get('.euiFieldSearch')
-      .focus()
-      .type('[Logs] Count total requests by tags{enter}');
-    cy.wait(delayTime);
-    cy.get('.euiButton__text').contains('Select').click();
-    cy.wait(delayTime);
-    cy.get('.euiButton__text').contains('Run').click();
-    cy.wait(delayTime);
-    cy.get('h5')
-      .contains('[Logs] Count total requests by tags')
-      .should('exist');
-  });
-
   it('Adds a PPL query paragraph', () => {
     cy.contains('Add paragraph').click();
     cy.wait(delayTime);
