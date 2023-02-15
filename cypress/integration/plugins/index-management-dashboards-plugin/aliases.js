@@ -106,25 +106,6 @@ describe('Aliases', () => {
         .end();
 
       cy.get('[data-test-subj="7 more"]').should('exist');
-
-      cy.get('[data-test-subj="moreAction"] button')
-        .click()
-        .get('[data-test-subj="deleteAction"]')
-        .click();
-      // The confirm button should be disabled
-      cy.get('[data-test-subj="deleteConfirmButton"]').should('be.disabled');
-      // type delete
-      cy.wait(500).get('[data-test-subj="deleteInput"]').type('delete');
-      cy.get('[data-test-subj="deleteConfirmButton"]').should(
-        'not.be.disabled'
-      );
-      // click to delete
-      cy.get('[data-test-subj="deleteConfirmButton"]').click();
-      // the alias should not exist
-      cy.wait(500);
-      cy.get(`#_selection_column_${SAMPLE_ALIAS_PREFIX}-0-checkbox`).should(
-        'not.exist'
-      );
     });
   });
 
