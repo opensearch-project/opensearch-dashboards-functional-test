@@ -11,7 +11,6 @@ import {
   SPAN_ID,
   TRACE_ID,
 } from '../../../utils/constants';
-import { delayTime, setTimeFilter, TRACE_ID } from '../../../utils/constants';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 
