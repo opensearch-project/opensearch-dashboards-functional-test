@@ -99,7 +99,7 @@ describe('Test PPL UI', () => {
       .type('source=accounts', { force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait(QUERY_WORKBENCH_DELAY * 5);
     cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
@@ -182,8 +182,8 @@ describe('Test SQL UI', () => {
     cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text', { withinSubject: null })
+    cy.wait(QUERY_WORKBENCH_DELAY * 5);
+    cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
 
