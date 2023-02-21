@@ -14,8 +14,9 @@ context('Create detector workflow', () => {
   const TEST_INDEX_NAME = 'sample-ad-index';
 
   // Index some sample data first
-  before(() => {
+  beforeEach(() => {
     cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
       cy.request({
         method: 'POST',
@@ -35,8 +36,9 @@ context('Create detector workflow', () => {
   });
 
   // Clean up created resources
-  after(() => {
+  afterEach(() => {
     cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
   });
 
   it('Full creation - based on real index', () => {
@@ -84,10 +86,9 @@ context('Create detector workflow', () => {
     // real-time detection will start.
     cy.wait(5000);
 
-    // Lands on the config page by default. Delete the detector to clean up.
-    cy.getElementByTestId('actionsButton').click();
-    cy.getElementByTestId('deleteDetectorItem').click();
-    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
-    cy.getElementByTestId('confirmButton').click();
+    // Lands on the config page by default.
+    cy.getElementByTestId('detectorSettingsHeader').should('exist');
+    cy.getElementByTestId('modelConfigurationHeader').should('exist');
+    cy.getElementByTestId('detectorJobsHeader').should('exist');
   });
 });
