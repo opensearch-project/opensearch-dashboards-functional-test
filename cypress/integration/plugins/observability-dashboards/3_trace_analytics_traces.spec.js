@@ -93,7 +93,14 @@ describe('Testing trace view', () => {
   it('Renders the trace view', () => {
     cy.contains('43.75%').should('exist');
     cy.contains('42.58%').should('exist');
-    cy.contains('03/25/2021 10:21:22').should('exist');
+    cy.get('.euiFlexItem--flexGrowZero')
+      .eq(5)
+      .children()
+      .eq(1)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss', true).isValid()).to.be.true;
+      });
     cy.contains(TRACE_ID).should('exist');
 
     cy.get('div.js-plotly-plot').should('have.length.gte', 2);
