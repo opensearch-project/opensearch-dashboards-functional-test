@@ -52,47 +52,23 @@ describe('Historical results page', () => {
 
   // Creating a sample detector and visiting the config page
   before(() => {
+    cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
+    cy.wait(5000);
     cy.visit(AD_URL.OVERVIEW);
-    cy.get('[data-test-subj=createHttpSampleDetectorButton]').then(($btn) => {
-      if ($btn.is(':disabled')) {
-        cy.getElementByTestId('viewSampleDetectorLink').click();
-        cy.getElementByTestId('configurationsTab').click();
-        cy.getElementByTestId('detectorIdCell').within(() => {
-          cy.get('.euiText--medium')
-            .invoke('text')
-            .then((detectorId) => {
-              cy.log('Stopping detector with ID: ' + detectorId);
-              cy.stopDetector(detectorId);
-              cy.wait(10000);
-              cy.log('Deleting detector with ID: ' + detectorId);
-              cy.deleteDetector(detectorId);
-              // TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/307
-              // cy.log('Deleting index with name: ' + indexName);
-              // cy.deleteIndex(indexName);
-            });
-          cy.wait(10000);
-          cy.visit(AD_URL.OVERVIEW);
-          cy.getElementByTestId('createHttpSampleDetectorButton').click();
-          cy.visit(AD_URL.OVERVIEW);
-          cy.getElementByTestId('viewSampleDetectorLink').click();
-          cy.getElementByTestId('historicalTab').click();
-        });
-      } else {
-        cy.getElementByTestId('createHttpSampleDetectorButton').click();
-        cy.visit(AD_URL.OVERVIEW);
-        cy.getElementByTestId('viewSampleDetectorLink').click();
-        cy.getElementByTestId('historicalTab').click();
-      }
+    cy.get('[data-test-subj=createHttpSampleDetectorButton]').then(() => {
+      cy.getElementByTestId('createHttpSampleDetectorButton').click();
+      cy.wait(10000);
+      cy.visit(AD_URL.OVERVIEW);
+      cy.getElementByTestId('viewSampleDetectorLink').click();
+      cy.getElementByTestId('historicalTab').click();
     });
   });
 
   // Clean up resources
   after(() => {
-    cy.getElementByTestId('actionsButton').click();
-    cy.getElementByTestId('deleteDetectorItem').click();
-    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
-    cy.getElementByTestId('confirmButton').click();
     cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
   });
 
   context('Sample detector', () => {
