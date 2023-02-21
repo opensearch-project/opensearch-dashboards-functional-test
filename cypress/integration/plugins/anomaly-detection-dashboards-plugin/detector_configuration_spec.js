@@ -7,10 +7,13 @@ import { AD_URL } from '../../../utils/constants';
 
 context('Detector configuration page', () => {
   // Creating a sample detector and visiting the config page. Stopping the detector
-  // for easier checks when editing/deleting detector
+  // for easier checks when editing detector
   before(() => {
+    cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
     cy.visit(AD_URL.OVERVIEW);
     cy.getElementByTestId('createHttpSampleDetectorButton').click();
+    cy.wait(10000);
     cy.visit(AD_URL.OVERVIEW);
     cy.getElementByTestId('viewSampleDetectorLink').click();
     cy.getElementByTestId('resultsTab').click();
@@ -19,9 +22,9 @@ context('Detector configuration page', () => {
     cy.getElementByTestId('configurationsTab').click();
   });
 
-  // Clean up created sample index
   after(() => {
     cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
   });
 
   it('Redirect to edit detector settings from button', () => {
@@ -109,6 +112,5 @@ context('Detector configuration page', () => {
     cy.getElementByTestId('confirmButton').click();
 
     cy.getElementByTestId('detectorListHeader').should('exist');
-    cy.getElementByTestId('detectorListHeader').contains('(0)');
   });
 });

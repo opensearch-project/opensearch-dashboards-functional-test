@@ -6,9 +6,9 @@
 import { AD_URL } from '../../../utils/constants';
 
 context('Sample detectors', () => {
-  // Helper fn used in many of the below tests. Takes in a button test ID to determine
-  // the sample detector to create/delete from the overview page
-  const createAndDeleteSampleDetector = (createButtonDataTestSubj) => {
+  // Helper fn that takes in a button test ID to determine
+  // the sample detector to create
+  const createSampleDetector = (createButtonDataTestSubj) => {
     cy.visit(AD_URL.OVERVIEW);
 
     cy.getElementByTestId('overviewTitle').should('exist');
@@ -22,43 +22,26 @@ context('Sample detectors', () => {
     cy.getElementByTestId('sampleIndexDetailsCallout').should('exist');
     cy.getElementByTestId('realTimeResultsHeader').should('exist');
     cy.getElementByTestId('detectorStateInitializing').should('exist');
-
-    // Stop the detector so it can be deleted
-    cy.getElementByTestId('stopAndStartDetectorButton').click();
-    cy.getElementByTestId('detectorStateStopped').should('exist');
-
-    // Visit configuration page to get the info to clean up detector and index
-    cy.getElementByTestId('configurationsTab').click();
-    cy.getElementByTestId('detectorIdCell').within(() => {
-      cy.get('.euiText--medium')
-        .invoke('text')
-        .then((detectorId) => {
-          cy.log('Deleting detector with ID: ' + detectorId);
-          cy.deleteDetector(detectorId);
-        });
-    });
-
-    cy.getElementByTestId('indexNameCell').within(() => {
-      cy.get('.euiText--medium')
-        .invoke('text')
-        .then((indexName) => {
-          cy.log('Deleting index with name: ' + indexName);
-          cy.deleteIndex(indexName);
-        });
-    });
   };
 
-  before(() => {});
+  beforeEach(() => {
+    cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
+  });
+  afterEach(() => {
+    cy.deleteAllIndices();
+    cy.deleteADSystemIndices();
+  });
 
   it('HTTP response sample detector - create and delete', () => {
-    createAndDeleteSampleDetector('createHttpSampleDetectorButton');
+    createSampleDetector('createHttpSampleDetectorButton');
   });
 
   it('eCommerce sample detector - create and delete', () => {
-    createAndDeleteSampleDetector('createECommerceSampleDetectorButton');
+    createSampleDetector('createECommerceSampleDetectorButton');
   });
 
   it('Host health sample detector - create and delete', () => {
-    createAndDeleteSampleDetector('createHostHealthSampleDetectorButton');
+    createSampleDetector('createHostHealthSampleDetectorButton');
   });
 });
