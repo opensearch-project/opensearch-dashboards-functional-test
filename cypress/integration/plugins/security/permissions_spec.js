@@ -73,7 +73,14 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should create new action group successfully by selecting `Create from blank`', () => {
-      cy.visit(SEC_UI_PERMISSIONS_PATH);
+      cy.mockPermissionsAction(
+        SEC_PERMISSIONS_FIXTURES_PATH +
+          '/actiongroups_post_new_creation_response.json',
+        () => {
+          cy.visit(SEC_UI_PERMISSIONS_PATH);
+        }
+      );
+
       cy.contains('button', 'Create action group')
         .first()
         .click({ force: true });
@@ -93,13 +100,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         actionGroupName
       );
 
-      cy.mockPermissionsAction(
-        SEC_PERMISSIONS_FIXTURES_PATH +
-          '/actiongroups_post_new_creation_response.json',
-        () => {
-          cy.get('button[id="submit"]').first().click({ force: true });
-        }
-      );
+      cy.get('button[id="submit"]').first().click({ force: true });
 
       cy.url().should((url) => {
         expect(url).to.contain('/permissions');
