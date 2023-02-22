@@ -17,7 +17,6 @@ describe('Add flights dataset saved object', () => {
     cy.get('div[data-test-subj="sampleDataSetCardflights"]', { timeout: 60000 })
       .contains(/Add data/)
       .click();
-    cy.wait(60000);
   });
 
   after(() => {
