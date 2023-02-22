@@ -11,6 +11,10 @@ describe('MLC Overview page', () => {
     .getTime()
     .toString(34)}`;
   before(() => {
+    // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
+    cy.disableOnlyRunOnMLNode();
+    cy.wait(1000);
+
     cy.uploadModelByUrl({
       name: uploadModelName,
       version: '1.0.0',
