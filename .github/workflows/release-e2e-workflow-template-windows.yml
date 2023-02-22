@@ -53,7 +53,7 @@ jobs:
           cd opensearch-${{ env.VERSION }}/
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove OpenSearch Security"
-              echo "plugins.security.disabled: true" >> config/opensearch.yml
+              [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
               nohup ./opensearch-windows-install.bat &
               timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' http://localhost:9200)" != "200" ]]; do echo sleeping 5; sleep 5; done'
               curl -s http://localhost:9200/_cluster/health?pretty
