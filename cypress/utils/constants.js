@@ -14,3 +14,4 @@ export * from './plugins/query-workbench-dashboards/constants';
 export * from './plugins/security/constants';
 export * from './plugins/notifications-dashboards/constants';
 export * from './plugins/security-dashboards-plugin/constants';
+export * from './plugins/ml-commons-dashboards/constants';
