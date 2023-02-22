@@ -70,3 +70,11 @@ Cypress.Commands.add('getMLCommonsTask', (taskId) => {
     })
     .then(({ body }) => body);
 });
+
+Cypress.Commands.add('disableOnlyRunOnMLNode', () => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+    transient: {
+      'plugins.ml_commons.only_run_on_ml_node': false,
+    },
+  });
+});
