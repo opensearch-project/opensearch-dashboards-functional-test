@@ -23,3 +23,5 @@ jobs:
       test-name: ML Commons
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/ml-commons-dashboards/*'
       osd-serve-args: --ml_commons_dashboards.enabled=true
+    env:
+      CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED: true
