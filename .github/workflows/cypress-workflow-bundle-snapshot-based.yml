@@ -25,7 +25,7 @@ jobs:
     with:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
-      osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
+      osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
   tests-without-security:
     needs: changes
@@ -34,5 +34,5 @@ jobs:
     with:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
-      osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
+      osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
       security-enabled: false
