@@ -14,6 +14,7 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
     before(() => {
       // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
       cy.disableOnlyRunOnMLNode();
+      cy.disableNativeMemoryCircuitBreaker();
       cy.wait(1000);
 
       cy.uploadModelByUrl({
