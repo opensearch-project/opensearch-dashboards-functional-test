@@ -41,7 +41,7 @@ describe('Cypress', () => {
       .contains('PDF')
       .click({ force: true });
     cy.get('body').then(($body) => {
-      if ($body.find('#downloadInProgressLoadingModal').length > 0) {
+      if (cy.get('.euiToastHeader__title').contains('Successfully generated report').should('exist')) {
         return;
       } else {
         assert(false);
@@ -137,6 +137,6 @@ describe('Cypress', () => {
 
     cy.get('#generateReportFromDetailsFileFormat').click({ force: true });
 
-    cy.get('#downloadInProgressLoadingModal');
+    cy.get('.euiToastHeader__title').contains('Successfully generated report').should('exist');
   });
 });
