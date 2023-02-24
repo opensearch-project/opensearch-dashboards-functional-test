@@ -69,4 +69,11 @@ describe('Documents layer', () => {
       'Documents layer 1'
     );
   });
+
+  after(() => {
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
+    cy.get('button[data-test-subj="removeSampleDataSetflights"]')
+      .should('be.visible')
+      .click();
+  });
 });
