@@ -78,3 +78,11 @@ Cypress.Commands.add('disableOnlyRunOnMLNode', () => {
     },
   });
 });
+
+Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+    transient: {
+      'plugins.ml_commons.native_memory_threshold': 100,
+    },
+  });
+});
