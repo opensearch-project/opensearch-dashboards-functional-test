@@ -1,0 +1,70 @@
+name: Snapshot based E2E OICD tests workflow
+on:
+  pull_request:
+    branches:
+      - main
+      - dev-*
+  push:
+    branches:
+      - main
+      - dev-*
+      - feature/*z
+env:
+  VERSION: '2.6.0'
+  KEYCLOAK_VERSION: '21.0.1'
+jobs:
+  tests:
+    name: Run Cypress E2E tests
+    runs-on: ubuntu-latest
+    env:
+      # prevents extra Cypress installation progress messages
+      CI: 1
+      # avoid warnings like "tput: No value for $TERM and no -T specified"
+      TERM: xterm
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Get and run Keycloak
+        run: |
+          echo "Downloading Keycloak ${{ env.KEYCLOAK_VERSION }}"
+          wget https://github.com/keycloak/keycloak/releases/download/${{ env.KEYCLOAK_VERSION }}/keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
+          echo "Unpacking Keycloak"
+          tar -xzf keycloak-${{ env.KEYCLOAK_VERSION }}.tar.gz
+          export KEYCLOAK_ADMIN=admin
+          export KEYCLOAK_ADMIN_PASSWORD=admin
+          cd keycloak-${{ env.KEYCLOAK_VERSION }}/bin
+          chmod +x kc.sh
+          echo "Starting keycloak"
+          ./kc.sh start-dev --http-enabled=true --hostname-strict-https=false --http-host=localhost --http-relative-path /auth --health-enabled=true
+          timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:8080/auth/health)" != "200" ]]; do sleep 5; done'
+          chmod +x kcadm.sh
+          echo "Creating client"
+          ./kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password admin
+          CID=$(./kcadm.sh create clients -r master -s clientId=opensearch -s 'redirectUris=["http://localhost:8980/myapp/*"]' -i)
+          ./kcadm.sh get clients/$CID/installation/providers/keycloak-oidc-keycloak-json > tmp
+          echo "Getting client secret for dashboards configuration purpose"
+          CSCRT=$(grep -o '"secret" : "[^"]*' tmp | grep -o '[^"]*$')
+      - name: Get and run OpenSearch
+        run: |
+          echo "Downloading OpenSearch ${{ env.VERSION }}"
+          wget https://artifacts.opensearch.org/releases/bundle/opensearch/${{ env.VERSION }}/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          echo "Unpacking OpenSearch"
+          tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
+          cd opensearch-${{ env.VERSION }}/plugins/opensearch-security/tools
+          chmod +x install_demo_configuration.sh
+          echo "Installing demo configuration"
+          ./install_demo_configuration.sh -y
+          echo "Setting up certificates"
+          chmod +x securityadmin.sh
+          ./securityadmin.sh -cd ../../../config/opensearch-security/ -icl -nhnv \
+          -cacert ../../../config/root-ca.pem \
+          -cert ../../../config/kirk.pem \
+          -key ../../../config/kirk-key.pem
+          cd ../../../config/opensearch-security
+          echo "Injecting OICD configuration"
+          sed -i .bak 's/authc:/authc:\n      openid_auth_domain:\n        http_enabled: true\n        transport_enabled: true\n        order: 0\n        http_authenticator:\n          type: openid\n          challenge: false\n          config:\n            subject_key: preferred_username\n            roles_key: roles\n            openid_connect_url: http:\/\/localhost:8080\/auth\/realm\/opensearch\/.well-known\/openid-configuration\n        authentication_backend:\n          type: noop/g' config.yml
+          echo "Starting OpenSearch"
+          cd ../../bin
+          ./opensearch
