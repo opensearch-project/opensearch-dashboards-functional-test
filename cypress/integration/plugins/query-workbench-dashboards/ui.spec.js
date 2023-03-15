@@ -42,7 +42,7 @@ describe('Test PPL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiButton__text[title=PPL]').click({ force: true });
+    cy.get('[data-test-subj="workbench-ppl-language-button"]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -117,7 +117,7 @@ describe('Test SQL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiButton__text[title=SQL]').click({ force: true });
+    cy.get('[data-test-subj="workbench-sql-language-button"]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -220,7 +220,7 @@ describe('Test table display', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('.euiButton__text[title=SQL]').click({ force: true });
+    cy.get('[data-test-subj="workbench-sql-language-button"]').click({ force: true });
     cy.wait(delay);
     cy.get('textarea.ace_text-input')
       .eq(0)
