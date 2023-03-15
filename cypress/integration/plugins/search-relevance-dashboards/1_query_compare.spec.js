@@ -18,6 +18,7 @@ import { BASE_PATH } from '../../../utils/base_constants';
 describe('Compare queries', () => {
   before(() => {
     const miscUtils = new MiscUtils(cy);
+    cy.deleteAllIndices();
     miscUtils.addSampleData();
   });
 
