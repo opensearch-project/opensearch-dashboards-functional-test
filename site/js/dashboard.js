@@ -11,6 +11,7 @@ const defaults = {
   platform: 'linux',
   arch: 'x64',
   type: 'tar',
+  withSecurity: false,
 };
 
 const plugins = {
@@ -163,10 +164,12 @@ function getTestResults() {
     'https://opensearch-project.github.io/opensearch-dashboards-functional-test/site/?' +
     `version=${version}&` +
     `build_number=${buildNumber}&` +
+    `test_job_name=${testJobName}&` +
     `test_number=${testNumber}&` +
     `platform=${platform}&` +
     `arch=${arch}&` +
-    `type=${type}`;
+    `type=${type}&` +
+    `with_security=${securityEnabled}`;
 
   var resultPageLink = document.getElementById('resultPageLink');
   resultPageLink.textContent = resultPageUrl;
@@ -337,4 +340,7 @@ function setDefaultValues() {
   document.getElementById('type').value = params.get('type')
     ? params.get('type')
     : defaults.type;
+  document.getElementById('security').checked = params.get('with_security')
+    ? params.get('with_security').toLowerCase() === 'true'
+    : defaults.withSecurity;
 }
