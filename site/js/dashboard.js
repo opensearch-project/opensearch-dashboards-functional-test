@@ -69,6 +69,12 @@ const plugins = {
       ],
     },
   },
+  'ml-commons-dashboards': {
+    name: 'mlCommonsDashboards',
+    default: {
+      videos: ['overview_spec.js'],
+    },
+  },
   'notifications-dashboards': {
     name: 'notificationsDashboards',
     default: {
