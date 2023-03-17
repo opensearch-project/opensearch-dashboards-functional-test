@@ -23,6 +23,9 @@ const SAMPLE_CRON_EXPRESSION_MONITOR =
   'sample_cron_expression_query_level_monitor';
 const SAMPLE_TRIGGER = 'sample_trigger';
 
+const TESTING_INDEX_A = 'bucket-level-monitor-test-index-a';
+const TESTING_INDEX_B = 'bucket-level-monitor-test-index-b';
+
 const addVisualQueryLevelTrigger = (
   triggerName,
   triggerIndex,
@@ -73,6 +76,17 @@ const addVisualQueryLevelTrigger = (
 };
 
 describe('Query-Level Monitors', () => {
+  before(() => {
+    // Load sample data
+    cy.loadSampleEcommerceData();
+    cy.insertDocumentToIndex(TESTING_INDEX_A, undefined, {
+      message: 'This is a test.',
+    });
+    cy.insertDocumentToIndex(TESTING_INDEX_B, undefined, {
+      message: 'This is a test.',
+    });
+  });
+
   beforeEach(() => {
     // Set welcome screen tracking to false
     localStorage.setItem('home:welcome:show', 'false');
@@ -148,20 +162,23 @@ describe('Query-Level Monitors', () => {
   });
 
   describe('can be updated', () => {
-    before(() => {
+    beforeEach(() => {
       cy.deleteAllMonitors();
       cy.createMonitor(sampleQueryLevelMonitor);
+      cy.reload();
     });
 
     it('by changing the name', () => {
       // Confirm we can see the created monitor in the list
-      cy.contains(SAMPLE_MONITOR);
+      cy.contains(SAMPLE_MONITOR, { timeout: 20000 });
 
       // Select the existing monitor
-      cy.get('a').contains(SAMPLE_MONITOR).click({ force: true });
+      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`, {
+        timeout: 20000,
+      }).click();
 
       // Click Edit button
-      cy.contains('Edit').click({ force: true });
+      cy.contains('Edit', { timeout: 20000 }).click({ force: true });
 
       // Wait for input to load and then type in the new monitor name
       cy.get('input[name="name"]')
@@ -180,6 +197,44 @@ describe('Query-Level Monitors', () => {
 
       // Confirm we can see the updated monitor in the list
       cy.contains(UPDATED_MONITOR);
+    });
+
+    it('to have multiple indices', () => {
+      // Confirm we can see the created monitor in the list
+      cy.contains(SAMPLE_MONITOR, { timeout: 20000 });
+
+      // Select the existing monitor
+      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`, {
+        timeout: 20000,
+      }).click();
+
+      // Click Edit button
+      cy.contains('Edit', { timeout: 20000 }).click({ force: true });
+
+      // Click on the Index field and type in multiple index names to replicate the bug
+      cy.get('#index')
+        .click({ force: true })
+        .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
+          force: true,
+        })
+        .trigger('blur', { force: true });
+
+      // Confirm Index field only contains the expected text
+      cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
+        timeout: 20000,
+      });
+      cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_A, {
+        timeout: 20000,
+      });
+      cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, {
+        timeout: 20000,
+      });
+
+      // Click the update button
+      cy.get('button').contains('Update').last().click();
+
+      // Confirm we're on the Monitor Details page by searching for the History element
+      cy.contains('History', { timeout: 20000 });
     });
   });
 
@@ -242,7 +297,6 @@ describe('Query-Level Monitors', () => {
   describe('can have triggers', () => {
     before(() => {
       cy.deleteAllMonitors();
-      cy.loadSampleEcommerceData();
       cy.createMonitor(sampleQueryLevelMonitor);
     });
     it('with names that contain periods', () => {
@@ -263,8 +317,12 @@ describe('Query-Level Monitors', () => {
       );
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_MONITOR);
+
       // Select the existing monitor
-      cy.get('a').contains(SAMPLE_MONITOR).click();
+      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`, {
+        timeout: 20000,
+      }).click();
+
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       // Wait for input to load and then type in the new monitor name
@@ -325,6 +383,7 @@ describe('Query-Level Monitors', () => {
   describe('schedule component displays as intended', () => {
     before(() => {
       cy.deleteAllMonitors();
+      cy.reload();
     });
     it('for an interval schedule', () => {
       // Create the test monitor
@@ -332,8 +391,12 @@ describe('Query-Level Monitors', () => {
       // Confirm we can see the created monitors in the list
       cy.get(`input[type="search"]`).focus().type(SAMPLE_DAYS_INTERVAL_MONITOR);
       cy.contains(SAMPLE_DAYS_INTERVAL_MONITOR, { timeout: 20000 });
+
       // Select the existing monitor
-      cy.get('a').contains(SAMPLE_DAYS_INTERVAL_MONITOR).click({ force: true });
+      cy.get(`[data-test-subj="${SAMPLE_DAYS_INTERVAL_MONITOR}"]`, {
+        timeout: 20000,
+      }).click({ force: true });
+
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       // Wait for input to load and then check the Schedule component
@@ -356,9 +419,10 @@ describe('Query-Level Monitors', () => {
         .type(SAMPLE_CRON_EXPRESSION_MONITOR);
       cy.contains(SAMPLE_CRON_EXPRESSION_MONITOR, { timeout: 20000 });
       // Select the existing monitor
-      cy.get('a')
-        .contains(SAMPLE_CRON_EXPRESSION_MONITOR)
-        .click({ force: true });
+      cy.get(`[data-test-subj="${SAMPLE_CRON_EXPRESSION_MONITOR}"]`, {
+        timeout: 20000,
+      }).click({ force: true });
+
       // Click Edit button
       cy.contains('Edit').click({ force: true });
       // Wait for input to load and then check the Schedule component
@@ -380,5 +444,7 @@ describe('Query-Level Monitors', () => {
 
     // Delete sample data
     cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+    cy.deleteIndexByName(TESTING_INDEX_A);
+    cy.deleteIndexByName(TESTING_INDEX_B);
   });
 });

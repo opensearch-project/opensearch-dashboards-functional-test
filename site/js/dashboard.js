@@ -24,6 +24,7 @@ const plugins = {
         'alerts_dashboard_flyout_spec.js',
         'bucket_level_monitor_spec.js',
         'cluster_metrics_monitor_spec.js',
+        'document_level_monitor_spec.js',
         'query_level_monitor_spec.js',
       ],
     },
