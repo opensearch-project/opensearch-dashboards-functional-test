@@ -5,7 +5,67 @@
 
 /// <reference types="cypress" />
 
-import { delayTime, setTimeFilter } from '../../../utils/constants';
+import {
+  testIndexDataSet,
+  jaegerTestDataSet,
+  delayTime,
+  setTimeFilter,
+} from '../../../utils/constants';
+
+describe('Dump test data', () => {
+  it('Indexes test data', () => {
+    const dumpDataSet = (mapping_url, data_url, index) => {
+      cy.request({
+        method: 'POST',
+        failOnStatusCode: false,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `${index}`,
+          method: 'PUT',
+        },
+      });
+      cy.request(mapping_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_mapping`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+      cy.request(data_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_bulk`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+    };
+    testIndexDataSet.forEach(({ mapping_url, data_url, index }) =>
+      dumpDataSet(mapping_url, data_url, index)
+    );
+  });
+});
 
 describe('Testing dashboard table empty state', () => {
   beforeEach(() => {
@@ -135,5 +195,323 @@ describe('Testing plots', () => {
     );
     cy.get('text.ytitle[data-unformatted="Throughput (n)"]').should('exist');
     cy.get('text.annotation-text[data-unformatted="Now: 108"]').should('exist');
+  });
+});
+
+describe('Latency by trace group table', () => {
+  beforeEach(() => {
+    cy.visit('app/observability-dashboards#/trace_analytics/home', {
+      onBeforeLoad: (win) => {
+        win.sessionStorage.clear();
+      },
+    });
+    setTimeFilter();
+  });
+
+  it('Verify columns in Latency by trace group table along with pagination functionality', () => {
+    cy.get('span.panel-title').eq(0).should('exist');
+    cy.get(
+      '[data-test-subj="tableHeaderCell_dashboard_trace_group_name_0"]'
+    ).should('exist');
+    cy.get(
+      '[data-test-subj="tableHeaderCell_dashboard_latency_variance_1"]'
+    ).should('exist');
+    cy.get(
+      '[data-test-subj="tableHeaderCell_dashboard_average_latency_2"]'
+    ).should('exist');
+    cy.get('[data-test-subj="tableHeaderCell_24_hour_latency_trend_3"]').should(
+      'exist'
+    );
+    cy.get('[data-test-subj="tableHeaderCell_dashboard_error_rate_4"]').should(
+      'exist'
+    );
+    cy.get('[data-test-subj="tableHeaderCell_dashboard_traces_5"]').should(
+      'exist'
+    );
+    cy.get('[data-test-subj="tablePaginationPopoverButton"]').click();
+    cy.get('.euiIcon.euiIcon--medium.euiIcon--inherit.euiContextMenu__icon')
+      .eq(0)
+      .should('exist')
+      .click();
+    cy.get('[data-test-subj="pagination-button-next"]').should('exist').click();
+    cy.get('button[data-test-subj="dashboard-table-trace-group-name-button"]')
+      .contains('mysql')
+      .should('exist');
+  });
+
+  it('Sorts the Latency by trace group table', () => {
+    cy.get('span[title*="Trace group name"]').click();
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]')
+      .eq(0)
+      .contains('/**')
+      .should('exist');
+    cy.wait(delayTime);
+  });
+
+  it('Verify tooltips in Latency by trace group table', () => {
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(0)
+      .trigger('mouseover');
+    cy.contains(
+      'Traces of all requests that share a common API and operation at the start of distributed tracing instrumentation.'
+    ).should('be.visible');
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(1)
+      .trigger('mouseover');
+    cy.contains(
+      'Range of latencies for traces within a trace group in the selected time range.'
+    ).should('be.visible');
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(2)
+      .trigger('mouseover');
+    cy.contains(
+      'Average latency of traces within a trace group in the selected time range.'
+    ).should('be.visible');
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(3)
+      .trigger('mouseover');
+    cy.contains(
+      '24 hour time series view of hourly average, hourly percentile, and hourly range of latency for traces within a trace group.'
+    ).should('be.visible');
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(4)
+      .trigger('mouseover');
+    cy.contains(
+      'Error rate based on count of trace errors within a trace group in the selected time range.'
+    ).should('be.visible');
+    cy.get(
+      '.euiIcon.euiIcon--small.euiIcon--subdued.euiIcon-isLoaded.eui-alignTop'
+    )
+      .eq(5)
+      .trigger('mouseover');
+    cy.contains(
+      'Count of traces with unique trace identifiers in the selected time range.'
+    ).should('be.visible');
+  });
+
+  it('Verify Search engine on Trace dashboard', () => {
+    cy.get('.euiFieldSearch.euiFieldSearch--fullWidth')
+      .click()
+      .type('client_pay_order');
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
+    cy.wait(delayTime);
+    cy.get(
+      '.euiTableCellContent.euiTableCellContent--alignRight.euiTableCellContent--overflowingContent'
+    )
+      .contains('211.04')
+      .should('exist');
+    cy.get(
+      'button[data-test-subj="dashboard-table-trace-group-name-button"]'
+    ).click();
+    cy.get(
+      '.euiBadge.euiBadge--hollow.euiBadge--iconRight.globalFilterItem'
+    ).click();
+    cy.get('.euiIcon.euiIcon--medium.euiContextMenu__arrow').click();
+    cy.get('.euiContextMenuPanelTitle').contains('Edit filter').should('exist');
+    cy.get('.euiButton.euiButton--primary.euiButton--fill').click();
+    cy.get(
+      '.euiBadge.euiBadge--hollow.euiBadge--iconRight.globalFilterItem'
+    ).click();
+    cy.get('.euiContextMenuItem__text')
+      .eq(1)
+      .contains('Exclude results')
+      .click();
+    cy.get('.euiTextColor.euiTextColor--danger').should('exist');
+    cy.get(
+      '.euiBadge.euiBadge--hollow.euiBadge--iconRight.globalFilterItem'
+    ).click();
+    cy.get('.euiContextMenuItem__text')
+      .eq(1)
+      .contains('Include results')
+      .click();
+    cy.get(
+      '.euiBadge.euiBadge--hollow.euiBadge--iconRight.globalFilterItem'
+    ).click();
+    cy.get('.euiContextMenuItem__text')
+      .eq(2)
+      .contains('Temporarily disable')
+      .click();
+    cy.get(
+      '.euiBadge.euiBadge--iconRight.globalFilterItem.globalFilterItem-isDisabled'
+    )
+      .should('exist')
+      .click();
+    cy.get('.euiContextMenuItem__text').eq(2).contains('Re-enable').click();
+    cy.get(
+      '.euiBadge.euiBadge--hollow.euiBadge--iconRight.globalFilterItem'
+    ).click();
+    cy.get('.euiContextMenuItem__text').eq(3).contains('Delete').click();
+  });
+});
+
+describe(
+  'Testing filters on trace analytics page',
+  { scrollBehavior: false },
+  () => {
+    beforeEach(() => {
+      cy.visit('app/observability-dashboards#/trace_analytics/home', {
+        onBeforeLoad: (win) => {
+          win.sessionStorage.clear();
+        },
+      });
+      setTimeFilter();
+    });
+
+    it('Verify Change all filters', () => {
+      cy.get('[data-test-subj="global-filter-button"]').click();
+      cy.get('.euiContextMenuPanelTitle')
+        .contains('Change all filters')
+        .should('exist');
+      cy.get('.euiContextMenuItem__text').eq(0).contains('Enable all');
+      cy.get('.euiContextMenuItem__text').eq(1).contains('Disable all');
+      cy.get('.euiContextMenuItem__text').eq(2).contains('Invert inclusion');
+      cy.get('.euiContextMenuItem__text')
+        .eq(3)
+        .contains('Invert enabled/disabled');
+      cy.get('.euiContextMenuItem__text').eq(4).contains('Remove all');
+    });
+
+    it('Verify Add filter section', () => {
+      cy.get('[data-test-subj="addfilter"]').contains('+ Add filter').click();
+      cy.get('.euiPopoverTitle').contains('Add filter').should('exist');
+      cy.get('.euiComboBox__inputWrap.euiComboBox__inputWrap--noWrap')
+        .eq(0)
+        .trigger('mouseover')
+        .click();
+      cy.get('.euiComboBoxOption__content').eq(1).click();
+      cy.get('.euiComboBox__inputWrap.euiComboBox__inputWrap--noWrap')
+        .eq(1)
+        .trigger('mouseover')
+        .click();
+      cy.get('.euiComboBoxOption__content').eq(2).click();
+      cy.get('.euiButton.euiButton--primary.euiButton--fill')
+        .contains('Save')
+        .click();
+      cy.get('.euiBadge__content').should('exist').click();
+      cy.get('.euiIcon.euiIcon--medium.euiContextMenu__arrow').click();
+      cy.get('[data-test-subj="filter-popover-cancel-button"]')
+        .contains('Cancel')
+        .click();
+      cy.get('.euiIcon.euiIcon--small.euiIcon--inherit.euiBadge__icon').click();
+    });
+  }
+);
+
+describe('Dump jaeger test data', () => {
+  it('Indexes test data', () => {
+    const dumpDataSet = (mapping_url, data_url, index) => {
+      cy.request({
+        method: 'POST',
+        failOnStatusCode: false,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `${index}`,
+          method: 'PUT',
+        },
+      });
+
+      cy.request(mapping_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_mapping`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+
+      cy.request(data_url).then((response) => {
+        cy.request({
+          method: 'POST',
+          form: true,
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          qs: {
+            path: `${index}/_bulk`,
+            method: 'POST',
+          },
+          body: response.body,
+        });
+      });
+    };
+
+    jaegerTestDataSet.forEach(({ mapping_url, data_url, index }) =>
+      dumpDataSet(mapping_url, data_url, index)
+    );
+  });
+});
+
+describe('Testing switch mode to jaeger', () => {
+  beforeEach(() => {
+    cy.visit('app/observability-dashboards#/trace_analytics/home', {
+      onBeforeLoad: (win) => {
+        win.sessionStorage.clear();
+      },
+    });
+    setTimeFilter();
+    cy.get("[data-test-subj='indexPattern-switch-link']").click();
+    cy.get("[data-test-subj='jaeger-mode']").click();
+  });
+
+  it('Verifies errors mode columns and data', () => {
+    cy.contains('redis,GetDriver').should('exist');
+    cy.contains('14.7').should('exist');
+    cy.contains('100%').should('exist');
+    cy.contains('7').should('exist');
+    cy.contains('Service and Operation Name').should('exist');
+    cy.contains('Average latency (ms)').should('exist');
+    cy.contains('Error rate').should('exist');
+    cy.contains('Traces').should('exist');
+  });
+
+  it('Verifies traces links to traces page', () => {
+    cy.wait(delayTime);
+    cy.get('.euiLink').contains('7').click();
+    cy.wait(delayTime);
+
+    cy.get('h2.euiTitle').contains('Traces').should('exist');
+    cy.contains(' (7)').should('exist');
+    cy.get("[data-test-subj='filterBadge']")
+      .eq(0)
+      .contains('process.serviceName: redis');
+    cy.get("[data-test-subj='filterBadge']")
+      .eq(1)
+      .contains('operationName: GetDriver');
+  });
+
+  it('Switches to throughput mode and verifies columns and data', () => {
+    cy.get("[data-test-subj='throughput-toggle']").click();
+    cy.contains('frontend,HTTP GET /dispatch').should('exist');
+    cy.contains('711.38').should('exist');
+    cy.contains('0%').should('exist');
+    cy.contains('8').should('exist');
+    cy.contains('Service and Operation Name').should('exist');
+    cy.contains('Average latency (ms)').should('exist');
+    cy.contains('Error rate').should('exist');
+    cy.contains('Traces').should('exist');
   });
 });

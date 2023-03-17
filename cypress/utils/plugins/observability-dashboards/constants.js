@@ -5,6 +5,7 @@
 import { BASE_PATH } from '../../base_constants';
 
 export const delayTime = 1500;
+export const COMMAND_TIMEOUT_LONG = 10000;
 
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
@@ -33,6 +34,23 @@ export const testIndexDataSet = [
     data_url:
       'https://raw.githubusercontent.com/opensearch-project/dashboards-observability/main/.cypress/utils/otel-v1-apm-span-000002.json',
     index: 'otel-v1-apm-span-000002',
+  },
+];
+
+export const jaegerTestDataSet = [
+  {
+    mapping_url:
+      'https://raw.githubusercontent.com/opensearch-project/dashboards-observability/main/.cypress/utils/jaeger-service-2023-01-24-mappings.json',
+    data_url:
+      'https://raw.githubusercontent.com/opensearch-project/dashboards-observability/main/.cypress/utils/jaeger-service-2023-01-24.json',
+    index: 'jaeger-service-2023-01-24',
+  },
+  {
+    mapping_url:
+      'https://raw.githubusercontent.com/opensearch-project/dashboards-observability/main/.cypress/utils/jaeger-span-2023-01-24-mappings.json',
+    data_url:
+      'https://raw.githubusercontent.com/opensearch-project/dashboards-observability/main/.cypress/utils/jaeger-span-2023-01-24.json',
+    index: 'jaeger-span-2023-01-24',
   },
 ];
 
@@ -81,6 +99,10 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
 export const TEST_NOTEBOOK = 'Test Notebook';
 export const SAMPLE_URL =
   'https://github.com/opensearch-project/sql/tree/main/sql-jdbc';
+export const NOTEBOOK_TEXT =
+  'Use Notebooks to interactively and collaboratively develop rich reports backed by live data. Common use cases for notebooks includes creating postmortem reports, designing run books, building live infrastructure reports, or even documentation.';
+export const OPENSEARCH_URL =
+  'https://opensearch.org/docs/latest/observability-plugin/notebooks/';
 export const MARKDOWN_TEXT = `%md
 # Heading 1
 
@@ -114,6 +136,37 @@ select * from opensearch_dashboards_sample_data_flights limit 20
 export const PPL_QUERY_TEXT = `%ppl
 source=opensearch_dashboards_sample_data_flights
 `;
+
+export const verify_traces_spans_data_grid_cols_exists = () => {
+  cy.get('.euiDataGridHeaderCell__content').contains('Span ID').should('exist');
+  cy.get('.euiDataGridHeaderCell__content')
+    .contains('Trace ID')
+    .should('exist');
+  cy.get('.euiDataGridHeaderCell__content')
+    .contains('Operation')
+    .should('exist');
+  cy.get('.euiDataGridHeaderCell__content')
+    .contains('Duration')
+    .should('exist');
+  cy.get('.euiDataGridHeaderCell__content')
+    .contains('Start time')
+    .should('exist');
+  cy.get('.euiDataGridHeaderCell__content')
+    .contains('End time')
+    .should('exist');
+  cy.get('.euiDataGridHeaderCell__content').contains('Errors').should('exist');
+};
+
+export const count_table_row = (expected_row_count) => {
+  cy.get('.euiDataGridHeader [role="columnheader"]').then(($el) => {
+    let colmun_header_count = Cypress.$($el).length;
+    let table_grid_cell_count = Cypress.$(
+      '[data-test-subj="dataGridRowCell"]'
+    ).length;
+    const total_row_count = table_grid_cell_count / colmun_header_count;
+    expect(total_row_count).to.equal(expected_row_count);
+  });
+};
 
 // event analytics
 export const YEAR_TO_DATE_DOM_ID =
@@ -164,6 +217,12 @@ export const querySearch = (query, rangeSelected) => {
   })
     .contains('Refresh')
     .click();
+};
+
+export const clearQuerySearchBoxText = (testSubjectName) => {
+  cy.get(`[data-test-subj="${testSubjectName}"]`, {
+    timeout: COMMAND_TIMEOUT_LONG,
+  }).clear({ force: true });
 };
 
 export const landOnEventHome = () => {
@@ -339,7 +398,11 @@ export const clearText = (testSubjectName) => {
 export const uniqueId = Date.now();
 export const baseQuery = 'source = opensearch_dashboards_sample_data_flights';
 export const nameOne = `Cypress-${uniqueId}`;
+export const nameTwo = `Pine-${uniqueId}`;
+export const nameThree = `Cedar-${uniqueId}`;
 export const description = 'This is my application for cypress testing.';
+export const service_one = 'order';
+export const service_two = 'payment';
 export const trace_one = 'HTTP POST';
 export const trace_two = 'HTTP GET';
 export const trace_three = 'client_pay_order';
@@ -347,6 +410,29 @@ export const query_one =
   'where DestCityName = "Venice" | stats count() by span( timestamp , 6h )';
 export const query_two =
   'where OriginCityName = "Seoul" | stats count() by span( timestamp , 6h )';
+export const availability_default = 'stats count() by span( timestamp, 1h )';
 export const visOneName = 'Flights to Venice';
 export const visTwoName = 'Flights from Seoul';
+export const composition =
+  'order, payment, HTTP POST, HTTP GET, client_pay_order';
 export const newName = `Monterey Cypress-${uniqueId}`;
+
+export const HOST_TEXT_1 = 'artifacts.opensearch.org';
+export const HOST_TEXT_2 = 'www.opensearch.org';
+export const HOST_TEXT_3 = 'cdn.opensearch-opensearch-opensearch.org';
+export const HOST_TEXT_4 = 'opensearch-opensearch-opensearch.org';
+export const AGENT_TEXT_1 =
+  'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.1.4322)';
+export const AGENT_TEXT_2 =
+  'Mozilla/5.0 (X11; Linux i686) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.50 Safari/534.24';
+export const AGENT_TEXT_3 =
+  'Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1';
+export const BAR_LEG_TEXT_1 = `${AGENT_TEXT_1},count()`;
+export const BAR_LEG_TEXT_2 = `${AGENT_TEXT_2},count()`;
+export const BAR_LEG_TEXT_3 = `${AGENT_TEXT_3},count()`;
+export const VIS_TYPE_PIE = 'Pie';
+export const VIS_TYPE_VBAR = 'Vertical bar';
+export const VIS_TYPE_HBAR = 'Horizontal bar';
+export const VIS_TYPE_HEATMAP = 'Heatmap';
+export const FIELD_HOST = 'host';
+export const FIELD_AGENT = 'agent';
