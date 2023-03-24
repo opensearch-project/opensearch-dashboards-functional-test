@@ -48,6 +48,7 @@
     "cypress": "9.5.4",
     "cypress-mochawesome-reporter": "^3.3.0",
     "cypress-multi-reporters": "^1.5.0",
+    "cypress-xpath": "^2.0.1",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
