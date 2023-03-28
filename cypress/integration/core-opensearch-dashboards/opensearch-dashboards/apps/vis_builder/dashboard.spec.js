@@ -56,9 +56,10 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       // Add Vis Builder Visualisation to dashboard
       cy.getElementByTestId('dashboardEditMode').click();
       cy.getElementByTestId('dashboardAddPanelButton').click();
-      cy.getElementByTestId('savedObjectFinderSearchInput').type(
-        `${VB_LINE_VIS_TITLE}{enter}`
-      );
+      cy.getElementByTestId('savedObjectFinderFilterButton').click();
+      cy.getElementByTestId(
+        'savedObjectFinderFilter-visualization-visbuilder'
+      ).click();
       cy.getElementByTestId(
         `savedObjectTitle${toTestId(VB_LINE_VIS_TITLE)}`
       ).click();
