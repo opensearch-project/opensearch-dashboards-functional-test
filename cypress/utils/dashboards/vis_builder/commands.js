@@ -21,7 +21,7 @@ Cypress.Commands.add('vbSelectDataSource', (dataSource) => {
     .click(opts);
 });
 
-Cypress.Commands.add('vbSelectVisType', (type) => {
+Cypress.Commands.add('vbSelectVisType', (type, confirm = false) => {
   const opts = { log: false };
 
   Cypress.log({
@@ -32,7 +32,9 @@ Cypress.Commands.add('vbSelectVisType', (type) => {
 
   cy.getElementByTestId('chartPicker', opts).click(opts);
   cy.get('[data-test-subj^=visType-', opts).contains(type, opts).click(opts);
-  cy.getElementByTestId('confirmModalConfirmButton', opts).click(opts);
+  if (confirm) {
+    cy.getElementByTestId('confirmModalConfirmButton', opts).click(opts);
+  }
 });
 
 Cypress.Commands.add('vbEditAgg', (fields = []) => {

@@ -5,7 +5,7 @@
 
 import { BASE_PATH } from '../../base_constants';
 
-export const VB_DEBOUNCE = 200; // Debounce time for VisBuilder fields in ms
+export const VB_DEBOUNCE = 300; // Debounce time for VisBuilder fields in ms
 
 export const VB_INDEX_DATA = 'vis-builder.data.txt';
 export const VB_INDEX_DOC_COUNT = '10,000';
