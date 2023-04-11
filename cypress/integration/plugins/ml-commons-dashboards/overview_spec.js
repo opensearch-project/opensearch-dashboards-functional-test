@@ -2,7 +2,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { MLC_URL } from '../../../utils/constants';
+import { MLC_URL, MLC_DASHBOARD_API } from '../../../utils/constants';
 
 if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
   describe('MLC Overview page', () => {
@@ -95,6 +95,36 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
 
       cy.contains('.euiFlyoutHeader > h3', uploadModelName);
       cy.contains('.euiFlyoutBody', uploadedModelId);
+    });
+
+    it('should show empty nodes when deployed model profiling loading', () => {
+      cy.intercept(
+        'GET',
+        MLC_DASHBOARD_API.DEPLOYED_MODEL_PROFILE.replace(
+          ':modelID',
+          uploadedModelId
+        ),
+        (req) => {
+          req.on('response', (res) => {
+            res.setDelay(3000);
+          });
+        }
+      ).as('getDeployedModelProfile');
+
+      cy.visit(MLC_URL.OVERVIEW);
+
+      cy.get('[aria-label="Search by name or ID"]').type(uploadModelName);
+
+      cy.contains(uploadedModelId)
+        .closest('tr')
+        .find('[aria-label="view detail"]')
+        .click();
+
+      cy.get('div[role="dialog"] .ml-nodesTableNodeIdCellText', {
+        timeout: 0,
+      }).should('not.exist');
+      cy.wait('@getDeployedModelProfile');
+      cy.get('div[role="dialog"] .ml-nodesTableNodeIdCellText').should('exist');
     });
   });
 }
