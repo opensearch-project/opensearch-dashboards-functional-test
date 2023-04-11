@@ -25,3 +25,9 @@ export const MLC_API = {
   MODEL_UPLOAD: `${MLC_API_BASE}/models/_upload`,
   TASK_BASE: `${MLC_API_BASE}/tasks`,
 };
+
+const BASE_MLC_DASHBOARD_API = BASE_PATH + '/api/ml-commons';
+
+export const MLC_DASHBOARD_API = {
+  DEPLOYED_MODEL_PROFILE: `${BASE_MLC_DASHBOARD_API}/profile/deployed-model/:modelID`,
+};
