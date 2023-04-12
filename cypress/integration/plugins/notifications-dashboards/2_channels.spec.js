@@ -87,10 +87,12 @@ describe('Test create channels', () => {
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
       '[data-test-subj="create-recipient-group-modal-create-button"]'
-    ).click();
+    ).click({ force: true });
     cy.contains('successfully created.').should('exist');
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
   });
 

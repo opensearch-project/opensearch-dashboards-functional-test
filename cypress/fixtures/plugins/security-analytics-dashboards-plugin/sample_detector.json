@@ -1,0 +1,57 @@
+{
+  "type": "detector",
+  "detector_type": "windows",
+  "name": "sample_detector",
+  "enabled": true,
+  "createdBy": "",
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "detector_input": {
+        "description": "Description for sample_detector.",
+        "indices": ["cypress-test-windows"],
+        "pre_packaged_rules": [
+          {
+            "id": "1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"
+          }
+        ],
+        "custom_rules": []
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "name": "sample_alert_condition",
+      "sev_levels": [],
+      "tags": [],
+      "actions": [
+        {
+          "id": "",
+          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: sample_detector",
+          "destination_id": "",
+          "subject_template": {
+            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: sample_detector",
+            "lang": "mustache"
+          },
+          "message_template": {
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: sample_detector\nDescription: Description for sample_detector.\nDetector data sources:\n\twindows",
+            "lang": "mustache"
+          },
+          "throttle_enabled": false,
+          "throttle": {
+            "value": 10,
+            "unit": "MINUTES"
+          }
+        }
+      ],
+      "types": ["windows"],
+      "severity": "4",
+      "ids": ["1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"]
+    }
+  ]
+}
