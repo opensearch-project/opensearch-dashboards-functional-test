@@ -29,6 +29,8 @@ import '../utils/plugins/security-dashboards-plugin/commands';
 import '../utils/plugins/alerting-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
 
+import 'cypress-real-events';
+
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 

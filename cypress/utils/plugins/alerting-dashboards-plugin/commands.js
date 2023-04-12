@@ -121,7 +121,7 @@ Cypress.Commands.add(
   'insertDocumentToIndex',
   (indexName, documentId, documentBody) => {
     cy.request(
-      'PUT',
+      'POST',
       `${Cypress.env('openSearchUrl')}/${indexName}/_doc/${documentId}`,
       documentBody
     );
