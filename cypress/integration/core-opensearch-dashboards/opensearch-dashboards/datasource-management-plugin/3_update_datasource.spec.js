@@ -152,7 +152,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       it('should make sure that endpoint field is disabled in all scenarios', () => {
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.get('input[name="endpoint"]').should('be.disabled');
         cy.get('input[name="endpoint"]').should(
           'have.value',
@@ -160,7 +162,19 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
 
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
+        cy.get('input[name="endpoint"]').should('be.disabled');
+        cy.get('input[name="endpoint"]').should(
+          'have.value',
+          DS_JSON.attributes.endpoint
+        );
+
+        // credential: sigv4
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'sigv4'
+        );
         cy.get('input[name="endpoint"]').should('be.disabled');
         cy.get('input[name="endpoint"]').should(
           'have.value',
@@ -169,7 +183,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       it('should make sure that username field is required for credential: Username & password & hidden when credential: No Authentication', () => {
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.get('input[name="datasourceUsername"]').should('exist');
         cy.get('input[name="datasourceUsername"]').should('be.empty');
 
@@ -192,12 +208,16 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
 
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         cy.get('input[name="datasourceUsername"]').should('not.exist');
       });
       it('should make sure that password field is required', () => {
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.getElementByTestId('editDatasourceUpdatePasswordBtn').should(
           'not.exist'
         );
@@ -217,7 +237,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get('input[type="password"]:valid').should('have.length', 1);
 
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         cy.get(passwordFieldIdentifier).should('not.exist');
       });
     });
@@ -247,7 +269,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       it('should change credential to "Username & Password" & save changes with valid form', () => {
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         // set username
         typeInInputFieldAndBlur(
           'datasourceUsername',
@@ -269,7 +293,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         ).should('not.exist');
       });
       it('should verify that changes were updated successfully', () => {
-        cy.get('[type="radio"]').last().should('be.checked'); // credential: Username & password
+        // credential: Username & password
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').should(
+          'have.value',
+          'username_password'
+        );
         cy.get('[name="datasourceUsername"]').should(
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.username
@@ -340,7 +368,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       it('should make sure that endpoint field is disabled in all scenarios', () => {
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         cy.get('input[name="endpoint"]').should('be.disabled');
         cy.get('input[name="endpoint"]').should(
           'have.value',
@@ -348,7 +378,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
 
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.get('input[name="endpoint"]').should('be.disabled');
         cy.get('input[name="endpoint"]').should(
           'have.value',
@@ -358,11 +390,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('should make sure that username field is hidden when credential: No Authentication & required for credential: Username & password', () => {
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         cy.get('input[name="datasourceUsername"]').should('not.exist');
 
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.get('input[name="datasourceUsername"]').should('exist');
         cy.get('input[name="datasourceUsername"]').should(
           'have.value',
@@ -389,14 +425,18 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       it('should make sure that password field is disabled & Update stored password button is present', () => {
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         cy.get(passwordFieldIdentifier).should('not.exist');
         cy.getElementByTestId('editDatasourceUpdatePasswordBtn').should(
           'not.exist' // Update stored password button
         );
 
         // credential: Username & password
-        cy.get('[type="radio"]').last().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'username_password'
+        );
         cy.getElementByTestId('editDatasourceUpdatePasswordBtn').should(
           'exist' // Update stored password button
         );
@@ -499,7 +539,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.password
         );
       });
-      it('should save valid updated stored passwoprd', () => {
+      it('should save valid updated stored password', () => {
         typeInInputFieldAndBlur(
           '',
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.password,
@@ -525,7 +565,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     describe('bottom bar: Save Changes -> "Change Credential Type & few fields"', () => {
       it('should change credential to "No Authentication" & save changes with valid form', () => {
         // credential: No Authentication
-        cy.get('[type="radio"]').first().check(FORCE_CLICK_OPTS);
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'no_auth'
+        );
         typeInInputFieldAndBlur(
           'dataSourceTitle',
           DS_JSON_UNIQUE_VALUES.attributes.title,
@@ -544,7 +586,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.title
         );
-        cy.get('[type="radio"]').first().should('be.checked'); // credential: Username & password
+        // credential: No Authentication
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').should(
+          'have.value',
+          'no_auth'
+        );
         cy.get('[name="datasourceUsername"]').should('not.exist');
         cy.get(passwordFieldIdentifier).should('not.exist');
         cy.getElementByTestId('editDatasourceUpdatePasswordBtn').should(
