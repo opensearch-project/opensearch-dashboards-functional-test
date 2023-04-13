@@ -87,6 +87,22 @@ declare namespace Cypress {
       header: string,
     ): Chainable<S>;
 
+
+    /**
+     * Changes the Default tenant for the domain.
+     * @example
+     * cy.changeDefaultTenant({multitenancy_enabled: true, private_tenant_enabled: true, default_tenant: tenantName, });
+     */
+    changeDefaultTenant<S = any>(
+        attributes: {
+          multitenancy_enabled: boolean,
+          private_tenant_enabled: boolean,
+          default_tenant: string;
+        },
+        // header: string,
+        // default_tenant: string
+    ): Chainable<S>;
+
     /**
      * Delete an index pattern
      * @example
