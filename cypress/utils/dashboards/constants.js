@@ -7,6 +7,8 @@ import { BASE_PATH } from '../base_constants';
 
 // STACK MANAGEMENT PATH
 export const STACK_MANAGEMENT_PATH = BASE_PATH + '/app/management';
+export const TENANTS_MANAGE_PATH =
+  BASE_PATH + '/app/security-dashboards-plugin#/tenants';
 
 export const INDEX_PATTERN_PATH =
   STACK_MANAGEMENT_PATH + '/opensearch-dashboards/indexPatterns';
