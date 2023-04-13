@@ -299,6 +299,22 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
   });
 });
 
+Cypress.Commands.add('changeDefaultTenant', (attributes, header = {}) => {
+  const url =
+    Cypress.env('openSearchUrl') + '/_plugins/_security/api/tenancy/config';
+
+  cy.request({
+    method: 'PUT',
+    url,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+      ...header,
+    },
+    body: JSON.stringify(attributes),
+  });
+});
+
 Cypress.Commands.add('deleteIndexPattern', (id, options = {}) =>
   cy.deleteSavedObject('index-pattern', id, options)
 );
