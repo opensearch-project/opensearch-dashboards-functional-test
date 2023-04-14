@@ -18,9 +18,6 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
   return cy.get('tbody > tr:first').find(selector);
 });
 
-Cypress.Commands.add(
-  'waitForPageLoad',
-  (pathname, { contains = null }) => {
-    cy.contains(contains).should('be.visible');
-  }
-);
+Cypress.Commands.add('waitForPageLoad', (pathname, { contains = null }) => {
+  cy.contains(contains).should('be.visible');
+});
