@@ -20,7 +20,7 @@ Cypress.Commands.add('getTableFirstRow', (selector) => {
 
 Cypress.Commands.add(
   'waitForPageLoad',
-  (pathname, { timeout = 60000, contains = null }) => {
+  (pathname, { contains = null }) => {
     cy.contains(contains).should('be.visible');
   }
 );
