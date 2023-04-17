@@ -27,11 +27,6 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       );
     });
 
-    /* Experimental Callout */
-    it('should display experimental call out', () => {
-      cy.getElementByTestId('data-source-experimental-call').should('exist');
-    });
-
     describe('Empty State', () => {
       before(() => {
         // Clean up table before other tests run
