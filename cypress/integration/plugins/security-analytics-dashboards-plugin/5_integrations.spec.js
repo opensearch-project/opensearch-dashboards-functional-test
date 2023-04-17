@@ -70,7 +70,7 @@ describe('Integration tests', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
     // Wait for page to load
-    cy.waitForPageLoad('detectors', 'Threat detectors');
+    cy.contains('Threat detectors');
   });
 
   xit('...can navigate to findings page', () => {
