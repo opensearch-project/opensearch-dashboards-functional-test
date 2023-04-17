@@ -76,7 +76,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
       cy.contains('tr', field_name).within(() => {
         cy.get(`[data-test-subj="detector-field-mappings-select"]`)
-          .click()
+          .click({ force: true })
           .type(mappedTo);
       });
     }
@@ -335,7 +335,7 @@ describe('Detectors', () => {
     cy.contains('table tr', cypressDNSRule).within(() => {
       // Of note, timeout can sometimes work instead of wait here, but is very unreliable from case to case.
       cy.wait(1000);
-      cy.get('button').eq(1).click();
+      cy.get('button').eq(1).click({ force: true });
     });
 
     // Save changes

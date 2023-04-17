@@ -81,10 +81,10 @@ describe('Integration tests', () => {
 
     // Cypress USB Detector
     cy.contains('Cypress USB Detector')
-      .click()
+      .click({ force: true })
       .then(() => {
         cy.contains('View Findings')
-          .click()
+          .click({ force: true })
           .then(() => {
             cy.hash()
               .should('match', /findings\/.+$/)
@@ -118,10 +118,10 @@ describe('Integration tests', () => {
 
     // Cypress USB Detector
     cy.contains('Cypress USB Detector')
-      .click()
+      .click({ force: true })
       .then(() => {
         cy.contains('View Alerts')
-          .click()
+          .click({ force: true })
           .then(() => {
             cy.hash()
               .should('match', /alerts\/.+$/)
