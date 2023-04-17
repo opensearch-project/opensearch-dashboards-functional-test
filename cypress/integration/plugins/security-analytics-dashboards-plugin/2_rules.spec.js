@@ -170,9 +170,7 @@ describe('Rules', () => {
     cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
   });
 
   it('...can be created', () => {
@@ -248,17 +246,13 @@ describe('Rules', () => {
 
     cy.wait('@getRules');
 
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
 
     checkRulesFlyout();
   });
 
   it('...can be edited', () => {
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
     cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
@@ -312,9 +306,7 @@ describe('Rules', () => {
       force: true,
     });
 
-    cy.waitForPageLoad('rules', {
-      contains: 'Rules',
-    });
+    cy.contains('Rules');
 
     checkRulesFlyout();
   });

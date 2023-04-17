@@ -29,9 +29,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .click({ force: true });
 
   // Check to ensure process started
-  cy.waitForPageLoad('create-detector', {
-    contains: 'Define detector',
-  });
+  cy.contains('Define detector');
 
   // Enter a name for the detector in the appropriate input
   cy.get(`input[placeholder="Enter a name for the detector."]`)
@@ -131,9 +129,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   // Create the detector
   cy.get('button').contains('Create').click({ force: true });
-  cy.waitForPageLoad('detector-details', {
-    contains: detectorName,
-  });
+  cy.contains(detectorName);
 
   cy.contains('Attempting to create the detector.');
 
@@ -198,9 +194,7 @@ describe('Detectors', () => {
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
-    cy.waitForPageLoad('detectors', {
-      contains: 'Threat detectors',
-    });
+    cy.contains('Threat detectors');
   });
 
   it('...should show mappings warning', () => {
@@ -210,9 +204,7 @@ describe('Detectors', () => {
       .click({ force: true });
 
     // Check to ensure process started
-    cy.waitForPageLoad('create-detector', {
-      contains: 'Define detector',
-    });
+    cy.contains('Define detector');
 
     // Select our pre-seeded data source (check cypressIndexDns)
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
@@ -250,9 +242,8 @@ describe('Detectors', () => {
   it('...basic details can be edited', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains('Detector details');
+    cy.contains(detectorName);
 
     // Click "Edit" button in detector details
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({
@@ -260,9 +251,7 @@ describe('Detectors', () => {
     });
 
     // Confirm arrival at "Edit detector details" page
-    cy.waitForPageLoad('edit-detector-details', {
-      contains: 'Edit detector details',
-    });
+    cy.contains('Edit detector details');
 
     // Change detector name
     cy.get(`input[placeholder="Enter a name for the detector."]`)
@@ -294,9 +283,7 @@ describe('Detectors', () => {
     });
 
     // Confirm taken to detector details page
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains(detectorName);
 
     // Verify edits are applied
     cy.contains('test detector edited');
@@ -307,15 +294,12 @@ describe('Detectors', () => {
 
   it('...rules can be edited', () => {
     // Ensure start on main detectors page
-    cy.waitForPageLoad('detectors', {
-      contains: 'Threat detectors',
-    });
+    cy.contains('Threat detectors');
 
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains('Detector details');
+    cy.contains(detectorName);
 
     // Confirm number of rules before edit
     cy.contains('Active rules (13)');
@@ -324,9 +308,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.waitForPageLoad('edit-detector-rules', {
-      contains: 'Edit detector rules',
-    });
+    cy.contains('Edit detector rules');
 
     // Search for specific rule
     cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
@@ -350,9 +332,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival on "Edit detector rules" page
-    cy.waitForPageLoad('edit-detector-rules', {
-      contains: 'Edit detector rules',
-    });
+    cy.contains('Edit detector rules');
 
     // Search for specific rule
     cy.get(`input[placeholder="Search..."]`).ospSearch(cypressDNSRule);
@@ -367,9 +347,7 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="save-detector-rules-edits"]`).click({
       force: true,
     });
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains(detectorName);
 
     // Confirm 1 rule has been added to detector
     cy.contains('Active rules (13)');
@@ -378,9 +356,8 @@ describe('Detectors', () => {
   it('...should update field mappings if data source is changed', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains('Detector details');
+    cy.contains(detectorName);
 
     // Click "Edit" button in detector details
     cy.get(`[data-test-subj="edit-detector-basic-details"]`).click({
@@ -388,9 +365,7 @@ describe('Detectors', () => {
     });
 
     // Confirm arrival at "Edit detector details" page
-    cy.waitForPageLoad('edit-detector-details', {
-      contains: 'Edit detector details',
-    });
+    cy.contains('Edit detector details');
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
@@ -404,17 +379,14 @@ describe('Detectors', () => {
   it('...should update field mappings if rule selection is changed', () => {
     // Click on detector name
     cy.contains(detectorName).click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: detectorName,
-    });
+    cy.contains('Detector details');
+    cy.contains(detectorName);
 
     // Click "Edit" button in detector details
     cy.get(`[data-test-subj="edit-detector-rules"]`).click({ force: true });
 
     // Confirm arrival at "Edit detector details" page
-    cy.waitForPageLoad('edit-detector-rules', {
-      contains: 'Edit detector rules',
-    });
+    cy.contains('Edit detector rules');
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
@@ -432,9 +404,7 @@ describe('Detectors', () => {
     cy.contains('test detector edited').click({ force: true });
 
     // Confirm page
-    cy.waitForPageLoad('detector-details', {
-      contains: 'Detector details',
-    });
+    cy.contains('Detector details');
 
     // Click "Actions" button, the click "Delete"
     cy.get('button').contains('Actions').click({ force: true });

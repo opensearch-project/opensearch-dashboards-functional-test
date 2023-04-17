@@ -75,9 +75,7 @@ describe('Alerts', () => {
         cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
         // Check that correct page is showing
-        cy.waitForPageLoad('detectors', {
-          contains: 'Threat detectors',
-        });
+        cy.contains('Threat detectors');
 
         // Filter table to only show the test detector
         cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
@@ -105,9 +103,7 @@ describe('Alerts', () => {
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
-    cy.waitForPageLoad('alerts', {
-      contains: 'Security alerts',
-    });
+    cy.contains('Security alerts');
 
     // Filter table to only show alerts for the test detector
     cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);

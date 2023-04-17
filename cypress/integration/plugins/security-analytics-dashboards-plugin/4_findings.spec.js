@@ -40,9 +40,7 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.waitForPageLoad('findings', {
-      contains: 'Findings',
-    });
+    cy.contains('Findings');
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -190,9 +188,7 @@ describe('Findings', () => {
   it('...can delete detector', () => {
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-    cy.waitForPageLoad('detectors', {
-      contains: 'Threat detectors',
-    });
+    cy.contains('Threat detectors');
 
     // filter table to show only sample_detector findings
     cy.get(`input[placeholder="Search threat detectors"]`).ospSearch(
@@ -208,9 +204,8 @@ describe('Findings', () => {
 
     // Click on detector to be removed
     cy.contains('sample_detector').click({ force: true });
-    cy.waitForPageLoad('detector-details', {
-      contains: sample_detector.name,
-    });
+    cy.contains('Detector details');
+    cy.contains(sample_detector.name);
 
     // wait for detector details to load before continuing
     cy.wait(['@getDetector', '@getPrePackagedRules', '@getRules']).then(() => {
