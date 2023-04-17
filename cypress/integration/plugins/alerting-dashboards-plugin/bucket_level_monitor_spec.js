@@ -25,6 +25,9 @@ const GROUP_BY_FIELD = 'user';
 const COUNT_METRIC_NAME = 'count_products_quantity';
 const AVERAGE_METRIC_NAME = 'avg_products_base_price';
 
+const TESTING_INDEX_A = 'bucket-level-monitor-test-index-a';
+const TESTING_INDEX_B = 'bucket-level-monitor-test-index-b';
+
 const addTriggerToVisualEditorMonitor = (
   triggerName,
   triggerIndex,
@@ -40,7 +43,7 @@ const addTriggerToVisualEditorMonitor = (
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
     //  If this ever becomes available, it can be used to pass data-test-subj for the button.
     // Since the above is currently not possible, referring to the accordion button using its content
-    cy.get('button').contains('New trigger').click();
+    cy.get('button').contains('New trigger').click({ force: true });
   }
 
   // Type in the trigger name
@@ -60,7 +63,7 @@ const addTriggerToVisualEditorMonitor = (
     .type('200');
 
   // Add another metric condition for the trigger
-  cy.get('[data-test-subj="addTriggerConditionButton"]').click();
+  cy.get('[data-test-subj="addTriggerConditionButton"]').click({ force: true });
 
   cy.get(
     `[name="triggerDefinitions[${triggerIndex}].triggerConditions[1].andOrCondition"]`
@@ -82,18 +85,18 @@ const addTriggerToVisualEditorMonitor = (
 
   // Add a trigger where filter
   cy.get(
-    `[data-test-subj="triggerDefinitions[${triggerIndex}].where.addFilterButton"]`
-  ).click();
+    `[data-test-subj="triggerDefinitions[${triggerIndex}].filters.0.addFilterButton"]`
+  ).click({ force: true });
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].where.fieldName"]`).type(
+  cy.get(`[name="triggerDefinitions[${triggerIndex}].filters.0.fieldName"]`).type(
     `${GROUP_BY_FIELD}{downarrow}{enter}`
   );
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].where.operator"]`).select(
+  cy.get(`[name="triggerDefinitions[${triggerIndex}].filters.0.operator"]`).select(
     'includes'
   );
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].where.fieldValue"]`)
+  cy.get(`[name="triggerDefinitions[${triggerIndex}].filter.0.fieldValue"]`)
     .type('a*')
     .trigger('blur', { force: true });
 
@@ -116,6 +119,12 @@ describe('Bucket-Level Monitors', () => {
   before(() => {
     // Load sample data
     cy.loadSampleEcommerceData();
+    cy.insertDocumentToIndex(TESTING_INDEX_A, undefined, {
+      message: 'This is a test.',
+    });
+    cy.insertDocumentToIndex(TESTING_INDEX_B, undefined, {
+      message: 'This is a test.',
+    });
   });
 
   beforeEach(() => {
@@ -140,13 +149,13 @@ describe('Bucket-Level Monitors', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor').click({ force: true });
 
       // Select the Bucket-Level Monitor type
-      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({ force: true });
 
       // Select extraction query for method of definition
-      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click();
+      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({ force: true });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_EXTRACTION_QUERY_MONITOR);
@@ -175,20 +184,8 @@ describe('Bucket-Level Monitors', () => {
       // Type in the trigger name
       cy.get('input[name="triggerDefinitions[0].name"]').type(SAMPLE_TRIGGER);
 
-      // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
-      //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
-      //  ideally take place in the before() block, and clearing should occur in the after() block.
-      // // Type in the action name
-      // cy.get('input[name="triggerDefinitions[0].actions.0.name"]').type(SAMPLE_ACTION);
-      //
-      // // Click the combo box to list all the destinations
-      // // Using key typing instead of clicking the menu option to avoid occasional failure
-      // cy.get('div[name="triggerDefinitions[0].actions.0.destination_id"]')
-      //   .click({ force: true })
-      //   .type('{downarrow}{enter}');
-
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -197,7 +194,7 @@ describe('Bucket-Level Monitors', () => {
       cy.contains(SAMPLE_TRIGGER);
 
       // Go back to the Monitors list
-      cy.get('a').contains('Monitors').click();
+      cy.get('a').contains('Monitors').click({ force: true });
 
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_EXTRACTION_QUERY_MONITOR);
@@ -208,13 +205,13 @@ describe('Bucket-Level Monitors', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor').click({ force: true });
 
       // Select the Bucket-Level Monitor type
-      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({ force: true });
 
       // Select visual editor for method of definition
-      cy.get('[data-test-subj="visualEditorRadioCard"]').click();
+      cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_VISUAL_EDITOR_MONITOR);
@@ -231,57 +228,45 @@ describe('Bucket-Level Monitors', () => {
       });
 
       // Add a metric for the query
-      cy.get('[data-test-subj="addMetricButton"]').click();
+      cy.get('[data-test-subj="addMetricButton"]').click({ force: true });
 
       cy.get('[data-test-subj="metrics.0.aggregationTypeSelect"]').select(
         'count'
       );
 
-      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]')
-        .click()
-        .within(() => {
-          cy.get('[data-test-subj="comboBoxSearchInput"]')
-            .focus()
-            .clear({ force: true })
-            .type(`${COUNT_METRIC_FIELD}{downArrow}{enter}`)
-            .trigger('blur', { force: true });
-        });
+      cy.get('[data-test-subj="metrics.0.ofFieldComboBox"]').type(
+        `${COUNT_METRIC_FIELD}{downArrow}{enter}`
+      );
 
-      cy.get('button').contains('Save').click();
+      cy.get('button').contains('Save').click({ force: true });
 
       // Add a second metric for the query
-      cy.get('[data-test-subj="addMetricButton"]').click();
+      cy.get('[data-test-subj="addMetricButton"]').click({ force: true });
 
       cy.get('[data-test-subj="metrics.1.aggregationTypeSelect"]').select(
         'avg'
       );
 
-      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]')
-        .click()
-        .within(() => {
-          cy.get('[data-test-subj="comboBoxSearchInput"]')
-            .focus()
-            .clear({ force: true })
-            .type(`${AVERAGE_METRIC_FIELD}{downArrow}{enter}`)
-            .trigger('blur', { force: true });
-        });
+      cy.get('[data-test-subj="metrics.1.ofFieldComboBox"]').type(
+        `${AVERAGE_METRIC_FIELD}{downArrow}{enter}`
+      );
 
-      cy.get('button').contains('Save').click();
+      cy.get('button').contains('Save').click({ force: true });
 
       // Add a group by field for the query
-      cy.get('[data-test-subj="addGroupByButton"]').click();
+      cy.get('[data-test-subj="addGroupByButton"]').click({ force: true });
 
       cy.get('[data-test-subj="groupBy.0.ofFieldComboBox"]').type(
         `${GROUP_BY_FIELD}{downArrow}{enter}`
       );
 
-      cy.get('button').contains('Save').click();
+      cy.get('button').contains('Save').click({ force: true });
 
       // Add trigger
       addTriggerToVisualEditorMonitor(SAMPLE_TRIGGER, 0, SAMPLE_ACTION, false);
 
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -338,14 +323,54 @@ describe('Bucket-Level Monitors', () => {
         // Confirm we can see only one row in the trigger list by checking <caption> element
         cy.contains('This table contains 1 row');
       });
+
+      it('to have multiple indices', () => {
+        // Confirm we can see the created monitor in the list
+        cy.contains(SAMPLE_VISUAL_EDITOR_MONITOR);
+
+        // Select the existing monitor
+        cy.get('a')
+          .contains(SAMPLE_VISUAL_EDITOR_MONITOR)
+          .click({ force: true });
+
+        // Click Edit button
+        cy.contains('Edit').click({ force: true });
+
+        // Click on the Index field and type in multiple index names to replicate the bug
+        cy.get('#index')
+          .click({ force: true })
+          .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
+            force: true,
+          })
+          .trigger('blur', { force: true });
+
+        // Confirm Index field only contains the expected text
+        cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
+          timeout: 20000,
+        });
+        cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_A, {
+          timeout: 20000,
+        });
+        cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, {
+          timeout: 20000,
+        });
+
+        // Click the update button
+        cy.get('button').contains('Update').last().click({ force: true });
+
+        // Confirm we're on the Monitor Details page by searching for the History element
+        cy.contains('History', { timeout: 20000 });
+      });
     });
   });
 
   after(() => {
-    // Delete all monitors
+    // Delete all monitors and destinations
     cy.deleteAllMonitors();
 
     // Delete sample data
     cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+    cy.deleteIndexByName(TESTING_INDEX_A);
+    cy.deleteIndexByName(TESTING_INDEX_B);
   });
 });
