@@ -271,7 +271,10 @@ describe('Rules', () => {
       .click({ force: true })
       .then(() => {
         // Confirm arrival at detectors page
-        cy.get('.euiPopover__panel').find('button').contains('Edit').click();
+        cy.get('.euiPopover__panel')
+          .find('button')
+          .contains('Edit')
+          .click({ force: true });
       });
 
     const ruleNameSelector = '[data-test-subj="rule_name_field"]';
@@ -284,7 +287,7 @@ describe('Rules', () => {
     // Enter the log type
     const logSelector = '[data-test-subj="rule_type_dropdown"]';
     cy.get(logSelector).within(() =>
-      cy.get('.euiFormControlLayoutClearButton').click()
+      cy.get('.euiFormControlLayoutClearButton').click({ force: true })
     );
     SAMPLE_RULE.logType = 'dns';
     YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
@@ -341,9 +344,12 @@ describe('Rules', () => {
         cy.get('.euiPopover__panel')
           .find('button')
           .contains('Delete')
-          .click()
+          .click({ force: true })
           .then(() =>
-            cy.get('.euiModalFooter > .euiButton').contains('Delete').click()
+            cy
+              .get('.euiModalFooter > .euiButton')
+              .contains('Delete')
+              .click({ force: true })
           );
 
         cy.wait('@getCustomRules');
