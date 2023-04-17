@@ -111,7 +111,7 @@ describe('Component templates', () => {
       cy.get('[data-test-subj="deleteAction"]').click();
       cy.contains(/Unable to delete/);
       cy.get('[data-test-subj="viewAssociatedTemplatesInToast"]').click();
-      cy.contains('Associated templates');
+      cy.contains('Associated index templates');
       cy.get(`[aria-label="Unlink from ${associatedTemplate}?"]`).click();
       cy.get(
         `[data-test-subj="Unlink from ${associatedTemplate}?-confirm"]`
