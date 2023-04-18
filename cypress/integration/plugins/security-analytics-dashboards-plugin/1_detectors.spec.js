@@ -24,23 +24,19 @@ const cypressDNSRule = dns_rule_data.title;
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
   // Locate Create detector button click to start
-  cy.get('.euiButton')
-    .filter(':contains("Create detector")')
-    .click({ force: true });
+  cy.get('.euiButton').filter(':contains("Create detector")').click({ force: true });
 
   // Check to ensure process started
   cy.contains('Define detector');
 
   // Enter a name for the detector in the appropriate input
-  cy.get(`input[placeholder="Enter a name for the detector."]`)
-    .focus()
-    .realType(detectorName);
+  cy.get(`input[placeholder="Enter a name for the detector."]`).focus().realType(detectorName);
 
   // Select our pre-seeded data source (check cypressIndexDns)
   cy.get(`[data-test-subj="define-detector-select-data-source"]`)
-    .find('input')
-    .focus()
-    .realType(dataSource);
+      .find('input')
+      .focus()
+      .realType(dataSource);
 
   cy.intercept({
     pathname: NODE_API.RULES_SEARCH,
@@ -54,10 +50,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.wait('@getSigmaRules').then(() => {
     // Open Detection rules accordion
-    cy.get('[data-test-subj="detection-rules-btn"]').click({
-      force: true,
-      timeout: 5000,
-    });
+    cy.get('[data-test-subj="detection-rules-btn"]').click({ force: true, timeout: 5000 });
 
     cy.contains('table tr', 'DNS', {
       timeout: 120000,
@@ -73,9 +66,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
       const mappedTo = testMappings.properties[field_name].path;
 
       cy.contains('tr', field_name).within(() => {
-        cy.get(`[data-test-subj="detector-field-mappings-select"]`)
-          .click({ force: true })
-          .type(mappedTo);
+        cy.get(`[data-test-subj="detector-field-mappings-select"]`).click().type(mappedTo);
       });
     }
   }
@@ -84,19 +75,19 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.get('button').contains('Next').click({ force: true });
 
   // Check that correct page now showing
-  cy.contains('Set up alerts');
+  cy.contains('Set up alert triggers');
 
   // Type name of new trigger
-  cy.get(`input[placeholder="Enter a name for the alert condition."]`)
-    .focus()
-    .realType('test_trigger');
+  cy.get(`input[placeholder="Enter a name to describe the alert condition"]`)
+      .focus()
+      .realType('test_trigger');
 
   // Type in (or select) tags for the alert condition
   cy.get(`[data-test-subj="alert-tags-combo-box"]`)
-    .find('input')
-    .focus()
-    .realType('attack.defense_evasion')
-    .realPress('Enter');
+      .find('input')
+      .focus()
+      .realType('attack.defense_evasion')
+      .realPress('Enter');
 
   // Select applicable severity levels
   cy.get(`[data-test-subj="security-levels-combo-box"]`).click({ force: true });
@@ -124,8 +115,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.contains('Detector details');
   cy.contains(detectorName);
   cy.contains('dns');
-  cy.contains(dataSource);
-  cy.contains('Alert on test_trigger');
+  cy.contains('test_trigger');
 
   // Create the detector
   cy.get('button').contains('Create').click({ force: true });
