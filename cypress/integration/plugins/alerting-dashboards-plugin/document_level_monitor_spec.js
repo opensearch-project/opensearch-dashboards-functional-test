@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import _ from 'lodash';
 import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleDocumentLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_document_level_monitor.json';
 import { BASE_PATH } from '../../../utils/base_constants';
@@ -56,31 +57,47 @@ const addDocumentsToTestIndex = (indexName = '', numOfDocs = 0) => {
   }
 };
 
-const addQuery = ({ queryIndex = 0, queryName, queryField, operator, query, tags = [] }) => {
+const addQuery = ({
+  queryIndex = 0,
+  queryName,
+  queryField,
+  operator,
+  query,
+  tags = [],
+}) => {
   // Add another query
-  if (queryIndex > 0) cy.get('[data-test-subj="addDocLevelQueryButton"]').click({ force: true });
+  if (queryIndex > 0)
+    cy.get('[data-test-subj="addDocLevelQueryButton"]').click({ force: true });
 
   // Enter query name
-  cy.get(`[data-test-subj="documentLevelQuery_queryName${queryIndex}"]`).type(queryName);
+  cy.get(`[data-test-subj="documentLevelQuery_queryName${queryIndex}"]`).type(
+    queryName
+  );
 
   // Enter query field
   cy.get(`[data-test-subj="documentLevelQuery_field${queryIndex}"]`).type(
-      `${queryField}{downarrow}{enter}`
+    `${queryField}{downarrow}{enter}`
   );
 
   // Select query operator
-  cy.get(`[data-test-subj="documentLevelQuery_operator${queryIndex}"]`).select(operator);
+  cy.get(`[data-test-subj="documentLevelQuery_operator${queryIndex}"]`).select(
+    operator
+  );
 
   // Enter query
-  cy.get(`[data-test-subj="documentLevelQuery_query${queryIndex}"]`).type(query);
+  cy.get(`[data-test-subj="documentLevelQuery_query${queryIndex}"]`).type(
+    query
+  );
 
   // Enter tags
   tags.forEach((tag, tagIndex) => {
-    cy.get(`[data-test-subj="addDocLevelQueryTagButton_query${queryIndex}"]`).click({
+    cy.get(
+      `[data-test-subj="addDocLevelQueryTagButton_query${queryIndex}"]`
+    ).click({
       force: true,
     });
     cy.get(
-        `[data-test-subj="documentLevelQueryTag_text_field_query${queryIndex}_tag${tagIndex}"]`
+      `[data-test-subj="documentLevelQueryTag_text_field_query${queryIndex}_tag${tagIndex}"]`
     ).type(tag);
   });
 };
@@ -116,12 +133,16 @@ describe('DocumentLevelMonitor', () => {
       cy.contains('Create monitor').click({ force: true });
 
       // Select the Document-Level Monitor type
-      cy.get('[data-test-subj="docLevelMonitorRadioCard"]').click({ force: true });
+      cy.get('[data-test-subj="docLevelMonitorRadioCard"]').click({
+        force: true,
+      });
     });
 
     it('by extraction query editor', () => {
       // Select extraction query for method of definition
-      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({ force: true });
+      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_EXTRACTION_QUERY_MONITOR);
@@ -132,15 +153,20 @@ describe('DocumentLevelMonitor', () => {
       // Input extraction query
       cy.get('[data-test-subj="extractionQueryCodeEditor"]').within(() => {
         cy.get('.ace_text-input')
-            .focus()
-            .clear({ force: true })
-            .type(JSON.stringify(sampleDocumentLevelMonitor.inputs[0].doc_level_input), {
+          .focus()
+          .clear({ force: true })
+          .type(
+            JSON.stringify(
+              sampleDocumentLevelMonitor.inputs[0].doc_level_input
+            ),
+            {
               force: true,
               parseSpecialCharSequences: false,
               delay: 5,
               timeout: 20000,
-            })
-            .trigger('blur', { force: true });
+            }
+          )
+          .trigger('blur', { force: true });
       });
 
       // Add a trigger
@@ -148,26 +174,27 @@ describe('DocumentLevelMonitor', () => {
 
       // Type in the trigger name
       cy.get('input[name="triggerDefinitions[0].name"]').type(
-          sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
+        sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
       );
 
       // Clear the default trigger condition source, and type the sample source
       cy.get('[data-test-subj="triggerQueryCodeEditor"]').within(() => {
         cy.get('.ace_text-input')
-            .focus()
-            .clear({ force: true })
-            .type(
-                JSON.stringify(
-                    sampleDocumentLevelMonitor.triggers[0].document_level_trigger.condition.script.source
-                ),
-                {
-                  force: true,
-                  parseSpecialCharSequences: false,
-                  delay: 5,
-                  timeout: 20000,
-                }
-            )
-            .trigger('blur', { force: true });
+          .focus()
+          .clear({ force: true })
+          .type(
+            JSON.stringify(
+              sampleDocumentLevelMonitor.triggers[0].document_level_trigger
+                .condition.script.source
+            ),
+            {
+              force: true,
+              parseSpecialCharSequences: false,
+              delay: 5,
+              timeout: 20000,
+            }
+          )
+          .trigger('blur', { force: true });
       });
 
       // TODO: Test with Notifications plugin
@@ -179,7 +206,9 @@ describe('DocumentLevelMonitor', () => {
       cy.contains('This table contains 1 row');
 
       // Confirm we can see the new trigger
-      cy.contains(sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name);
+      cy.contains(
+        sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
+      );
 
       // Go back to the Monitors list
       cy.get('a').contains('Monitors').click({ force: true });
@@ -200,12 +229,17 @@ describe('DocumentLevelMonitor', () => {
 
       const testQueries = [
         {
-          queryName: sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].name,
+          queryName:
+            sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0]
+              .name,
           queryField: 'region',
           operator: 'is',
           operatorValue: 'is',
           query: 'us-west-2',
-          tags: [sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].tags[0]],
+          tags: [
+            sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0]
+              .tags[0],
+          ],
         },
       ];
 
@@ -223,6 +257,7 @@ describe('DocumentLevelMonitor', () => {
           operator: operator.text,
           operatorValue: operator.value,
           query: 1000 + queryIndex,
+          tags: [],
         };
         addQuery(newQuery);
         testQueries.push(newQuery);
@@ -233,28 +268,30 @@ describe('DocumentLevelMonitor', () => {
 
       // Type in the trigger name
       cy.get('input[name="triggerDefinitions[0].name"]').type(
-          sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
+        sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
       );
 
       // Define the first condition
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
+        '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
       ).type(
-          `${sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].tags[0]}{downarrow}{enter}`
+        `${sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].tags[0]}{downarrow}{enter}`
       );
 
       // Add another condition
-      cy.get('[data-test-subj="addTriggerConditionButton"]').click({ force: true });
+      cy.get('[data-test-subj="addTriggerConditionButton"]').click({
+        force: true,
+      });
 
       // Define a second condition
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_andOr_triggerDefinitions[0].triggerConditions.1"]'
+        '[data-test-subj="documentLevelTriggerExpression_andOr_triggerDefinitions[0].triggerConditions.1"]'
       ).type('or{enter}');
 
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.1"]'
+        '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.1"]'
       ).type(
-          `${sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].name}{downarrow}{enter}`
+        `${sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].name}{downarrow}{enter}`
       );
 
       // TODO: Test with Notifications plugin
@@ -266,7 +303,9 @@ describe('DocumentLevelMonitor', () => {
       cy.contains('This table contains 1 row');
 
       // Confirm we can see the new trigger
-      cy.contains(sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name);
+      cy.contains(
+        sampleDocumentLevelMonitor.triggers[0].document_level_trigger.name
+      );
 
       // Click the 'Edit' button to confirm the monitor has the expected configuration
       cy.contains('Edit').click({ force: true });
@@ -274,46 +313,51 @@ describe('DocumentLevelMonitor', () => {
       // Confirm each query has been configured correctly
       testQueries.forEach((query, index) => {
         // Confirm query name
-        cy.get(`[data-test-subj="documentLevelQuery_queryName${index}"]`).should(
-            'have.value',
-            query.queryName
-        );
+        cy.get(
+          `[data-test-subj="documentLevelQuery_queryName${index}"]`
+        ).should('have.value', query.queryName);
 
         // Confirm query field
-        cy.get(`[data-test-subj="documentLevelQuery_field${index}"]`).contains(query.queryField);
+        cy.get(`[data-test-subj="documentLevelQuery_field${index}"]`).contains(
+          query.queryField
+        );
 
         // Confirm query operator
         cy.get(`[data-test-subj="documentLevelQuery_operator${index}"]`).should(
-            'have.value',
-            query.operatorValue
+          'have.value',
+          query.operatorValue
         );
 
         // Confirm query
         cy.get(`[data-test-subj="documentLevelQuery_query${index}"]`).should(
-            'have.value',
-            query.query.toString()
+          'have.value',
+          query.query.toString()
         );
 
         // Confirm tags
-        query.tags?.forEach((tag, tagIndex) => {
+        query.tags.forEach((tag, tagIndex) => {
           cy.get(
-              `[data-test-subj="documentLevelQueryTag_badge_query${index}_tag${tagIndex}"]`
+            `[data-test-subj="documentLevelQueryTag_badge_query${index}_tag${tagIndex}"]`
           ).contains(tag);
         });
       });
 
       // Confirm the first trigger condition has been configured correctly
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
-      ).contains(sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].tags[0]);
+        '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
+      ).contains(
+        sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].tags[0]
+      );
 
       // Confirm the second trigger condition has been configured correctly
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_andOr_triggerDefinitions[0].triggerConditions.1"]'
+        '[data-test-subj="documentLevelTriggerExpression_andOr_triggerDefinitions[0].triggerConditions.1"]'
       ).contains('OR');
       cy.get(
-          '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.1"]'
-      ).contains(sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].name);
+        '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.1"]'
+      ).contains(
+        sampleDocumentLevelMonitor.inputs[0].doc_level_input.queries[0].name
+      );
 
       // Go back to the Monitors list
       cy.get('a').contains('Monitors').click({ force: true });
@@ -331,9 +375,10 @@ describe('DocumentLevelMonitor', () => {
     describe('when defined with extraction query editor', () => {
       it('with a new trigger', () => {
         // Removing ui-metadata so the UX will use the extraction query editor when editing the monitor
-        const extractionQueryMonitor = _.omit(_.cloneDeep(sampleDocumentLevelMonitor), [
-          'ui_metadata',
-        ]);
+        const extractionQueryMonitor = _.omit(
+          _.cloneDeep(sampleDocumentLevelMonitor),
+          ['ui_metadata']
+        );
 
         // Creating the test monitor
         cy.createMonitor(extractionQueryMonitor);
@@ -343,7 +388,9 @@ describe('DocumentLevelMonitor', () => {
         cy.contains(SAMPLE_DOCUMENT_LEVEL_MONITOR);
 
         // Select the monitor
-        cy.get('a').contains(SAMPLE_DOCUMENT_LEVEL_MONITOR).click({ force: true });
+        cy.get('a')
+          .contains(SAMPLE_DOCUMENT_LEVEL_MONITOR)
+          .click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });
@@ -360,25 +407,25 @@ describe('DocumentLevelMonitor', () => {
 
         // Clear the default trigger condition source, and type the sample source
         cy.get('[data-test-subj="triggerQueryCodeEditor"]')
-            .last()
-            .within(() => {
-              cy.get('.ace_text-input')
-                  .focus()
-                  .clear({ force: true })
-                  .type(
-                      JSON.stringify(
-                          sampleDocumentLevelMonitor.triggers[0].document_level_trigger.condition.script
-                              .source
-                      ),
-                      {
-                        force: true,
-                        parseSpecialCharSequences: false,
-                        delay: 5,
-                        timeout: 20000,
-                      }
-                  )
-                  .trigger('blur', { force: true });
-            });
+          .last()
+          .within(() => {
+            cy.get('.ace_text-input')
+              .focus()
+              .clear({ force: true })
+              .type(
+                JSON.stringify(
+                  sampleDocumentLevelMonitor.triggers[0].document_level_trigger
+                    .condition.script.source
+                ),
+                {
+                  force: true,
+                  parseSpecialCharSequences: false,
+                  delay: 5,
+                  timeout: 20000,
+                }
+              )
+              .trigger('blur', { force: true });
+          });
 
         // TODO: Test with Notifications plugin
 
@@ -403,7 +450,9 @@ describe('DocumentLevelMonitor', () => {
         cy.contains(SAMPLE_DOCUMENT_LEVEL_MONITOR);
 
         // Select the monitor
-        cy.get('a').contains(SAMPLE_DOCUMENT_LEVEL_MONITOR).click({ force: true });
+        cy.get('a')
+          .contains(SAMPLE_DOCUMENT_LEVEL_MONITOR)
+          .click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });
@@ -413,20 +462,32 @@ describe('DocumentLevelMonitor', () => {
 
         // Enter query name
         const newQueryName = 'new-visual-editor-query';
-        cy.get('[data-test-subj="documentLevelQuery_queryName3"]').type(newQueryName);
+        cy.get('[data-test-subj="documentLevelQuery_queryName3"]').type(
+          newQueryName
+        );
 
         // Enter query field
-        cy.get('[data-test-subj="documentLevelQuery_field3"]').type('message{downarrow}{enter}');
+        cy.get('[data-test-subj="documentLevelQuery_field3"]').type(
+          'message{downarrow}{enter}'
+        );
 
         // Enter query operator
-        cy.get('[data-test-subj="documentLevelQuery_operator3"]').type('is not{enter}');
+        cy.get('[data-test-subj="documentLevelQuery_operator3"]').type(
+          'is not{enter}'
+        );
 
         // Enter query
-        cy.get('[data-test-subj="documentLevelQuery_query3"]').type('Unknown message');
+        cy.get('[data-test-subj="documentLevelQuery_query3"]').type(
+          'Unknown message'
+        );
 
         // Enter query tags
-        cy.get('[data-test-subj="addDocLevelQueryTagButton_query3"]').click({ force: true });
-        cy.get('[data-test-subj="documentLevelQueryTag_text_field_query3_tag0"]').type('sev1');
+        cy.get('[data-test-subj="addDocLevelQueryTagButton_query3"]').click({
+          force: true,
+        });
+        cy.get(
+          '[data-test-subj="documentLevelQueryTag_text_field_query3_tag0"]'
+        ).type('sev1');
 
         // Remove existing trigger
         cy.contains('Remove trigger').click({ force: true });
@@ -443,7 +504,7 @@ describe('DocumentLevelMonitor', () => {
 
         // Define the triggere condition
         cy.get(
-            '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
+          '[data-test-subj="documentLevelTriggerExpression_query_triggerDefinitions[0].triggerConditions.0"]'
         ).type(`${newQueryName}{downarrow}{enter}`);
 
         // TODO: Test with Notifications plugin
@@ -470,26 +531,38 @@ describe('DocumentLevelMonitor', () => {
         cy.contains(SAMPLE_DOCUMENT_LEVEL_MONITOR);
 
         // Select the monitor
-        cy.get('a').contains(SAMPLE_DOCUMENT_LEVEL_MONITOR).click({ force: true });
+        cy.get('a')
+          .contains(SAMPLE_DOCUMENT_LEVEL_MONITOR)
+          .click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });
 
         // Remove the trigger from the monitor as it's not needed for this test case
-        cy.contains('Remove trigger', { timeout: 20000 }).click({ force: true });
+        cy.contains('Remove trigger', { timeout: 20000 }).click({
+          force: true,
+        });
 
         // Click on the Index field and type in multiple index names to replicate the bug
         cy.get('#index')
-            .click({ force: true })
-            .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
-              force: true,
-            })
-            .trigger('blur', { force: true });
+          .click({ force: true })
+          .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
+            force: true,
+          })
+          .trigger('blur', { force: true });
 
         // Confirm Index field only contains the expected text
-        cy.get('[data-test-subj="indicesComboBox"]').should('not.have.text', TESTING_INDEX);
-        cy.get('[data-test-subj="indicesComboBox"]').should('not.have.text', TESTING_INDEX_A);
-        cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, { timeout: 20000 });
+        cy.get('[data-test-subj="indicesComboBox"]').should(
+          'not.have.text',
+          TESTING_INDEX
+        );
+        cy.get('[data-test-subj="indicesComboBox"]').should(
+          'not.have.text',
+          TESTING_INDEX_A
+        );
+        cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, {
+          timeout: 20000,
+        });
 
         // Click the update button
         cy.get('button').contains('Update').last().click({ force: true });
