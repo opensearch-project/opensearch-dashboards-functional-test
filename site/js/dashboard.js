@@ -123,7 +123,6 @@ const plugins = {
         '2_rules.spec.js',
         '3_alerts.spec.js',
         '4_findings.spec.js',
-        '5_integrations.spec.js',
       ],
     },
   },
