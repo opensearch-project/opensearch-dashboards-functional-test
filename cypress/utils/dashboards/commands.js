@@ -48,11 +48,6 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
   // Click date picker
   cy.getElementByTestId('superDatePickerShowDatesButton', opts).click(opts);
 
-  // Click start date
-  cy.getElementByTestId('superDatePickerstartDatePopoverButton', opts).click(
-    opts
-  );
-
   // Click absolute tab
   cy.getElementByTestId('superDatePickerAbsoluteTab', opts).click(opts);
 
