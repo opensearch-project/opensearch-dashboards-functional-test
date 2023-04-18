@@ -88,13 +88,13 @@ const addTriggerToVisualEditorMonitor = (
     `[data-test-subj="triggerDefinitions[${triggerIndex}].filters.0.addFilterButton"]`
   ).click({ force: true });
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].filters.0.fieldName"]`).type(
-    `${GROUP_BY_FIELD}{downarrow}{enter}`
-  );
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].filters.0.fieldName"]`
+  ).type(`${GROUP_BY_FIELD}{downarrow}{enter}`);
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].filters.0.operator"]`).select(
-    'includes'
-  );
+  cy.get(
+    `[name="triggerDefinitions[${triggerIndex}].filters.0.operator"]`
+  ).select('includes');
 
   cy.get(`[name="triggerDefinitions[${triggerIndex}].filter.0.fieldValue"]`)
     .type('a*')
@@ -152,10 +152,14 @@ describe('Bucket-Level Monitors', () => {
       cy.contains('Create monitor').click({ force: true });
 
       // Select the Bucket-Level Monitor type
-      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({ force: true });
+      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Select extraction query for method of definition
-      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({ force: true });
+      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_EXTRACTION_QUERY_MONITOR);
@@ -208,7 +212,9 @@ describe('Bucket-Level Monitors', () => {
       cy.contains('Create monitor').click({ force: true });
 
       // Select the Bucket-Level Monitor type
-      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({ force: true });
+      cy.get('[data-test-subj="bucketLevelMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Select visual editor for method of definition
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
