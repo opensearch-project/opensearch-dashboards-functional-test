@@ -28,6 +28,7 @@ import '../utils/plugins/security/commands';
 import '../utils/plugins/security-dashboards-plugin/commands';
 import '../utils/plugins/alerting-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
+import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 
 import 'cypress-real-events';
 
