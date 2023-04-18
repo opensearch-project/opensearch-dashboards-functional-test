@@ -1,0 +1,39 @@
+{
+  "mappings": {
+    "properties": {
+      "name": {
+        "type": "text"
+      },
+      "path": {
+        "type": "text"
+      },
+      "keywords": {
+        "type": "text"
+      },
+      "operation": {
+        "type": "text"
+      },
+      "action": {
+        "type": "text"
+      },
+      "dst_port": {
+        "type": "integer"
+      },
+      "timeframe": {
+        "type": "text"
+      },
+      "user_agent": {
+        "type": "text"
+      },
+      "method": {
+        "type": "text"
+      }
+    }
+  },
+  "settings": {
+    "index": {
+      "number_of_shards": "1",
+      "number_of_replicas": "1"
+    }
+  }
+}
