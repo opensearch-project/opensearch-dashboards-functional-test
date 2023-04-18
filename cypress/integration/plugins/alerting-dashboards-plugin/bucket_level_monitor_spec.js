@@ -85,7 +85,7 @@ const addTriggerToVisualEditorMonitor = (
 
   // Add a trigger where filter
   cy.get(
-    `[data-test-subj="triggerDefinitions[${triggerIndex}].filters.0.addFilterButton"]`
+    `[data-test-subj="triggerDefinitions[${triggerIndex}].addFilterButton"]`
   ).click({ force: true });
 
   cy.get(
@@ -96,7 +96,7 @@ const addTriggerToVisualEditorMonitor = (
     `[name="triggerDefinitions[${triggerIndex}].filters.0.operator"]`
   ).select('includes');
 
-  cy.get(`[name="triggerDefinitions[${triggerIndex}].filter.0.fieldValue"]`)
+  cy.get(`[name="triggerDefinitions[${triggerIndex}].filters.0.fieldValue"]`)
     .type('a*')
     .trigger('blur', { force: true });
 

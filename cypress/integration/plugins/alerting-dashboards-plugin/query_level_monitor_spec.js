@@ -40,7 +40,7 @@ const addVisualQueryLevelTrigger = (
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
     //  If this ever becomes available, it can be used to pass data-test-subj for the button.
     // Since the above is currently not possible, referring to the accordion button using its content
-    cy.get('button').contains('New trigger').click();
+    cy.get('button').contains('New trigger').click({ force: true });
   }
 
   // Type in the trigger name
@@ -97,10 +97,14 @@ describe('Query-Level Monitors', () => {
       cy.contains('Create monitor').click({ force: true });
 
       // Select the Query-Level Monitor type
-      cy.get('[data-test-subj="queryLevelMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="queryLevelMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Select extraction query for method of definition
-      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click();
+      cy.get('[data-test-subj="extractionQueryEditorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_MONITOR, { force: true });
@@ -159,7 +163,7 @@ describe('Query-Level Monitors', () => {
       cy.contains(SAMPLE_MONITOR, { timeout: 20000 });
 
       // Select the existing monitor
-      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click();
+      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
       cy.contains('Edit', { timeout: 20000 }).click({ force: true });
@@ -213,7 +217,7 @@ describe('Query-Level Monitors', () => {
       });
 
       // Click the update button
-      cy.get('button').contains('Update').last().click();
+      cy.get('button').contains('Update').last().click({ force: true });
 
       // Confirm we're on the Monitor Details page by searching for the History element
       cy.contains('History', { timeout: 20000 });
@@ -303,7 +307,7 @@ describe('Query-Level Monitors', () => {
       cy.contains(SAMPLE_MONITOR);
 
       // Select the existing monitor
-      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click();
+      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
       cy.contains('Edit').click({ force: true });
@@ -312,7 +316,7 @@ describe('Query-Level Monitors', () => {
       cy.get('input[name="name"]').should('have.value', SAMPLE_MONITOR);
 
       // Select visual editor
-      cy.get('[data-test-subj="visualEditorRadioCard"]').click();
+      cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
       // Wait for input to load and then type in the index name
       cy.get('#index').type(
@@ -355,7 +359,7 @@ describe('Query-Level Monitors', () => {
         // Click the trigger accordion to expand it
         cy.get(
           `[data-test-subj="triggerDefinitions[${triggerIndex}]._triggerAccordion"]`
-        ).click();
+        ).click({ force: true });
 
         // Confirm each trigger exists with the expected name and values
         cy.get(`input[name="triggerDefinitions[${triggerIndex}].name"]`).should(
@@ -375,29 +379,37 @@ describe('Query-Level Monitors', () => {
   describe('schedule component displays as intended', () => {
     before(() => {
       cy.deleteAllMonitors();
+
+      // Create the test monitors
+      cy.createMonitor(sampleDaysIntervalQueryLevelMonitor);
+      cy.createMonitor(sampleCronExpressionQueryLevelMonitor);
+    });
+
+    beforeEach(() => {
       cy.reload();
     });
 
     it('for an interval schedule', () => {
-      // Create the test monitor
-      cy.createMonitor(sampleDaysIntervalQueryLevelMonitor);
-
       // Confirm we can see the created monitors in the list
-      cy.get(`input[type="search"]`).focus().type(SAMPLE_DAYS_INTERVAL_MONITOR);
-      cy.contains(SAMPLE_DAYS_INTERVAL_MONITOR, { timeout: 20000 });
+      cy.get(`input[type="search"]`)
+        .focus()
+        .type(SAMPLE_DAYS_INTERVAL_MONITOR + '{enter}');
+      cy.contains(SAMPLE_DAYS_INTERVAL_MONITOR);
+      cy.wait(1000);
 
       // Select the existing monitor
       cy.get(`[data-test-subj="${SAMPLE_DAYS_INTERVAL_MONITOR}"]`).click({
         force: true,
       });
 
+      // Wait for monitor details page to load
+      cy.contains('Overview');
+
       // Click Edit button
       cy.contains('Edit').click({ force: true });
 
       // Wait for input to load and then check the Schedule component
-      cy.get('[data-test-subj="frequency_field"]', { timeout: 20000 }).contains(
-        'By interval'
-      );
+      cy.get('[data-test-subj="frequency_field"]').contains('By interval');
 
       cy.get('[data-test-subj="interval_interval_field"]', {
         timeout: 20000,
@@ -409,25 +421,26 @@ describe('Query-Level Monitors', () => {
     });
 
     it('for a cron expression schedule', () => {
-      // Create the test monitor
-      cy.createMonitor(sampleCronExpressionQueryLevelMonitor);
-
       // Confirm we can see the created monitors in the list
       cy.get(`input[type="search"]`)
         .focus()
-        .type(SAMPLE_CRON_EXPRESSION_MONITOR);
-      cy.contains(SAMPLE_CRON_EXPRESSION_MONITOR, { timeout: 20000 });
+        .type(SAMPLE_CRON_EXPRESSION_MONITOR + '{enter}');
+      cy.contains(SAMPLE_CRON_EXPRESSION_MONITOR);
+      cy.wait(1000);
 
       // Select the existing monitor
       cy.get(`[data-test-subj="${SAMPLE_CRON_EXPRESSION_MONITOR}"]`).click({
         force: true,
       });
 
+      // Wait for monitor details page to load
+      cy.contains('Overview');
+
       // Click Edit button
       cy.contains('Edit').click({ force: true });
 
       // Wait for input to load and then check the Schedule component
-      cy.get('[data-test-subj="frequency_field"]', { timeout: 20000 }).contains(
+      cy.get('[data-test-subj="frequency_field"]').contains(
         'Custom cron expression'
       );
 

@@ -96,43 +96,6 @@ describe('Findings', () => {
     });
   });
 
-  // TODO: this one triggers a button handler which goes throw condition and therefor is flaky
-  // find a better way to test this dialog, condition is based on `indexPatternId`
-  xit('displays finding details and create an index pattern from flyout', () => {
-    // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
-
-    // Click findingId to trigger Finding details flyout
-    cy.getTableFirstRow(
-      '[data-test-subj="finding-details-flyout-button"]'
-    ).then(($el) => {
-      cy.get($el).click({ force: true });
-    });
-
-    cy.get(
-      '[data-test-subj="finding-details-flyout-view-surrounding-documents"]'
-    )
-      .contains('View surrounding documents')
-      .click({ force: true });
-
-    cy.contains('Create index pattern to view documents');
-
-    cy.get(
-      `[data-test-subj="index_pattern_time_field_dropdown"] [data-test-subj="comboBoxSearchInput"]`
-    ).type('EventTime');
-
-    cy.get('[data-test-subj="index_pattern_form_submit_button"]')
-      .contains('Create index pattern')
-      .click({ force: true });
-
-    cy.contains('cypress-test-windows* has been successfully created');
-
-    // Close Flyout
-    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
-      force: true,
-    });
-  });
-
   it('allows user to view details about rules that were triggered', () => {
     // filter table to show only sample_detector findings
     cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
