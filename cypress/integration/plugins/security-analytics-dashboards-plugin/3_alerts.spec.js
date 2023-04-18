@@ -40,7 +40,6 @@ const testDetector = {
 
 // The exact minutes/seconds for the start and last updated time will be difficult to predict,
 // but all of the alert time fields should all contain the date in this format.
-
 // Moment is not available in this repository, so refactored this variable to use Date.
 // const date = moment(moment.now()).format('MM/DD/YY');
 const now = new Date(Date.now());
