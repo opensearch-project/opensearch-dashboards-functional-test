@@ -195,7 +195,7 @@ describe('Rules', () => {
 
     // Enter the severity
     cy.get('[data-test-subj="rule_severity_dropdown"]').type(
-      SAMPLE_RULE.severity
+      SAMPLE_RULE.severity + '{enter}'
     );
 
     // Enter the tags
