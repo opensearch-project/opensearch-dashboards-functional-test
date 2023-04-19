@@ -9,7 +9,7 @@ import { delayTime, setTimeFilter, TRACE_ID } from '../../../utils/constants';
 
 describe('Testing traces table empty state', () => {
   beforeEach(() => {
-    cy.visit('app/observability-dashboards#/trace_analytics/traces', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -25,7 +25,7 @@ describe('Testing traces table empty state', () => {
 
 describe('Testing traces table', () => {
   beforeEach(() => {
-    cy.visit('app/observability-dashboards#/trace_analytics/traces', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -61,29 +61,24 @@ describe('Testing traces table', () => {
 
 describe('Testing trace view', () => {
   beforeEach(() => {
-    cy.visit(
-      `app/observability-dashboards#/trace_analytics/traces/${TRACE_ID}`,
-      {
-        onBeforeLoad: (win) => {
-          win.sessionStorage.clear();
-        },
-      }
-    );
+    cy.visit(`app/observability-traces#/traces/${TRACE_ID}`, {
+      onBeforeLoad: (win) => {
+        win.sessionStorage.clear();
+      },
+    });
   });
 
   it('Has working breadcrumbs', () => {
-    cy.get(
-      `.euiBreadcrumb[href="#/trace_analytics/traces/${TRACE_ID}"]`
-    ).click();
+    cy.get(`.euiBreadcrumb[href="#/traces/${TRACE_ID}"]`).click();
     cy.wait(delayTime);
     cy.get('h2.euiTitle').contains(TRACE_ID).should('exist');
-    cy.get('.euiBreadcrumb[href="#/trace_analytics/traces"]').click();
+    cy.get('.euiBreadcrumb[href="#/traces"]').click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains('Traces').should('exist');
-    cy.get('.euiBreadcrumb[href="#/trace_analytics/home"]').click();
+    cy.get('.euiBreadcrumb[href="#/"]').click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains('Dashboard').should('exist');
-    cy.get('.euiBreadcrumb[href="observability-dashboards#/"]').click();
+    cy.get('.euiBreadcrumb[href="observability-logs#/"]').click();
     cy.wait(delayTime);
     cy.get('.euiTitle').contains('Event analytics').should('exist');
   });
