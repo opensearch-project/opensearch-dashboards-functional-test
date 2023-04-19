@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "response": {
+    "hits": {
+      "hits": [
+        {
+          "_index": ".opensearch-sap-pre-packaged-rules-config",
+          "_id": "503fe26e-b5f2-4944-a126-eab405cc06e51",
+          "_version": 1,
+          "_seq_no": 1885,
+          "_primary_term": 1,
+          "_score": 1,
+          "_source": {
+            "category": "network",
+            "title": "Kerberos Network Traffic RC4 Ticket Encryption",
+            "log_source": "",
+            "description": "Detects kerberos TGS request using RC4 encryption which may be indicative of kerberoasting",
+            "references": [
+              {
+                "value": "https://adsecurity.org/?p=3458"
+              }
+            ],
+            "tags": [
+              {
+                "value": "attack.credential_access"
+              },
+              {
+                "value": "attack.t1558.003"
+              }
+            ],
+            "level": "medium",
+            "false_positives": [
+              {
+                "value": "Normal enterprise SPN requests activity"
+              }
+            ],
+            "author": "sigma",
+            "status": "test",
+            "last_update_time": "2020-02-11T23:00:00.000Z",
+            "queries": [
+              {
+                "value": "((zeek-kerberos-request_type: \"TGS\") AND (zeek-kerberos-cipher: \"rc4\\-hmac\")) AND ((NOT service: $*))"
+              }
+            ],
+            "query_field_names": [
+              {
+                "value": "zeek-kerberos-cipher"
+              },
+              {
+                "value": "service"
+              },
+              {
+                "value": "zeek-kerberos-request_type"
+              }
+            ],
+            "aggregationQueries": [],
+            "rule": "title: Kerberos Network Traffic RC4 Ticket Encryption\nid: 503fe26e-b5f2-4944-a126-eab405cc06e5\nstatus: test\ndescription: Detects kerberos TGS request using RC4 encryption which may be indicative of kerberoasting\nauthor: sigma\nreferences:\n  - https://adsecurity.org/?p=3458\ndate: 2020/02/12\nmodified: 2021/11/27\nlogsource:\n  product: zeek\n  service: kerberos\ndetection:\n  selection:\n    request_type: 'TGS'\n    cipher: 'rc4-hmac'\n  computer_acct:\n    service|startswith: '$'\n  condition: selection and not computer_acct\nfalsepositives:\n  - Normal enterprise SPN requests activity\nlevel: medium\ntags:\n  - attack.credential_access\n  - attack.t1558.003\n"
+          }
+        },
+        {
+          "_index": ".opensearch-sap-pre-packaged-rules-config",
+          "_id": "503fe26e-b5f2-4944-a126-eab405cc06e5",
+          "_version": 1,
+          "_seq_no": 1885,
+          "_primary_term": 1,
+          "_score": 1,
+          "_source": {
+            "category": "network",
+            "title": "Kerberos Network Traffic RC4 Ticket Encryption",
+            "log_source": "",
+            "description": "Detects kerberos TGS request using RC4 encryption which may be indicative of kerberoasting",
+            "references": [
+              {
+                "value": "https://adsecurity.org/?p=3458"
+              }
+            ],
+            "tags": [
+              {
+                "value": "attack.credential_access"
+              },
+              {
+                "value": "attack.t1558.003"
+              }
+            ],
+            "level": "medium",
+            "false_positives": [
+              {
+                "value": "Normal enterprise SPN requests activity"
+              }
+            ],
+            "author": "sigma",
+            "status": "test",
+            "last_update_time": "2020-02-11T23:00:00.000Z",
+            "queries": [
+              {
+                "value": "((zeek-kerberos-request_type: \"TGS\") AND (zeek-kerberos-cipher: \"rc4\\-hmac\")) AND ((NOT service: $*))"
+              }
+            ],
+            "query_field_names": [
+              {
+                "value": "zeek-kerberos-cipher"
+              },
+              {
+                "value": "service"
+              },
+              {
+                "value": "zeek-kerberos-request_type"
+              }
+            ],
+            "aggregationQueries": [],
+            "rule": "title: Kerberos Network Traffic RC4 Ticket Encryption\nid: 503fe26e-b5f2-4944-a126-eab405cc06e5\nstatus: test\ndescription: Detects kerberos TGS request using RC4 encryption which may be indicative of kerberoasting\nauthor: sigma\nreferences:\n  - https://adsecurity.org/?p=3458\ndate: 2020/02/12\nmodified: 2021/11/27\nlogsource:\n  product: zeek\n  service: kerberos\ndetection:\n  selection:\n    request_type: 'TGS'\n    cipher: 'rc4-hmac'\n  computer_acct:\n    service|startswith: '$'\n  condition: selection and not computer_acct\nfalsepositives:\n  - Normal enterprise SPN requests activity\nlevel: medium\ntags:\n  - attack.credential_access\n  - attack.t1558.003\n"
+          }
+        }
+      ]
+    }
+  }
+}
