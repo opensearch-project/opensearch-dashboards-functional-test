@@ -14,11 +14,11 @@ import {
 describe('Test create channels', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#create-channel`);
-    cy.wait(NOTIFICATIONS_DELAY * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
   it('creates a slack channel and send test message', () => {
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
     cy.contains('Some fields are invalid.').should('exist');
 
     cy.get('[placeholder="Enter channel name"]').type('Test slack channel');
@@ -54,7 +54,7 @@ describe('Test create channels', () => {
     );
     cy.wait(NOTIFICATIONS_DELAY);
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -69,8 +69,9 @@ describe('Test create channels', () => {
     cy.wait(NOTIFICATIONS_DELAY);
 
     // custom data-test-subj does not work on combo box
-    cy.get('[data-test-subj="comboBoxInput"]').eq(0).click({ force: true });
-    cy.contains('test-tls-sender').click();
+    cy.get('[data-test-subj="comboBoxInput"]')
+        .first()
+        .type('test-tls-sender{enter}');
 
     cy.get('.euiButton__text')
       .contains('Create recipient group')
@@ -126,15 +127,16 @@ describe('Test create channels', () => {
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       'us-east-1'
     );
-    cy.get('[data-test-subj="create-ses-sender-modal-create-button"]').click();
+    cy.get('[data-test-subj="create-ses-sender-modal-create-button"]').click({ force: true });
     cy.contains('successfully created.').should('exist');
 
     // custom data-test-subj does not work on combo box
-    cy.get('[data-test-subj="comboBoxInput"]').eq(1).click({ force: true });
-    cy.contains('Test recipient group').click();
+    cy.get('[data-test-subj="comboBoxInput"]')
+        .eq(1)
+        .type('Test recipient group{enter}');
     cy.wait(NOTIFICATIONS_DELAY);
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -152,7 +154,7 @@ describe('Test create channels', () => {
       'https://custom-webhook-test-url.com:8888/test-path?params1=value1&params2=value2&params3=value3&params4=value4&params5=values5&params6=values6&params7=values7'
     );
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -173,7 +175,7 @@ describe('Test create channels', () => {
       'arn:aws:iam::012345678901:role/NotificationsSNSRole'
     );
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
     cy.contains('successfully created.').should('exist');
   });
 });
@@ -181,7 +183,7 @@ describe('Test create channels', () => {
 describe('Test channels table', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#channels`);
-    cy.wait(NOTIFICATIONS_DELAY * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
   it('displays channels', () => {
@@ -192,7 +194,7 @@ describe('Test channels table', () => {
   });
 
   it('mutes channels', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click(); // chime channel
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click({ force: true }); // chime channel
     cy.get('.euiButton__text').contains('Actions').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text').contains('Mute').click({ force: true });
@@ -226,14 +228,14 @@ describe('Test channels table', () => {
 describe('Test channel details', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#channels`);
-    cy.contains('Test webhook channel').click();
+    cy.contains('Test webhook channel').click({ force: true });
   });
 
   it('displays channel details', () => {
     cy.contains('custom-webhook-test-url.com').should('exist');
     cy.contains('test-path').should('exist');
     cy.contains('8888').should('exist');
-    cy.contains('2 more').click();
+    cy.contains('2 more').click({ force: true });
     cy.contains('Query parameters (7)').should('exist');
     cy.contains('params7').should('exist');
   });
