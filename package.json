@@ -47,6 +47,7 @@
     "commander": "^9.4.1",
     "cypress": "9.5.4",
     "cypress-multi-reporters": "^1.5.0",
+    "cypress-real-events": "1.7.6",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-cypress": "^2.12.1",
