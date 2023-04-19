@@ -12,27 +12,37 @@ import {
   SAMPLE_URL,
   SQL_QUERY_TEXT,
   PPL_QUERY_TEXT,
-  SAMPLE_PANEL,
   BASE_PATH,
 } from '../../../utils/constants';
 
 const moveToEventsHome = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics/`);
+  cy.visit(`${BASE_PATH}/app/observability-logs#/`);
   cy.wait(delayTime * 3);
 };
 
 const moveToPanelHome = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/operational_panels/`);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#/`);
   cy.wait(delayTime * 3);
+};
+const moveToTestNotebook = () => {
+  cy.visit(`${BASE_PATH}/app/observability-notebooks#/`, {
+    timeout: delayTime * 3,
+  });
+  cy.get('.euiTableCellContent')
+    .contains(TEST_NOTEBOOK, {
+      timeout: delayTime * 3,
+    })
+    .click();
 };
 
 describe('Adding sample visualization', () => {
   it('Add sample observability data', () => {
-    moveToPanelHome();
-    cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
+    moveToEventsHome();
+    cy.get('button[data-test-subj="eventHomeAction"]')
+      .trigger('mouseover')
+      .click();
     cy.wait(100);
-    cy.get('.euiContextMenuItem__text')
-      .contains('Add samples')
+    cy.get('button[data-test-subj="eventHomeAction__addSamples"]')
       .trigger('mouseover')
       .click();
     cy.wait(100 * 3);
@@ -40,17 +50,22 @@ describe('Adding sample visualization', () => {
       .contains('Add samples')
       .should('exist');
     cy.wait(100);
-    cy.get('.euiButton__text').contains('Yes').trigger('mouseover').click();
-    cy.get('.euiTableCellContent', { timeout: delayTime })
-      .contains(SAMPLE_PANEL)
-      .should('exist');
+
+    cy.get('button[data-test-subj="confirmModalConfirmButton"]')
+      .trigger('mouseover')
+      .click();
+    cy.wait(100 * 5);
+    cy.get('.euiToastHeader__title', { timeout: delayTime * 3 }).should(
+      'contain',
+      'successfully'
+    );
     cy.wait(100);
   });
 });
 
 describe('Testing notebooks table', () => {
   beforeEach(() => {
-    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
+    cy.visit(`${BASE_PATH}/app/observability-notebooks#/`);
   });
 
   it('Creates a notebook and redirects to the notebook', () => {
@@ -117,8 +132,7 @@ describe('Testing notebooks table', () => {
 
 describe('Testing paragraphs', () => {
   beforeEach(() => {
-    cy.visit(`${BASE_PATH}/app/observability-dashboards#/notebooks`);
-    cy.get('.euiTableCellContent').contains(TEST_NOTEBOOK).click();
+    moveToTestNotebook();
   });
 
   it('Goes into a notebook and creates paragraphs', () => {
@@ -321,7 +335,5 @@ describe('clean up all test data', () => {
     });
     cy.get('button.euiButton--danger').should('not.be.disabled');
     cy.get('.euiButton__text').contains('Delete').trigger('mouseover').click();
-
-    cy.get('.euiTextAlign').contains('No Operational Panels').should('exist');
   });
 });
