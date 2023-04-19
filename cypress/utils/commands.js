@@ -129,6 +129,16 @@ Cypress.Commands.add('createIndexTemplate', (name, template) => {
   );
 });
 
+Cypress.Commands.add('createTemplateComponent', (name, template) => {
+  cy.request(
+    'PUT',
+    `${Cypress.env('openSearchUrl')}${
+      IM_API.INDEX_TEMPLATE_COMPONENT_BASE
+    }/${name}`,
+    template
+  );
+});
+
 Cypress.Commands.add('createDataStream', (name) => {
   cy.request(
     'PUT',
