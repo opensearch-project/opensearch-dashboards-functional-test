@@ -13,7 +13,7 @@ import {
 
 describe('Testing services table empty state', () => {
   beforeEach(() => {
-    cy.visit('app/observability-dashboards#/trace_analytics/services', {
+    cy.visit('app/observability-traces#/services', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -29,7 +29,7 @@ describe('Testing services table empty state', () => {
 
 describe('Testing services table', () => {
   beforeEach(() => {
-    cy.visit('app/observability-dashboards#/trace_analytics/services', {
+    cy.visit('app/observability-traces#/services', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -60,14 +60,11 @@ describe('Testing service view empty state', () => {
     cy.on('uncaught:exception', (err) => {
       if (err.message.includes('ResizeObserver loop')) return false;
     });
-    cy.visit(
-      `app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`,
-      {
-        onBeforeLoad: (win) => {
-          win.sessionStorage.clear();
-        },
-      }
-    );
+    cy.visit(`app/observability-traces#/services/${SERVICE_NAME}`, {
+      onBeforeLoad: (win) => {
+        win.sessionStorage.clear();
+      },
+    });
   });
 
   it('Renders service view empty state', () => {
@@ -83,14 +80,11 @@ describe('Testing service view', () => {
     cy.on('uncaught:exception', (err) => {
       if (err.message.includes('ResizeObserver loop')) return false;
     });
-    cy.visit(
-      `app/observability-dashboards#/trace_analytics/services/${SERVICE_NAME}`,
-      {
-        onBeforeLoad: (win) => {
-          win.sessionStorage.clear();
-        },
-      }
-    );
+    cy.visit(`app/observability-traces#/services/${SERVICE_NAME}`, {
+      onBeforeLoad: (win) => {
+        win.sessionStorage.clear();
+      },
+    });
     setTimeFilter(undefined, false);
   });
 
