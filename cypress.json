@@ -3,10 +3,15 @@
   "requestTimeout": 60000,
   "responseTimeout": 60000,
   "baseUrl": "http://localhost:5601",
-  "reporter": "cypress-multi-reporters",
+  "reporter": "cypress-mochawesome-reporter",
   "reporterOptions": {
-    "configFile": "reporter-config.json"
+    "reportDir": "cypress/reports",
+    "charts": true,
+    "reportPageTitle": "My Test Suite",
+    "embeddedScreenshots": true,
+    "inlineAssets": true
   },
+  "video": false,
   "viewportWidth": 2000,
   "viewportHeight": 1320,
   "env": {
@@ -20,5 +25,6 @@
     "VISBUILDER_ENABLED": true,
     "DATASOURCE_MANAGEMENT_ENABLED": false,
     "ML_COMMONS_DASHBOARDS_ENABLED": false
-  }
+  },
+  "experimentalSessionAndOrigin": true
 }

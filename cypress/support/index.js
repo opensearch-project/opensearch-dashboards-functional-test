@@ -28,9 +28,12 @@ import '../utils/plugins/security/commands';
 import '../utils/plugins/security-dashboards-plugin/commands';
 import '../utils/plugins/alerting-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
+import 'cypress-mochawesome-reporter/register';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+require('@cypress/xpath');
 
 const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
 Cypress.on('uncaught:exception', (err) => {
