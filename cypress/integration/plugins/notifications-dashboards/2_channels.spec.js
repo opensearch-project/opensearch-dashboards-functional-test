@@ -18,7 +18,9 @@ describe('Test create channels', () => {
   });
 
   it('creates a slack channel and send test message', () => {
-    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('Some fields are invalid.').should('exist');
 
     cy.get('[placeholder="Enter channel name"]').type('Test slack channel');
@@ -54,7 +56,9 @@ describe('Test create channels', () => {
     );
     cy.wait(NOTIFICATIONS_DELAY);
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -70,8 +74,8 @@ describe('Test create channels', () => {
 
     // custom data-test-subj does not work on combo box
     cy.get('[data-test-subj="comboBoxInput"]')
-        .first()
-        .type('test-tls-sender{enter}');
+      .first()
+      .type('test-tls-sender{enter}');
 
     cy.get('.euiButton__text')
       .contains('Create recipient group')
@@ -127,16 +131,20 @@ describe('Test create channels', () => {
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       'us-east-1'
     );
-    cy.get('[data-test-subj="create-ses-sender-modal-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-ses-sender-modal-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
 
     // custom data-test-subj does not work on combo box
     cy.get('[data-test-subj="comboBoxInput"]')
-        .eq(1)
-        .type('Test recipient group{enter}');
+      .eq(1)
+      .type('Test recipient group{enter}');
     cy.wait(NOTIFICATIONS_DELAY);
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -154,7 +162,9 @@ describe('Test create channels', () => {
       'https://custom-webhook-test-url.com:8888/test-path?params1=value1&params2=value2&params3=value3&params4=value4&params5=values5&params6=values6&params7=values7'
     );
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
   });
 
@@ -175,7 +185,9 @@ describe('Test create channels', () => {
       'arn:aws:iam::012345678901:role/NotificationsSNSRole'
     );
 
-    cy.get('[data-test-subj="create-channel-create-button"]').click({ force: true });
+    cy.get('[data-test-subj="create-channel-create-button"]').click({
+      force: true,
+    });
     cy.contains('successfully created.').should('exist');
   });
 });
@@ -194,7 +206,9 @@ describe('Test channels table', () => {
   });
 
   it('mutes channels', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click({ force: true }); // chime channel
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .eq(0)
+      .click({ force: true }); // chime channel
     cy.get('.euiButton__text').contains('Actions').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiContextMenuItem__text').contains('Mute').click({ force: true });

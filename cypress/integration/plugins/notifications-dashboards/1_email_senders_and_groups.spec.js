@@ -95,8 +95,12 @@ describe('Test edit senders', () => {
   });
 
   it('edits sender email address', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click({ force: true }); // ssl sender
-    cy.get('[data-test-subj="senders-table-edit-button"]').click({ force: true });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .eq(0)
+      .click({ force: true }); // ssl sender
+    cy.get('[data-test-subj="senders-table-edit-button"]').click({
+      force: true,
+    });
     cy.get('[data-test-subj="create-sender-form-email-input"]').type(
       '{selectall}{backspace}edited.test@email.com'
     );
@@ -107,8 +111,12 @@ describe('Test edit senders', () => {
   });
 
   it('edits ses sender region', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click({ force: true }); // ses sender
-    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click({ force: true });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .last()
+      .click({ force: true }); // ses sender
+    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click({
+      force: true,
+    });
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       '{selectall}{backspace}us-west-2'
     );
@@ -126,20 +134,32 @@ describe('Test delete senders', () => {
   });
 
   it('deletes smtp senders', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click({ force: true }); // ssl sender
-    cy.get('[data-test-subj="senders-table-delete-button"]').click({ force: true });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .eq(0)
+      .click({ force: true }); // ssl sender
+    cy.get('[data-test-subj="senders-table-delete-button"]').click({
+      force: true,
+    });
     cy.get('input[placeholder="delete"]').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
-    cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click({ force: true });
+    cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click({
+      force: true,
+    });
     cy.contains('successfully deleted.').should('exist');
   });
 
   it('deletes ses senders', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click({ force: true }); // ses sender
-    cy.get('[data-test-subj="ses-senders-table-delete-button"]').click({ force: true });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .last()
+      .click({ force: true }); // ses sender
+    cy.get('[data-test-subj="ses-senders-table-delete-button"]').click({
+      force: true,
+    });
     cy.get('input[placeholder="delete"]').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
-    cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click({ force: true });
+    cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click({
+      force: true,
+    });
     cy.contains('successfully deleted.').should('exist');
 
     cy.contains('No SES senders to display').should('exist');
@@ -215,8 +235,12 @@ describe('Test create, edit and delete recipient group', () => {
   });
 
   it('deletes recipient groups', () => {
-    cy.get('[data-test-subj="checkboxSelectAll"]').last().click({ force: true });
-    cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({ force: true });
+    cy.get('[data-test-subj="checkboxSelectAll"]')
+      .last()
+      .click({ force: true });
+    cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({
+      force: true,
+    });
     cy.get('input[placeholder="delete"]').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
