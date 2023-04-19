@@ -90,6 +90,16 @@ Cypress.Commands.add('deleteTemplate', (name) => {
   });
 });
 
+Cypress.Commands.add('deleteTemplateComponents', (name) => {
+  cy.request({
+    url: `${Cypress.env('openSearchUrl')}${
+      IM_API.INDEX_TEMPLATE_COMPONENT_BASE
+    }/${name}`,
+    failOnStatusCode: false,
+    method: 'DELETE',
+  });
+});
+
 Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
   cy.request(
     'PUT',
