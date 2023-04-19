@@ -1,0 +1,26 @@
+{
+  "id": "25b9c01c-350d-4b95-bed1-836d04a4f326",
+  "category": "network",
+  "title": "Cypress Network Rule",
+  "description": "Detects network changes",
+  "status": "experimental",
+  "author": "Cypress Tests",
+  "references": [
+    {
+      "value": ""
+    }
+  ],
+  "tags": [
+    {
+      "value": "network.low"
+    }
+  ],
+  "log_source": "",
+  "detection": "selection:\n  keywords:\n    - erase\n    - delete\n    - YXC\ncondition: selection",
+  "level": "low",
+  "false_positives": [
+    {
+      "value": ""
+    }
+  ]
+}

@@ -3,16 +3,22 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
-
-export const INDICES = {
-  DETECTORS_INDEX: '.opensearch-detectors-config',
-  PRE_PACKAGED_RULES_INDEX: '.opensearch-pre-packaged-rules-config',
-  CUSTOM_RULES_INDEX: '.opensearch-custom-rules-config',
-};
+import { BASE_PATH } from '../../base_constants';
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
 export const BASE_API_PATH = '/_plugins/_security_analytics';
+
+export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
+export const DETECTOR_TRIGGER_TIMEOUT = 65000;
+
+export const FEATURE_SYSTEM_INDICES = {
+  DETECTORS_INDEX: '.opensearch-detectors-config',
+  DETECTOR_QUERIES_INDEX: '.opensearch-sap-windows-detectors-queries',
+  PRE_PACKAGED_RULES_INDEX: '.opensearch-pre-packaged-rules-config',
+  CUSTOM_RULES_INDEX: '.opensearch-sap-custom-rules-config',
+  WINDOWS_ALERTS_INDEX: '.opensearch-sap-windows-alerts*',
+  WINDOWS_FINDINGS_INDEX: '.opensearch-sap-windows-findings*',
+};
 
 export const NODE_API = {
   DETECTORS_BASE: `${BASE_API_PATH}/detectors`,
@@ -25,7 +31,11 @@ export const NODE_API = {
   MAPPINGS_VIEW: `${BASE_API_PATH}/mappings/view`,
   GET_ALERTS: `${BASE_API_PATH}/alerts`,
   RULES_BASE: `${BASE_API_PATH}/rules`,
+  RULES_SEARCH: `${BASE_API_PATH}/rules/_search`,
   CHANNELS: `${BASE_API_PATH}/_notifications/channels`,
+  PLUGINS: `${BASE_API_PATH}/_notifications/plugins`,
   ACKNOWLEDGE_ALERTS: `${BASE_API_PATH}/detectors/{detector_id}/_acknowledge/alerts`,
   INDEX_TEMPLATE_BASE: '/_index_template',
 };
+
+export const OPENSEARCH_DASHBOARDS_URL = `${BASE_PATH}/app/${PLUGIN_NAME}#`;

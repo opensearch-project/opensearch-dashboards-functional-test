@@ -1,0 +1,57 @@
+{
+  "type": "detector",
+  "detector_type": "windows",
+  "name": "Cypress USB Detector",
+  "enabled": true,
+  "createdBy": "",
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "detector_input": {
+        "description": "Detect USB plugged in.",
+        "indices": ["cypress-index-windows"],
+        "pre_packaged_rules": [],
+        "custom_rules": [
+          {
+            "id": "25b9c01c-350d-4b95-bed1-836d04a4f324"
+          }
+        ]
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "name": "USB plugged in alert",
+      "sev_levels": ["low"],
+      "tags": ["windows.usb"],
+      "actions": [
+        {
+          "id": "",
+          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: USB Detector",
+          "destination_id": "",
+          "subject_template": {
+            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: USB Detector",
+            "lang": "mustache"
+          },
+          "message_template": {
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: USB Detector\nDescription: Detect USB plugged in.\nDetector data sources:\n\twindows",
+            "lang": "mustache"
+          },
+          "throttle_enabled": false,
+          "throttle": {
+            "value": 10,
+            "unit": "MINUTES"
+          }
+        }
+      ],
+      "types": ["windows"],
+      "severity": "1",
+      "ids": ["25b9c01c-350d-4b95-bed1-836d04a4f123"]
+    }
+  ]
+}
