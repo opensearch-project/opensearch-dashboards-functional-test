@@ -167,21 +167,17 @@ export const querySearch = (query, rangeSelected) => {
 };
 
 export const landOnEventHome = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/event_analytics`);
+  cy.visit(`${BASE_PATH}/app/observability-logs#`);
   cy.wait(delayTime);
 };
 
 export const landOnEventExplorer = () => {
-  cy.visit(
-    `${BASE_PATH}/app/observability-dashboards#/event_analytics/explorer`
-  );
+  cy.visit(`${BASE_PATH}/app/observability-logs#/explorer`);
   cy.wait(delayTime);
 };
 
 export const landOnEventVisualizations = () => {
-  cy.visit(
-    `${BASE_PATH}/app/observability-dashboards#/event_analytics/explorer`
-  );
+  cy.visit(`${BASE_PATH}/app/observability-logs#/explorer`);
   cy.get('button[id="main-content-vis"]', { timeout: TIMEOUT_DELAY })
     .contains('Visualizations')
     .click();
@@ -190,7 +186,7 @@ export const landOnEventVisualizations = () => {
 };
 
 export const landOnPanels = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/operational_panels`);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#`);
   cy.wait(delayTime);
 };
 
@@ -239,7 +235,7 @@ export const TYPING_DELAY = 1500;
 export const TIMEOUT_DELAY = Cypress.env('SECURITY_ENABLED') ? 60000 : 30000;
 
 export const moveToHomePage = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/application_analytics/`);
+  cy.visit(`${BASE_PATH}/app/observability-applications#`);
   cy.wait(delayTime * 3);
   cy.get('[data-test-subj="applicationHomePageTitle"]', {
     timeout: TIMEOUT_DELAY,
@@ -247,12 +243,11 @@ export const moveToHomePage = () => {
 };
 
 export const moveToCreatePage = () => {
-  cy.visit(
-    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
-    { waitForGetTenant: true }
-  );
+  cy.visit(`${BASE_PATH}/app/observability-applications#`, {
+    waitForGetTenant: true,
+  });
   cy.wait(delayTime * 2);
-  cy.get('.euiButton[href="#/application_analytics/create"]', {
+  cy.get('.euiButton[href="#/create"]', {
     timeout: TIMEOUT_DELAY,
   })
     .eq(0)
@@ -265,10 +260,9 @@ export const moveToCreatePage = () => {
 };
 
 export const moveToApplication = (name) => {
-  cy.visit(
-    `${BASE_PATH}/app/observability-dashboards#/application_analytics/`,
-    { waitForGetTenant: true }
-  );
+  cy.visit(`${BASE_PATH}/app/observability-applications#`, {
+    waitForGetTenant: true,
+  });
   supressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
