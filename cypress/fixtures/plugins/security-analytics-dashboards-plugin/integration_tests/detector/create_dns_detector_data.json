@@ -1,0 +1,57 @@
+{
+  "type": "detector",
+  "detector_type": "dns",
+  "name": "Cypress DNS Detector",
+  "enabled": true,
+  "createdBy": "",
+  "schedule": {
+    "period": {
+      "interval": 1,
+      "unit": "MINUTES"
+    }
+  },
+  "inputs": [
+    {
+      "detector_input": {
+        "description": "Detects DNS names.",
+        "indices": ["cypress-index-dns"],
+        "pre_packaged_rules": [],
+        "custom_rules": [
+          {
+            "id": "25b9c01c-350d-4b95-bed1-836d04a4f325"
+          }
+        ]
+      }
+    }
+  ],
+  "triggers": [
+    {
+      "name": "DNS name alert",
+      "sev_levels": ["low"],
+      "tags": ["dns.low"],
+      "actions": [
+        {
+          "id": "",
+          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: Cypress DNS Detector",
+          "destination_id": "",
+          "subject_template": {
+            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: Cypress DNS Detector",
+            "lang": "mustache"
+          },
+          "message_template": {
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: Cypress DNS Detector\nDescription: Detects DNS names.\nDetector data sources:\n\tdns",
+            "lang": "mustache"
+          },
+          "throttle_enabled": false,
+          "throttle": {
+            "value": 10,
+            "unit": "MINUTES"
+          }
+        }
+      ],
+      "types": ["dns"],
+      "severity": "1",
+      "ids": ["R1ng94QBbw8UQ2Cvqe6h"]
+    }
+  ]
+}

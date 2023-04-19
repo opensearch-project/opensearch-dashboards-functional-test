@@ -1,0 +1,26 @@
+{
+  "id": "25b9c01c-350d-4b95-bed1-836d04a4f123",
+  "category": "windows",
+  "title": "Cypress USB Rule",
+  "description": "USB plugged-in rule",
+  "status": "experimental",
+  "author": "Cypress Tests",
+  "references": [
+    {
+      "value": ""
+    }
+  ],
+  "tags": [
+    {
+      "value": "windows.usb"
+    }
+  ],
+  "log_source": "",
+  "detection": "selection:\n  EventID:\n    - 2003\n    - 2100\n    - 2102\ncondition: selection",
+  "level": "low",
+  "false_positives": [
+    {
+      "value": ""
+    }
+  ]
+}
