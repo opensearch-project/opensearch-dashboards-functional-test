@@ -310,7 +310,7 @@ export const expectMessageOnHover = (button, message) => {
 };
 
 export const moveToPanelHome = () => {
-  cy.visit(`${BASE_PATH}/app/observability-dashboards#/operational_panels/`);
+  cy.visit(`${BASE_PATH}/app/observability-dashboards#`);
   cy.wait(delayTime * 3);
 };
 
