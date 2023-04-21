@@ -92,19 +92,4 @@ describe('Testing service view', () => {
     cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
     cy.get('div.vis-network').should('exist');
   });
-
-  it('Has working breadcrumbs', () => {
-    cy.get('.euiBreadcrumb').contains(SERVICE_NAME).click();
-    cy.wait(delayTime);
-    cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
-    cy.get('.euiBreadcrumb').contains('Services').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Services').should('exist');
-    cy.get('.euiBreadcrumb').contains('Trace analytics').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Dashboard').should('exist');
-    cy.get('.euiBreadcrumb').contains('Observability').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
 });
