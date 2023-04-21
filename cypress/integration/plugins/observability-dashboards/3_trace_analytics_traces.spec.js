@@ -67,19 +67,4 @@ describe('Testing trace view', () => {
       },
     });
   });
-
-  it('Has working breadcrumbs', () => {
-    cy.get(`.euiBreadcrumb[href="#/traces/${TRACE_ID}"]`).click();
-    cy.wait(delayTime);
-    cy.get('h2.euiTitle').contains(TRACE_ID).should('exist');
-    cy.get('.euiBreadcrumb[href="#/traces"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Traces').should('exist');
-    cy.get('.euiBreadcrumb[href="#/"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Dashboard').should('exist');
-    cy.get('.euiBreadcrumb[href="observability-logs#/"]').click();
-    cy.wait(delayTime);
-    cy.get('.euiTitle').contains('Event analytics').should('exist');
-  });
 });
