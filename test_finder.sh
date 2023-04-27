@@ -5,6 +5,7 @@ set -e
 OSD_BUILD_MANIFEST='../local-test-cluster/opensearch-dashboards-*/manifest.yml'
 OSD_TEST_PATH='cypress/integration/core-opensearch-dashboards'
 OSD_PLUGIN_TEST_PATH='cypress/integration/plugins'
+TEST_TYPE=$OPTION
 
 # Map component name in opensearch-build repo INPUT_MANIFEST with folder name for tests in functional repo
 OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
@@ -24,7 +25,10 @@ OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
                          "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
                        )
 
-[ -f $OSD_BUILD_MANIFEST ] && TEST_TYPE="manifest" || TEST_TYPE="default"
+if [ -z $TEST_TYPE ]; then
+    [ -f $OSD_BUILD_MANIFEST ] && TEST_TYPE="manifest" || TEST_TYPE="default"
+fi
+
 [ ! `echo $SHELL | grep 'bash'` ] && echo "You must run this script with bash as other shells like zsh will fail the script, exit in 10" && sleep 10 && exit 1
 
 # Checks if build manifest in parent directory of current directory under local-test-cluster/opensearch-dashboards-*
