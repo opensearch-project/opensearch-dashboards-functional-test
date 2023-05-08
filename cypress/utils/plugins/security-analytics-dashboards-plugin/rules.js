@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const { BASE_PATH } = require('../../base_constants');
+const { BASE_PATH, BACKEND_BASE_PATH } = require('../../base_constants');
 const { FEATURE_SYSTEM_INDICES, NODE_API } = require('./constants');
 
 Cypress.Commands.add('createRule', (ruleJSON) => {
@@ -55,11 +55,14 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
 });
 
 Cypress.Commands.add('deleteAllCustomRules', () => {
-  const url = `${BASE_PATH}/${FEATURE_SYSTEM_INDICES.CUSTOM_RULES_INDEX}`;
+  const url = `${BACKEND_BASE_PATH}/${FEATURE_SYSTEM_INDICES.CUSTOM_RULES_INDEX}`;
   cy.request({
     method: 'DELETE',
     url: url,
     failOnStatusCode: false,
     body: { query: { match_all: {} } },
+  }).as('deleteAllCustomRules');
+  cy.get('@deleteAllCustomRules').should((response) => {
+    expect(response.status).to.be.oneOf([200, 404]);
   });
 });

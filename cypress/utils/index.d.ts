@@ -4,13 +4,118 @@
 declare namespace Cypress {
   interface Chainable<Subject> {
     /**
+     * Returns element by its text
+     * @example
+     * cy.getElementByText('.euiTitle', 'Some title')
+     */
+    getElementByText(locator: string, text: string): Chainable<any>;
+
+    /**
+     * Returns button by its text
+     * @example
+     * cy.getButtonByText('Button text')
+     */
+    getButtonByText(text: string): Chainable<any>;
+
+    /**
+     * Returns input by its placeholder
+     * @example
+     * cy.getInputByPlaceholder('Search rules...')
+     */
+    getInputByPlaceholder(placeholder: string): Chainable<any>;
+
+    /**
+     * Returns combobox input by its placeholder
+     * @example
+     * cy.getComboboxByPlaceholder('Select data input...')
+     */
+    getComboboxByPlaceholder(placeholder: string): Chainable<any>;
+
+    /**
+     * Returns field input by label
+     * @example
+     * cy.getFieldByLabel('Detector name')
+     */
+    getFieldByLabel(label: string, type?: string): Chainable<any>;
+
+    /**
+     * Returns textarea by label
+     * @example
+     * cy.getTextareaByLabel('Detector description')
+     */
+    getTextareaByLabel(label: string): Chainable<any>;
+
+    /**
+     * Returns element by data-test-subj attribute value
+     * @example
+     * cy.getElementByTestSubject('alerts-input-element')
+     */
+    getElementByTestSubject(subject: string): Chainable<any>;
+
+    /**
+     * Returns radio by id
+     * @example
+     * cy.getRadioButtonById('radioId')
+     */
+    getRadioButtonById(id: string): Chainable<any>;
+
+    /**
+     * Selects combobox item(s)
+     * @example
+     * cy.get('combo).selectComboboxItem('some item value')
+     */
+    selectComboboxItem(items: string | string[]): Chainable<any>;
+
+    /**
+     * Clears combobox value(s)
+     * @example
+     * cy.get('combo).clearCombobox()
+     */
+    clearCombobox(): Chainable<any>;
+
+    /**
+     * Triggers enter key event on the focused element
+     * @example
+     * cy.pressEnterKey()
+     */
+    pressEnterKey(): Chainable<any>;
+
+    /**
+     * Triggers backspace key event on the focused element
+     * @example
+     * cy.pressBackspaceKey()
+     */
+    pressBackspaceKey(numberOfPresses?: number): Chainable<any>;
+
+    /**
+     * Validates details panel item
+     * @example
+     * cy.validateDetailsItem('Data source', '.index-name')
+     */
+    validateDetailsItem(label: string, value: string): Chainable<any>;
+
+    /**
+     * Validates url path
+     * @example
+     * cy.urlShouldContain('/detector-details')
+     */
+    urlShouldContain(path: string): Chainable<any>;
+
+    /**
+     * Validates table items
+     * @example
+     * cy.validateTable('/detector-details')
+     */
+    validateTable(data: { [key: string]: string }[]): Chainable<any>;
+
+    /**
      * Get an element by its test id
      * @example
      * cy.getElementByTestId('query')
      */
     getElementByTestId<S = any>(
       testId: string,
-      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>,
     ): Chainable<S>;
 
     /**
@@ -22,7 +127,7 @@ declare namespace Cypress {
     createIndex<S = any>(
       index: string,
       policyID?: string,
-      settings?: any
+      settings?: any,
     ): Chainable<S>;
 
     /**
@@ -33,13 +138,42 @@ declare namespace Cypress {
     deleteIndex<S = any>(index: string): Chainable<S>;
 
     /**
+     /**
+     * Deletes all indices in cluster
+     * @example
+     * cy.deleteAllIndices()
+     */
+    deleteAllIndices(): Chainable<any>;
+
+    /**
+     * Deletes all custom rules in cluster
+     * @example
+     * cy.deleteAllCustomRules()
+     */
+    deleteAllCustomRules(): Chainable<any>;
+
+    /**
+     * Deletes all detectors in cluster
+     * @example
+     * cy.deleteAllDetectors()
+     */
+    deleteAllDetectors(): Chainable<any>;
+
+    /**
+     * Removes custom indices, detectors and rules
+     * @example
+     * cy.cleanUpTests()
+     */
+    cleanUpTests(): Chainable<any>;
+
+    /**
      * Bulk upload NDJSON fixture data
      * @example
      * cy.bulkUploadDocs('plugins/test/test_data.txt')
      */
     bulkUploadDocs<S = any>(
       fixturePath: string,
-      index: string
+      index: string,
       // options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
     ): Chainable<S>;
 
@@ -50,7 +184,7 @@ declare namespace Cypress {
      */
     importSavedObjects<S = any>(
       fixturePath: string,
-      overwrite?: boolean
+      overwrite?: boolean,
     ): Chainable<S>;
 
     /**
@@ -69,7 +203,7 @@ declare namespace Cypress {
      */
     deleteSavedObjectByType<S = any>(
       type: string,
-      search?: string
+      search?: string,
     ): Chainable<S>;
 
     /**
@@ -94,13 +228,13 @@ declare namespace Cypress {
      * cy.changeDefaultTenant({multitenancy_enabled: true, private_tenant_enabled: true, default_tenant: tenantName, });
      */
     changeDefaultTenant<S = any>(
-        attributes: {
-          multitenancy_enabled: boolean,
-          private_tenant_enabled: boolean,
-          default_tenant: string;
-        },
-        // header: string,
-        // default_tenant: string
+      attributes: {
+        multitenancy_enabled: boolean,
+        private_tenant_enabled: boolean,
+        default_tenant: string;
+      },
+      // header: string,
+      // default_tenant: string
     ): Chainable<S>;
 
     /**

@@ -6,6 +6,7 @@
 require('./detectors');
 require('./rules');
 require('./typings');
+require('./helpers');
 
 Cypress.Commands.add('cleanUpTests', () => {
   cy.deleteAllCustomRules();
