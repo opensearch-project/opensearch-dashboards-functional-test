@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_data.json';
-import { OPENSEARCH_DASHBOARDS_URL } from './constants';
 import _ from 'lodash';
 
 Cypress.Commands.add('getElementByText', (locator, text) => {
@@ -213,86 +211,3 @@ Cypress.Commands.add(
       });
   }
 );
-
-export const createDetector = (
-  detectorName,
-  indexName,
-  indexSettings,
-  indexMappings,
-  ruleSettings,
-  indexDoc,
-  indexDocsCount = 1
-) => {
-  Cypress.log({
-    message: `Create new detector ${detectorName}`,
-  });
-  const detectorConfigAlertCondition = `${detectorName} alert condition`;
-  const detectorConfig = {
-    ...sample_detector,
-    name: detectorName,
-    inputs: [
-      {
-        detector_input: {
-          ...sample_detector.inputs[0].detector_input,
-          description: `Description for ${detectorName}`,
-          indices: [indexName],
-        },
-      },
-    ],
-    triggers: [
-      {
-        ...sample_detector.triggers[0],
-        name: detectorConfigAlertCondition,
-      },
-    ],
-  };
-
-  return (
-    cy
-      .cleanUpTests()
-      // Create test index
-      .then(() => cy.createIndex(indexName, indexSettings))
-
-      // Create field mappings
-      .then(() =>
-        cy.createAliasMappings(
-          indexName,
-          detectorConfig.detector_type,
-          indexMappings,
-          true
-        )
-      )
-
-      // Create rule
-      .then(() => {
-        cy.createRule(ruleSettings)
-          .then((response) => {
-            detectorConfig.inputs[0].detector_input.custom_rules[0].id =
-              response.body.response._id;
-            detectorConfig.triggers[0].ids.push(response.body.response._id);
-          })
-          // create the detector
-          .then(() => cy.createDetector(detectorConfig));
-      })
-
-      .then(() => {
-        // Go to the detectors table page
-        cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-
-        // Filter table to only show the test detector
-        cy.get(`input[type="search"]`).type(`${detectorConfig.name}{enter}`);
-
-        // Confirm detector was created
-        cy.get('tbody > tr').should(($tr) => {
-          expect($tr, 'detector name').to.contain(detectorConfig.name);
-        });
-
-        // Ingest documents to the test index
-        for (let i = 0; i < indexDocsCount; i++) {
-          cy.insertDocumentToIndex(indexName, '', indexDoc);
-        }
-
-        return cy.wrap(detectorConfig);
-      })
-  );
-};
