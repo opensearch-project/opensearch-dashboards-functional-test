@@ -3,6 +3,53 @@
 
 declare namespace Cypress {
   interface Chainable<Subject> {
+
+    /**
+     * Returns table first row
+     * Can find elements deeper in a row with selector
+     * @param {string} text
+     * @example
+     * cy.get('selector').ospSearch('Txt to write into input')
+     */
+    ospSearch(text: string): Chainable<any>;
+
+    /**
+     * Clears input text
+     * @example
+     * cy.get('selector').ospClear()
+     */
+    ospClear(): Chainable<any>;
+
+    /**
+     * Returns table first row
+     * Can find elements deeper in a row with selector
+     * @param {string} text
+     * @example
+     * cy.get('selector').ospType('Txt to write into input')
+     */
+    ospType(text: string): Chainable<any>;
+
+    /**
+     * Creates a custom rule
+     * @example
+     * cy.createRule({})
+     */
+    createRule(ruleJSON: object): Chainable<any>;
+
+    /**
+     * Creates a custom rule
+     * @example
+     * cy.updateRule('ruleId', {})
+     */
+    updateRule(ruleId: string, ruleJSON: object): Chainable<any>;
+
+    /**
+     * Creates a custom rule
+     * @example
+     * cy.deleteRule('Rule name')
+     */
+    deleteRule(ruleName: string): Chainable<any>;
+
     /**
      * Returns element by its text
      * @example
@@ -119,6 +166,32 @@ declare namespace Cypress {
     ): Chainable<S>;
 
     /**
+     * Creates a detector
+     * @example
+     * cy.createPolicy({ "detector_type": ... })
+     */
+    createDetector(detectorJSON: object): Chainable<any>;
+
+    /**
+     * Creates a fields mapping aliases for detector
+     * @example
+     * cy.createAliasMappings('indexName', 'windows', {...}, true)
+     */
+    createAliasMappings(
+      indexName: string,
+      ruleTopic: string,
+      aliasMappingsBody: object,
+      partial: boolean,
+    ): Chainable<any>;
+
+    /**
+     * Updates settings for index
+     * @example
+     * cy.updateIndexSettings("some_index", settings)
+     */
+    updateDetector(detectorId: string, detectorJSON: object): Chainable<any>;
+
+    /**
      * Create an index
      * @example
      * cy.createIndex('indexID')
@@ -207,6 +280,13 @@ declare namespace Cypress {
     ): Chainable<S>;
 
     /**
+     * Deletes detector by its name
+     * @example
+     * cy.deleteSAPDetector("Cypress detector name")
+     */
+    deleteSAPDetector(name: string): Chainable<any>;
+
+    /**
      * Adds an index pattern
      * @example
      * cy.createIndexPattern('patterId', { title: 'patt*', timeFieldName: 'timestamp' })
@@ -221,6 +301,15 @@ declare namespace Cypress {
       header: string,
     ): Chainable<S>;
 
+    /**
+     * Returns table first row
+     * Finds elements deeper in a row with selector
+     * @param {string} selector
+     * @example
+     * cy.getTableFirstRow()
+     * cy.getTableFirstRow('td')
+     */
+    getTableFirstRow(selector: string): Chainable<any>;
 
     /**
      * Changes the Default tenant for the domain.
