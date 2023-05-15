@@ -2,8 +2,6 @@
 
 set -e
 
-. ./test_finder.sh
-
 function usage() {
     echo ""
     echo "This script is used to run integration tests for plugin installed on a remote OpenSearch/Dashboards cluster."
@@ -18,12 +16,14 @@ function usage() {
     echo -e "-p BIND_PORT\t, defaults to 9200 or 5601 depends on OpenSearch or Dashboards, can be changed to any port for the cluster location."
     echo -e "-s SECURITY_ENABLED\t(true | false), defaults to true. Specify the OpenSearch/Dashboards have security enabled or not."
     echo -e "-c CREDENTIAL\t(usename:password), no defaults, effective when SECURITY_ENABLED=true."
+    echo -e "-t TEST_COMPONENTS\t(OpenSearch-Dashboards reportsDashboards etc.), optional, specify test components, separate with space, else test everything."
     echo -e "-v VERSION\t, no defaults, indicates the OpenSearch version to test."
+    echo -e "-o OPTION\t, no defaults, determine the TEST_TYPE value among(default, manifest) in test_finder.sh, optional."
     echo -e "-h\tPrint this message."
     echo "--------------------------------------------------------------------------"
 }
 
-while getopts ":hb:p:s:c:v:" arg; do
+while getopts ":hb:p:s:c:t:v:o:" arg; do
     case $arg in
         h)
             usage
@@ -41,8 +41,14 @@ while getopts ":hb:p:s:c:v:" arg; do
         c)
             CREDENTIAL=$OPTARG
             ;;
+        t)
+            TEST_COMPONENTS=$OPTARG
+            ;;
         v)
             VERSION=$OPTARG
+            ;;
+        o)
+            OPTION=$OPTARG
             ;;
         :)
             echo "-${OPTARG} requires an argument"
@@ -79,10 +85,13 @@ then
   PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 fi
 
+. ./test_finder.sh
+
 npm install
 
-
-TEST_FILES=$(get_test_list)
+TEST_FILES=`get_test_list $TEST_COMPONENTS`
+echo -e "Test Files List:"
+echo $TEST_FILES | tr ',' '\n'
 
 ## WARNING: THIS LOGIC NEEDS TO BE THE LAST IN THIS FILE! ##
 # Cypress returns back the test failure count in the error code
