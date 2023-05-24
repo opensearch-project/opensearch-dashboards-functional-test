@@ -24,7 +24,7 @@ module.exports = defineConfig({
     MANAGED_SERVICE_ENDPOINT: false,
     VISBUILDER_ENABLED: true,
     DATASOURCE_MANAGEMENT_ENABLED: false,
-    ML_COMMONS_DASHBOARDS_ENABLED: false,
+    ML_COMMONS_DASHBOARDS_ENABLED: true,
   },
   e2e: {
     // We've imported your old cypress plugins here.
