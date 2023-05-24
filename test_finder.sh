@@ -20,7 +20,6 @@ OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
                          "notificationsDashboards:notifications-dashboards"
                          "customImportMapDashboards:custom-import-map-dashboards"
                          "searchRelevanceDashboards:search-relevance-dashboards"
-                         "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
                          "mlCommonsDashboards:ml-commons-dashboards"
                          "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
                        )
