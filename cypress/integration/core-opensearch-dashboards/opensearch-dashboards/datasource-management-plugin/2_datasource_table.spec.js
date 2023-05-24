@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { TIMEOUT_OPTS } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
+import {
+  TIMEOUT_OPTS,
+  OSD_TEST_DOMAIN_ENDPOINT_URL,
+} from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 
 const searchFieldIdentifier = 'input[type="search"]';
 const tableHeadIdentifier = 'thead > tr > th';
@@ -49,7 +52,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
             attributes: {
               title: `ds_${char}`,
               description: `test ds_description_${char}`,
-              endpoint: `https://dummy${char}`,
+              endpoint: `${OSD_TEST_DOMAIN_ENDPOINT_URL}/${char}`,
               auth: {
                 type: i % 2 ? 'username_password' : 'no_auth',
               },
