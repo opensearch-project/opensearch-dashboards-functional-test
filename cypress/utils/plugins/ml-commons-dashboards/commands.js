@@ -40,6 +40,16 @@ Cypress.Commands.add('uploadModelByUrl', (body) =>
     .then(({ body }) => body)
 );
 
+Cypress.Commands.add('registerModelGroup', (body) =>
+  cy
+    .request({
+      method: 'POST',
+      url: MLC_API.MODEL_GROUP_REGISTER,
+      body,
+    })
+    .then(({ body }) => body)
+);
+
 Cypress.Commands.add('deleteMLCommonsModel', (modelId) =>
   cy.request('DELETE', `${MLC_API.MODEL_BASE}/${modelId}`)
 );
@@ -83,6 +93,14 @@ Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
     transient: {
       'plugins.ml_commons.native_memory_threshold': 100,
+    },
+  });
+});
+
+Cypress.Commands.add('enableRegisterModelViaURL', () => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+    transient: {
+      'plugins.ml_commons.allow_registering_model_via_url': true,
     },
   });
 });
