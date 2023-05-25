@@ -33,7 +33,7 @@ jobs:
       #   run: |
       #     echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
       - name: Get package version
-        working-directory: cypress-test
+        working-directory: monetery-test
         run: |
           echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
       - name: Get and run OpenSearch
