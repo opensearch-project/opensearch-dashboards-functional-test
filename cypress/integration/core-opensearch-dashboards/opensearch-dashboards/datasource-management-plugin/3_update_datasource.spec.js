@@ -599,6 +599,155 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
+    describe(`Updating current datasource auth type from "no auth" to "SigV4"`, () => {
+      it('should change credential to "SigV4" & render only related fields', () => {
+        // verify current auth type is "no auth"
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').should(
+          'have.value',
+          'no_auth'
+        );
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'sigv4'
+        );
+
+        // username & password fields should be hidden
+        cy.get('input[name="datasourceUsername"]').should('not.exist');
+        cy.get(passwordFieldIdentifier).should('not.exist');
+        cy.getElementByTestId('editDatasourceUpdatePasswordBtn').should(
+          'not.exist'
+        );
+
+        // SigV4 related fields should be visible
+        cy.getElementByTestId('editDataSourceFormRegionField').should('exist');
+        cy.getElementByTestId(
+          'editDataSourceFormSigV4ServiceTypeSelect'
+        ).should('have.value', 'es');
+        cy.getElementByTestId('editDataSourceFormAccessKeyField').should(
+          'exist'
+        );
+        cy.getElementByTestId('editDataSourceFormSecretKeyField').should(
+          'exist'
+        );
+      });
+
+      it('should make sure that region field is required', () => {
+        cy.getElementByTestId('editDataSourceFormRegionField').should(
+          'not.have.value'
+        );
+        typeInInputFieldAndBlur(
+          '',
+          '',
+          '[data-test-subj="editDataSourceFormRegionField"]'
+        );
+        cy.get(
+          'input[data-test-subj="editDataSourceFormRegionField"]:invalid'
+        ).should('have.length', 1);
+        cy.getElementByTestId('datasource-edit-saveButton').should(
+          'be.disabled'
+        );
+      });
+      it('should make sure that access key field is required', () => {
+        cy.getElementByTestId('editDataSourceFormAccessKeyField').should(
+          'not.have.value'
+        );
+        /* Required */
+        typeInInputFieldAndBlur(
+          '',
+          '',
+          '[data-test-subj="editDataSourceFormAccessKeyField"]'
+        );
+        cy.get(
+          'input[data-test-subj="editDataSourceFormAccessKeyField"]:invalid'
+        ).should('have.length', 1);
+        cy.getElementByTestId('datasource-edit-saveButton').should(
+          'be.disabled'
+        );
+      });
+      it('should make sure that secret key field is required', () => {
+        cy.getElementByTestId('editDataSourceFormSecretKeyField').should(
+          'not.have.value'
+        );
+        /* Required */
+        typeInInputFieldAndBlur(
+          '',
+          '',
+          '[data-test-subj="editDataSourceFormSecretKeyField"]'
+        );
+        cy.get(
+          'input[data-test-subj="editDataSourceFormSecretKeyField"]:invalid'
+        ).should('have.length', 1);
+        cy.getElementByTestId('datasource-edit-saveButton').should(
+          'be.disabled'
+        );
+      });
+    });
+
+    describe('bottom bar: Save Changes -> "Change Credential Type to sigv4"', () => {
+      it('should change credential to "SigV4" & save changes with valid form', () => {
+        // credential: SigV4
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').select(
+          'sigv4'
+        );
+        // set region
+        typeInInputFieldAndBlur(
+          '',
+          DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.region,
+          '[data-test-subj="editDataSourceFormRegionField"]'
+        );
+        // set access key
+        typeInInputFieldAndBlur(
+          '',
+          DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.accessKey,
+          '[data-test-subj="editDataSourceFormAccessKeyField"]'
+        );
+
+        // set secret key
+        typeInInputFieldAndBlur(
+          '',
+          DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.secretKey,
+          '[data-test-subj="editDataSourceFormSecretKeyField"]'
+        );
+
+        // set service type
+        cy.getElementByTestId(
+          'editDataSourceFormSigV4ServiceTypeSelect'
+        ).select(DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.service);
+
+        cy.getElementByTestId('datasource-edit-saveButton')
+          .should('be.enabled')
+          .click();
+        cy.getElementByTestId(
+          'datasource-edit-saveButton',
+          TIMEOUT_OPTS
+        ).should('not.exist');
+      });
+      it('should verify that changes were updated successfully', () => {
+        cy.get('[data-test-subj="editDataSourceSelectAuthType"]').should(
+          'have.value',
+          'sigv4'
+        );
+        cy.getElementByTestId('editDataSourceFormRegionField').should(
+          'have.value',
+          DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.region
+        );
+        cy.getElementByTestId(
+          'editDataSourceFormSigV4ServiceTypeSelect'
+        ).should(
+          'have.value',
+          DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.service
+        );
+        cy.getElementByTestId('editDataSourceFormAccessKeyField').should(
+          'be.disabled'
+        );
+        cy.getElementByTestId('editDataSourceFormSecretKeyField').should(
+          'be.disabled'
+        );
+        cy.getElementByTestId('editDatasourceUpdateAwsCredentialBtn').should(
+          'exist'
+        );
+      });
+    });
+
     describe('delete datasource', () => {
       it('should open delete confirmation modal on click of trash icon', () => {
         cy.getElementByTestId('editDatasourceDeleteIcon')
