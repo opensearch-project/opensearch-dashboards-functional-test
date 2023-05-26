@@ -69,7 +69,7 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")
+          node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")
           echo "node_version=$node_version_temp" >> $GITHUB_ENV
       - name: Setup node
         uses: actions/setup-node@v1
