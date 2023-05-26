@@ -5,6 +5,7 @@
 
 import './vis_builder/commands';
 import './feature-anywhere/commands';
+import './vis_type_table/commands';
 
 Cypress.Commands.add('waitForLoader', () => {
   const opts = { log: false };

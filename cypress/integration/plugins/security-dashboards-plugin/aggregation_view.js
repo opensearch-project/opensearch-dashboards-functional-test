@@ -19,7 +19,7 @@ import indexPatternTenantHeaderSetUp from '../../../fixtures/plugins/security-da
 const tenantName = 'test';
 const userName1 = 'test1';
 const userName2 = 'test2';
-const password = 'password';
+const password = 'testUserPassword123';
 const roleName1 = 'roleWithTest';
 const roleName2 = 'roleWithoutTest';
 const kibanaRoleName = 'kibana_user';
