@@ -71,9 +71,9 @@ describe('dashboard filtering', () => {
       // Click the "Create dashboard" button
       miscUtils.createNewDashboard();
       // Change the time to be between Jan 1 2018 and Apr 13, 2018
-      commonUI.setDateRange(
-        'Apr 13, 2018 @ 00:00:00.000',
-        'Jan 1, 2018 @ 00:00:00.000'
+      cy.setTopNavDate(
+        'Jan 1, 2018 @ 00:00:00.000',
+        'Apr 13, 2018 @ 00:00:00.000'
       );
 
       // Add all "Filter Bytes Test" visualizations
@@ -108,9 +108,7 @@ describe('dashboard filtering', () => {
 
       it('Nonpinned filter: data tables are filtered', () => {
         // Check that none of the data tables are filled with data
-        commonUI.checkElementDoesNotExist(
-          '[data-test-subj="paginated-table-body"] [data-cell-content]'
-        );
+        commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
       });
 
       it('Nonpinned filter: goal and guages are filtered', () => {
@@ -188,9 +186,7 @@ describe('dashboard filtering', () => {
 
       it('Pinned filter: data tables are filtered', () => {
         // Check that none of the data tables are filled with data
-        commonUI.checkElementDoesNotExist(
-          '[data-test-subj="paginated-table-body"] [data-cell-content]'
-        );
+        commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
       });
 
       it('Pinned filter: goal and guages are filtered', () => {
@@ -263,11 +259,8 @@ describe('dashboard filtering', () => {
       });
 
       it('Filter disabled: data tables', () => {
-        // Check that there are 10 table rows
-        commonUI.checkElementExists(
-          '[data-test-subj="paginated-table-body"] [data-cell-content]',
-          10
-        );
+        // Check that there are 20 table cells / 10 rows
+        commonUI.checkElementExists('[data-test-subj="dataGridRowCell"]', 20);
       });
 
       it.skip('Filter disabled: goal and guages', () => {
@@ -342,9 +335,9 @@ describe('dashboard filtering', () => {
       miscUtils.createNewDashboard(20000);
 
       // Change the time to be between Jan 1 2018 and Apr 13, 2018
-      commonUI.setDateRange(
-        'Apr 13, 2018 @ 00:00:00.000',
-        'Jan 1, 2018 @ 00:00:00.000'
+      cy.setTopNavDate(
+        'Jan 1, 2018 @ 00:00:00.000',
+        'Apr 13, 2018 @ 00:00:00.000'
       );
 
       dashboardPage.addDashboardPanels(
