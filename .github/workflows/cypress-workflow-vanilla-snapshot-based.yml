@@ -8,8 +8,6 @@ on:
     branches:
       - main
       - dev-*
-env:
-  VERSION: '2.0.0'
 jobs:
   tests:
     name: Run Cypress E2E tests
@@ -34,26 +32,31 @@ jobs:
       #   working-directory: monetery-test
       #   run: |
       #     echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
+      - name: Get package version
+        working-directory: monetery-test
+        run: |
+          echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
       - name: Get and run OpenSearch
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch/${{ env.VERSION }}-SNAPSHOT/opensearch-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-          tar -xzf opensearch-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-          cd opensearch-${{ env.VERSION }}-SNAPSHOT/
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/builds/opensearch/dist/opensearch-min-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-min-${{ env.VERSION }}-linux-x64.tar.gz
+          cd opensearch-${{ env.VERSION }}/
           bin/opensearch &
           timeout 300 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
-          wget https://artifacts.opensearch.org/snapshots/core/opensearch-dashboards/${{ env.VERSION }}-SNAPSHOT/opensearch-dashboards-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
-          tar -xzf opensearch-dashboards-min-${{ env.VERSION }}-SNAPSHOT-linux-x64-latest.tar.gz
+          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/builds/opensearch-dashboards/dist/opensearch-dashboards-min-${{ env.VERSION }}-linux-x64.tar.gz
+          tar -xzf opensearch-dashboards-min-${{ env.VERSION }}-linux-x64.tar.gz
       - name: Run OpenSearch-Dashboards server
         run: |
-          cd opensearch-dashboards-${{ env.VERSION }}-SNAPSHOT-linux-x64
+          cd opensearch-dashboards-${{ env.VERSION }}-linux-x64
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
         id: cypress_version
         run: |
-          echo "::set-output name=cypress_version::$(cat ./monetery-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+          cypress_version_temp=$(cat ./monetery-test/package.json | jq -r '.devDependencies.cypress')
+          echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
       - name: Cache Cypress
         id: cache-cypress
         uses: actions/cache@v1
