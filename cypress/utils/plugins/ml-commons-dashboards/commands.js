@@ -46,6 +46,7 @@ Cypress.Commands.add('registerModelGroup', (body) =>
       method: 'POST',
       url: MLC_API.MODEL_GROUP_REGISTER,
       body,
+      failOnStatusCode: false,
     })
     .then(({ body }) => body)
 );
@@ -98,9 +99,14 @@ Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
 });
 
 Cypress.Commands.add('enableRegisterModelViaURL', () => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
-    transient: {
-      'plugins.ml_commons.allow_registering_model_via_url': true,
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    body: {
+      transient: {
+        'plugins.ml_commons.allow_registering_model_via_url': true,
+      },
     },
+    failOnStatusCode: false,
   });
 });
