@@ -19,6 +19,9 @@ import {
 
 const commonUI = new CommonUI(cy);
 
+// TODO: Remove cy.wait(500)
+// https://github.com/opensearch-project/OpenSearch-Dashboards/issues/4157
+
 describe('table visualization data', () => {
   before(() => {
     cy.deleteIndex(TABLE_INDEX_ID);
@@ -67,6 +70,7 @@ describe('table visualization data', () => {
         2
       );
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -79,6 +83,7 @@ describe('table visualization data', () => {
       cy.tbSelectAggregationField('age', 3);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedAverageData);
       });
@@ -102,6 +107,7 @@ describe('table visualization data', () => {
       cy.tbSelectSubAggregationType('Count', 2, 'metrics');
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -122,6 +128,7 @@ describe('table visualization data', () => {
       cy.tbSplitRows();
       cy.tbSetupDateHistogramAggregation('timestamp', 'Year', 2);
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -130,6 +137,7 @@ describe('table visualization data', () => {
     it('Should correctly filter for applied time filter on the main timefield', () => {
       commonUI.addFilterRetrySelection('timestamp', 'is', '2022-05-30');
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '37']);
       });
@@ -140,6 +148,7 @@ describe('table visualization data', () => {
         '2022-08-30',
       ]);
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
@@ -148,11 +157,13 @@ describe('table visualization data', () => {
     it('Should correctly filter for pinned filters', () => {
       commonUI.pinFilter('timestamp');
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
       commonUI.removeFilter('timestamp');
       cy.waitForLoader();
+      cy.wait(500);
     });
 
     after(() => {
@@ -166,6 +177,7 @@ describe('table visualization data', () => {
   describe('Check Terms aggregation and missing values', () => {
     it('Should show correct data before and after adding doc', () => {
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,000']);
       });
@@ -210,12 +222,14 @@ describe('table visualization data', () => {
       cy.tbSplitRows();
       cy.tbSetupTermsAggregation('age', 'Descending', '5', 2);
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeGroupInOther);
       });
       cy.tbToggleOtherBucket('true');
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterGroupInOther);
       });
@@ -251,12 +265,14 @@ describe('table visualization data', () => {
       cy.tbSelectAggregationField('email.keyword', 2);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeMissing);
       });
       cy.tbToggleMissingBucket('true');
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterMissing);
       });
