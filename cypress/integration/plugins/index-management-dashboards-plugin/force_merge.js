@@ -72,7 +72,7 @@ describe('force_merge', () => {
         force: true,
       });
 
-      cy.contains(/Some shards could not be force merged/);
+      cy.contains(/Successfully started force merging/);
     });
   });
 
