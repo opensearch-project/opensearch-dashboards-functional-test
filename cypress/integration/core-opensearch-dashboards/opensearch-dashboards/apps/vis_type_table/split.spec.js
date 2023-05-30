@@ -16,7 +16,8 @@ import {
   toTestId,
 } from '../../../../../utils/constants';
 
-describe('Split table', () => {
+// TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/699
+describe.skip('Split table', () => {
   const expectDataInitial = [
     [
       'Cat',

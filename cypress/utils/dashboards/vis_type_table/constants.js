@@ -20,7 +20,7 @@ export const TABLE_INDEX_END_TIME = 'Oct 2, 2022 @ 00:00:00.000';
 export const TABLE_BASIC_VIS_TITLE = 'TABLE: Basic';
 // App URL Paths
 export const TABLE_VIS_APP_PATH = '/app/visualize';
-export const TABLE_CREATE_URL = `${BASE_PATH}${TABLE_VIS_APP_PATH}/create?type=table&indexPattern=${TABLE_INDEX_PATTERN}`;
+export const TABLE_CREATE_URL = `${BASE_PATH}${TABLE_VIS_APP_PATH}#/create?type=table&indexPattern=${TABLE_INDEX_PATTERN}`;
 // Type
 export const TABLE_VIS_TYPE = 'visualization';
 // Aggregation
