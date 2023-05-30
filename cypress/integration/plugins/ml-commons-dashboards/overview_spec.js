@@ -20,7 +20,6 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
 
       cy.registerModelGroup({
         name: 'model-group',
-        model_access_mode: 'public',
       })
         .then(({ model_group_id }) =>
           cy.uploadModelByUrl({
