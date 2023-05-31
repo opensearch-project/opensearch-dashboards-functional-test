@@ -64,6 +64,7 @@ describe('Table visualization options', () => {
         2
       );
       cy.waitForLoader();
+      cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
