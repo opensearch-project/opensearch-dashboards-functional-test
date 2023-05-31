@@ -143,10 +143,12 @@ describe('table visualization data', () => {
       });
       commonUI.removeFilter('timestamp');
       cy.waitForLoader();
-      commonUI.addFilterRetrySelection('timestamp', 'is between', [
+      commonUI.addFilterRangeRetrySelection(
+        'timestamp',
+        'is between',
         '2022-05-30',
-        '2022-08-30',
-      ]);
+        '2022-08-30'
+      );
       cy.waitForLoader();
       cy.wait(500);
       cy.tbGetTableDataFromVisualization().then((data) => {
