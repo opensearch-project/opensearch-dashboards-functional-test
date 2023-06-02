@@ -264,7 +264,8 @@ function enableLegacyTestsResults() {
 function hideLegacyTestsResults() {
   document.getElementById('testResultsDiv').style.display = 'none';
   var testResultsLink = document.getElementById('testResultLink');
-  testResultsLink.textContent = 'How to View Test Results';
+  testResultsLink.textContent = 'How to view test results for plugins';
+  testResultsLink.href = 'assets/plugin_test_results_help.gif';
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -320,9 +321,8 @@ function getPluginLinks(plugin) {
     pluginTestResultLink.href = testResultsUrl;
     document.getElementById('pluginLink').appendChild(pluginTestResultLink);
 
-    const breakElement = document.createElement('br');
-    breakElement.style = 'margin-bottom: 12px;';
-    document.getElementById('pluginLink').appendChild(breakElement);
+    const ruleElement = document.createElement('hr');
+    document.getElementById('pluginLink').appendChild(ruleElement);
   }
 
   var pluginLink = document.createElement('a');

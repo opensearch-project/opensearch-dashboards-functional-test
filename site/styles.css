@@ -152,10 +152,16 @@ body {
     overflow: hidden;
 }
 
+.topNav img {
+    float: left;
+    height: 28px;
+    width: auto;
+    padding: 12px 6px;
+}
 .topNav span {
     float: left;
     color: white;
-    padding: 14px 16px;
+    padding: 16px 8px;
     font-size: 1rem;
     cursor: default;
 }
@@ -163,7 +169,7 @@ body {
 .topNav a {
     float: right;
     color: white;
-    padding: 14px 16px;
+    padding: 16px 16px;
     text-align: center;
     text-decoration: underline;
     font-size: 1rem;
