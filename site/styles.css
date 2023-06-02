@@ -32,6 +32,10 @@ body {
     display: none;
 }
 
+#inputsDiv #advancedInputsTable #legacyTd {
+    text-align: center;
+}
+
 #submitButton {
     margin-top: 8px;
     width: 150px;
@@ -99,7 +103,7 @@ body {
     left: 50%;
     top: 50%; 
     margin-left: -375px;
-    margin-top: -225px;
+    margin-top: -275px;
     background-color: white;
     border-radius: 6px;
     box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 3px 0 inset;
@@ -148,10 +152,16 @@ body {
     overflow: hidden;
 }
 
+.topNav img {
+    float: left;
+    height: 28px;
+    width: auto;
+    padding: 12px 6px;
+}
 .topNav span {
     float: left;
     color: white;
-    padding: 14px 16px;
+    padding: 16px 8px;
     font-size: 1rem;
     cursor: default;
 }
@@ -159,7 +169,7 @@ body {
 .topNav a {
     float: right;
     color: white;
-    padding: 14px 16px;
+    padding: 16px 16px;
     text-align: center;
     text-decoration: underline;
     font-size: 1rem;
