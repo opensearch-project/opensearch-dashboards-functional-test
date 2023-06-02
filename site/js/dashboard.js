@@ -17,6 +17,30 @@ const defaults = {
 };
 
 const plugins = {
+  'opensearch-dashboards': {
+    name: 'OpenSearch-Dashboards',
+    default: {
+      videos: [
+        'apps/vis_builder/basic.spec.js',
+        'apps/vis_builder/dashboard.spec.js',
+        'apps/vis_builder/experimental.spec.js',
+        'apps/vis_builder/vis_types/area.spec.js',
+        'apps/vis_builder/vis_types/bar.spec.js',
+        'apps/vis_builder/vis_types/line.spec.js',
+        'apps/vis_builder/vis_types/metric.spec.js',
+        'apps/vis_builder/vis_types/table.spec.js',
+        'apps/vis_type_table/basic.spec.js',
+        'apps/vis_type_table/data.spec.js',
+        'apps/vis_type_table/embed.spec.js',
+        'apps/vis_type_table/options.spec.js',
+        'apps/vis_type_table/split.spec.js',
+        'apps/datasource-management-plugin/1_create_datasource.spec.js',
+        'apps/datasource-management-plugin/2_datasource_table.spec.js',
+        'apps/datasource-management-plugin/3_update_datasource.spec.js',
+        'dashboard_sanity_test_spec.js',
+      ],
+    },
+  },
   'alerting-dashboards-plugin': {
     name: 'alertingDashboards',
     default: {
@@ -286,6 +310,7 @@ function getPluginLinks(plugin) {
 
   var pluginLinksList = document.getElementById('pluginLinksList');
   const pluginObject = plugins[plugin];
+  const coreBaseUrl = pluginObject.name === 'OpenSearch-Dashboards' ? 'core-opensearch-dashboards' : 'plugins';
 
   const pluginUrl =
     'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/' +
@@ -294,7 +319,8 @@ function getPluginLinks(plugin) {
     `${platform}/` +
     `${arch}/` +
     `${type}/` +
-    'builds/opensearch-dashboards/plugins/' +
+    'builds/opensearch-dashboards/' +
+    `${coreBaseUrl}` +
     `${pluginObject.name}-${version}.zip`;
 
   var githubManifestLink = document.createElement('a');
@@ -346,14 +372,14 @@ function getPluginLinks(plugin) {
     }/` +
     `${securityEnabled ? 'with-security' : 'without-security'}` +
     `${enableLegacyTestsResults() ? 'test-results' : ''}`;
-  const screenshotBaseUrl = `${s3BaseUrl}/cypress-screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
-  const videosBaseUrl = `${s3BaseUrl}/cypress-videos/plugins/${plugin}`;
+  const screenshotBaseUrl = `${s3BaseUrl}/cypress-screenshots/${coreBaseUrl}/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  const videosBaseUrl = `${s3BaseUrl}/cypress-videos/${coreBaseUrl}/${plugin}`;
 
   document.getElementById(
     'baseScreenshotUrlBefore'
   ).innerHTML = `/tmp/$RANDOM/${
     enableLegacyTestsResults() ? 'functionalTestDashboards' : pluginObject.name
-  }/cypress/screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  }/cypress/screenshots/${coreBaseUrl}/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
   document.getElementById('baseScreenshotUrlAfter').innerHTML =
     screenshotBaseUrl;
 
