@@ -310,7 +310,10 @@ function getPluginLinks(plugin) {
 
   var pluginLinksList = document.getElementById('pluginLinksList');
   const pluginObject = plugins[plugin];
-  const coreBaseUrl = pluginObject.name === 'OpenSearch-Dashboards' ? 'core-opensearch-dashboards' : 'plugins';
+  const coreBaseUrl =
+    pluginObject.name === 'OpenSearch-Dashboards'
+      ? 'core-opensearch-dashboards'
+      : 'plugins';
 
   const pluginUrl =
     'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/' +
