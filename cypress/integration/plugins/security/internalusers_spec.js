@@ -83,7 +83,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('span', 'Create');
 
       const userName = 'test';
-      const password = 'Password12';
+      const password = 'testUserPassword123';
 
       cy.get('input[data-test-subj="name-text"]').type(userName, {
         force: true,
