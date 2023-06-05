@@ -128,7 +128,6 @@ Cypress.Commands.add('deleteADSystemIndices', () => {
   }).then((response) => {
     if (response.status === 200) {
       for (let hit of response.body.hits.hits) {
-        console.log(hit);
         cy.request(
           'POST',
           `${Cypress.env(
