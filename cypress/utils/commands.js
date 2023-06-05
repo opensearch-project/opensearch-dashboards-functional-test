@@ -108,7 +108,44 @@ Cypress.Commands.add('deleteAllIndices', () => {
 
 Cypress.Commands.add('deleteADSystemIndices', () => {
   cy.log('Deleting AD system indices');
-  cy.request('DELETE', `${Cypress.env('openSearchUrl')}/.opendistro-anomaly*`);
+  const url = `${Cypress.env(
+    'openSearchUrl'
+  )}/_plugins/_anomaly_detection/detectors/results`;
+  cy.request({
+    method: 'DELETE',
+    url: url,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  });
+
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_anomaly_detection/detectors/_search`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request(
+          'POST',
+          `${Cypress.env(
+            'openSearchUrl'
+          )}/_plugins/_anomaly_detection/detectors/${hit._id}/_stop`
+        ).then((response) => {
+          if (response.status === 200) {
+            cy.request(
+              'DELETE',
+              `${Cypress.env(
+                'openSearchUrl'
+              )}/_plugins/_anomaly_detection/detectors/${hit._id}`
+            );
+          }
+        });
+      }
+    }
+  });
 });
 
 Cypress.Commands.add('getIndexSettings', (index) => {
