@@ -12,6 +12,7 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Cong Wang         | [CCongWang](https://github.com/CCongWang)           | Amazon      |
 | Ashwin P Chandran | [ashwin-pc](https://github.com/ashwin-pc)           | Amazon      |
 | Peter Zhu         | [peterzhuamazon](https://github.com/peterzhuamazon) | Amazon      |
+| Anan Zhuang       | [ananzh](https://github.com/ananzh)                 | Amazon      |
 
 ## Emeritus
 
