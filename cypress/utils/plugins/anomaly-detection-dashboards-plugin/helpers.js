@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { AD_URL } from './constants';
+
 export const selectTopItemFromFilter = (
   dataTestSubjectName,
   allowMultipleSelections = true
@@ -20,4 +22,44 @@ export const selectTopItemFromFilter = (
       .find('[data-test-subj=comboBoxToggleListButton]')
       .click();
   }
+};
+
+export const createSampleDetector = (createButtonDataTestSubj) => {
+  cy.visit(AD_URL.OVERVIEW);
+
+  cy.getElementByTestId('overviewTitle').should('exist');
+  cy.getElementByTestId('viewSampleDetectorLink').should('not.exist');
+  cy.getElementByTestId(createButtonDataTestSubj).click();
+  cy.visit(AD_URL.OVERVIEW);
+
+  // Check that the details page defaults to real-time, and shows detector is initializing
+  cy.getElementByTestId('viewSampleDetectorLink').click();
+  cy.getElementByTestId('detectorNameHeader').should('exist');
+  cy.getElementByTestId('sampleIndexDetailsCallout').should('exist');
+  cy.getElementByTestId('realTimeResultsHeader').should('exist');
+  cy.getElementByTestId('detectorStateInitializing').should('exist');
+};
+
+const openAnomalyDetectionPanel = (dashboardName, visualizationName) => {
+  cy.visitDashboard(dashboardName);
+  cy.getVisPanelByTitle(visualizationName)
+    .openVisContextMenu()
+    .clickVisPanelMenuItem('Anomaly Detection');
+};
+
+export const openAddAnomalyDetectorFlyout = (
+  dashboardName,
+  visualizationName
+) => {
+  openAnomalyDetectionPanel(dashboardName, visualizationName);
+  cy.clickVisPanelMenuItem('Add anomaly detector');
+  cy.wait(5000);
+};
+
+export const openAssociatedDetectorsFlyout = (
+  dashboardName,
+  visualizationName
+) => {
+  openAnomalyDetectionPanel(dashboardName, visualizationName);
+  cy.clickVisPanelMenuItem('Associated detectors');
 };

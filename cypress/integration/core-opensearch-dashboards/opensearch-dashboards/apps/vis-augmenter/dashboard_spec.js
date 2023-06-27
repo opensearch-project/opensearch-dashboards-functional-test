@@ -93,7 +93,6 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
 
     beforeEach(() => {
       cy.visitDashboard(dashboardName);
-      cy.wait(5000);
     });
 
     after(() => {

@@ -26,7 +26,6 @@ Cypress.Commands.add(
       .find('button')
       .contains(text)
       .click()
-      .then(() => cy.get('.euiContextMenu'))
 );
 
 Cypress.Commands.add('getMenuItems', { prevSubject: 'optional' }, (menu) =>
@@ -35,9 +34,11 @@ Cypress.Commands.add('getMenuItems', { prevSubject: 'optional' }, (menu) =>
 
 Cypress.Commands.add('visitDashboard', (dashboardName) => {
   cy.visit(`${BASE_PATH}/app/dashboards`);
+  cy.wait(2000);
   cy.get('.euiFieldSearch').type(dashboardName);
-  cy.wait(1000);
+  cy.wait(2000);
   cy.get('[data-test-subj="itemsInMemTable"]').contains(dashboardName).click({
     force: true,
   });
+  cy.wait(5000);
 });
