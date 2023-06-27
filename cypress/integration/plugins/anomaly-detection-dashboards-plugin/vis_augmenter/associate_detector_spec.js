@@ -13,6 +13,8 @@ import {
   associateDetectorFromVis,
   unlinkDetectorFromVis,
   ensureDetectorIsLinked,
+  ensureDetectorDetails,
+  openDetectorDetailsPageFromFlyout,
 } from '../../../../utils/helpers';
 import {
   INDEX_PATTERN_FILEPATH_SIMPLE,
@@ -20,7 +22,7 @@ import {
   SAMPLE_DATA_FILEPATH_SIMPLE,
 } from '../../../../utils/constants';
 
-describe('Associate a detector to a visualization', () => {
+describe('Anomaly detection integration with vis augmenter', () => {
   const indexName = 'ad-vis-augmenter-sample-index';
   const indexPatternName = 'ad-vis-augmenter-sample-*';
   const dashboardName = 'AD Vis Augmenter Dashboard';
@@ -69,11 +71,21 @@ describe('Associate a detector to a visualization', () => {
 
   afterEach(() => {});
 
+  it('Shows empty state when no associated detectors', () => {
+    openAssociatedDetectorsFlyout(dashboardName, visualizationName);
+    cy.getElementByTestId('emptyAssociatedDetectorFlyoutMessage');
+  });
+
   it('Create new detector from visualization', () => {
     openAddAnomalyDetectorFlyout(dashboardName, visualizationName);
     createDetectorFromVis(detectorName);
 
     ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
+
+    // Since this detector is created based off of vis metrics, we assume here
+    // the number of features will equal the number of metrics we have specified.
+    ensureDetectorDetails(detectorName, visualizationSpec.metrics.length);
+
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
   });
 
@@ -100,7 +112,23 @@ describe('Associate a detector to a visualization', () => {
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
   });
 
-  it.skip('View associated detector in table', () => {
-    // TODO: add helper fns to view associated table
+  it('Deleting linked detector shows error once and removes from associated detectors list', () => {
+    openAssociatedDetectorsFlyout(dashboardName, visualizationName);
+    cy.getElementByTestId('associateDetectorButton').click();
+    associateDetectorFromVis(detectorName);
+    ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
+    openDetectorDetailsPageFromFlyout();
+    cy.getElementByTestId('configurationsTab').click();
+    cy.getElementByTestId('detectorNameHeader').within(() => {
+      cy.contains(detectorName);
+    });
+
+    cy.getElementByTestId('actionsButton').click();
+    cy.getElementByTestId('deleteDetectorItem').click();
+    cy.getElementByTestId('typeDeleteField').type('delete', { force: true });
+    cy.getElementByTestId('confirmButton').click();
+    cy.wait(5000);
+
+    // TODO: reload dashboard and make sure the error shows up, and the associated detectors list is empty)
   });
 });

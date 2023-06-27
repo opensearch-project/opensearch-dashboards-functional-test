@@ -47,6 +47,10 @@ const openAnomalyDetectionPanel = (dashboardName, visualizationName) => {
     .clickVisPanelMenuItem('Anomaly Detection');
 };
 
+export const openDetectorDetailsPageFromFlyout = () => {
+  cy.get('.euiBasicTable').find('.euiLink').click();
+};
+
 export const openAddAnomalyDetectorFlyout = (
   dashboardName,
   visualizationName
@@ -96,6 +100,20 @@ export const ensureDetectorIsLinked = (
   cy.wait(1000);
   cy.get('.euiFieldSearch').type(detectorName);
   cy.get('.euiBasicTable').find('.euiTableRow').should('have.length', 1);
+};
+
+export const ensureDetectorDetails = (detectorName, numFeatures) => {
+  openDetectorDetailsPageFromFlyout();
+  cy.getElementByTestId('detectorNameHeader').within(() => {
+    cy.contains(detectorName);
+  });
+  cy.getElementByTestId('resultsTab');
+  cy.getElementByTestId('realTimeResultsHeader');
+  cy.getElementByTestId('configurationsTab').click();
+  cy.getElementByTestId('detectorSettingsHeader');
+  cy.getElementByTestId('featureTable')
+    .find('.euiTableRow')
+    .should('have.length', numFeatures);
 };
 
 export const unlinkDetectorFromVis = (
