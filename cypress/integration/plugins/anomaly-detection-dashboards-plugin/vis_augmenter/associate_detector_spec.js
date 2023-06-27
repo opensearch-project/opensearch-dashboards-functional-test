@@ -129,6 +129,21 @@ describe('Anomaly detection integration with vis augmenter', () => {
     cy.getElementByTestId('confirmButton').click();
     cy.wait(5000);
 
-    // TODO: reload dashboard and make sure the error shows up, and the associated detectors list is empty)
+    cy.visitDashboard(dashboardName);
+
+    // Expect an error message to show up
+    cy.getElementByTestId('errorToastMessage').parent().find('button').click();
+    cy.get('.euiModal');
+    cy.get('.euiModalFooter').find('button').click();
+    cy.wait(2000);
+
+    // Expect associated detector list to be empty (the association should be removed)
+    openAssociatedDetectorsFlyout(dashboardName, visualizationName);
+    cy.getElementByTestId('emptyAssociatedDetectorFlyoutMessage');
+    cy.wait(2000);
+
+    // Reload the dashboard - error toast shouldn't show anymore
+    cy.visitDashboard(dashboardName);
+    cy.getElementByTestId('errorToastMessage').should('not.exist');
   });
 });
