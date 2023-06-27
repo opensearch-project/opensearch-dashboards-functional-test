@@ -105,12 +105,6 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
       );
     });
 
-    it('All visualizations should be visible', () => {
-      visualizationNames.forEach((visualizationName) =>
-        cy.getVisPanelByTitle(visualizationName)
-      );
-    });
-
     it('View events option does not exist for any visualization', () => {
       visualizationNames.forEach((visualizationName) => {
         cy.getVisPanelByTitle(visualizationName)
