@@ -122,16 +122,16 @@ export const ingestVisAugmenterData = (
  * vis edit page
  */
 const bootstrapCreateFromDashboard = (visType, indexPatternName) => {
-  cy.get('[data-test-subj="dashboardAddNewPanelButton"]')
+  cy.getElementByTestId('dashboardAddNewPanelButton')
     .should('be.visible')
     .click();
 
-  cy.get(`[data-test-subj="visType-${visType}"]`).click();
+  cy.getElementByTestId(`visType-${visType}`).click();
 
   // vega charts don't have a secondary modal to configure the
   // index pattern / saved search. Skip those steps here
   if (visType !== 'vega') {
-    cy.get('[data-test-subj="savedObjectFinderSearchInput"]').type(
+    cy.getElementByTestId('savedObjectFinderSearchInput').type(
       `${indexPatternName}{enter}`
     );
     cy.get(`[title="${indexPatternName}"]`).click();
@@ -145,14 +145,14 @@ const setXAxisDateHistogram = () => {
     .find('[data-test-subj="visEditorAdd_buckets"]')
     .click();
 
-  cy.get('[data-test-subj="visEditorAdd_buckets_X-axis"]').click();
+  cy.getElementByTestId('visEditorAdd_buckets_X-axis').click();
 
   cy.get('.euiTitle')
     .contains('Buckets')
     .parent()
     .within(() => {
       cy.wait(1000);
-      cy.get('[data-test-subj="comboBoxInput"]')
+      cy.getElementByTestId('comboBoxInput')
         .find('input')
         .type('Date Histogram{enter}', { force: true });
     });
@@ -162,14 +162,14 @@ const setXAxisDateHistogram = () => {
  * From the vis edit view, return to the dashboard
  */
 const saveVisualizationAndReturn = (visualizationName) => {
-  cy.get('[data-test-subj="visualizeEditorRenderButton"]').click({
+  cy.getElementByTestId('visualizeEditorRenderButton').click({
     force: true,
   });
-  cy.get('[data-test-subj="visualizeSaveButton"]').click({
+  cy.getElementByTestId('visualizeSaveButton').click({
     force: true,
   });
-  cy.get('[data-test-subj="savedObjectTitle"]').type(visualizationName);
-  cy.get('[data-test-subj="confirmSaveSavedObjectButton"]').click({
+  cy.getElementByTestId('savedObjectTitle').type(visualizationName);
+  cy.getElementByTestId('confirmSaveSavedObjectButton').click({
     force: true,
   });
 };
@@ -184,12 +184,12 @@ const setYAxis = (metrics) => {
     // added metric, we need to overwrite it. For additional metrics, we
     // can just click the "Add" button
     if (index === 0) {
-      cy.get('[data-test-subj="metricsAggGroup"]')
+      cy.getElementByTestId('metricsAggGroup')
         .find('.euiAccordion__button')
         .click({ force: true });
     } else {
-      cy.get('[data-test-subj="visEditorAdd_metrics"]').click();
-      cy.get('[data-test-subj="visEditorAdd_metrics_Y-axis"]').click();
+      cy.getElementByTestId('visEditorAdd_metrics').click();
+      cy.getElementByTestId('visEditorAdd_metrics_Y-axis').click();
     }
     addMetric(metric, index);
   });
@@ -199,11 +199,11 @@ const setYAxis = (metrics) => {
  * Adds a metric to the specified index in the vis editor page
  */
 const addMetric = (metric, index) => {
-  cy.get('[data-test-subj="metricsAggGroup"]')
+  cy.getElementByTestId('metricsAggGroup')
     .find(`[data-test-subj="visEditorAggAccordion${index + 1}"]`)
     .within(() => {
       cy.wait(1000);
-      cy.get('[data-test-subj="comboBoxSearchInput"]').type(
+      cy.getElementByTestId('comboBoxSearchInput').type(
         `${metric.aggregation}{downarrow}{enter}`,
         {
           force: true,
@@ -214,12 +214,12 @@ const addMetric = (metric, index) => {
 
   // non-count aggregations will have an additional field value to set
   if (metric.aggregation !== 'Count' && metric.aggregation !== 'count') {
-    cy.get('[data-test-subj="metricsAggGroup"]')
+    cy.getElementByTestId('metricsAggGroup')
       .find(`[data-test-subj="visEditorAggAccordion${index + 1}"]`)
       .find('[data-test-subj="visDefaultEditorField"]')
       .within(() => {
         cy.wait(1000);
-        cy.get('[data-test-subj="comboBoxSearchInput"]').type(
+        cy.getElementByTestId('comboBoxSearchInput').type(
           `${metric.field}{downarrow}{enter}`,
           {
             force: true,
@@ -229,7 +229,7 @@ const addMetric = (metric, index) => {
   }
 
   // re-collapse the accordion
-  cy.get(`[data-test-subj="visEditorAggAccordion${index + 1}"]`)
+  cy.getElementByTestId(`visEditorAggAccordion${index + 1}`)
     .find('.euiAccordion__button')
     .first()
     .click({ force: true });
@@ -290,7 +290,7 @@ export const bootstrapDashboard = (
 
   miscUtils.visitPage('app/dashboards');
 
-  cy.get('[data-test-subj="createDashboardPromptButton"]')
+  cy.getElementByTestId('createDashboardPromptButton')
     .should('be.visible')
     .click();
 
@@ -304,13 +304,13 @@ export const bootstrapDashboard = (
     );
   });
 
-  cy.get('[data-test-subj="dashboardSaveMenuItem"]').click({
+  cy.getElementByTestId('dashboardSaveMenuItem').click({
     force: true,
   });
 
-  cy.get('[data-test-subj="savedObjectTitle"]').type(dashboardName);
+  cy.getElementByTestId('savedObjectTitle').type(dashboardName);
 
-  cy.get('[data-test-subj="confirmSaveSavedObjectButton"]').click({
+  cy.getElementByTestId('confirmSaveSavedObjectButton').click({
     force: true,
   });
 };
