@@ -63,3 +63,51 @@ export const openAssociatedDetectorsFlyout = (
   openAnomalyDetectionPanel(dashboardName, visualizationName);
   cy.clickVisPanelMenuItem('Associated detectors');
 };
+
+// expected context: on create detector flyout
+export const createDetectorFromVis = (detectorName) => {
+  cy.get('[id="detectorDetailsAccordion"]')
+    .parent()
+    .find('[data-test-subj="accordionTitleButton"]')
+    .click();
+  cy.getElementByTestId('detectorNameTextInputFlyout').clear();
+  cy.getElementByTestId('detectorNameTextInputFlyout').type(detectorName);
+  cy.getElementByTestId('adAnywhereCreateDetectorButton').click();
+  cy.wait(5000);
+};
+
+// expected context: on associate detector flyout
+export const associateDetectorFromVis = (detectorName) => {
+  cy.wait(2000);
+  cy.getElementByTestId('comboBoxInput').type(
+    `${detectorName}{downArrow}{enter}`
+  );
+  cy.wait(2000);
+  cy.getElementByTestId('adAnywhereAssociateDetectorButton').click();
+  cy.wait(5000);
+};
+
+export const ensureDetectorIsLinked = (
+  dashboardName,
+  visualizationName,
+  detectorName
+) => {
+  openAssociatedDetectorsFlyout(dashboardName, visualizationName);
+  cy.wait(1000);
+  cy.get('.euiFieldSearch').type(detectorName);
+  cy.get('.euiBasicTable').find('.euiTableRow').should('have.length', 1);
+};
+
+export const unlinkDetectorFromVis = (
+  dashboardName,
+  visualizationName,
+  detectorName
+) => {
+  openAssociatedDetectorsFlyout(dashboardName, visualizationName);
+  cy.wait(1000);
+  cy.get('.euiFieldSearch').type(detectorName);
+  cy.wait(1000);
+  cy.getElementByTestId('unlinkButton').click();
+  cy.getElementByTestId('confirmUnlinkButton').click();
+  cy.wait(5000);
+};
