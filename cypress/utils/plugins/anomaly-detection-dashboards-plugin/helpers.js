@@ -97,7 +97,7 @@ export const ensureDetectorIsLinked = (
   detectorName
 ) => {
   openAssociatedDetectorsFlyout(dashboardName, visualizationName);
-  cy.wait(1000);
+  cy.wait(2000);
   cy.get('.euiFieldSearch').type(detectorName);
   cy.get('.euiBasicTable').find('.euiTableRow').should('have.length', 1);
 };
@@ -122,7 +122,7 @@ export const unlinkDetectorFromVis = (
   detectorName
 ) => {
   openAssociatedDetectorsFlyout(dashboardName, visualizationName);
-  cy.wait(1000);
+  cy.wait(2000);
   cy.get('.euiFieldSearch').type(detectorName);
   cy.wait(1000);
   cy.getElementByTestId('unlinkButton').click();

@@ -4,7 +4,6 @@
  */
 
 import {
-  createSampleDetector,
   deleteVisAugmenterData,
   bootstrapDashboard,
   openAddAnomalyDetectorFlyout,
@@ -42,7 +41,6 @@ describe('Anomaly detection integration with vis augmenter', () => {
 
   before(() => {
     // Create a dashboard and add some visualizations
-    //cy.deleteADSystemIndices();
     cy.wait(5000);
     bootstrapDashboard(
       INDEX_SETTINGS_FILEPATH_SIMPLE,
@@ -53,7 +51,6 @@ describe('Anomaly detection integration with vis augmenter', () => {
       dashboardName,
       [visualizationSpec]
     );
-    // cy.deleteAllIndices();
   });
 
   after(() => {
@@ -63,7 +60,6 @@ describe('Anomaly detection integration with vis augmenter', () => {
       [visualizationName],
       dashboardName
     );
-    // cy.deleteAllIndices();
     cy.deleteADSystemIndices();
   });
 
