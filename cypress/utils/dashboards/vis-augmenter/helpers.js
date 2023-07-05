@@ -314,3 +314,12 @@ export const bootstrapDashboard = (
     force: true,
   });
 };
+
+export const filterByObjectType = (type) => {
+  cy.get('.euiFilterButton').click();
+  cy.get('.euiFilterSelect__items')
+    .find('button')
+    .contains(type)
+    .click({ force: true });
+  cy.wait(3000);
+};

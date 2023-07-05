@@ -42,3 +42,8 @@ Cypress.Commands.add('visitDashboard', (dashboardName) => {
   });
   cy.wait(5000);
 });
+
+Cypress.Commands.add('visitSavedObjectsManagement', () => {
+  cy.visit(`${BASE_PATH}/app/management/opensearch-dashboards/objects`);
+  cy.wait(5000);
+});

@@ -10,6 +10,7 @@ import {
   createDetectorFromVis,
   unlinkDetectorFromVis,
   ensureDetectorIsLinked,
+  filterByObjectType,
 } from '../../../../utils/helpers';
 import {
   INDEX_PATTERN_FILEPATH_SIMPLE,
@@ -68,16 +69,46 @@ describe('AD augment-vis saved objects', () => {
     createDetectorFromVis(detectorName);
     ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
 
-    // TODO: navigate to saved obj management page and make sure it is there
+    cy.visitSavedObjectsManagement();
+    filterByObjectType('augment-vis');
+    cy.getElementByTestId('savedObjectsTable')
+      .find('.euiTableRow')
+      .should('have.length', 1);
+  });
 
+  it('Created AD saved object has correct fields', () => {
+    cy.visitSavedObjectsManagement();
+    filterByObjectType('augment-vis');
+    // TODO: check some of the fields, specifically that AD-specific values
+    // are there
+  });
+
+  it('Removing an associated deletes the saved object', () => {
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
 
-    // TODO: navigate to saved obj management page and make sure it is gone
+    cy.visitSavedObjectsManagement();
+    filterByObjectType('augment-vis');
+    cy.getElementByTestId('savedObjectsTable')
+      .find('.euiTableRow')
+      .contains('No items found');
+  });
+
+  it('Deleting the visualization from the edit view deletes the saved object', () => {
+    cy.visitSavedObjectsManagement();
+    filterByObjectType('visualization');
+    cy.getElementByTestId('savedObjectsTableAction-inspect').click();
+    cy.getElementByTestId('savedObjectEditDelete').click();
+    cy.getElementByTestId('confirmModalConfirmButton').click();
+    cy.wait(3000);
+
+    filterByObjectType('augment-vis');
+    cy.getElementByTestId('savedObjectsTable')
+      .find('.euiTableRow')
+      .contains('No items found');
   });
 
   // TODO: other tests to add:
-  // - unlinking detector will delete the saved obj
-  // - delete the saved obj will remove the association
   // - ensure some details about the saved obj
-  // - ensure saved obj count is as expected (0, 1, 2+)
+  // - view events test suite. at least test the resource names show up to start
+  // - view events check: make sure action doesn't exist if there is no resources/vislayers present
 });
