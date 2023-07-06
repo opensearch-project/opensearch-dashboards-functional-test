@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import _ from 'lodash';
 import { BASE_PATH } from '../../constants';
 
 Cypress.Commands.add('getVisPanelByTitle', (title) =>
