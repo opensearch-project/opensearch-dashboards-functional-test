@@ -4,6 +4,7 @@
  */
 
 import { CommonUI } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
 import {
   deleteVisAugmenterData,
   bootstrapDashboard,
@@ -12,6 +13,7 @@ import {
   unlinkDetectorFromVis,
   ensureDetectorIsLinked,
   filterByObjectType,
+  openViewEventsFlyout,
 } from '../../../../utils/helpers';
 import {
   INDEX_PATTERN_FILEPATH_SIMPLE,
@@ -19,7 +21,7 @@ import {
   SAMPLE_DATA_FILEPATH_SIMPLE,
 } from '../../../../utils/constants';
 
-describe('AD augment-vis saved objects', () => {
+describe('View anomaly events in flyout', () => {
   const commonUI = new CommonUI(cy);
   const indexName = 'ad-vis-augmenter-sample-index';
   const indexPatternName = 'ad-vis-augmenter-sample-*';
@@ -66,56 +68,49 @@ describe('AD augment-vis saved objects', () => {
 
   afterEach(() => {});
 
-  it('Associating a detector creates a visible saved object', () => {
+  it('Action does not exist if there are no VisLayers for a visualization', () => {
+    cy.getVisPanelByTitle(visualizationName)
+      .openVisContextMenu()
+      .getMenuItems()
+      .contains('View Events')
+      .should('not.exist');
+  });
+
+  it('Action does exist if there are VisLayers for a visualization', () => {
     openAddAnomalyDetectorFlyout(dashboardName, visualizationName);
     createDetectorFromVis(detectorName);
     ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
 
-    cy.visitSavedObjectsManagement();
-    filterByObjectType('augment-vis');
-    cy.getElementByTestId('savedObjectsTable')
-      .find('.euiTableRow')
-      .should('have.length', 1);
+    cy.visitDashboard(dashboardName);
+    cy.getVisPanelByTitle(visualizationName)
+      .openVisContextMenu()
+      .getMenuItems()
+      .contains('View Events')
+      .should('exist');
   });
 
-  it('Created AD saved object has correct fields', () => {
-    cy.visitSavedObjectsManagement();
-    filterByObjectType('augment-vis');
-    // TODO: check some of the fields, specifically that AD-specific values
-    // are there
-    cy.getElementByTestId('savedObjectsTableAction-inspect').click();
-    cy.contains('originPlugin');
-    commonUI.checkElementExists('[value="anomalyDetectionDashboards"]', 1);
-    cy.contains('pluginResource.type');
-    commonUI.checkElementExists('[value="Anomaly Detectors"]', 1);
-    cy.contains('pluginResource.id');
-    cy.contains('visLayerExpressionFn.type');
-    commonUI.checkElementExists('[value="PointInTimeEvents"]', 1);
-    cy.contains('visLayerExpressionFn.name');
-    commonUI.checkElementExists('[value="overlay_anomalies"]', 1);
+  it('Basic components show up in flyout', () => {
+    openViewEventsFlyout(dashboardName, visualizationName);
+    cy.get('.euiFlyoutHeader').contains(visualizationName);
+    cy.getElementByTestId('baseVis');
+    cy.getElementByTestId('eventVis');
+    cy.getElementByTestId('timelineVis');
+    cy.getElementByTestId('pluginResourceDescription');
+    // cy.contains(detectorName);
+    cy.getElementByTestId('pluginResourceDescription').within(() => {
+      cy.contains(detectorName);
+      cy.get('.euiLink');
+      cy.get(`[target="_blank"]`);
+    });
   });
 
-  it('Removing an association deletes the saved object', () => {
+  it('Removing all VisLayers hides the view events action again', () => {
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
-
-    cy.visitSavedObjectsManagement();
-    filterByObjectType('augment-vis');
-    cy.getElementByTestId('savedObjectsTable')
-      .find('.euiTableRow')
-      .contains('No items found');
-  });
-
-  it('Deleting the visualization from the edit view deletes the saved object', () => {
-    cy.visitSavedObjectsManagement();
-    filterByObjectType('visualization');
-    cy.getElementByTestId('savedObjectsTableAction-inspect').click();
-    cy.getElementByTestId('savedObjectEditDelete').click();
-    cy.getElementByTestId('confirmModalConfirmButton').click();
-    cy.wait(3000);
-
-    filterByObjectType('augment-vis');
-    cy.getElementByTestId('savedObjectsTable')
-      .find('.euiTableRow')
-      .contains('No items found');
+    cy.visitDashboard(dashboardName);
+    cy.getVisPanelByTitle(visualizationName)
+      .openVisContextMenu()
+      .getMenuItems()
+      .contains('View Events')
+      .should('not.exist');
   });
 });

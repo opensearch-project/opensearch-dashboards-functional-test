@@ -68,6 +68,14 @@ export const openAssociatedDetectorsFlyout = (
   cy.clickVisPanelMenuItem('Associated detectors');
 };
 
+export const openViewEventsFlyout = (dashboardName, visualizationName) => {
+  cy.visitDashboard(dashboardName);
+  cy.getVisPanelByTitle(visualizationName)
+    .openVisContextMenu()
+    .clickVisPanelMenuItem('View Events');
+  cy.wait(5000);
+};
+
 // expected context: on create detector flyout
 export const createDetectorFromVis = (detectorName) => {
   cy.get('[id="detectorDetailsAccordion"]')
