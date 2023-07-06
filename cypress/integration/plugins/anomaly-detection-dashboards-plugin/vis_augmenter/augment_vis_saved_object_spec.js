@@ -81,8 +81,6 @@ describe('AD augment-vis saved objects', () => {
   it('Created AD saved object has correct fields', () => {
     cy.visitSavedObjectsManagement();
     filterByObjectType('augment-vis');
-    // TODO: check some of the fields, specifically that AD-specific values
-    // are there
     cy.getElementByTestId('savedObjectsTableAction-inspect').click();
     cy.contains('originPlugin');
     commonUI.checkElementExists('[value="anomalyDetectionDashboards"]', 1);

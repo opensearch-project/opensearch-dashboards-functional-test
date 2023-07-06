@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { CommonUI } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-
 import {
   deleteVisAugmenterData,
   bootstrapDashboard,
@@ -12,7 +10,6 @@ import {
   createDetectorFromVis,
   unlinkDetectorFromVis,
   ensureDetectorIsLinked,
-  filterByObjectType,
   openViewEventsFlyout,
 } from '../../../../utils/helpers';
 import {
@@ -22,7 +19,6 @@ import {
 } from '../../../../utils/constants';
 
 describe('View anomaly events in flyout', () => {
-  const commonUI = new CommonUI(cy);
   const indexName = 'ad-vis-augmenter-sample-index';
   const indexPatternName = 'ad-vis-augmenter-sample-*';
   const dashboardName = 'AD Vis Augmenter Dashboard';
@@ -96,7 +92,6 @@ describe('View anomaly events in flyout', () => {
     cy.getElementByTestId('eventVis');
     cy.getElementByTestId('timelineVis');
     cy.getElementByTestId('pluginResourceDescription');
-    // cy.contains(detectorName);
     cy.getElementByTestId('pluginResourceDescription').within(() => {
       cy.contains(detectorName);
       cy.get('.euiLink');

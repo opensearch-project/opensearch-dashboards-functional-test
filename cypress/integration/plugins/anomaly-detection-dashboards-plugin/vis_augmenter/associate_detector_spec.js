@@ -142,7 +142,4 @@ describe('Anomaly detection integration with vis augmenter', () => {
     cy.visitDashboard(dashboardName);
     cy.getElementByTestId('errorToastMessage').should('not.exist');
   });
-
-  // TODO: add test such that events dont show up in vis edit flow. May be part of core test suite,
-  // but would need to ensure plugin is installed and any mock saved objs are valid...
 });
