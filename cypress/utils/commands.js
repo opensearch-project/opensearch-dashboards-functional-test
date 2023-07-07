@@ -46,7 +46,15 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
-    newOptions.qs = { security_tenant: CURRENT_TENANT.defaultTenant };
+    newOptions.qs = {
+      ...newOptions.qs,
+      security_tenant: CURRENT_TENANT.defaultTenant,
+    };
+
+    if (newOptions.excludeTenant) {
+      delete newOptions.qs.security_tenant;
+    }
+
     if (waitForGetTenant) {
       cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
       orig(url, newOptions);
@@ -59,6 +67,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
     orig(url, options);
   }
 });
+
 
 /**
  * Overwrite request command to support authentication similar to visit.
