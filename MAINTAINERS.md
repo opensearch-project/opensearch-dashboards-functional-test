@@ -1,77 +1,30 @@
-- [Overview](#overview)
-- [Current Maintainers](#current-maintainers)
-- [Maintainer Responsibilities](#maintainer-responsibilities)
-  - [Uphold Code of Conduct](#uphold-code-of-conduct)
-  - [Prioritize Security](#prioritize-security)
-  - [Review Pull Requests](#review-pull-requests)
-  - [Triage Open Issues](#triage-open-issues)
-  - [Be Responsive](#be-responsive)
-  - [Maintain Overall Health of the Repo](#maintain-overall-health-of-the-repo)
-  - [Use Semver](#use-semver)
-  - [Release Frequently](#release-frequently)
-  - [Promote Other Maintainers](#promote-other-maintainers)
-  - [Describe the Repo](#describe-the-repo)
-
 ## Overview
 
-This document explains who the maintainers are (see below), what they do in this repo, and how they should be doing it. If you're interested in contributing, see [CONTRIBUTING](CONTRIBUTING.md).
+This document contains a list of maintainers in this repo. See [opensearch-project/.github/RESPONSIBILITIES.md](https://github.com/opensearch-project/.github/blob/main/RESPONSIBILITIES.md#maintainer-responsibilities) that explains what the role of maintainer means, what maintainers do in this and other repos, and how they should be doing it. If you're interested in contributing, and becoming a maintainer, see [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Current Maintainers
 
-| Maintainer               | GitHub ID                                        | Affiliation |
-| ------------------------ | ------------------------------------------------ | ----------- |
-| Tianle Huang             | [tianleh](https://github.com/tianleh)            | Amazon      |
-| Kawika Avilla            | [kavilla](https://github.com/kavilla)            | Amazon      |
-| Tyler Ohlsen             | [ohltyler](https://github.com/ohltyler)          | Amazon      |
-| Cong Wang                | [CCongWang](https://github.com/CCongWang)        | Amazon      |
-| David Cui                | [davidcui1225](https://github.com/davidcui1225)  | Amazon      |
+| Maintainer        | GitHub ID                                           | Affiliation |
+|-------------------| --------------------------------------------------- | ----------- |
+| Tianle Huang      | [tianleh](https://github.com/tianleh)               | Amazon      |
+| Kawika Avilla     | [kavilla](https://github.com/kavilla)               | Amazon      |
+| Tyler Ohlsen      | [ohltyler](https://github.com/ohltyler)             | Amazon      |
+| Cong Wang         | [CCongWang](https://github.com/CCongWang)           | Amazon      |
+| Ashwin P Chandran | [ashwin-pc](https://github.com/ashwin-pc)           | Amazon      |
+| Peter Zhu         | [peterzhuamazon](https://github.com/peterzhuamazon) | Amazon      |
+| Anan Zhuang       | [ananzh](https://github.com/ananzh)                 | Amazon      |
+| Prudhvi Godithi   | [prudhvigodithi](https://github.com/prudhvigodithi) | Amazon      |
+| Xuesong Luo       | [xluo-aws](https://github.com/xluo-aws)             | Amazon      |
+| Hailong Cui       | [Hailong-am](https://github.com/Hailong-am)         | Amazon      |
+| Zhou Su           | [SuZhou-Joe](https://github.com/SuZhou-Joe)         | Amazon      |
+| Yulong Ruan       | [ruanyl](https://github.com/ruanyl)                 | Amazon      |
+| Lin Wang          | [wanglam](https://github.com/wanglam)               | Amazon      |
+| Tianyu Gao        | [raintygao](https://github.com/raintygao)           | Amazon      |
 
-## Maintainer Responsibilities
+## Emeritus
 
-Maintainers are active and visible members of the community, and have [maintain-level permissions on a repository](https://docs.github.com/en/organizations/managing-access-to-your-organizations-repositories/repository-permission-levels-for-an-organization). Use those privileges to serve the community and evolve code as follows.
-
-### Uphold Code of Conduct
-
-Model the behavior set forward by the [Code of Conduct](CODE_OF_CONDUCT.md) and raise any violations to other maintainers and admins.
-
-### Prioritize Security
-
-Security is your number one priority. Maintainer's Github keys must be password protected securely and any reported security vulnerabilities are addressed before features or bugs.
-
-Note that this repository is monitored and supported 24/7 by Amazon Security, see [Reporting a Vulnerability](SECURITY.md) for details.
-
-### Review Pull Requests
-
-Review pull requests regularly, comment, suggest, reject, merge and close. Accept only high quality pull-requests. Provide code reviews and guidance on incomming pull requests. Don't let PRs be stale and do your best to be helpful to contributors.
-
-### Triage Open Issues
-
-Manage labels, review issues regularly, and triage by labelling them.
-
-All repositories in this organization have a standard set of labels, including `bug`, `documentation`, `duplicate`, `enhancement`, `good first issue`, `help wanted`, `blocker`, `invalid`, `question`, `wontfix`, and `untriaged`, along with release labels, such as `v1.0.0`, `v1.1.0`, `v2.0.0`, `patch`, and `backport`.
-
-Use labels to target an issue or a PR for a given release, add `help wanted` to good issues for new community members, and `blocker` for issues that scare you or need immediate attention. Request for more information from a submitter if an issue is not clear. Create new labels as needed by the project.
-
-### Be Responsive
-
-Respond to enhancement requests, and forum posts. Allocate time to reviewing and commenting on issues and conversations as they come in.
-
-### Maintain Overall Health of the Repo
-
-Keep the `main` branch at production quality at all times. Backport features as needed. Cut release branches and tags to enable future patches.
-
-### Use Semver
-
-Use and enforce [semantic versioning](https://semver.org/) and do not let breaking changes be made outside of major releases.
-
-### Release Frequently
-
-Make frequent project releases to the community.
-
-### Promote Other Maintainers
-
-Assist, add, and remove [MAINTAINERS](MAINTAINERS.md). Exercise good judgement, and propose high quality contributors to become co-maintainers.
-
-### Describe the Repo
-
-Make sure the repo has a well-written, accurate, and complete description. See [opensearch-project/.github#38](https://github.com/opensearch-project/.github/issues/38) for some helpful tips to describe your repo.
+| Maintainer     | GitHub ID                                         | Affiliation |
+| -------------- | ------------------------------------------------- | ----------- |
+| David Cui      | [davidcui1225](https://github.com/davidcui1225)   | Amazon      |
+| Aviv Benchorin | [AvivBenchorin](https://github.com/AvivBenchorin) | Amazon      |
+| Manideep Pabba | [mpabba3003](https://github.com/mpabba3003)       | Amazon      |
