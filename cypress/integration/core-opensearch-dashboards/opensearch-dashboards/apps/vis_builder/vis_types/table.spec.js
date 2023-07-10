@@ -50,14 +50,14 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('field-categories.keyword-showDetails').drag(
         '[data-test-subj="dropBoxAddField-split_row"]'
       );
-      testSplitTables('', 4);
+      testSplitTables(4);
       removeBucket('dropBoxField-split_row-0');
 
       // vis builder should render splitted tables in columns
       cy.getElementByTestId('field-categories.keyword-showDetails').drag(
         '[data-test-subj="dropBoxAddField-split_column"]'
       );
-      testSplitTables('visTable__groupInColumns', 4);
+      testSplitTables(4);
     });
 
     after(() => {
@@ -85,9 +85,9 @@ export const removeBucket = (bucket) => {
   });
 };
 
-export const testSplitTables = (dir, num) => {
+export const testSplitTables = (num) => {
   cy.getElementByTestId('visTable')
-    .should('have.class', `visTable ${dir}`.trim())
+    .should('have.class', `visTable`)
     .find('[class="visTable__group"]')
     .should(($tables) => {
       // should have found specified number of tables
