@@ -5,43 +5,12 @@
 * SPDX-License-Identifier: Apache-2.0
 
 */
-import { CURRENT_TENANT } from '../../../utils/commands';
-import tenantDescription from '../../../fixtures/plugins/security-dashboards-plugin/tenants/testTenant.json';
 
-const tenantName = 'test';
+import { CURRENT_TENANT } from '../../../utils/commands';
+import { switchTenantTo } from './switch_tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
-    before(() => {
-      cy.server();
-      cy.createTenant(tenantName, tenantDescription);
-
-      try {
-        cy.createIndexPattern(
-          'index-pattern1',
-          {
-            title: 's*',
-            timeFieldName: 'timestamp',
-          },
-          indexPatternGlobalTenantHeaderSetUp
-        );
-      } catch (error) {
-        // Ignore
-      }
-      try {
-        cy.createIndexPattern(
-          'index-pattern2',
-          {
-            title: 'se*',
-            timeFieldName: 'timestamp',
-          },
-          indexPatternPrivateTenantHeaderSetUp
-        );
-      } catch (error) {
-        // Ignore
-      }
-    });
-
     it('Tests that when the short URL is copied and pasted, it will route correctly with the right tenant', function () {
       cy.visit('/app/dashboards#create', {
         excludeTenant: true,
@@ -62,7 +31,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.getElementByTestId('dashboardSaveMenuItem').click();
 
       const randomNumber = Cypress._.random(0, 1e6);
-      const dashboardName = 'Cypress test: My dashboard - ' + randomNumber;
+      const dashboardName = 'Cypress dashboard - ' + randomNumber;
       cy.getElementByTestId('savedObjectTitle').type(dashboardName);
 
       cy.intercept({
@@ -71,6 +40,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       }).as('waitForReloadingDashboard');
       cy.getElementByTestId('confirmSaveSavedObjectButton').click();
       cy.wait('@waitForReloadingDashboard');
+      cy.wait(2000);
 
       // 2. Open top share navigation to access copy short url
       cy.get('[data-test-subj="shareTopNavButton"]').click();
@@ -83,28 +53,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.url().should('not.contain', 'security_tenant');
       cy.getElementByTestId('createShortUrl').click();
       cy.wait('@getShortUrl');
-
-      function switchTenantTo(newTenant) {
-        cy.getElementByTestId('account-popover').click();
-        cy.getElementByTestId('switch-tenants').click();
-        cy.get('.euiRadio__label[for="' + newTenant + '"]').click();
-        cy.intercept({
-          method: 'POST',
-          url: '/api/v1/multitenancy/tenant',
-        }).as('waitForUpdatingTenants');
-
-        cy.getElementByTestId('tenant-switch-modal')
-          .find('[data-test-subj="confirm"]')
-          .click();
-
-        cy.wait('@waitForUpdatingTenants');
-        cy.intercept({
-          method: 'GET',
-          url: '/api/v1/auth/dashboardsinfo',
-        }).as('waitForReloadAfterTenantSwitch');
-        cy.wait('@waitForReloadAfterTenantSwitch');
-        cy.wait('@waitForReloadAfterTenantSwitch');
-      }
 
       //4. Switch tenant & visit shortURL link to ensure tenant from short URL is retained
       cy.get('[data-test-subj="copyShareUrlButton"]')
