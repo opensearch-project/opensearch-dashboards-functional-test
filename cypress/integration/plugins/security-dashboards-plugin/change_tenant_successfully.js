@@ -13,7 +13,7 @@ import { switchTenantTo } from './switch_tenant';
 const tenantName = 'tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
-  describe('Switch tenants when visiting copyed links: ', () => {
+  describe('Switch tenants when visiting copied links: ', () => {
     before(() => {
       cy.server();
 
