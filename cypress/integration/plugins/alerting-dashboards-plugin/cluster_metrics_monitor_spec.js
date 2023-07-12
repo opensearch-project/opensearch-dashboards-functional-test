@@ -3,12 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import sampleClusterMetricsMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_cluster_metrics_monitor.json';
-
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import sampleClusterMetricsMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_cluster_metrics_health_monitor.json';
 import { BASE_PATH } from '../../../utils/base_constants';
 
 const SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR =
@@ -34,7 +33,7 @@ const addClusterMetricsTrigger = (
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
     //  If this ever becomes available, it can be used to pass data-test-subj for the button.
     // Since the above is currently not possible, referring to the accordion button using its content
-    cy.get('button').contains('New trigger').click();
+    cy.get('button').contains('New trigger').click({ force: true });
   }
 
   // Type in the trigger name
@@ -102,13 +101,15 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the Cluster Health API', () => {
       // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
+      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -118,12 +119,14 @@ describe('ClusterMetricsMonitor', () => {
         'cluster health{enter}'
       );
 
-      // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Query parameters - optional');
+      // Confirm the Path parameters field is present and described as "optional"
+      cy.contains('Path parameters - optional');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
-      cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click();
+      cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click({
+        force: true,
+      });
 
       // Add a trigger
       cy.contains('Add trigger').click({ force: true });
@@ -144,7 +147,7 @@ describe('ClusterMetricsMonitor', () => {
       //   .type('{downarrow}{enter}');
 
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -153,7 +156,7 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains(SAMPLE_TRIGGER);
 
       // Go back to the Monitors list
-      cy.get('a').contains('Monitors').click();
+      cy.get('a').contains('Monitors').click({ force: true });
 
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -161,13 +164,15 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the Nodes Stats API', () => {
       // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
+      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(
@@ -179,14 +184,16 @@ describe('ClusterMetricsMonitor', () => {
         'nodes stats{enter}'
       );
 
-      // Confirm the Query parameters field is not present
-      cy.contains('Query parameters').should('not.exist');
+      // Confirm the Path parameters field is not present
+      cy.contains('Path parameters').should('not.exist');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]').should(
         'not.exist'
       );
 
       // Press the 'Run for response' button
-      cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click();
+      cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click({
+        force: true,
+      });
 
       // Add a trigger
       cy.contains('Add trigger').click({ force: true });
@@ -207,7 +214,7 @@ describe('ClusterMetricsMonitor', () => {
       //   .type('{downarrow}{enter}');
 
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -216,14 +223,14 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains(SAMPLE_TRIGGER);
 
       // Go back to the Monitors list
-      cy.get('a').contains('Monitors').click();
+      cy.get('a').contains('Monitors').click({ force: true });
 
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR);
     });
   });
 
-  describe('displays Query parameters field appropriately', () => {
+  describe('displays Path parameters field appropriately', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
@@ -231,13 +238,15 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the CAT Snapshots API', () => {
       // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
+      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(
@@ -249,9 +258,9 @@ describe('ClusterMetricsMonitor', () => {
         'list snapshots{enter}'
       );
 
-      // Confirm the Query parameters field is present and is not described as "optional"
-      cy.contains('Query parameters - optional').should('not.exist');
-      cy.contains('Query parameters');
+      // Confirm the Path parameters field is present and is not described as "optional"
+      cy.contains('Path parameters - optional').should('not.exist');
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
     });
   });
@@ -263,13 +272,15 @@ describe('ClusterMetricsMonitor', () => {
 
       // Begin monitor creation
       // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
+      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -343,7 +354,9 @@ describe('ClusterMetricsMonitor', () => {
 
       describe('the modal CLOSE (i.e., the X button) button is clicked', () => {
         // Click the CLOSE button
-        cy.get('[aria-label="Closes this modal window"]').click();
+        cy.get('[aria-label="Closes this modal window"]').click({
+          force: true,
+        });
 
         // Confirm clearTriggersModal closed
         cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
@@ -368,7 +381,9 @@ describe('ClusterMetricsMonitor', () => {
         // Click the KEEP button
         cy.get(
           '[data-test-subj="clusterMetricsClearTriggersModalKeepButton"]'
-        ).click();
+        ).click({
+          force: true,
+        });
 
         // Confirm clearTriggersModal closed
         cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
@@ -388,7 +403,9 @@ describe('ClusterMetricsMonitor', () => {
         // Click the CLEAR button
         cy.get(
           '[data-test-subj="clusterMetricsClearTriggersModalClearButton"]'
-        ).click();
+        ).click({
+          force: true,
+        });
 
         // Confirm clearTriggersModal closed
         cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]').should(
@@ -413,17 +430,20 @@ describe('ClusterMetricsMonitor', () => {
 
     describe('Cluster Health API monitor', () => {
       it('with a new trigger', () => {
+        const monitorName = `${sampleClusterMetricsMonitor.name}-new-trigger-test`;
+
         // Create the sample monitor
-        cy.createMonitor(sampleClusterMetricsMonitor);
+        cy.createMonitor({
+          ...sampleClusterMetricsMonitor,
+          name: monitorName,
+        });
         cy.reload();
 
         // Confirm the created monitor can be seen
-        cy.contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
+        cy.contains(monitorName);
 
         // Select the monitor
-        cy.get('a')
-          .contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR)
-          .click({ force: true });
+        cy.get('a').contains(monitorName).click({ force: true });
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });

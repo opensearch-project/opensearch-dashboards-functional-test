@@ -20,7 +20,8 @@ const TWENTY_SECONDS = 20000;
 
 describe('AcknowledgeAlertsModal', () => {
   before(() => {
-    // Delete any existing monitors
+    // Delete all existing monitors and alerts
+    cy.deleteAllAlerts();
     cy.deleteAllMonitors();
 
     // Load sample data
