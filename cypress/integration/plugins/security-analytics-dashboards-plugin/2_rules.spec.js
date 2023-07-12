@@ -14,13 +14,16 @@ const SAMPLE_RULE = {
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
   detection:
-    'selection:\n  Provider_Name: Service Control Manager\nEventID: 7045\nServiceName: ZzNetSvc\n{backspace}{backspace}condition: selection',
+    "condition: selection\nselection:\nProvider_Name|contains:\n- Service Control Manager\nEventID|contains:\n- '7045'\nServiceName|contains:\n- ZzNetSvc",
   detectionLine: [
-    'selection:',
-    'Provider_Name: Service Control Manager',
-    'EventID: 7045',
-    'ServiceName: ZzNetSvc',
     'condition: selection',
+    'selection:',
+    'Provider_Name|contains:',
+    '- Service Control Manager',
+    'EventID|contains:',
+    "- '7045'",
+    'ServiceName|contains:',
+    '- ZzNetSvc',
   ],
   severity: 'critical',
   tags: [
@@ -165,9 +168,10 @@ describe('Rules', () => {
         prePackaged: 'true',
       },
     }).as('rulesSearch');
+
     // Visit Rules page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-    cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+    cy.wait('@rulesSearch');
 
     // Check that correct page is showing
     cy.contains('Rules');
@@ -219,9 +223,25 @@ describe('Rules', () => {
       `${SAMPLE_RULE.author}{enter}`
     );
 
-    // Enter the detection
+    cy.get('[data-test-subj="detection-visual-editor-0"]').within(() => {
+      cy.getFieldByLabel('Name').type('selection');
+      cy.getFieldByLabel('Key').type('Provider_Name');
+      cy.getInputByPlaceholder('Value').type('Service Control Manager');
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-1"]').within(() => {
+        cy.getFieldByLabel('Key').type('EventID');
+        cy.getInputByPlaceholder('Value').type('7045');
+      });
+
+      cy.getButtonByText('Add map').click();
+      cy.get('[data-test-subj="Map-2"]').within(() => {
+        cy.getFieldByLabel('Key').type('ServiceName');
+        cy.getInputByPlaceholder('Value').type('ZzNetSvc');
+      });
+    });
     cy.get('[data-test-subj="rule_detection_field"] textarea').type(
-      SAMPLE_RULE.detection,
+      'selection',
       {
         force: true,
       }
@@ -237,15 +257,18 @@ describe('Rules', () => {
     );
 
     cy.intercept({
-      url: NODE_API.RULES_BASE,
-    }).as('getRules');
+      pathname: NODE_API.RULES_SEARCH,
+      query: {
+        prePackaged: 'true',
+      },
+    }).as('rulesSearch');
 
     // Click "create" button
     cy.get('[data-test-subj="submit_rule_form_button"]').click({
       force: true,
     });
 
-    cy.wait('@getRules');
+    cy.wait('@rulesSearch');
 
     cy.contains('Rules');
 
@@ -266,10 +289,7 @@ describe('Rules', () => {
       .click({ force: true })
       .then(() => {
         // Confirm arrival at detectors page
-        cy.get('.euiPopover__panel')
-          .find('button')
-          .contains('Edit')
-          .click({ force: true });
+        cy.get('.euiPopover__panel').find('button').contains('Edit').click();
       });
 
     const ruleNameSelector = '[data-test-subj="rule_name_field"]';
@@ -282,7 +302,7 @@ describe('Rules', () => {
     // Enter the log type
     const logSelector = '[data-test-subj="rule_type_dropdown"]';
     cy.get(logSelector).within(() =>
-      cy.get('.euiFormControlLayoutClearButton').click({ force: true })
+      cy.get('.euiFormControlLayoutClearButton').click()
     );
     SAMPLE_RULE.logType = 'dns';
     YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
@@ -302,12 +322,19 @@ describe('Rules', () => {
       SAMPLE_RULE.description
     );
 
+    cy.intercept({
+      pathname: NODE_API.RULES_SEARCH,
+      query: {
+        prePackaged: 'true',
+      },
+    }).as('rulesSearch');
+
     // Click "create" button
     cy.get('[data-test-subj="submit_rule_form_button"]').click({
       force: true,
     });
 
-    cy.contains('Rules');
+    cy.wait('@rulesSearch');
 
     checkRulesFlyout();
   });
@@ -337,12 +364,9 @@ describe('Rules', () => {
         cy.get('.euiPopover__panel')
           .find('button')
           .contains('Delete')
-          .click({ force: true })
+          .click()
           .then(() =>
-            cy
-              .get('.euiModalFooter > .euiButton')
-              .contains('Delete')
-              .click({ force: true })
+            cy.get('.euiModalFooter > .euiButton').contains('Delete').click()
           );
 
         cy.wait('@getCustomRules');

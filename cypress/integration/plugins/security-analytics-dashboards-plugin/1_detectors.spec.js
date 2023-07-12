@@ -5,7 +5,7 @@
 
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 import dns_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule.json';
-import { BACKEND_BASE_PATH } from '../../../utils/base_constants';
+import { BASE_PATH } from '../../../utils/base_constants';
 import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
@@ -163,7 +163,7 @@ describe('Detectors', () => {
       cy
         .request({
           method: 'POST',
-          url: `${BACKEND_BASE_PATH}${NODE_API.RULES_BASE}/_search?pre_packaged=true`,
+          url: `${BASE_PATH}${NODE_API.RULES_BASE}/_search?prePackaged=true`,
           headers: {
             'osd-xsrf': true,
           },
