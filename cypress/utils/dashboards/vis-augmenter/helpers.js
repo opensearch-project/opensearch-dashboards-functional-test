@@ -290,9 +290,7 @@ export const bootstrapDashboard = (
 
   miscUtils.visitPage('app/dashboards');
 
-  cy.getElementByTestId('createDashboardPromptButton')
-    .should('be.visible')
-    .click();
+  cy.getElementByTestId('newItemButton').should('be.visible').click();
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {

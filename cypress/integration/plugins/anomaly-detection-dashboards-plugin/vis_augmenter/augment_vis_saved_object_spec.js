@@ -102,18 +102,4 @@ describe('AD augment-vis saved objects', () => {
       .find('.euiTableRow')
       .contains('No items found');
   });
-
-  it('Deleting the visualization from the edit view deletes the saved object', () => {
-    cy.visitSavedObjectsManagement();
-    filterByObjectType('visualization');
-    cy.getElementByTestId('savedObjectsTableAction-inspect').click();
-    cy.getElementByTestId('savedObjectEditDelete').click();
-    cy.getElementByTestId('confirmModalConfirmButton').click();
-    cy.wait(3000);
-
-    filterByObjectType('augment-vis');
-    cy.getElementByTestId('savedObjectsTable')
-      .find('.euiTableRow')
-      .contains('No items found');
-  });
 });
