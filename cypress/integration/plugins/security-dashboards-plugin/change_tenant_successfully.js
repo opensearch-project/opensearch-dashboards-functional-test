@@ -1,10 +1,7 @@
 /*
-
-* Copyright OpenSearch Contributors
-
-* SPDX-License-Identifier: Apache-2.0
-
-*/
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 import { CURRENT_TENANT } from '../../../utils/commands';
 import tenantDescription from '../../../fixtures/plugins/security-dashboards-plugin/tenants/testTenant.json';
@@ -24,7 +21,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.visit('/app/home', {
         // Clean up
-        onBeforeLoad(win) {
+        onBeforeLoad() {
           window.localStorage.clear();
           window.sessionStorage.clear();
         },

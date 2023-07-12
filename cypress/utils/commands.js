@@ -68,7 +68,6 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
   }
 });
 
-
 /**
  * Overwrite request command to support authentication similar to visit.
  * The request function parameters can be url, or (method, url), or (method, url, body).
