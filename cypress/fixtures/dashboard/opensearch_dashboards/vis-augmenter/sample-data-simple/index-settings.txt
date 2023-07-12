@@ -1,1 +1,0 @@
-{"mappings":{"properties":{"value1":{"type":"integer"},"value2":{"type":"integer"},"value3":{"type":"integer"},"@timestamp":{"type":"date", "format":"epoch_millis"}}},"settings":{"index":{"number_of_shards":"1","number_of_replicas":"1"}}}
