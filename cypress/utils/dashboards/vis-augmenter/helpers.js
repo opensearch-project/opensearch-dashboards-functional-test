@@ -288,9 +288,7 @@ export const bootstrapDashboard = (
     sampleDataFilepath
   );
 
-  miscUtils.visitPage('app/dashboards');
-
-  cy.getElementByTestId('newItemButton').should('be.visible').click();
+  miscUtils.visitPage('app/dashboards#/create');
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {
