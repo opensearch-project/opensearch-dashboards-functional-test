@@ -101,7 +101,6 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the Cluster Health API', () => {
       // Confirm empty monitor list is loaded
-      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
       cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
@@ -164,7 +163,6 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the Nodes Stats API', () => {
       // Confirm empty monitor list is loaded
-      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
       cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
@@ -238,7 +236,6 @@ describe('ClusterMetricsMonitor', () => {
 
     it('for the CAT Snapshots API', () => {
       // Confirm empty monitor list is loaded
-      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
       cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
@@ -271,8 +268,6 @@ describe('ClusterMetricsMonitor', () => {
       cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
       // Begin monitor creation
-      // Confirm empty monitor list is loaded
-      // cy.contains('There are no existing monitors');
 
       // Go to create monitor page
       cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
