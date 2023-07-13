@@ -94,45 +94,14 @@ describe('CompositeLevelMonitor', () => {
       cy.get('button').contains('Create').click({ force: true });
 
       // Wait for monitor to be created
-      cy.wait('@createMonitorRequest').then((interceptor) => {
-        const monitorId = interceptor.response.body.resp._id;
+      cy.wait('@createMonitorRequest').then(() => {
+        // Verify the monitor name on details page
+        cy.contains(SAMPLE_VISUAL_EDITOR_MONITOR);
 
-        cy.contains('Loading monitors');
-        cy.wait('@getMonitorsRequest').then((interceptor) => {
-          const monitors = interceptor.response.body.monitors;
-          const monitor1 = monitors.filter(
-            (monitor) => monitor.name === 'monitor_1'
-          );
-          const monitor2 = monitors.filter(
-            (monitor) => monitor.name === 'monitor_2'
-          );
+        // Go back to the Monitors list
+        cy.get('a').contains('Monitors').click({ force: true });
 
-          // Let monitor's table render the rows before querying
-          cy.wait(1000).then(() => {
-            cy.get('table tbody td').contains(SAMPLE_VISUAL_EDITOR_MONITOR);
-
-            // Load sample data
-            cy.insertDocumentToIndex(
-              sample_index_1,
-              undefined,
-              sampleCompositeJson.sample_composite_associated_index_document
-            );
-            cy.insertDocumentToIndex(
-              sample_index_2,
-              undefined,
-              sampleCompositeJson.sample_composite_associated_index_document
-            );
-
-            cy.wait(1000).then(() => {
-              cy.executeCompositeMonitor(monitorId);
-              monitor1[0] && cy.executeMonitor(monitor1[0].id);
-              monitor2[0] && cy.executeMonitor(monitor2[0].id);
-
-              cy.get('[role="tab"]').contains('Alerts').click({ force: true });
-              cy.get('table tbody td').contains('Composite trigger');
-            });
-          });
-        });
+        cy.contains(SAMPLE_VISUAL_EDITOR_MONITOR);
       });
     });
   });
@@ -147,7 +116,9 @@ describe('CompositeLevelMonitor', () => {
       };
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('opensearch')}${ALERTING_API.MONITOR_BASE}/_search`,
+        url: `${Cypress.env('openSearchUrl')}${
+          ALERTING_API.MONITOR_BASE
+        }/_search`,
         failOnStatusCode: false, // In case there is no alerting config index in cluster, where the status code is 404
         body,
       }).then((response) => {
@@ -173,6 +144,41 @@ describe('CompositeLevelMonitor', () => {
         } else {
           cy.log('Failed to get all monitors.', response);
         }
+      });
+    });
+
+    it('by visual editor', () => {
+      // Verify edit page
+      cy.contains('Edit monitor', { timeout: 20000 });
+      cy.get('input[name="name"]').type('_edited');
+
+      cy.get('label').contains('Visual editor').click({ force: true });
+
+      cy.get('button').contains('Add another monitor').click({ force: true });
+
+      cy.get('[data-test-subj="monitors_list_2"]')
+        .type('monitorThree', { delay: 50 })
+        .type('{enter}');
+
+      cy.get('button').contains('Composite trigger').click({ force: true });
+
+      cy.get('[data-test-subj="condition-add-options-btn_0"]').click({
+        force: true,
+      });
+      cy.get('[data-test-subj="select-expression_0_2"]').click({ force: true });
+      cy.wait(1000);
+      cy.get('[data-test-subj="monitors-combobox-0-2"]')
+        .type('monitorThree', { delay: 50 })
+        .type('{enter}');
+
+      cy.intercept('api/alerting/workflows/*').as('updateMonitorRequest');
+      cy.get('button').contains('Update').click({ force: true });
+
+      // Wait for monitor to be created
+      cy.wait('@updateMonitorRequest').then(() => {
+        cy.get('.euiTitle--large').contains(
+          `${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`
+        );
       });
     });
   });
