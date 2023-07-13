@@ -58,7 +58,8 @@ export const deleteVisAugmenterData = (
 api/opensearch-dashboards/management/saved_objects/_find?perPage=5000&page=1&fields=id&type=config&type=url&type=index-pattern&type=query&type=dashboard&type=visualization&type=visualization-visbuilder&type=augment-vis&type=search&sortField=type`,
         'GET'
       ).then((response) => {
-        response.body.saved_objects?.forEach((obj) => {
+        if (!response.body.saved_objects) return;
+        response.body.saved_objects.forEach((obj) => {
           if (
             obj.type !== 'config' &&
             [
