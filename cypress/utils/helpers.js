@@ -4,3 +4,4 @@
  */
 
 export * from './plugins/anomaly-detection-dashboards-plugin/helpers';
+export * from './dashboards/vis-augmenter/helpers';
