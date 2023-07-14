@@ -46,13 +46,11 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
-    newOptions.qs = {
-      ...newOptions.qs,
-      security_tenant: CURRENT_TENANT.defaultTenant,
-    };
-
-    if (newOptions.excludeTenant) {
-      delete newOptions.qs.security_tenant;
+    if (!newOptions.excludeTenant) {
+      newOptions.qs = {
+        ...newOptions.qs,
+        security_tenant: CURRENT_TENANT.defaultTenant,
+      };
     }
 
     if (waitForGetTenant) {
