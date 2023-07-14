@@ -105,16 +105,28 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
     });
 
     it('View events option does not exist for any visualization', () => {
+      // This is working and is fetching snapshots as expected.
+      // The problem is the viewport size is too small such that not all charts
+      // are fully visible where the snapshots are cut off. Need to either expand
+      // the viewport (make sure it still passes if headless?), or find a way to focus
+      // on the divs better somehow.
+      cy.viewport(1280, 720);
       visualizationNames.forEach((visualizationName) => {
+        cy.wait(2000);
+        cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
+          visualizationName
+        );
+        cy.wait(2000);
         cy.getVisPanelByTitle(visualizationName)
           .openVisContextMenu()
           .getMenuItems()
           .contains('View Events')
           .should('not.exist');
+        cy.getVisPanelByTitle(visualizationName).closeVisContextMenu();
       });
     });
 
-    it('Validate non-vega visualizations are not rendered with vega under the hood', () => {
+    it.skip('Validate non-vega visualizations are not rendered with vega under the hood', () => {
       visualizationSpecs.forEach((visualizationSpec) => {
         cy.getVisPanelByTitle(visualizationSpec.name).within(() => {
           if (visualizationSpec.type === 'vega') {

@@ -19,6 +19,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
+import './commands';
 import '../utils/commands';
 import '../utils/dashboards/commands';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
