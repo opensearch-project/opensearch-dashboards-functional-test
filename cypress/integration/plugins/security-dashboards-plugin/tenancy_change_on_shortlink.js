@@ -40,7 +40,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.wait(2000);
 
       // 2. Open top share navigation to access copy short url
-      cy.get('[data-test-subj="shareTopNavButton"]').click();
+      cy.getElementByTestId('shareTopNavButton').click();
       cy.getElementByTestId('sharePanel-Permalinks').click();
 
       // 3. Create the short url, wait for response
@@ -52,7 +52,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.wait('@getShortUrl');
 
       //4. Switch tenant & visit shortURL link to ensure tenant from short URL is retained
-      cy.get('[data-test-subj="copyShareUrlButton"]')
+      cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
         .should('contain', '/goto/')
         .then((shortUrl) => {
