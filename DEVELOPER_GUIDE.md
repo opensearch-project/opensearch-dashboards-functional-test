@@ -129,7 +129,13 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
 
 [cypress-image-snapshot](https://github.com/jaredpalmer/cypress-image-snapshot) is a visual regression testing framework that can be used to persist snapshots & compare against them during test runs. This is very useful for checking elements that may not allow for easy validation via HTML elements, such as Vega visualizations which are a single black-box `canvas` element.
 
-When writing new tests, to take a snapshot, you can pass the flag `--env updateSnapshots=true` into the command. This will take snapshots and store them under the `snapshots/` directory. To do comparisons against the snapshots later on, simply run without the flag. For further details, see the GitHub repository linked above.
+Usage:
+
+```
+cy.get('<selector>').matchImageSnapshot('<snapshot-name>')
+```
+
+You use the same `matchImageSnapshot()` command to take new snapshots, or compare against existing ones. You can pass the flag `--env updateSnapshots=true` into the command to create/update them. They will be stored in the `snapshots/` directory. To do comparisons against existing snapshots later on, simply run without the flag. For further details, see the [GitHub repository](https://github.com/jaredpalmer/cypress-image-snapshot).
 
 ### Experimental Features
 
