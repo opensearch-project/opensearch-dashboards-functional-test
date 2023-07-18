@@ -24,7 +24,8 @@
     "lint": "eslint . --ext .js",
     "pkg-version": "./scripts/getpkgversion.sh",
     "generate:test-data": "node ./scripts/generate_data/index.js",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "preinstall": "npx npm-force-resolutions"
   },
   "repository": {
     "type": "git",
@@ -57,5 +58,9 @@
     "husky": "^6.0.0",
     "luxon": "^3.2.1",
     "mocha-junit-reporter": "^2.0.0"
+  },
+  "resolutions": {
+    "tough-cookie": "^4.1.3",
+    "optionator": "^0.9.3"
   }
 }
