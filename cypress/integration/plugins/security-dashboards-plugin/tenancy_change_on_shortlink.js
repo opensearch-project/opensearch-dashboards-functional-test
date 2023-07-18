@@ -111,7 +111,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
           cy.url({ timeout: 10000 }).should(
             'contain',
-            'security_tenant=__user__'
+            'security_tenant=private'
           );
           cy.getElementByTestId('breadcrumb last').should(
             'contain.text',
