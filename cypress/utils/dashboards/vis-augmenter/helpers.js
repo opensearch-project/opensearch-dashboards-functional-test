@@ -320,3 +320,16 @@ export const filterByObjectType = (type) => {
     .click({ force: true });
   cy.wait(3000);
 };
+
+export const validateSnapshot = (visualizationName) => {
+  cy.getVisPanelByTitle(visualizationName)
+    .openVisContextMenu()
+    .clickVisPanelMenuItem('Maximize panel');
+  cy.wait(1000);
+  cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
+    visualizationName
+  );
+  cy.getVisPanelByTitle(visualizationName)
+    .openVisContextMenu()
+    .clickVisPanelMenuItem('Minimize');
+};

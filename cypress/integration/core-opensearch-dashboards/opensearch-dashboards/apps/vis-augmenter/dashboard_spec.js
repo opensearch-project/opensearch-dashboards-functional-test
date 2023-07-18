@@ -11,6 +11,7 @@ import {
 import {
   deleteVisAugmenterData,
   bootstrapDashboard,
+  validateSnapshot,
 } from '../../../../../utils/dashboards/vis-augmenter/helpers';
 
 describe('Vis augmenter - existing dashboards work as expected', () => {
@@ -89,6 +90,8 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
         dashboardName,
         visualizationSpecs
       );
+      // Setting viewport so the snapshots in the tests are consistent
+      cy.viewport(1280, 720);
     });
 
     beforeEach(() => {
@@ -105,18 +108,14 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
     });
 
     it('View events option does not exist for any visualization', () => {
-      // This is working and is fetching snapshots as expected.
-      // The problem is the viewport size is too small such that not all charts
-      // are fully visible where the snapshots are cut off. Need to either expand
-      // the viewport (make sure it still passes if headless?), or find a way to focus
-      // on the divs better somehow.
-      cy.viewport(1280, 720);
+      // Change date range to 7 days so when we do chart snapshot comparisons
+      // the data is aggregated consistently to prevent flakiness
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      cy.getElementByTestId('superDatePickerCommonlyUsed_Last_7 days').click();
+      cy.getElementByTestId('querySubmitButton').click();
+      cy.wait(5000);
       visualizationNames.forEach((visualizationName) => {
-        cy.wait(2000);
-        cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
-          visualizationName
-        );
-        cy.wait(2000);
+        validateSnapshot(visualizationName);
         cy.getVisPanelByTitle(visualizationName)
           .openVisContextMenu()
           .getMenuItems()
