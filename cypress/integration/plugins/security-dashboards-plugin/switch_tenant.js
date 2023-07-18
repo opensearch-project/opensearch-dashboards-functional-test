@@ -15,14 +15,7 @@ export function switchTenantTo(newTenant) {
     url: '/api/v1/configuration/account',
   }).as('waitForAccountInfo');
 
-
   cy.getElementByTestId('switch-tenants').click();
-
-  // Make sure the switch tenant panel has finished loading.
-  // Otherwise, the tenant radio buttons may till be disabled and the click won't have any effect.
-  cy.wait('@waitForDashboardsInfo')
-  cy.wait('@waitForAccountInfo')
-
   cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should('be.enabled');
   cy.get('.euiRadio__label[for="' + newTenant + '"]').click(); 
 
@@ -40,5 +33,4 @@ export function switchTenantTo(newTenant) {
   // @waitForReloadAfterTenantSwitch should be triggered twice
   cy.wait('@waitForDashboardsInfo');
   cy.wait('@waitForDashboardsInfo');
-
 }
