@@ -87,6 +87,20 @@ declare namespace Cypress {
       header: string,
     ): Chainable<S>;
 
+    /**
+     * Adds a dashboard
+     * @example
+     * cy.createDashboard({ title: 'My dashboard'})
+     */
+    createDashboard<S = any>(
+      attributes: {
+        title: string;
+        [key: string]: any;
+      },
+      headers?: {
+        [key: string]: any;
+      }
+    ): Chainable<S>;
 
     /**
      * Changes the Default tenant for the domain.

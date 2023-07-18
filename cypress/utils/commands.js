@@ -337,7 +337,8 @@ Cypress.Commands.add('deleteSavedObjectByType', (type, search) => {
 Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
   const url = `${
     Cypress.config().baseUrl
-  }/api/saved_objects/index-pattern/${id}`;
+  }/api/saved_objects/index-pattern/${id}?overwrite=true`; // When running tests locally if ran multiple times the tests fail. The fix is to set Overwrite to true.
+  
 
   cy.request({
     method: 'POST',
@@ -350,6 +351,25 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
     body: JSON.stringify({
       attributes,
       references: [],
+    }),
+  });
+});
+
+Cypress.Commands.add('createDashboard', (attributes= {}, headers = {}) => {
+  const url = `${
+    Cypress.config().baseUrl
+  }/api/saved_objects/dashboard`;
+
+  cy.request({
+    method: 'POST',
+    url,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+      ...headers,
+    },
+    body: JSON.stringify({
+      attributes,
     }),
   });
 });
