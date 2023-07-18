@@ -11,7 +11,8 @@ import {
 import {
   deleteVisAugmenterData,
   bootstrapDashboard,
-  validateSnapshot,
+  validateVisSnapshot,
+  setDateRangeTo7Days,
 } from '../../../../../utils/dashboards/vis-augmenter/helpers';
 
 describe('Vis augmenter - existing dashboards work as expected', () => {
@@ -108,14 +109,19 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
     });
 
     it('View events option does not exist for any visualization', () => {
-      // Change date range to 7 days so when we do chart snapshot comparisons
-      // the data is aggregated consistently to prevent flakiness
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
-      cy.getElementByTestId('superDatePickerCommonlyUsed_Last_7 days').click();
-      cy.getElementByTestId('querySubmitButton').click();
-      cy.wait(5000);
+      // Change date range to 7 days so there is less variability in charts
+      // which can cause flakiness (e.g., chart snapshot comparisons).
+      setDateRangeTo7Days();
+
       visualizationNames.forEach((visualizationName) => {
-        validateSnapshot(visualizationName);
+        // Validating after making each vis full-screen. This is because if there
+        // is a lot of visualizations on the screen, not all may be visible at the
+        // same time on the dashboard - some may require scrolling to be in view.
+        validateVisSnapshot(
+          visualizationName,
+          `${visualizationName}-last-7-days`,
+          true
+        );
         cy.getVisPanelByTitle(visualizationName)
           .openVisContextMenu()
           .getMenuItems()
@@ -125,7 +131,7 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
       });
     });
 
-    it.skip('Validate non-vega visualizations are not rendered with vega under the hood', () => {
+    it('Validate non-vega visualizations are not rendered with vega under the hood', () => {
       visualizationSpecs.forEach((visualizationSpec) => {
         cy.getVisPanelByTitle(visualizationSpec.name).within(() => {
           if (visualizationSpec.type === 'vega') {

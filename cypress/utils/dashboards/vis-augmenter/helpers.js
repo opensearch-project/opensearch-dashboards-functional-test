@@ -321,15 +321,34 @@ export const filterByObjectType = (type) => {
   cy.wait(3000);
 };
 
-export const validateSnapshot = (visualizationName) => {
-  cy.getVisPanelByTitle(visualizationName)
-    .openVisContextMenu()
-    .clickVisPanelMenuItem('Maximize panel');
-  cy.wait(1000);
-  cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
-    visualizationName
-  );
-  cy.getVisPanelByTitle(visualizationName)
-    .openVisContextMenu()
-    .clickVisPanelMenuItem('Minimize');
+// Assumes runner is on dashboard
+export const validateVisSnapshot = (
+  visualizationName,
+  snapshotName,
+  maximizePanel = false
+) => {
+  if (maximizePanel) {
+    cy.getVisPanelByTitle(visualizationName)
+      .openVisContextMenu()
+      .clickVisPanelMenuItem('Maximize panel');
+    cy.wait(1000);
+    cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
+      snapshotName
+    );
+    cy.getVisPanelByTitle(visualizationName)
+      .openVisContextMenu()
+      .clickVisPanelMenuItem('Minimize');
+  } else {
+    cy.get(`[data-title="${visualizationName}"]`).matchImageSnapshot(
+      snapshotName
+    );
+  }
+};
+
+// Assumes runner is on dashboard
+export const setDateRangeTo7Days = () => {
+  cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+  cy.getElementByTestId('superDatePickerCommonlyUsed_Last_7 days').click();
+  cy.getElementByTestId('querySubmitButton').click();
+  cy.wait(2000);
 };
