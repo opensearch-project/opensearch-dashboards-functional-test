@@ -16,6 +16,7 @@ export function switchTenantTo(newTenant) {
   }).as('waitForAccountInfo');
 
   cy.getElementByTestId('switch-tenants').click();
+  //should ensures the dialog window is fully loaded and the radios can be selected.
   cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should('be.enabled');
   cy.get('.euiRadio__label[for="' + newTenant + '"]').click(); 
 
