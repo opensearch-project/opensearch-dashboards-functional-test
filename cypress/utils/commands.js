@@ -165,6 +165,25 @@ Cypress.Commands.add('getElementByTestId', (testId, options = {}) => {
   return cy.get(`[data-test-subj="${testId}"]`, options);
 });
 
+Cypress.Commands.add('getElementsByTestIds', (testIds, options = {}) => {
+  const selectors = [testIds]
+    .flat(Infinity)
+    .map((testId) => `[data-test-subj="${testId}"]`);
+  return cy.get(selectors.join(','), options);
+});
+
+Cypress.Commands.add(
+  'whenTestIdNotFound',
+  (testIds, callbackFn, options = {}) => {
+    const selectors = [testIds]
+      .flat(Infinity)
+      .map((testId) => `[data-test-subj="${testId}"]`);
+    cy.get('body', options).then(($body) => {
+      if ($body.find(selectors.join(',')).length === 0) callbackFn();
+    });
+  }
+);
+
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
   if (policyID != null) {
