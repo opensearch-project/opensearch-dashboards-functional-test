@@ -11,9 +11,20 @@ import {
   NOTIFICATIONS_PLUGIN_NAME,
 } from '../../../utils/constants';
 
+import testSslSmtpSender from '../../../fixtures/plugins/notifications-dashboards/test_ssl_smtp_sender.json';
+import testTlsSmtpSender from '../../../fixtures/plugins/notifications-dashboards/test_tls_smtp_sender.json';
+import testSesSender from '../../../fixtures/plugins/notifications-dashboards/test_ses_sender.json';
+import testEmailRecipientGroup from '../../../fixtures/plugins/notifications-dashboards/test_email_recipient_group.json';
+
 describe('Test create email senders', () => {
+  before(() => {
+    // Delete all Notification configs
+    cy.deleteAllConfigs();
+  });
+
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
+    cy.reload(true);
     cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
@@ -62,7 +73,7 @@ describe('Test create email senders', () => {
 
     cy.get('.euiButton__text').contains('Create').click({ force: true });
     cy.contains('successfully created.').should('exist');
-    cy.contains('test-ssl-sender').should('exist');
+    cy.contains('test-tls-sender').should('exist');
   });
 
   it('creates SES sender', () => {
@@ -89,8 +100,18 @@ describe('Test create email senders', () => {
 });
 
 describe('Test edit senders', () => {
+  before(() => {
+    // Delete all Notification configs
+    cy.deleteAllConfigs();
+
+    cy.createConfig(testSslSmtpSender);
+    cy.createConfig(testTlsSmtpSender);
+    cy.createConfig(testSesSender);
+  });
+
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
+    cy.reload(true);
     cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
@@ -102,7 +123,7 @@ describe('Test edit senders', () => {
       force: true,
     });
     cy.get('[data-test-subj="create-sender-form-email-input"]').type(
-      '{selectall}{backspace}edited.test@email.com'
+      '{selectall}{backspace}editedtest@email.com'
     );
     cy.wait(NOTIFICATIONS_DELAY);
 
@@ -111,12 +132,8 @@ describe('Test edit senders', () => {
   });
 
   it('edits ses sender region', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
-      .last()
-      .click({ force: true }); // ses sender
-    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click({
-      force: true,
-    });
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(2).click(); // ses sender
+    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click();
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       '{selectall}{backspace}us-west-2'
     );
@@ -128,15 +145,23 @@ describe('Test edit senders', () => {
 });
 
 describe('Test delete senders', () => {
+  before(() => {
+    // Delete all Notification configs
+    cy.deleteAllConfigs();
+
+    cy.createConfig(testSslSmtpSender);
+    cy.createConfig(testTlsSmtpSender);
+    cy.createConfig(testSesSender);
+  });
+
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-senders`);
+    cy.reload(true);
     cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
   it('deletes smtp senders', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
-      .eq(0)
-      .click({ force: true }); // ssl sender
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click(); // ssl sender
     cy.get('[data-test-subj="senders-table-delete-button"]').click({
       force: true,
     });
@@ -149,9 +174,7 @@ describe('Test delete senders', () => {
   });
 
   it('deletes ses senders', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
-      .last()
-      .click({ force: true }); // ses sender
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click(); // ses sender
     cy.get('[data-test-subj="ses-senders-table-delete-button"]').click({
       force: true,
     });
@@ -168,10 +191,16 @@ describe('Test delete senders', () => {
 
 describe('Test create, edit and delete recipient group', () => {
   beforeEach(() => {
+    // Delete all Notification configs
+    cy.deleteAllConfigs();
+
+    cy.createConfig(testEmailRecipientGroup);
+
     cy.visit(
       `${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`
     );
-    cy.wait(NOTIFICATIONS_DELAY * 5);
+    cy.reload(true);
+    cy.wait(NOTIFICATIONS_DELAY * 3);
   });
 
   it('creates recipient group', () => {

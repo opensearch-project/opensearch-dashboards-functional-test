@@ -11,7 +11,19 @@ import {
   NOTIFICATIONS_PLUGIN_NAME,
 } from '../../../utils/constants';
 
+import testSlackChannel from '../../../fixtures/plugins/notifications-dashboards/test_slack_channel.json';
+import testChimeChannel from '../../../fixtures/plugins/notifications-dashboards/test_chime_channel.json';
+import testWebhookChannel from '../../../fixtures/plugins/notifications-dashboards/test_webhook_channel.json';
+import testTlsSmtpSender from '../../../fixtures/plugins/notifications-dashboards/test_tls_smtp_sender.json';
+
 describe('Test create channels', () => {
+  before(() => {
+    // Delete all Notification configs
+    cy.deleteAllNotificationConfigs();
+
+    cy.createConfig(testTlsSmtpSender);
+  });
+
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#create-channel`);
     cy.wait(NOTIFICATIONS_DELAY * 5);
@@ -62,7 +74,7 @@ describe('Test create channels', () => {
     cy.contains('successfully created.').should('exist');
   });
 
-  it('creates a email channel', () => {
+  it('creates an email channel', () => {
     cy.get('[placeholder="Enter channel name"]').type('Test email channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
@@ -101,7 +113,7 @@ describe('Test create channels', () => {
     cy.contains('successfully created.').should('exist');
   });
 
-  it('creates a email channel with ses sender', () => {
+  it('creates an email channel with ses sender', () => {
     cy.get('[placeholder="Enter channel name"]').type(
       'Test email channel with ses'
     );
@@ -168,7 +180,7 @@ describe('Test create channels', () => {
     cy.contains('successfully created.').should('exist');
   });
 
-  it('creates a sns channel', () => {
+  it('creates an sns channel', () => {
     cy.get('[placeholder="Enter channel name"]').type('test-sns-channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
@@ -193,6 +205,17 @@ describe('Test create channels', () => {
 });
 
 describe('Test channels table', () => {
+  before(() => {
+    // Delete all Notification configs
+    cy.deleteAllConfigs();
+
+    // Create test channels
+    cy.createConfig(testSlackChannel);
+    cy.createConfig(testChimeChannel);
+    cy.createConfig(testWebhookChannel);
+    cy.createTestEmailChannel();
+  });
+
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#channels`);
     cy.wait(NOTIFICATIONS_DELAY * 5);
@@ -276,6 +299,9 @@ describe('Test channel details', () => {
     // cy.get(
     //   '[data-test-subj="create-channel-description-input"]'
     // ).type('{selectall}{backspace}Updated custom webhook description');
+    cy.get('[data-test-subj="create-channel-description-input"]').type(
+      '{selectall}{backspace}Updated custom webhook description'
+    );
     cy.get('.euiTextArea').type(
       '{selectall}{backspace}Updated custom webhook description'
     );
