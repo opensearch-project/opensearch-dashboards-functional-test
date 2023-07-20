@@ -19,7 +19,7 @@ import testEmailRecipientGroup from '../../../fixtures/plugins/notifications-das
 describe('Test create email senders', () => {
   before(() => {
     // Delete all Notification configs
-    cy.deleteAllConfigs();
+    cy.deleteAllNotificationConfigs();
   });
 
   beforeEach(() => {
@@ -102,11 +102,11 @@ describe('Test create email senders', () => {
 describe('Test edit senders', () => {
   before(() => {
     // Delete all Notification configs
-    cy.deleteAllConfigs();
+    cy.deleteAllNotificationConfigs();
 
-    cy.createConfig(testSslSmtpSender);
-    cy.createConfig(testTlsSmtpSender);
-    cy.createConfig(testSesSender);
+    cy.createNotificationConfig(testSslSmtpSender);
+    cy.createNotificationConfig(testTlsSmtpSender);
+    cy.createNotificationConfig(testSesSender);
   });
 
   beforeEach(() => {
@@ -143,11 +143,11 @@ describe('Test edit senders', () => {
 describe('Test delete senders', () => {
   before(() => {
     // Delete all Notification configs
-    cy.deleteAllConfigs();
+    cy.deleteAllNotificationConfigs();
 
-    cy.createConfig(testSslSmtpSender);
-    cy.createConfig(testTlsSmtpSender);
-    cy.createConfig(testSesSender);
+    cy.createNotificationConfig(testSslSmtpSender);
+    cy.createNotificationConfig(testTlsSmtpSender);
+    cy.createNotificationConfig(testSesSender);
   });
 
   beforeEach(() => {
@@ -184,9 +184,9 @@ describe('Test delete senders', () => {
 describe('Test create, edit and delete recipient group', () => {
   beforeEach(() => {
     // Delete all Notification configs
-    cy.deleteAllConfigs();
+    cy.deleteAllNotificationConfigs();
 
-    cy.createConfig(testEmailRecipientGroup);
+    cy.createNotificationConfig(testEmailRecipientGroup);
 
     cy.visit(
       `${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`

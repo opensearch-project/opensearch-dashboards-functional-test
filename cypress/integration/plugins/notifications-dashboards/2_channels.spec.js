@@ -21,7 +21,7 @@ describe('Test create channels', () => {
     // Delete all Notification configs
     cy.deleteAllNotificationConfigs();
 
-    cy.createConfig(testTlsSmtpSender);
+    cy.createNotificationConfig(testTlsSmtpSender);
   });
 
   beforeEach(() => {
@@ -193,12 +193,12 @@ describe('Test create channels', () => {
 describe('Test channels table', () => {
   before(() => {
     // Delete all Notification configs
-    cy.deleteAllConfigs();
+    cy.deleteAllNotificationConfigs();
 
     // Create test channels
-    cy.createConfig(testSlackChannel);
-    cy.createConfig(testChimeChannel);
-    cy.createConfig(testWebhookChannel);
+    cy.createNotificationConfig(testSlackChannel);
+    cy.createNotificationConfig(testChimeChannel);
+    cy.createNotificationConfig(testWebhookChannel);
     cy.createTestEmailChannel();
   });
 

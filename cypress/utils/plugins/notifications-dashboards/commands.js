@@ -26,7 +26,7 @@ Cypress.Commands.add('deleteAllNotificationConfigs', () => {
   });
 });
 
-Cypress.Commands.add('createConfig', (notificationConfigJSON) => {
+Cypress.Commands.add('createNotificationConfig', (notificationConfigJSON) => {
   cy.request(
     'POST',
     `${Cypress.env('openSearchUrl')}${API.CONFIGS_BASE}`,
@@ -35,6 +35,6 @@ Cypress.Commands.add('createConfig', (notificationConfigJSON) => {
 });
 
 Cypress.Commands.add('createTestEmailChannel', () => {
-  cy.createConfig(testTlsSmtpSender);
-  cy.createConfig(testSmtpEmailChannel);
+  cy.createNotificationConfig(testTlsSmtpSender);
+  cy.createNotificationConfig(testSmtpEmailChannel);
 });
