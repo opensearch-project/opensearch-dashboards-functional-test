@@ -1,38 +1,36 @@
 /*
-* Copyright OpenSearch Contributors
-* SPDX-License-Identifier: Apache-2.0
-*/
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
 import { CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
-import indexPatternGlobalTenantHeaderSetUp
-  from "../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternGlobalTenantHeader.json";
-import indexPatternPrivateTenantHeaderSetUp
-  from "../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternPrivateTenantHeader.json";
+import indexPatternGlobalTenantHeaderSetUp from '../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternGlobalTenantHeader.json';
+import indexPatternPrivateTenantHeaderSetUp from '../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternPrivateTenantHeader.json';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
-     before(() => {
-       cy.server();
+    before(() => {
+      cy.server();
 
-       cy.createIndexPattern(
-         'index-pattern1',
-         {
-           title: 's*',
-           timeFieldName: 'timestamp',
-         },
-         indexPatternGlobalTenantHeaderSetUp
-       );
+      cy.createIndexPattern(
+        'index-pattern1',
+        {
+          title: 's*',
+          timeFieldName: 'timestamp',
+        },
+        indexPatternGlobalTenantHeaderSetUp
+      );
 
-       cy.createIndexPattern(
-         'index-pattern2',
-         {
-           title: 'se*',
-           timeFieldName: 'timestamp',
-         },
-         indexPatternPrivateTenantHeaderSetUp
-       );
-     });
+      cy.createIndexPattern(
+        'index-pattern2',
+        {
+          title: 'se*',
+          timeFieldName: 'timestamp',
+        },
+        indexPatternPrivateTenantHeaderSetUp
+      );
+    });
 
     it('Tests that when the short URL is copied and pasted, it will route correctly with the right tenant', function () {
       const randomNumber = Cypress._.random(0, 1e6);
@@ -40,11 +38,14 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // We are programmatically creating a dashboard so that the test
       // always have the same view. An empty list would show the empty prompt.
       // Also, this saves us some typing, clicking and waiting in the test.
-      cy.createDashboard({
-        title: dashboardName
-      }, {
-        security_tenant: 'private'
-      })
+      cy.createDashboard(
+        {
+          title: dashboardName,
+        },
+        {
+          security_tenant: 'private',
+        }
+      );
 
       // When creating the shortUrl, we don't want to have the security_tenant
       // parameter in the url - otherwise it will be stored in the shortUrl
@@ -67,7 +68,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
             '__user__'
           );
         },
-      } );
+      });
       // Navigate to the Dashboards app
       cy.getElementByTestId('toggleNavButton').should('be.visible').click();
       // After clicking the navigation, the security_tenant parameter should be gone
@@ -76,7 +77,11 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // The test subj seems to replace spaces with a dash, so we convert the dashboard name here too.
       // Go to the dashboard we have created
       const selectorDashboardName = dashboardName.split(' ').join('-');
-      cy.getElementByTestId('dashboardListingTitleLink-' + selectorDashboardName).should('be.visible').click();
+      cy.getElementByTestId(
+        'dashboardListingTitleLink-' + selectorDashboardName
+      )
+        .should('be.visible')
+        .click();
 
       // Open top share navigation to access copy short url
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
@@ -89,7 +94,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.url().should('not.contain', 'security_tenant');
       cy.getElementByTestId('createShortUrl').click();
       cy.wait('@getShortUrl');
-
 
       //4. Switch tenant & visit shortURL link to ensure tenant from short URL is retained
       cy.get('[data-test-subj="copyShareUrlButton"]')
@@ -109,10 +113,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
             },
           });
 
-          cy.url({ timeout: 10000 }).should(
-            'contain',
-            'security_tenant='
-          );
+          cy.url({ timeout: 10000 }).should('contain', 'security_tenant=');
           cy.getElementByTestId('breadcrumb last').should(
             'contain.text',
             dashboardName
@@ -121,4 +122,3 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
   });
 }
-

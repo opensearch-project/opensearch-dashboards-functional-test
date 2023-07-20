@@ -6,7 +6,6 @@
 import { CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
 
-
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Switch tenants when visiting copied links: ', () => {
     const tenantName = 'private';
