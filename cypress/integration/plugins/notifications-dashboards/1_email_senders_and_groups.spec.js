@@ -204,7 +204,7 @@ describe('Test create, edit and delete recipient group', () => {
       `${BASE_PATH}/app/${NOTIFICATIONS_PLUGIN_NAME}#email-recipient-groups`
     );
     cy.reload(true);
-    cy.wait(NOTIFICATIONS_DELAY * 3);
+    cy.wait(NOTIFICATIONS_DELAY * 5);
   });
 
   it('creates recipient group', () => {
