@@ -132,8 +132,12 @@ describe('Test edit senders', () => {
   });
 
   it('edits ses sender region', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(2).click(); // ses sender
-    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click();
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]')
+      .last()
+      .click({ force: true }); // ses sender
+    cy.get('[data-test-subj="ses-senders-table-edit-button"]').click({
+      force: true,
+    });
     cy.get('[data-test-subj="create-ses-sender-form-aws-region-input"]').type(
       '{selectall}{backspace}us-west-2'
     );
