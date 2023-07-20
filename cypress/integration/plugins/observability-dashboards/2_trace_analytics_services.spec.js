@@ -85,7 +85,7 @@ describe('Testing service view', () => {
         win.sessionStorage.clear();
       },
     });
-    setTimeFilter(undefined, false);
+    setTimeFilter(false, false);
   });
 
   it('Renders service view', () => {
