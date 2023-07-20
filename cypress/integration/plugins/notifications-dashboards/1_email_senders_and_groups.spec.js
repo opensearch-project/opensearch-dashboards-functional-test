@@ -178,7 +178,7 @@ describe('Test delete senders', () => {
   });
 
   it('deletes ses senders', () => {
-    cy.get('.euiCheckbox__input[aria-label="Select this row"]').click(); // ses sender
+    cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click(); // ses sender
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="ses-senders-table-delete-button"]').click({
       force: true,
