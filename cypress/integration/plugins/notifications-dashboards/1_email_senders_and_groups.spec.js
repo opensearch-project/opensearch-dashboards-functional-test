@@ -263,14 +263,15 @@ describe('Test create, edit and delete recipient group', () => {
   });
 
   it('opens email addresses popup', () => {
-    cy.get('.euiLink').contains('1 more').click({ force: true });
+    cy.get('.euiTableCellContent--overflowingContent .euiLink')
+      .contains('1 more')
+      .click({ force: true });
     cy.contains('custom.email.6@test.com').should('exist');
   });
 
   it('deletes recipient groups', () => {
-    cy.get('[data-test-subj="checkboxSelectAll"]')
-      .last()
-      .click({ force: true });
+    cy.get('[data-test-subj="checkboxSelectAll"]').click({ force: true });
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({
       force: true,
     });
