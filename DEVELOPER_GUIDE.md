@@ -23,6 +23,8 @@ If you would like to install and develop OpenSearch Dashboards or its plugins, p
 
 You should have a running instance of OpenSearch Dashboards to run these tests against them. Refer to the [OpenSearch Dashboards Developer guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/DEVELOPER_GUIDE.md) for details on how to do that.
 
+- Node v16.20.0
+
 ### Installation
 
 To install the dependencies run 
