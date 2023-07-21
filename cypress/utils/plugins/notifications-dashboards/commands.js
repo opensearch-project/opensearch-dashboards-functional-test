@@ -8,6 +8,11 @@ import { API } from './constants';
 
 Cypress.Commands.add('deleteAllNotificationConfigs', () => {
   cy.request({
+    method: 'POST',
+    url: `${Cypress.env('openSearchUrl')}/_refresh`,
+  });
+
+  cy.request({
     method: 'GET',
     url: `${Cypress.env('openSearchUrl')}${API.CONFIGS_BASE}`,
   }).then((response) => {
