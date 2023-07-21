@@ -87,7 +87,7 @@ export const removeBucket = (bucket) => {
 
 export const testSplitTables = (num) => {
   cy.getElementByTestId('visTable')
-    .should('have.class', `visTable`)
+    .should('have.class', 'visTable')
     .find('[class="visTable__group"]')
     .should(($tables) => {
       // should have found specified number of tables
