@@ -83,8 +83,18 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .should('be.visible')
         .click();
 
-      // Open top share navigation to access copy short url
-      cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
+      cy.getElementByTestId('savedObjectTitle').type(dashboardName);
+
+      cy.intercept({
+        method: 'POST',
+        url: '/api/saved_objects/_bulk_get',
+      }).as('waitForReloadingDashboard');
+      cy.getElementByTestId('confirmSaveSavedObjectButton').click();
+      cy.wait('@waitForReloadingDashboard');
+      cy.wait(2000);
+
+      // 2. Open top share navigation to access copy short url
+      cy.getElementByTestId('shareTopNavButton').click();
       cy.getElementByTestId('sharePanel-Permalinks').click();
 
       // 3. Create the short url, wait for response
@@ -96,7 +106,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.wait('@getShortUrl');
 
       //4. Switch tenant & visit shortURL link to ensure tenant from short URL is retained
-      cy.get('[data-test-subj="copyShareUrlButton"]')
+      cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
         .should('contain', '/goto/')
         .then((shortUrl) => {
