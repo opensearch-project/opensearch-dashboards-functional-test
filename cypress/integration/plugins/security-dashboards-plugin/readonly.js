@@ -32,6 +32,8 @@ const TEST_CONFIG = {
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Read Only mode', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
+
       cy.server();
 
       cy.createTenant(TEST_CONFIG.tenant.name, {
@@ -47,16 +49,11 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.createRoleMapping(TEST_CONFIG.role.name, {
         users: [TEST_CONFIG.user.username],
       });
-    });
 
-    it('should create sample data', () => {
-      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
-      cy.loadSampleData('flights');
+      cy.loadSampleData('logs');
     });
 
     it('should be able to modify the dashboard as admin', () => {
-      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
-
       cy.visit(BASE_PATH);
       cy.waitForLoader();
 
@@ -74,7 +71,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
     it('should not be able to modify the dashboard when is performing as a custom readonly tenant', () => {
       ADMIN_AUTH.newUser = TEST_CONFIG.user.username;
       ADMIN_AUTH.newPassword = TEST_CONFIG.user.password;
-      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
 
       cy.visit(BASE_PATH);
       cy.waitForLoader();
