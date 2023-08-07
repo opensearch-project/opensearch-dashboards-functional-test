@@ -32,8 +32,6 @@ const TEST_CONFIG = {
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Read Only mode', () => {
     before(() => {
-      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
-
       cy.server();
 
       cy.createTenant(TEST_CONFIG.tenant.name, {
@@ -50,6 +48,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
         users: [TEST_CONFIG.user.username],
       });
 
+      /* Add sample data to testing tenant */
+      CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
+      cy.visit(BASE_PATH);
+      cy.waitForLoader();
       cy.loadSampleData('logs');
     });
 
