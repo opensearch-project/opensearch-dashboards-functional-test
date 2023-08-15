@@ -93,7 +93,7 @@ Cypress.Commands.add(
         : action == 'filter out'
         ? filterOut
         : expand;
-    if (embed == true) {
+    if (embed) {
       cy.get('[data-test-subj="dataGridRowCell"]')
         .eq(rowIndex * totalColumn + colIndex)
         .click()

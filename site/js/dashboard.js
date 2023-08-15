@@ -4,17 +4,43 @@
  */
 
 const defaults = {
-  version: '2.5.0',
-  buildNumber: '5367',
-  testNumber: '2993',
+  version: '2.8.0',
+  buildNumber: '6177',
+  testNumber: '3616',
   testJobName: 'integ-test-opensearch-dashboards',
   platform: 'linux',
   arch: 'x64',
   type: 'tar',
   withSecurity: false,
+  advancedConfig: false,
+  showLegacyTestResults: false,
 };
 
 const plugins = {
+  'opensearch-dashboards': {
+    name: 'OpenSearch-Dashboards',
+    default: {
+      videos: [
+        'apps/vis_builder/basic.spec.js',
+        'apps/vis_builder/dashboard.spec.js',
+        'apps/vis_builder/experimental.spec.js',
+        'apps/vis_builder/vis_types/area.spec.js',
+        'apps/vis_builder/vis_types/bar.spec.js',
+        'apps/vis_builder/vis_types/line.spec.js',
+        'apps/vis_builder/vis_types/metric.spec.js',
+        'apps/vis_builder/vis_types/table.spec.js',
+        'apps/vis_type_table/basic.spec.js',
+        'apps/vis_type_table/data.spec.js',
+        'apps/vis_type_table/embed.spec.js',
+        'apps/vis_type_table/options.spec.js',
+        'apps/vis_type_table/split.spec.js',
+        'apps/datasource-management-plugin/1_create_datasource.spec.js',
+        'apps/datasource-management-plugin/2_datasource_table.spec.js',
+        'apps/datasource-management-plugin/3_update_datasource.spec.js',
+        'dashboard_sanity_test_spec.js',
+      ],
+    },
+  },
   'alerting-dashboards-plugin': {
     name: 'alertingDashboards',
     default: {
@@ -155,17 +181,6 @@ function getTestResults() {
   const arch = document.getElementById('arch').value;
   const type = document.getElementById('type').value;
   const securityEnabled = document.getElementById('security').checked;
-  const testResultsUrl =
-    'https://ci.opensearch.org/ci/dbc/' +
-    `${testJobName}/` +
-    `${version}/` +
-    `${buildNumber}/` +
-    `${platform}/` +
-    `${arch}/` +
-    `${type}/` +
-    `test-results/${testNumber}/integ-test/functionalTestDashboards/` +
-    `${securityEnabled ? 'with-security' : 'without-security'}/` +
-    'test-results/stdout.txt';
 
   document.getElementById('testResultsLinksDiv').style.display = 'block';
 
@@ -185,10 +200,6 @@ function getTestResults() {
   var resultPageLink = document.getElementById('resultPageLink');
   resultPageLink.textContent = resultPageUrl;
   resultPageLink.href = resultPageUrl;
-
-  var testResultsLink = document.getElementById('testResultLink');
-  testResultsLink.textContent = testResultsUrl;
-  testResultsLink.href = testResultsUrl;
 
   const osdUrl =
     'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/' +
@@ -238,6 +249,27 @@ function getTestResults() {
   jenkinsLink.textContent = jenkinsUrl;
   jenkinsLink.href = jenkinsUrl;
 
+  if (!enableLegacyTestsResults()) {
+    hideLegacyTestsResults();
+    return;
+  }
+
+  const testResultsUrl =
+    'https://ci.opensearch.org/ci/dbc/' +
+    `${testJobName}/` +
+    `${version}/` +
+    `${buildNumber}/` +
+    `${platform}/` +
+    `${arch}/` +
+    `${type}/` +
+    `test-results/${testNumber}/integ-test/functionalTestDashboards/` +
+    `${securityEnabled ? 'with-security' : 'without-security'}/` +
+    'test-results/stdout.txt';
+
+  var testResultsLink = document.getElementById('testResultLink');
+  testResultsLink.textContent = testResultsUrl;
+  testResultsLink.href = testResultsUrl;
+
   document.getElementById('testResultsDiv').style.display = 'block';
   document.getElementById('testResults').src =
     decodeURIComponent(testResultsUrl);
@@ -247,6 +279,17 @@ function getTestResults() {
 function enableAdvancedConfig() {
   document.getElementById('advancedInputsTable').style.display =
     document.getElementById('advancedConfig').checked ? 'block' : 'none';
+}
+
+function enableLegacyTestsResults() {
+  return document.getElementById('legacyResults').checked;
+}
+
+function hideLegacyTestsResults() {
+  document.getElementById('testResultsDiv').style.display = 'none';
+  var testResultsLink = document.getElementById('testResultLink');
+  testResultsLink.textContent = 'How to view test results for plugins';
+  testResultsLink.href = 'assets/plugin_test_results_help.gif';
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -267,6 +310,10 @@ function getPluginLinks(plugin) {
 
   var pluginLinksList = document.getElementById('pluginLinksList');
   const pluginObject = plugins[plugin];
+  const coreBaseUrl =
+    pluginObject.name === 'OpenSearch-Dashboards'
+      ? 'core-opensearch-dashboards'
+      : 'plugins';
 
   const pluginUrl =
     'https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/' +
@@ -275,13 +322,37 @@ function getPluginLinks(plugin) {
     `${platform}/` +
     `${arch}/` +
     `${type}/` +
-    'builds/opensearch-dashboards/plugins/' +
+    'builds/opensearch-dashboards/' +
+    `${coreBaseUrl}` +
     `${pluginObject.name}-${version}.zip`;
 
   var githubManifestLink = document.createElement('a');
   githubManifestLink.textContent = 'Manifest';
   githubManifestLink.href = `https://github.com/opensearch-project/opensearch-build/blob/main/manifests/${version}/opensearch-dashboards-${version}.yml`;
   document.getElementById('githubManifestLink').appendChild(githubManifestLink);
+
+  if (!enableLegacyTestsResults()) {
+    const testResultsUrl =
+      'https://ci.opensearch.org/ci/dbc/' +
+      `${testJobName}/` +
+      `${version}/` +
+      `${buildNumber}/` +
+      `${platform}/` +
+      `${arch}/` +
+      `${type}/` +
+      `test-results/${testNumber}/integ-test/` +
+      `${pluginObject.name}/` +
+      `${securityEnabled ? 'with-security' : 'without-security'}/` +
+      'stdout.txt';
+
+    var pluginTestResultLink = document.createElement('a');
+    pluginTestResultLink.textContent = testResultsUrl;
+    pluginTestResultLink.href = testResultsUrl;
+    document.getElementById('pluginLink').appendChild(pluginTestResultLink);
+
+    const ruleElement = document.createElement('hr');
+    document.getElementById('pluginLink').appendChild(ruleElement);
+  }
 
   var pluginLink = document.createElement('a');
   pluginLink.textContent = pluginUrl;
@@ -296,14 +367,22 @@ function getPluginLinks(plugin) {
     `${platform}/` +
     `${arch}/` +
     `${type}/` +
-    `test-results/${testNumber}/integ-test/functionalTestDashboards/` +
-    `${securityEnabled ? 'with-security' : 'without-security'}`;
-  const screenshotBaseUrl = `${s3BaseUrl}/test-results/cypress-screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
-  const videosBaseUrl = `${s3BaseUrl}/test-results/cypress-videos/plugins/${plugin}`;
+    `test-results/${testNumber}/integ-test/` +
+    `${
+      enableLegacyTestsResults()
+        ? 'functionalTestDashboards'
+        : pluginObject.name
+    }/` +
+    `${securityEnabled ? 'with-security' : 'without-security'}` +
+    `${enableLegacyTestsResults() ? 'test-results' : ''}`;
+  const screenshotBaseUrl = `${s3BaseUrl}/cypress-screenshots/${coreBaseUrl}/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  const videosBaseUrl = `${s3BaseUrl}/cypress-videos/${coreBaseUrl}/${plugin}`;
 
   document.getElementById(
     'baseScreenshotUrlBefore'
-  ).innerHTML = `/tmp/$RANDOM/functionalTestDashboards/cypress/screenshots/plugins/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
+  ).innerHTML = `/tmp/$RANDOM/${
+    enableLegacyTestsResults() ? 'functionalTestDashboards' : pluginObject.name
+  }/cypress/screenshots/${coreBaseUrl}/${plugin}/$SPEC_FILE/$FULL_TEST_FAILURE.png`;
   document.getElementById('baseScreenshotUrlAfter').innerHTML =
     screenshotBaseUrl;
 
@@ -354,4 +433,10 @@ function setDefaultValues() {
   document.getElementById('security').checked = params.get('with_security')
     ? params.get('with_security').toLowerCase() === 'true'
     : defaults.withSecurity;
+  document.getElementById('advancedConfig').checked = defaults.advancedConfig;
+  document.getElementById('legacyResults').checked = params.get(
+    'legacy_results'
+  )
+    ? params.get('legacy_results').toLowerCase() === 'true'
+    : defaults.showLegacyTestResults;
 }

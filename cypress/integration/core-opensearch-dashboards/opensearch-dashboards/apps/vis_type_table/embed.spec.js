@@ -93,7 +93,7 @@ describe('table visualization in embedded mode', () => {
   });
 
   it('Should allow to filter in embedded mode', () => {
-    commonUI.addFilterRetrySelection('age', 'is between', ['10', '30']);
+    commonUI.addFilterRangeRetrySelection('age', 'is between', '10', '30');
     cy.reload();
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(['0', '1,059', '20', '1,114']);

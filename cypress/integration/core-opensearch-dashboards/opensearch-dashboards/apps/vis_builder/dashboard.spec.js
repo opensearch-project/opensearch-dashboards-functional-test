@@ -95,6 +95,8 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('savedObjectTitle').type(visTitle);
       cy.getElementByTestId('confirmSaveSavedObjectButton').click();
 
+      // Wait for page to load
+      cy.waitForLoader();
       // Check to see if the new vis is present in the dashboard
       cy.getElementByTestId(
         `embeddablePanelHeading-${toTestId(visTitle, '')}`

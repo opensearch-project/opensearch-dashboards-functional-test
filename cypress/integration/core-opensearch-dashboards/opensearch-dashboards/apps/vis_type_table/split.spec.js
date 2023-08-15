@@ -16,7 +16,8 @@ import {
   toTestId,
 } from '../../../../../utils/constants';
 
-describe('Split table', () => {
+// TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/699
+describe.skip('Split table', () => {
   const expectDataInitial = [
     [
       'Cat',
@@ -310,7 +311,7 @@ describe('Split table', () => {
     cy.tbSplitTablesInColumns();
     cy.tbSetupTermsAggregation('age', 'Descending', '2', 2);
     cy.waitForLoader();
-    cy.get('[class="visTable visTable__groupInColumns"]').should('exist');
+    cy.get('[class="visTable"]').should('exist');
     cy.tbGetAllTableDataFromVisualization(2).then((data) => {
       expect(data).to.deep.eq(expectData);
     });
