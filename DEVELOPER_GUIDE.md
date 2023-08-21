@@ -102,7 +102,7 @@ $ yarn cypress run --spec "cypress/e2e/core-opensearch-dashboards/opensearch-das
 
 ## Writing tests
 
-The testing library uses [Cypress](https://www.cypress.io/) as its testing framework and follow its high level folder structure. All tests are written under the `./cypress/integration` folder.
+The testing library uses [Cypress](https://www.cypress.io/) as its testing framework and follow its high level folder structure. All tests are written under the `./cypress/e2e` folder.
 
 ### Tests for OpenSearch Dashboards
 
@@ -110,7 +110,7 @@ Tests for core features specific to [OpenSearch Dashboards](https://github.com/o
 
 ```
 /cypress
-    /integration
+    /e2e
         /core-opensearch-dashboards
             /opensearch-dashboards
 ```
@@ -121,7 +121,7 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
 
 ```
 /cypress
-    /integration
+    /e2e
         /plugins
             /<YOUR_PLUGIN_NAME>
 ```
