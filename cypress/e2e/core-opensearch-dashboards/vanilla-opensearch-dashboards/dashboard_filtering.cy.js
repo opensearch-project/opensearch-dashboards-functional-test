@@ -111,7 +111,7 @@ describe('dashboard filtering', () => {
         commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
       });
 
-      it('Nonpinned filter: goal and guages are filtered', () => {
+      it('Nonpinned filter: goal and gauges are filtered', () => {
         // Goal label should be 0, gauge label should be 0%
         commonUI.checkValuesExistInComponent('svg > g > g > text.chart-label', [
           '0',
@@ -189,7 +189,7 @@ describe('dashboard filtering', () => {
         commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
       });
 
-      it('Pinned filter: goal and guages are filtered', () => {
+      it('Pinned filter: goal and gauges are filtered', () => {
         // Goal label should be 0, gauge label should be 0%
         commonUI.checkValuesExistInComponent('svg > g > g > text.chart-label', [
           '0',
@@ -263,7 +263,7 @@ describe('dashboard filtering', () => {
         commonUI.checkElementExists('[data-test-subj="dataGridRowCell"]', 20);
       });
 
-      it.skip('Filter disabled: goal and guages', () => {
+      it.skip('Filter disabled: goal and gauges', () => {
         // Goal label should be 7,544, and the gauge label should be 39.958%%
         // Inconsistency: original code says that the goal label should have "7,544",
         // but sometimes the goal displays "7,565". It may have been related to a
