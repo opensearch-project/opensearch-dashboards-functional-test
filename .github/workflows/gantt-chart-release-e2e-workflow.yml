@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Gantt Chart
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/gantt-chart-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/plugins/gantt-chart-dashboards/*'

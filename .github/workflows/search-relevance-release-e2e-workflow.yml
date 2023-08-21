@@ -20,4 +20,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Search Relevance
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/search-relevance-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/plugins/search-relevance-dashboards/*'

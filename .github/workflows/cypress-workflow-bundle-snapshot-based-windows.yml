@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
       # not useful now as the windows e2e template currently do not allow serving parameters
       #osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
 
@@ -34,7 +34,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      test-command: env CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec 'cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
       # not useful now as the windows e2e template currently do not allow serving parameters
       #osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
       security-enabled: false
