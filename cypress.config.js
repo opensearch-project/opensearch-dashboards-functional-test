@@ -34,6 +34,5 @@ module.exports = defineConfig({
     },
     baseUrl: 'http://localhost:5601',
     specPattern: '**/*.(js|ts|tsx)',
-    testIsolation: false,
   },
 });
