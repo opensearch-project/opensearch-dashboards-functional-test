@@ -16,7 +16,7 @@ import testChimeChannel from '../../../fixtures/plugins/notifications-dashboards
 import testWebhookChannel from '../../../fixtures/plugins/notifications-dashboards/test_webhook_channel.json';
 import testTlsSmtpSender from '../../../fixtures/plugins/notifications-dashboards/test_tls_smtp_sender.json';
 
-describe('Test create channels', { testIsolation: false }, () => {
+describe('Test create channels', () => {
   before(() => {
     // Delete all Notification configs
     cy.deleteAllNotificationConfigs();

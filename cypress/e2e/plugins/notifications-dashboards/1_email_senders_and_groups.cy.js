@@ -16,7 +16,7 @@ import testTlsSmtpSender from '../../../fixtures/plugins/notifications-dashboard
 import testSesSender from '../../../fixtures/plugins/notifications-dashboards/test_ses_sender.json';
 import testEmailRecipientGroup from '../../../fixtures/plugins/notifications-dashboards/test_email_recipient_group.json';
 
-describe('Test create email senders', { testIsolation: false }, () => {
+describe('Test create email senders', () => {
   before(() => {
     // Delete all Notification configs
     cy.deleteAllNotificationConfigs();
