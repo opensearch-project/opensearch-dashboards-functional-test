@@ -63,298 +63,270 @@ describe('dashboard filtering', { testIsolation: false }, () => {
   // This buffer test below helps prevent unnecessary slowdown during testing
   it('Buffer test for importing test environment data', () => {});
 
-  describe(
-    'Adding and removing filters from a dashboard',
-    { testIsolation: false },
-    () => {
+  describe('Adding and removing filters from a dashboard', () => {
+    before(() => {
+      // Go to the Dashboards list page
+      miscUtils.visitPage('app/dashboards/list');
+
+      // Click the "Create dashboard" button
+      miscUtils.createNewDashboard();
+      // Change the time to be between Jan 1 2018 and Apr 13, 2018
+      cy.setTopNavDate(
+        'Jan 1, 2018 @ 00:00:00.000',
+        'Apr 13, 2018 @ 00:00:00.000'
+      );
+
+      // Add all "Filter Bytes Test" visualizations
+      dashboardPage.addDashboardPanels(
+        'Filter Bytes Test',
+        'visualization',
+        true
+      );
+
+      // Click the "Add" button and add all "Saved Searches"
+      dashboardPage.addDashboardPanels('Filter Bytes Test', 'search', false);
+    });
+
+    describe('adding a filter that excludes all data', () => {
       before(() => {
-        // Go to the Dashboards list page
-        miscUtils.visitPage('app/dashboards/list');
+        // Clear add filters to properly clean the environment for the test
+        commonUI.removeAllFilters();
 
-        // Click the "Create dashboard" button
-        miscUtils.createNewDashboard();
-        // Change the time to be between Jan 1 2018 and Apr 13, 2018
-        cy.setTopNavDate(
-          'Jan 1, 2018 @ 00:00:00.000',
-          'Apr 13, 2018 @ 00:00:00.000'
-        );
-
-        // Add all "Filter Bytes Test" visualizations
-        dashboardPage.addDashboardPanels(
-          'Filter Bytes Test',
-          'visualization',
-          true
-        );
-
-        // Click the "Add" button and add all "Saved Searches"
-        dashboardPage.addDashboardPanels('Filter Bytes Test', 'search', false);
+        // Add filter
+        commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
       });
 
-      describe(
-        'adding a filter that excludes all data',
-        { testIsolation: false },
-        () => {
-          before(() => {
-            // Clear add filters to properly clean the environment for the test
-            commonUI.removeAllFilters();
+      it('Nonpinned filter: filters on pie charts', () => {
+        // Check that none of the pie charts are occupied with data (show "No results found")
+        commonUI.checkElementDoesNotExist('svg > g > g.arcs > path.slice');
+      });
 
-            // Add filter
-            commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
-          });
+      it('Nonpinned filter: area, bar and heatmap charts filtered', () => {
+        // Check that none of the charts are filled with data
+        commonUI.checkElementDoesNotExist('svg > g > g.series');
+      });
 
-          it('Nonpinned filter: filters on pie charts', () => {
-            // Check that none of the pie charts are occupied with data (show "No results found")
-            commonUI.checkElementDoesNotExist('svg > g > g.arcs > path.slice');
-          });
+      it('Nonpinned filter: data tables are filtered', () => {
+        // Check that none of the data tables are filled with data
+        commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
+      });
 
-          it('Nonpinned filter: area, bar and heatmap charts filtered', () => {
-            // Check that none of the charts are filled with data
-            commonUI.checkElementDoesNotExist('svg > g > g.series');
-          });
+      it('Nonpinned filter: goal and gauges are filtered', () => {
+        // Goal label should be 0, gauge label should be 0%
+        commonUI.checkValuesExistInComponent('svg > g > g > text.chart-label', [
+          '0',
+          '0%',
+        ]);
+      });
 
-          it('Nonpinned filter: data tables are filtered', () => {
-            // Check that none of the data tables are filled with data
-            commonUI.checkElementDoesNotExist(
-              '[data-test-subj="dataGridRowCell"]'
-            );
-          });
+      it('Nonpinned filter: tsvb time series shows no data message', () => {
+        // The no data message should be visible
+        commonUI.checkElementExists('[data-test-subj="noTSVBDataMessage"]', 1);
+      });
 
-          it('Nonpinned filter: goal and gauges are filtered', () => {
-            // Goal label should be 0, gauge label should be 0%
-            commonUI.checkValuesExistInComponent(
-              'svg > g > g > text.chart-label',
-              ['0', '0%']
-            );
-          });
+      it('Nonpinned filter: metric value shows no data', () => {
+        // The metrics should show '-'
+        commonUI.checkValuesExistInComponent('.mtrVis__value', [' - ']);
+      });
 
-          it('Nonpinned filter: tsvb time series shows no data message', () => {
-            // The no data message should be visible
-            commonUI.checkElementExists(
-              '[data-test-subj="noTSVBDataMessage"]',
-              1
-            );
-          });
+      it('Nonpinned filter: tag cloud values are filtered', () => {
+        commonUI.checkElementComponentDoesNotExist(
+          '[data-test-subj="tagCloudVisualization"]',
+          'svg > g > text'
+        );
+      });
 
-          it('Nonpinned filter: metric value shows no data', () => {
-            // The metrics should show '-'
-            commonUI.checkValuesExistInComponent('.mtrVis__value', [' - ']);
-          });
+      it('Nonpinned filter: tsvb metric is filtered', () => {
+        commonUI.checkValuesExistInComponent(
+          '[data-test-subj="tsvbMetricValue"]',
+          ['0 custom template']
+        );
+      });
 
-          it('Nonpinned filter: tag cloud values are filtered', () => {
-            commonUI.checkElementComponentDoesNotExist(
-              '[data-test-subj="tagCloudVisualization"]',
-              'svg > g > text'
-            );
-          });
+      it('Nonpinned filter: tsvb top n is filtered', () => {
+        commonUI.checkElementContainsValue(
+          '[data-test-subj="tsvbTopNValue"]',
+          2,
+          '0'
+        );
+      });
 
-          it('Nonpinned filter: tsvb metric is filtered', () => {
-            commonUI.checkValuesExistInComponent(
-              '[data-test-subj="tsvbMetricValue"]',
-              ['0 custom template']
-            );
-          });
+      it('Nonpinned filter: saved search is filtered', () => {
+        commonUI.checkElementDoesNotExist(
+          '[data-test-subj="docTableExpandToggleColumn"]'
+        );
+      });
 
-          it('Nonpinned filter: tsvb top n is filtered', () => {
-            commonUI.checkElementContainsValue(
-              '[data-test-subj="tsvbTopNValue"]',
-              2,
-              '0'
-            );
-          });
+      it('Nonpinned filter: vega is filtered', () => {
+        commonUI.checkValuesDoNotExistInComponent('.vgaVis__view text', [
+          '5,000',
+        ]);
+      });
+    });
 
-          it('Nonpinned filter: saved search is filtered', () => {
-            commonUI.checkElementDoesNotExist(
-              '[data-test-subj="docTableExpandToggleColumn"]'
-            );
-          });
+    describe('using a pinned filter that excludes all data', () => {
+      before(() => {
+        // Clear add filters to properly clean environment for the test
+        commonUI.removeAllFilters();
 
-          it('Nonpinned filter: vega is filtered', () => {
-            commonUI.checkValuesDoNotExistInComponent('.vgaVis__view text', [
-              '5,000',
-            ]);
-          });
-        }
-      );
+        commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
 
-      describe(
-        'using a pinned filter that excludes all data',
-        { testIsolation: false },
-        () => {
-          before(() => {
-            // Clear add filters to properly clean environment for the test
-            commonUI.removeAllFilters();
+        commonUI.pinFilter('bytes');
+      });
 
-            commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
+      it('Pinned filter: filters on pie charts', () => {
+        // Check that none of the pie charts are occupied with data (show "No results found")
+        commonUI.checkElementDoesNotExist('svg > g > g.arcs > path.slice');
+      });
 
-            commonUI.pinFilter('bytes');
-          });
+      it('Pinned filter: area, bar and heatmap charts filtered', () => {
+        // Check that none of the charts are filled with data
+        commonUI.checkElementDoesNotExist('svg > g > g.series');
+      });
 
-          it('Pinned filter: filters on pie charts', () => {
-            // Check that none of the pie charts are occupied with data (show "No results found")
-            commonUI.checkElementDoesNotExist('svg > g > g.arcs > path.slice');
-          });
+      it('Pinned filter: data tables are filtered', () => {
+        // Check that none of the data tables are filled with data
+        commonUI.checkElementDoesNotExist('[data-test-subj="dataGridRowCell"]');
+      });
 
-          it('Pinned filter: area, bar and heatmap charts filtered', () => {
-            // Check that none of the charts are filled with data
-            commonUI.checkElementDoesNotExist('svg > g > g.series');
-          });
+      it('Pinned filter: goal and gauges are filtered', () => {
+        // Goal label should be 0, gauge label should be 0%
+        commonUI.checkValuesExistInComponent('svg > g > g > text.chart-label', [
+          '0',
+          '0%',
+        ]);
+      });
 
-          it('Pinned filter: data tables are filtered', () => {
-            // Check that none of the data tables are filled with data
-            commonUI.checkElementDoesNotExist(
-              '[data-test-subj="dataGridRowCell"]'
-            );
-          });
+      it('Pinned filter: metric value shows no data', () => {
+        // The metrics should show '-'
+        commonUI.checkValuesExistInComponent('.mtrVis__value', [' - ']);
+      });
 
-          it('Pinned filter: goal and gauges are filtered', () => {
-            // Goal label should be 0, gauge label should be 0%
-            commonUI.checkValuesExistInComponent(
-              'svg > g > g > text.chart-label',
-              ['0', '0%']
-            );
-          });
+      it('Pinned filter: tag cloud values are filtered', () => {
+        commonUI.checkElementComponentDoesNotExist(
+          '[data-test-subj="tagCloudVisualization"]',
+          'svg > g > text'
+        );
+      });
 
-          it('Pinned filter: metric value shows no data', () => {
-            // The metrics should show '-'
-            commonUI.checkValuesExistInComponent('.mtrVis__value', [' - ']);
-          });
+      it('Pinned filter: tsvb metric is filtered', () => {
+        commonUI.checkValuesExistInComponent(
+          '[data-test-subj="tsvbMetricValue"]',
+          ['0 custom template']
+        );
+      });
 
-          it('Pinned filter: tag cloud values are filtered', () => {
-            commonUI.checkElementComponentDoesNotExist(
-              '[data-test-subj="tagCloudVisualization"]',
-              'svg > g > text'
-            );
-          });
+      it('Pinned filter: tsvb top n is filtered', () => {
+        commonUI.checkElementContainsValue(
+          '[data-test-subj="tsvbTopNValue"]',
+          2,
+          '0'
+        );
+      });
 
-          it('Pinned filter: tsvb metric is filtered', () => {
-            commonUI.checkValuesExistInComponent(
-              '[data-test-subj="tsvbMetricValue"]',
-              ['0 custom template']
-            );
-          });
+      it('Pinned filter: saved search is filtered', () => {
+        commonUI.checkElementDoesNotExist(
+          '[data-test-subj="docTableExpandToggleColumn"]'
+        );
+      });
 
-          it('Pinned filter: tsvb top n is filtered', () => {
-            commonUI.checkElementContainsValue(
-              '[data-test-subj="tsvbTopNValue"]',
-              2,
-              '0'
-            );
-          });
+      it('Pinned filter: vega is filtered', () => {
+        commonUI.checkValuesDoNotExistInComponent('.vgaVis__view text', [
+          '5,000',
+        ]);
+      });
+    });
 
-          it('Pinned filter: saved search is filtered', () => {
-            commonUI.checkElementDoesNotExist(
-              '[data-test-subj="docTableExpandToggleColumn"]'
-            );
-          });
+    describe('disabling a filter unfilters the data on', () => {
+      before(() => {
+        // TO DO: create delete filter helper function
+        // Clear add filters to properly clean environment for the test
+        commonUI.removeAllFilters();
 
-          it('Pinned filter: vega is filtered', () => {
-            commonUI.checkValuesDoNotExistInComponent('.vgaVis__view text', [
-              '5,000',
-            ]);
-          });
-        }
-      );
+        commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
 
-      describe(
-        'disabling a filter unfilters the data on',
-        { testIsolation: false },
-        () => {
-          before(() => {
-            // TO DO: create delete filter helper function
-            // Clear add filters to properly clean environment for the test
-            commonUI.removeAllFilters();
+        commonUI.removeFilter('bytes');
+      });
 
-            commonUI.addFilterRetrySelection('bytes', 'is', '12345678');
+      it('Filter disabled: pie charts', () => {
+        // Check that there are 5 slice in the pie charts
+        commonUI.checkElementExists('svg > g > g.arcs > path.slice', 5);
+      });
 
-            commonUI.removeFilter('bytes');
-          });
+      it('Filter disabled: area, bar and heatmap charts', () => {
+        // Check that there are 3 charts
+        commonUI.checkElementExists('svg > g > g.series', 3);
+      });
 
-          it('Filter disabled: pie charts', () => {
-            // Check that there are 5 slice in the pie charts
-            commonUI.checkElementExists('svg > g > g.arcs > path.slice', 5);
-          });
+      it('Filter disabled: data tables', () => {
+        // Check that there are 20 table cells / 10 rows
+        commonUI.checkElementExists('[data-test-subj="dataGridRowCell"]', 20);
+      });
 
-          it('Filter disabled: area, bar and heatmap charts', () => {
-            // Check that there are 3 charts
-            commonUI.checkElementExists('svg > g > g.series', 3);
-          });
+      it.skip('Filter disabled: goal and gauges', () => {
+        // Goal label should be 7,544, and the gauge label should be 39.958%%
+        // Inconsistency: original code says that the goal label should have "7,544",
+        // but sometimes the goal displays "7,565". It may have been related to a
+        // data loading issue.
+        commonUI.checkValuesExistInComponent('svg > g > g > text.chart-label', [
+          '7,544',
+          '39.958%',
+        ]);
+      });
 
-          it('Filter disabled: data tables', () => {
-            // Check that there are 20 table cells / 10 rows
-            commonUI.checkElementExists(
-              '[data-test-subj="dataGridRowCell"]',
-              20
-            );
-          });
+      it('Filter disabled: metric value', () => {
+        // The metrics should show '101'
+        commonUI.checkValuesExistInComponent('.mtrVis__value', ['101']);
+      });
 
-          it.skip('Filter disabled: goal and gauges', () => {
-            // Goal label should be 7,544, and the gauge label should be 39.958%%
-            // Inconsistency: original code says that the goal label should have "7,544",
-            // but sometimes the goal displays "7,565". It may have been related to a
-            // data loading issue.
-            commonUI.checkValuesExistInComponent(
-              'svg > g > g > text.chart-label',
-              ['7,544', '39.958%']
-            );
-          });
+      it('Filter disabled: tag cloud', () => {
+        commonUI.checkValuesExistInComponent(
+          '[data-test-subj="tagCloudVisualization"]',
+          ['9,972', '4,886', '1,944', '9,025']
+        );
+      });
 
-          it('Filter disabled: metric value', () => {
-            // The metrics should show '101'
-            commonUI.checkValuesExistInComponent('.mtrVis__value', ['101']);
-          });
+      it('Filter disabled: tsvb metric', () => {
+        commonUI.checkValuesExistInComponent(
+          '[data-test-subj="tsvbMetricValue"]',
+          ['50,465 custom template']
+        );
+      });
 
-          it('Filter disabled: tag cloud', () => {
-            commonUI.checkValuesExistInComponent(
-              '[data-test-subj="tagCloudVisualization"]',
-              ['9,972', '4,886', '1,944', '9,025']
-            );
-          });
+      it('Filter disabled: tsvb top n', () => {
+        commonUI.checkElementContainsValue(
+          '[data-test-subj="tsvbTopNValue"]',
+          2,
+          '6,308.125'
+        );
+      });
 
-          it('Filter disabled: tsvb metric', () => {
-            commonUI.checkValuesExistInComponent(
-              '[data-test-subj="tsvbMetricValue"]',
-              ['50,465 custom template']
-            );
-          });
+      it('Filter disabled: tsvb markdown', () => {
+        commonUI.checkValuesExistInComponent(
+          '[data-test-subj="tsvbMarkdown"]',
+          ['7,209.286']
+        );
+      });
 
-          it('Filter disabled: tsvb top n', () => {
-            commonUI.checkElementContainsValue(
-              '[data-test-subj="tsvbTopNValue"]',
-              2,
-              '6,308.125'
-            );
-          });
+      it('Filter disabled: saved search is filtered', () => {
+        commonUI.checkElementExists(
+          '[data-test-subj="docTableExpandToggleColumn"]',
+          1
+        );
+      });
 
-          it('Filter disabled: tsvb markdown', () => {
-            commonUI.checkValuesExistInComponent(
-              '[data-test-subj="tsvbMarkdown"]',
-              ['7,209.286']
-            );
-          });
-
-          it('Filter disabled: saved search is filtered', () => {
-            commonUI.checkElementExists(
-              '[data-test-subj="docTableExpandToggleColumn"]',
-              1
-            );
-          });
-
-          it('Filter disabled: vega is filtered', () => {
-            commonUI.checkValuesExistInComponent('.vgaVis__view text', [
-              '5,000',
-            ]);
-          });
-        }
-      );
-    }
-  );
+      it('Filter disabled: vega is filtered', () => {
+        commonUI.checkValuesExistInComponent('.vgaVis__view text', ['5,000']);
+      });
+    });
+  });
   // TO DO: continue making helper functions for repeated actions.
   // TO DO: better subdivide the nested filtering tests to improve consistency.
   // For example, if the test runner stops after renaming the "Rendering Test: animal sounds pie"
   // visualization, future runs of the test suite will fail due to being unable to find the visualization
   // under the expected name.
 
-  describe('nested filtering', { testIsolation: false }, () => {
+  describe('nested filtering', () => {
     before(() => {
       // Go to the Dashboards list page
       miscUtils.visitPage('app/dashboards/list');
@@ -382,6 +354,8 @@ describe('dashboard filtering', { testIsolation: false }, () => {
         'Rendering Test: animal sounds pie'
       );
       dashboardPage.clickEditVisualization();
+
+      cy.wait(5000);
 
       miscUtils.setQuery('weightLbs:>50');
       commonUI.checkElementExists('svg > g > g.arcs > path.slice', 3);
