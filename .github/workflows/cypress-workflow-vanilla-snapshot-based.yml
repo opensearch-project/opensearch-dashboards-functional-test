@@ -12,7 +12,7 @@ on:
       - feature/*
 jobs:
   tests:
-    name: Run Cypress E2E vanilla tests
+    name: Run Cypress E2E tests
     runs-on: ubuntu-latest
     env:
       # prevents extra Cypress installation progress messages
@@ -73,7 +73,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           working-directory: monetery-test
-          command: yarn cypress:run-without-security --browser chromium --config numTestsKeptInMemory=5 --config experimentalMemoryManagement=true --spec 'cypress/e2e/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js'
+          command: yarn cypress:run-without-security --browser chromium --spec 'cypress/e2e/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js'
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v1
