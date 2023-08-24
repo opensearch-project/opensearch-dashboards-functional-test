@@ -13,7 +13,6 @@ const tenantName = 'test';
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Default Tenant Tests: ', () => {
     before(() => {
-      cy.server();
       cy.createTenant(tenantName, tenantDescription);
       cy.changeDefaultTenant({
         multitenancy_enabled: true,

@@ -10,12 +10,6 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Permissions page', () => {
-    // start a server so that server responses can be mocked via fixtures
-    // in all of the below test cases
-    before(() => {
-      cy.server();
-    });
-
     it('should load Permissions page properly', () => {
       cy.mockPermissionsAction(
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',

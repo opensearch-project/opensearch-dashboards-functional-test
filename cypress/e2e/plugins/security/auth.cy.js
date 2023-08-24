@@ -10,12 +10,6 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Authc and Authz page', () => {
-    // start a server so that server responses can be mocked via fixtures
-    // in all of the below test cases
-    before(() => {
-      cy.server();
-    });
-
     it('authentication and authorization section should exist', () => {
       cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
         cy.visit(SEC_UI_AUTH_PATH);

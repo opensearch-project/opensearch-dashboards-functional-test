@@ -29,7 +29,6 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
     // start a server so that server responses can be mocked via fixtures
     // in all of the below test cases
     before(() => {
-      cy.server();
       cy.createTenant(tenantName, tenantDescription);
 
       cy.createIndexPattern('index-pattern1', {
