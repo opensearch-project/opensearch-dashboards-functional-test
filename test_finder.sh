@@ -3,8 +3,8 @@
 set -e
 
 OSD_BUILD_MANIFEST='../local-test-cluster/opensearch-dashboards-*/manifest.yml'
-OSD_TEST_PATH='cypress/integration/core-opensearch-dashboards'
-OSD_PLUGIN_TEST_PATH='cypress/integration/plugins'
+OSD_TEST_PATH='cypress/e2e/core-opensearch-dashboards'
+OSD_PLUGIN_TEST_PATH='cypress/e2e/plugins'
 TEST_TYPE=$OPTION
 
 # Map component name in opensearch-build repo INPUT_MANIFEST with folder name for tests in functional repo

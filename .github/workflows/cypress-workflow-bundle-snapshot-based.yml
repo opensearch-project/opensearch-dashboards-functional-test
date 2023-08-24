@@ -24,7 +24,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
       osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
   tests-without-security:
@@ -33,6 +33,6 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
       osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
       security-enabled: false
