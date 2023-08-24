@@ -10,12 +10,6 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Home(Get Started) page', () => {
-    // start a server so that server responses can be mocked via fixtures
-    // in all of the below test cases
-    before(() => {
-      cy.server();
-    });
-
     it('should load Home page properly', () => {
       cy.visit(BASE_SEC_UI_PATH);
 
