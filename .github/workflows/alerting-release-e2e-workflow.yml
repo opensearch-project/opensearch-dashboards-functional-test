@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Alerting
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/*'
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/plugins/alerting-dashboards-plugin/*'
