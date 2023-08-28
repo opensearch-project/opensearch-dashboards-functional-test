@@ -18,6 +18,8 @@ const Y_LABEL = 'A unique label for Y-axis';
 const X_LABEL = 'A unique label for X-axis';
 const DEFAULT_SIZE = 10;
 
+var theVisualizationId = ''
+
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
     const dumpDataSet = (ndjson, index) =>
@@ -78,13 +80,17 @@ describe('Save a gantt chart', () => {
     cy.wait(delay);
 
     cy.contains('Saved').should('exist');
+    cy.location('hash').then((hash) => {
+      const hashes = hash.split('/');
+      const id = hashes[hashes.length - 1];
+      theVisualizationId = id;
+    });
   });
 });
 
 describe('Render and configure a gantt chart', () => {
   beforeEach(() => {
-    cy.visit(`${BASE_PATH}/app/visualize#`);
-    cy.contains(GANTT_VIS_NAME).click({ force: true });
+    cy.visit(`${BASE_PATH}/app/visualize#/edit/${theVisualizationId}`);
   });
 
   it('Renders no data message', () => {
@@ -232,7 +238,9 @@ describe('Configure panel settings', () => {
   it('Hides legends', () => {
     cy.get('g.traces').should('have.length', DEFAULT_SIZE);
 
-    cy.get('.euiSwitch__label').contains('Show legend').click({ force: true });
+    cy.get('.euiSwitch__label')
+      .contains('Show legend')
+      .click({ force: true });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
