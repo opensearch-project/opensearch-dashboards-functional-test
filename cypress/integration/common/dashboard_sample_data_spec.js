@@ -248,7 +248,7 @@ export function dashboardSanityTests() {
       describe('checking discover', () => {
         before(() => {
           // Go to the Discover page
-          miscUtils.visitPage('app/discover#/');
+          miscUtils.visitPage('app/discoverLegacy#/');
         });
 
         after(() => {});
