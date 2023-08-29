@@ -40,7 +40,9 @@ describe('Cypress', () => {
     cy.get('[id="landingPageOnDemandDownload"]')
       .contains('PDF')
       .click({ force: true });
-    cy.get('.euiToastHeader__title').contains('Successfully generated report').should('exist');
+    cy.get('.euiToastHeader__title')
+      .contains('Successfully generated report')
+      .should('exist');
   });
 
   it('Download pdf from in-context menu', () => {
@@ -131,6 +133,8 @@ describe('Cypress', () => {
 
     cy.get('#generateReportFromDetailsFileFormat').click({ force: true });
 
-    cy.get('.euiToastHeader__title').contains('Successfully generated report').should('exist');
+    cy.get('.euiToastHeader__title')
+      .contains('Successfully generated report')
+      .should('exist');
   });
 });
