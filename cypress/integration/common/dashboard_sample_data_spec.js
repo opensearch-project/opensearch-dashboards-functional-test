@@ -74,7 +74,7 @@ export function dashboardSanityTests() {
       it('settings display', () => {
         // Check that settings is visable
         commonUI.checkElementExists(
-          `a[href="${path}/app/management/opensearch-dashboards/settings#defaultRoute"]`,
+          `a[href="${path}/app/settings#defaultRoute"]`,
           1
         );
       });
@@ -154,9 +154,7 @@ export function dashboardSanityTests() {
 
       describe('checking index patterns', () => {
         before(() => {
-          miscUtils.visitPage(
-            'app/management/opensearch-dashboards/indexPatterns'
-          );
+          miscUtils.visitPage('app/indexPatterns');
         });
 
         after(() => {});
