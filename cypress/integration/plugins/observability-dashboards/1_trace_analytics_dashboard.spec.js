@@ -34,12 +34,12 @@ describe('Testing dashboard table', () => {
       },
     });
     setTimeFilter();
-  });
-
-  it('Renders the dashboard table', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
+  });
+
+  it('Renders the dashboard table', () => {
     cy.contains(' (10)').should('exist');
     cy.contains('client_cancel_order').should('exist');
     cy.contains('166.44').should('exist');
@@ -47,9 +47,6 @@ describe('Testing dashboard table', () => {
   });
 
   it('Adds the percentile filters', () => {
-    cy.get(
-      '[data-test-subj="trace-groups-service-operation-accordian"]'
-    ).click();
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
     cy.contains(' >= 95 percentile').click({ force: true });
@@ -75,9 +72,6 @@ describe('Testing dashboard table', () => {
 
   it('Opens latency trend popover', () => {
     setTimeFilter(true);
-    cy.get(
-      '[data-test-subj="trace-groups-service-operation-accordian"]'
-    ).click();
     cy.get('.euiButtonIcon[aria-label="Open popover"]').first().click();
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should(
       'exist'
@@ -85,10 +79,6 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.get(
-      '[data-test-subj="trace-groups-service-operation-accordian"]'
-    ).click();
-    cy.wait(delayTime);
     cy.get('.euiLink').contains('13').click();
     cy.wait(delayTime);
 
@@ -122,10 +112,12 @@ describe('Testing plots', () => {
     cy.get('.vis-network').should('exist');
 
     cy.get('.euiButton__text[title="Errors"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
+    cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
 
-    cy.get('.euiButton__text[title="Rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
+    cy.get('.euiButton__text[title="Request Rate"]').click();
+    cy.get('text.ytitle[data-unformatted="Request rate (spans)"]').should(
+      'exist'
+    );
 
     cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
     cy.wait(delayTime);
