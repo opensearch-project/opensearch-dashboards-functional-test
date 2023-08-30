@@ -37,6 +37,7 @@ describe('Findings', () => {
   beforeEach(() => {
     // Visit Alerts table page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
+    cy.wait(15000);
 
     // Wait for page to load
     cy.contains('Findings');
@@ -148,6 +149,7 @@ describe('Findings', () => {
   it('...can delete detector', () => {
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+    cy.wait(15000);
     cy.contains('Threat detectors');
 
     // filter table to show only sample_detector findings

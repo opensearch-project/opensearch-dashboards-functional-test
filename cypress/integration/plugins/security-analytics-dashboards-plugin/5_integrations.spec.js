@@ -75,7 +75,7 @@ describe('Integration tests', () => {
   it('...can navigate to findings page', () => {
     cy.intercept({
       method: 'GET',
-      pathname: '/_plugins/_security_analytics/findings/_search',
+      pathname: '/_dashboards/_plugins/_security_analytics/findings/_search',
     }).as('getFindings');
 
     // Cypress USB Detector
@@ -112,7 +112,7 @@ describe('Integration tests', () => {
   it('...can navigate to alerts page', () => {
     cy.intercept({
       method: 'GET',
-      pathname: '/_plugins/_security_analytics/alerts',
+      pathname: '/_dashboards/_plugins/_security_analytics/alerts',
     }).as('getAlerts');
 
     // Cypress USB Detector
