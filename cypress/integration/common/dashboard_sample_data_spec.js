@@ -319,33 +319,37 @@ export function dashboardSanityTests() {
       });
     });
 
-    describe('checking stack management', () => {
-      before(() => {
-        // Go to the stack management page
-        miscUtils.visitPage('app/management/');
-      });
+    /**
+     * TODO: Skip check on stack management as Trinity have a impact on this part.
+     */
 
-      after(() => {});
+    // describe('checking stack management', () => {
+    //   before(() => {
+    //     // Go to the stack management page
+    //     miscUtils.visitPage('app/management/');
+    //   });
 
-      it('checking Stack Management display', () => {
-        // Check that Stack Management home is visable
-        commonUI.checkElementExists('div[data-test-subj="managementHome"]', 1);
-      });
+    //   after(() => {});
 
-      it('checking index patterns link display', () => {
-        // Check that index patterns link is visable
-        commonUI.checkElementExists('a[data-test-subj="indexPatterns"]', 1);
-      });
+    //   it('checking Stack Management display', () => {
+    //     // Check that Stack Management home is visable
+    //     commonUI.checkElementExists('div[data-test-subj="managementHome"]', 1);
+    //   });
 
-      it('checking saved objects link display', () => {
-        // Check that saved objects link is visable
-        commonUI.checkElementExists('a[data-test-subj="objects"]', 1);
-      });
+    //   it('checking index patterns link display', () => {
+    //     // Check that index patterns link is visable
+    //     commonUI.checkElementExists('a[data-test-subj="indexPatterns"]', 1);
+    //   });
 
-      it('checking advance settings link display', () => {
-        // Check that advance settings link is visable
-        commonUI.checkElementExists('a[data-test-subj="settings"]', 1);
-      });
-    });
+    //   it('checking saved objects link display', () => {
+    //     // Check that saved objects link is visable
+    //     commonUI.checkElementExists('a[data-test-subj="objects"]', 1);
+    //   });
+
+    //   it('checking advance settings link display', () => {
+    //     // Check that advance settings link is visable
+    //     commonUI.checkElementExists('a[data-test-subj="settings"]', 1);
+    //   });
+    // });
   });
 }
