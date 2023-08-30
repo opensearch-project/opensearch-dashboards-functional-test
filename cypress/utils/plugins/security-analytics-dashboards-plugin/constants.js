@@ -6,7 +6,7 @@
 import { BASE_PATH } from '../../base_constants';
 
 export const PLUGIN_NAME = 'opensearch_security_analytics_dashboards';
-export const BASE_API_PATH = '/_dashboards/_plugins/_security_analytics';
+export const BASE_API_PATH = '/_plugins/_security_analytics';
 
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
 export const DETECTOR_TRIGGER_TIMEOUT = 65000;

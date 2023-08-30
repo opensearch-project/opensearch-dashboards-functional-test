@@ -187,7 +187,9 @@ describe('Detectors', () => {
   });
 
   beforeEach(() => {
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
+    cy.intercept(`/_dashboards/${NODE_API.SEARCH_DETECTORS}`).as(
+      'detectorsSearch'
+    );
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
