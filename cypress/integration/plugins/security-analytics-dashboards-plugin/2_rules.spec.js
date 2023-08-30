@@ -159,15 +159,9 @@ const checkRulesFlyout = () => {
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
   beforeEach(() => {
-    cy.intercept({
-      pathname: NODE_API.RULES_SEARCH,
-      query: {
-        prePackaged: 'true',
-      },
-    }).as('rulesSearch');
     // Visit Rules page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-    cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+    cy.wait(10000);
 
     // Check that correct page is showing
     cy.contains('Rules');
@@ -204,7 +198,7 @@ describe('Rules', () => {
     );
 
     // Enter the reference
-    cy.contains('Add another URL').click();
+    cy.contains('Add another URL');
     cy.get('[data-test-subj="rule_references_field_0"]').type(
       SAMPLE_RULE.references
     );

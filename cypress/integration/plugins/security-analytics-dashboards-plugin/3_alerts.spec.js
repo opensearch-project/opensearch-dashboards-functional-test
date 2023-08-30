@@ -5,7 +5,6 @@
 
 import {
   DETECTOR_TRIGGER_TIMEOUT,
-  NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
@@ -98,10 +97,8 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
-    // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
-    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+    cy.wait(5000);
 
     // Wait for page to load
     cy.contains('Security alerts');

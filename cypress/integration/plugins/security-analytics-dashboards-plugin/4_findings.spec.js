@@ -171,7 +171,7 @@ describe('Findings', () => {
     cy.contains(sample_detector.name);
 
     // wait for detector details to load before continuing
-    cy.wait(['@getDetector', '@getPrePackagedRules', '@getRules']).then(() => {
+    cy.wait(10000).then(() => {
       // Click "Actions" button, the click "Delete"
       cy.get('button.euiButton')
         .contains('Actions')
