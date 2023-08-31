@@ -247,8 +247,9 @@ export function dashboardSanityTests() {
 
       describe('checking discover', () => {
         before(() => {
+          cy.setAdvancedSetting({ 'discover:v2': false });
           // Go to the Discover page
-          miscUtils.visitPage('app/discoverLegacy#/');
+          miscUtils.visitPage('app/discover#/');
         });
 
         after(() => {});
