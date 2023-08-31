@@ -231,7 +231,7 @@ describe('Rules', () => {
     );
 
     cy.intercept({
-      url: NODE_API.RULES_BASE,
+      url: `/_dashboards/${NODE_API.RULES_BASE}`,
     }).as('getRules');
 
     // Click "create" button
@@ -307,11 +307,11 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`, {
+    cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=true`, {
       delay: 5000,
     }).as('getPrePackagedRules');
 
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`, {
+    cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=false`, {
       delay: 5000,
     }).as('getCustomRules');
 

@@ -78,7 +78,10 @@ describe('Alerts', () => {
         cy.contains('Threat detectors');
 
         // Filter table to only show the test detector
-        cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+        cy.get(`input[type="search"]`)
+          .focus()
+          .type(`${testDetector.name}`)
+          .type(`{enter}`);
 
         // Confirm detector was created
         cy.get('tbody > tr').should(($tr) => {
@@ -104,7 +107,10 @@ describe('Alerts', () => {
     cy.contains('Security alerts');
 
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    cy.get(`input[type="search"]`)
+      .focus()
+      .type(`${testDetector.name}`)
+      .type(`{enter}`);
 
     // Adjust the date range picker to display alerts from today
     cy.get(

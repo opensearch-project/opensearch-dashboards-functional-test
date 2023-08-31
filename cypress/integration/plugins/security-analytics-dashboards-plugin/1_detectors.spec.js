@@ -43,7 +43,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .realType(dataSource);
 
   cy.intercept({
-    pathname: NODE_API.RULES_SEARCH,
+    pathname: `/_dashboards/${NODE_API.RULES_SEARCH}`,
     query: {
       prePackaged: 'true',
     },
@@ -391,7 +391,9 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    cy.intercept(NODE_API.MAPPINGS_VIEW).as('getMappingsView');
+    cy.intercept(`/_dashboards/${NODE_API.MAPPINGS_VIEW}`).as(
+      'getMappingsView'
+    );
 
     cy.get('table th').within(() => {
       cy.get('button').first().click({ force: true });
