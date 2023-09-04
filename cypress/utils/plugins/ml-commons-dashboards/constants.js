@@ -25,6 +25,9 @@ export const MLC_API = {
   MODEL_UPLOAD: `${MLC_API_BASE}/models/_upload`,
   MODEL_GROUP_REGISTER: `${MLC_API_BASE}/model_groups/_register`,
   TASK_BASE: `${MLC_API_BASE}/tasks`,
+  CONNECTOR_BASE: `${MLC_API_BASE}/connectors`,
+  CONNECTOR_CREATE: `${MLC_API_BASE}/connectors/_create`,
+  MODEL_REGISTER: `${MLC_API_BASE}/models/_register`,
 };
 
 const BASE_MLC_DASHBOARD_API = BASE_PATH + '/api/ml-commons';
