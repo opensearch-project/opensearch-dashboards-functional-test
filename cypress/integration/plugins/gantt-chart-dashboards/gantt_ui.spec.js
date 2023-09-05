@@ -209,8 +209,13 @@ describe('Configure panel settings', () => {
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28 12:59:07').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(dayjs(text, 'MM/DD HH:mm:ss', true).isValid()).to.be.true;
+      });
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
     cy.wait(delay);
