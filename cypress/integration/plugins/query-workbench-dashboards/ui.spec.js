@@ -207,14 +207,7 @@ describe('Test and verify SQL downloads', () => {
             'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
-        if (
-          title === 'Download and verify CSV' ||
-          title === 'Download and verify Text'
-        ) {
-          expect(response.body.data.body).to.have.string(files[file]);
-        } else {
-          expect(response.body.data.resp).to.have.string(files[file]);
-        }
+        expect(response.body.data.resp).to.have.string(files[file]);
       });
     });
   });
