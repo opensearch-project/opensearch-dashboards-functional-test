@@ -5,11 +5,8 @@
 
 /// <reference types="cypress" />
 
-import customParseFormat from 'dayjs/plugin/customParseFormat';
-import dayjs from 'dayjs';
+import moment from 'moment';
 import { BASE_PATH } from '../../../utils/constants';
-
-dayjs.extend(customParseFormat);
 
 const delay = 100;
 const GANTT_VIS_NAME =
@@ -181,7 +178,9 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD hh:mm:ss A', true).isValid()).to.be.true;
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);
       });
 
     cy.get('select').eq(3).select('MM/DD/YY hh:mm A');
@@ -192,7 +191,9 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD/YY hh:mm A', true).isValid()).to.be.true;
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);      
       });
 
     cy.get('select').eq(3).select('HH:mm:ss.SSS');
@@ -203,7 +204,9 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'HH:mm:ss.SSS', true).isValid()).to.be.true;
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);
       });
 
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
@@ -214,7 +217,9 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD HH:mm:ss', true).isValid()).to.be.true;
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);
       });
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
@@ -225,7 +230,9 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD/YY HH:mm', true).isValid()).to.be.true;
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);
       });
   });
 
