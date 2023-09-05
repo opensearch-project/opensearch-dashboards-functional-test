@@ -9,6 +9,8 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
 
+dayjs.extend(customParseFormat);
+
 const delay = 100;
 const GANTT_VIS_NAME =
   'A test gantt chart ' + Math.random().toString(36).substring(2);
