@@ -1,10 +1,13 @@
 {
   "mappings": {
     "properties": {
-      "winlog.event_id": {
-        "type": "integer"
+      "dns.question.name": {
+        "type": "text"
       },
-      "winlog.provider_name": {
+      "dns.answers.type": {
+        "type": "text"
+      },
+      "dns.question.registered_domain": {
         "type": "text"
       }
     }
