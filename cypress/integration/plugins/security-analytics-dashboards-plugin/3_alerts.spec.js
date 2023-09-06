@@ -318,6 +318,11 @@ describe('Alerts', () => {
       .within(() => {
         cy.get('[class="euiCheckbox__input"]').click({ force: true });
       });
+    cy.get('tbody > tr')
+      .last()
+      .within(() => {
+        cy.get('[class="euiCheckbox__input"]').click({ force: true });
+      });
 
     // Press the "Acknowledge" button
     cy.get('[data-test-subj="acknowledge-button"]').click({ force: true });
@@ -366,7 +371,7 @@ describe('Alerts', () => {
 
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
-      .should('have.length', 3);
+      .should('have.length', 2);
 
     cy.get('tbody > tr')
       // Click the "Acknowledge" icon button in the first row
@@ -377,11 +382,10 @@ describe('Alerts', () => {
 
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
-      .should('have.length', 2);
-
-    cy.wait(10000);
+      .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
@@ -390,7 +394,7 @@ describe('Alerts', () => {
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
-      .should('have.length', 2);
+      .should('have.length', 3);
   });
 
   it('can be acknowledged via flyout button', () => {
