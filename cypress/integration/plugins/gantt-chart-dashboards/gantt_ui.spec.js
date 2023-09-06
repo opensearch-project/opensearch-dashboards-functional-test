@@ -192,8 +192,8 @@ describe('Configure panel settings', () => {
       .invoke('text')
       .then((text) => {
         expect(
-          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
-        ).equal(text);      
+          moment(text, 'MM/DD/YY hh:mm A').format('MM/DD/YY hh:mm A')
+        ).equal(text);
       });
 
     cy.get('select').eq(3).select('HH:mm:ss.SSS');
@@ -204,9 +204,7 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(
-          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
-        ).equal(text);
+        expect(moment(text, 'HH:mm:ss.SSS').format('HH:mm:ss.SSS')).equal(text);
       });
 
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
@@ -217,9 +215,7 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(
-          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
-        ).equal(text);
+        expect(moment(text, 'MM/DD HH:mm:ss').format('MM/DD HH:mm:ss')).equal(text);
       });
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
@@ -230,9 +226,7 @@ describe('Configure panel settings', () => {
       .eq(0)
       .invoke('text')
       .then((text) => {
-        expect(
-          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
-        ).equal(text);
+        expect(moment(text, 'MM/DD/YY HH:mm').format('MM/DD/YY HH:mm')).equal(text);
       });
   });
 
