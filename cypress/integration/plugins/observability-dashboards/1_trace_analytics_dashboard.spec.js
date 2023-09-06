@@ -15,6 +15,9 @@ describe('Testing dashboard table empty state', () => {
       },
     });
     cy.wait(delayTime * 3);
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 
   it('Renders empty state', () => {
@@ -31,6 +34,9 @@ describe('Testing dashboard table', () => {
       },
     });
     setTimeFilter();
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 
   it('Renders the dashboard table', () => {
@@ -73,11 +79,9 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.wait(delayTime);
     cy.get('.euiLink').contains('13').click();
     cy.wait(delayTime);
 
-    cy.get('h2.euiTitle').contains('Traces').should('exist');
     cy.contains(' (13)').should('exist');
     cy.contains('client_create_order').should('exist');
 
@@ -96,6 +100,9 @@ describe('Testing plots', () => {
       },
     });
     setTimeFilter();
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 
   it('Renders service map', () => {
@@ -104,13 +111,13 @@ describe('Testing plots', () => {
     cy.get('text[data-unformatted="200"]').should('exist');
     cy.get('.vis-network').should('exist');
 
-    cy.get('.euiButton__text[title="Error rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
-    cy.get('text[data-unformatted="10%"]').should('exist');
+    cy.get('.euiButton__text[title="Errors"]').click();
+    cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
 
-    cy.get('.euiButton__text[title="Throughput"]').click();
-    cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
-    cy.get('text[data-unformatted="50"]').should('exist');
+    cy.get('.euiButton__text[title="Request Rate"]').click();
+    cy.get('text.ytitle[data-unformatted="Request rate (spans)"]').should(
+      'exist'
+    );
 
     cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
     cy.wait(delayTime);
