@@ -4,11 +4,6 @@
  */
 
 if(Cypress.env('SECURITY_ENABLED')){
-    describe('No role button redirect', () => {
-        before(() => {
-            cy.server();
-        })
-    });
     it('Tests if no role button redirects to logout screen', () => {
         // 1. visit missing roles page
         cy.visit('/app/customerror/missing-role');
