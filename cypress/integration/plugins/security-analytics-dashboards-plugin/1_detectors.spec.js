@@ -24,7 +24,6 @@ const getNameField = () =>
   cy.getInputByPlaceholder('Enter a name for the detector.');
 
 const getNextButton = () => cy.getButtonByText('Next');
-
 const getCreateDetectorButton = () => cy.getButtonByText('Create detector');
 
 const validateAlertPanel = (alertName) =>
