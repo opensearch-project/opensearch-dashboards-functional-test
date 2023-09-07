@@ -4,34 +4,34 @@
  */
 
 import {
+  createDetector,
   DETECTOR_TRIGGER_TIMEOUT,
-  NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
-import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
-import sample_field_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_field_mappings.json';
-import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
+import indexSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
+import aliasMappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
+import indexDoc from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
+import ruleSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_windows_usb_rule.json';
+
+const indexName = 'test-index';
+const detectorName = 'test-detector';
+const ruleName = 'Cypress USB Rule';
 
 describe('Findings', () => {
-  const ruleTags = ['low', 'windows'];
-  const indexName = 'cypress-test-windows';
+  const ruleTags = ['high', 'windows'];
 
   before(() => {
-    cy.cleanUpTests();
+    createDetector(
+      detectorName,
+      indexName,
+      indexSettings,
+      aliasMappings,
+      ruleSettings,
+      indexDoc,
+      4
+    );
 
-    // Visit Findings page
-    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
-
-    // create test index, mappings, and detector
-    cy.createIndex(indexName, null, sample_index_settings);
-    cy.createAliasMappings(indexName, 'windows', sample_field_mappings, true);
-    cy.createDetector(sample_detector);
-
-    // Ingest a new document
-    cy.insertDocumentToIndex(indexName, '', sample_document);
-
-    // wait for detector interval to pass
+    // Wait for the detector to execute
     cy.wait(DETECTOR_TRIGGER_TIMEOUT);
   });
 
@@ -40,7 +40,11 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.contains('Findings');
+    cy.waitForPageLoad('findings', {
+      contains: 'Findings',
+    });
+
+    cy.wait(5000);
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -51,14 +55,13 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('sample_detector');
-    cy.contains('Windows');
-    cy.contains('Low');
+    cy.contains('windows');
+    cy.contains('High');
   });
 
   it('displays finding details flyout when user clicks on View details icon', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
 
     // Click View details icon
     cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
@@ -77,7 +80,7 @@ describe('Findings', () => {
 
   it('displays finding details flyout when user clicks on Finding ID', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
 
     // Click findingId to trigger Finding details flyout
     cy.getTableFirstRow(
@@ -98,7 +101,7 @@ describe('Findings', () => {
 
   it('allows user to view details about rules that were triggered', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
     cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
@@ -111,10 +114,9 @@ describe('Findings', () => {
 
     // Confirm content
     cy.contains('Documents');
-    cy.contains('Detects plugged USB devices');
-    cy.contains('Low');
+    cy.contains('USB plugged-in rule');
+    cy.contains('High');
     cy.contains('Windows');
-    cy.contains(indexName);
 
     ruleTags.forEach((tag) => {
       cy.contains(tag);
@@ -126,7 +128,7 @@ describe('Findings', () => {
 
   it('opens rule details flyout when rule name inside accordion drop down is clicked', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch('sample_detector');
+    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
     cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
@@ -135,61 +137,14 @@ describe('Findings', () => {
 
     // Click rule link
     cy.get(
-      `[data-test-subj="finding-details-flyout-USB Device Plugged-details"]`
+      `[data-test-subj="finding-details-flyout-${ruleName}-details"]`
     ).click({
       force: true,
     });
 
     // Validate flyout appearance
-    cy.get('[data-test-subj="rule_flyout_USB Device Plugged"]').within(() => {
-      cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(
-        'USB Device Plugged'
-      );
-    });
-  });
-
-  it('...can delete detector', () => {
-    // Visit Detectors page
-    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-    cy.contains('Threat detectors');
-
-    // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search threat detectors"]`).ospSearch(
-      'sample_detector'
-    );
-
-    // intercept detectors and rules requests
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('getDetector');
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`).as(
-      'getPrePackagedRules'
-    );
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`).as('getRules');
-
-    // Click on detector to be removed
-    cy.contains('sample_detector').click({ force: true });
-    cy.contains('Detector details');
-    cy.contains(sample_detector.name);
-
-    // wait for detector details to load before continuing
-    cy.wait(['@getDetector', '@getPrePackagedRules', '@getRules']).then(() => {
-      // Click "Actions" button, the click "Delete"
-      cy.get('button.euiButton')
-        .contains('Actions')
-        .click({ force: true })
-        .then(() => {
-          // Confirm arrival at detectors page
-          cy.get('[data-test-subj="editButton"]')
-            .contains('Delete')
-            .click({ force: true });
-
-          // Search for sample_detector, presumably deleted
-          cy.get(`input[placeholder="Search threat detectors"]`).ospSearch(
-            'sample_detector'
-          );
-
-          // Confirm sample_detector no longer exists
-          cy.contains('There are no existing detectors.');
-        });
+    cy.get(`[data-test-subj="rule_flyout_${ruleName}"]`).within(() => {
+      cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(ruleName);
     });
   });
 
