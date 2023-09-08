@@ -205,11 +205,11 @@ declare namespace Cypress {
     ospType(text: string): Chainable<any>;
 
     /**
-     * Creates index with policy
+     * Creates index with optional settings
      * @example
-     * cy.createIndex("some_index", "some_policy")
+     * cy.sa_createIndex("some_index", settingObj)
      */
-    createIndex(index: string, settings?: object): Chainable<any>;
+    sa_createIndex(index: string, settings?: object): Chainable<any>;
 
     /**
      * Creates an index template.
@@ -222,9 +222,9 @@ declare namespace Cypress {
     /**
      * Deletes all indices in cluster
      * @example
-     * cy.deleteAllIndices()
+     * cy.sa_deleteAllIndices()
      */
-    deleteAllIndices(): Chainable<any>;
+    sa_deleteAllIndices(): Chainable<any>;
 
     /**
      * Deletes all custom rules in cluster
