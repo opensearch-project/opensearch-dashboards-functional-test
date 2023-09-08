@@ -12,6 +12,7 @@ import sample_dns_index_settings from '../../../fixtures/plugins/security-analyt
 import dns_name_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule_with_name_selection.json';
 import dns_type_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule_with_type_selection.json';
 import _ from 'lodash';
+import { BACKEND_BASE_PATH } from '../../../utils/base_constants';
 
 const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
@@ -257,14 +258,14 @@ describe('Detectors', () => {
   before(() => {
     cy.cleanUpTests();
 
-    cy.createIndex(cypressIndexWindows, sample_windows_index_settings);
+    cy.sa_createIndex(cypressIndexWindows, sample_windows_index_settings);
 
     // Create test index
-    cy.createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
+    cy.sa_createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
       cy
         .request(
           'POST',
-          '_plugins/_security_analytics/rules/_search?prePackaged=true',
+          `${BACKEND_BASE_PATH}${NODE_API.RULES_BASE}/_search?pre_packaged=true`,
           {
             from: 0,
             size: 5000,
