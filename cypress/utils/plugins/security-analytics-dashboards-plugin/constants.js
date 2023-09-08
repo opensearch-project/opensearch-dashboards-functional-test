@@ -82,7 +82,7 @@ export const createDetector = (
 
   cy.cleanUpTests()
     // Create test index
-    .then(() => cy.createIndex(indexName, indexSettings))
+    .then(() => cy.sa_createIndex(indexName, indexSettings))
 
     // Create field mappings
     .then(() =>
