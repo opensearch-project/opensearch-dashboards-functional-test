@@ -36,42 +36,10 @@ const { BACKEND_BASE_PATH } = require('../../base_constants');
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-// Be able to add default options to cy.request(), https://github.com/cypress-io/cypress/issues/726
-Cypress.Commands.overwrite('request', (originalFn, ...args) => {
-  let defaults = {};
-  // Add the basic authentication header when security enabled in the Opensearch cluster
-  const ADMIN_AUTH = {
-    username: Cypress.env('username'),
-    password: Cypress.env('password'),
-  };
-  if (Cypress.env('SECURITY_ENABLED')) {
-    defaults.auth = ADMIN_AUTH;
-  }
-
-  let options = {};
-  if (typeof args[0] === 'object' && args[0] !== null) {
-    options = Object.assign({}, args[0]);
-  } else if (args.length === 1) {
-    [options.url] = args;
-  } else if (args.length === 2) {
-    [options.method, options.url] = args;
-  } else if (args.length === 3) {
-    [options.method, options.url, options.body] = args;
-  }
-
-  Object.assign(options, {
-    headers: {
-      'osd-xsrf': '',
-    },
-  });
-
-  return originalFn(Object.assign({}, defaults, options));
-});
-
 Cypress.Commands.add('cleanUpTests', () => {
   cy.deleteAllCustomRules();
   cy.deleteAllDetectors();
-  cy.deleteAllIndices();
+  cy.sa_deleteAllIndices();
 });
 
 Cypress.Commands.add('getTableFirstRow', (selector) => {
@@ -378,19 +346,11 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('createIndex', (index, settings = {}) => {
+Cypress.Commands.add('sa_createIndex', (index, settings = {}) => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/${index}`, settings).should(
     'have.property',
     'status',
     200
-  );
-});
-
-Cypress.Commands.add('createIndexTemplate', (name, template) => {
-  cy.request(
-    'PUT',
-    `${BACKEND_BASE_PATH}${NODE_API.INDEX_TEMPLATE_BASE}/${name}`,
-    template
   );
 });
 
@@ -409,16 +369,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
-  cy.request({
-    method: 'DELETE',
-    url: `${BACKEND_BASE_PATH}/${indexName}`,
-    failOnStatusCode: false,
-    ...options,
-  });
-});
-
-Cypress.Commands.add('deleteAllIndices', () => {
+Cypress.Commands.add('sa_deleteAllIndices', () => {
   cy.request({
     method: 'DELETE',
     url: `${BACKEND_BASE_PATH}/index*,sample*,opensearch_dashboards*,test*,cypress*`,
@@ -524,27 +475,5 @@ Cypress.Commands.add(
   },
   (subject, text) => {
     return cy.get(subject).wait(10).focus().realType(text);
-  }
-);
-
-Cypress.Commands.add(
-  'pressEnterKey',
-  {
-    prevSubject: true,
-  },
-  (subject) => {
-    Cypress.log({
-      message: 'Enter key pressed',
-    });
-    Cypress.automation('remote:debugger:protocol', {
-      command: 'Input.dispatchKeyEvent',
-      params: {
-        type: 'char',
-        unmodifiedText: '\r',
-        text: '\r',
-      },
-    });
-
-    return subject;
   }
 );

@@ -258,10 +258,10 @@ describe('Detectors', () => {
   before(() => {
     cy.cleanUpTests();
 
-    cy.createIndex(cypressIndexWindows, sample_windows_index_settings);
+    cy.sa_createIndex(cypressIndexWindows, sample_windows_index_settings);
 
     // Create test index
-    cy.createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
+    cy.sa_createIndex(cypressIndexDns, sample_dns_index_settings).then(() =>
       cy
         .request(
           'POST',
