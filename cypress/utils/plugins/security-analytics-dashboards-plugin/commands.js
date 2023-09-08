@@ -387,8 +387,8 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
     url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
     headers: {
-      'osd-xsrf': true
-    }
+      'osd-xsrf': true,
+    },
   });
 });
 
