@@ -117,6 +117,8 @@ export const createDetector = (
       });
     });
 
+  // Wait for the first run to execute before ingesting data
+  cy.wait(65000);
   // Ingest documents to the test index
   for (let i = 0; i < indexDocsCount; i++) {
     cy.insertDocumentToIndex(indexName, '', indexDoc);
