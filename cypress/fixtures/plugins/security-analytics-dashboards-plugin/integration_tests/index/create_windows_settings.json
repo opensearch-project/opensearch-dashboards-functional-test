@@ -1,7 +1,7 @@
 {
   "mappings": {
     "properties": {
-      "winlog.event_id": {
+      "EventID": {
         "type": "integer"
       },
       "winlog.provider_name": {

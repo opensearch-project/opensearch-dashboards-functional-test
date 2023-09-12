@@ -16,7 +16,7 @@
     }
   ],
   "log_source": "",
-  "detection": "selection:\n  winlog-event_id:\n    - 2003\n    - 2100\n    - 2102\ncondition: selection",
+  "detection": "selection:\n  EventID:\n    - 2003\n    - 2100\n    - 2102\ncondition: selection",
   "level": "high",
   "false_positives": [
     {
