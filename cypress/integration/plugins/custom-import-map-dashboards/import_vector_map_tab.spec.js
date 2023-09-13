@@ -22,8 +22,10 @@ describe('Verify the presence of import custom map tab in region map plugin', ()
     // Click on "Region Map" icon
     cy.contains('Region Map').click({ force: true });
 
-    // Select index source - [Flights] Flight Log
-    cy.contains('[Flights] Flight Log').click({ force: true });
+    // Select index source - opensearch_dashboards_sample_data_flights
+    cy.contains('opensearch_dashboards_sample_data_flights').click({
+      force: true,
+    });
   });
 
   it('checks import custom map tab is present', () => {
