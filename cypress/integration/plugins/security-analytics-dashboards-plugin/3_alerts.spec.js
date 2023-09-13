@@ -259,11 +259,7 @@ describe('Alerts', () => {
       // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
       // so this test formats the expected document into an array of strings,
       // and matches each entry with the corresponding element line.
-      const document = JSON.stringify(
-        JSON.parse('{"winlog.event_id": 2003}'),
-        null,
-        2
-      );
+      const document = JSON.stringify(JSON.parse('{"EventID": 2003}'), null, 2);
       const documentLines = document.split('\n');
       cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
         .get('[class="euiCodeBlock__line"]')
