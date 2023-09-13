@@ -1,3 +1,3 @@
 {
-  "winlog.event_id": "2003"
+  "EventID": "2003"
 }
