@@ -14,18 +14,14 @@ describe('Verify the presence of import custom map tab in region map plugin', ()
     cy.deleteAllIndices();
     miscUtils.addSampleData();
 
-    cy.visit(`${BASE_PATH}/app/visualize#/`);
-
-    // Click on "Create Visualization" tab
-    cy.contains('Create visualization').click({ force: true });
-
-    // Click on "Region Map" icon
-    cy.contains('Region Map').click({ force: true });
-
-    // Select index source - opensearch_dashboards_sample_data_flights
-    cy.contains('opensearch_dashboards_sample_data_flights').click({
-      force: true,
-    });
+    // Load region map visualization with sample data opensearch_dashboards_sample_data_flights
+    cy.visit(
+      `${BASE_PATH}/app/visualize#/create?type=region_map&indexPattern=d3d7af60-4c81-11e8-b3d7-01146121b73d`,
+      {
+        retryOnStatusCodeFailure: true,
+        timeout: 60000,
+      }
+    );
   });
 
   it('checks import custom map tab is present', () => {
