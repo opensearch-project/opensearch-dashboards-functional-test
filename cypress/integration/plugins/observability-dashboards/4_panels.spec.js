@@ -125,6 +125,7 @@ describe('Testing a panel', () => {
     });
     cy.get('.euiLink').contains('This year').trigger('mouseover').click();
     cy.wait(delay * 2);
+    moveToTestPanel();
     cy.get(
       '.euiSuperDatePicker__prettyFormat[data-test-subj="superDatePickerShowDatesButton"]'
     )
