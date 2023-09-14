@@ -50,10 +50,7 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     timeout: TIMEOUT_DELAY,
   }).click();
   cy.get('.euiQuickSelect__applyButton').click();
-  cy.get('.euiSuperDatePicker__prettyFormatLink').click();
-  cy.get(
-    'button.euiDatePopoverButton--start[data-test-subj="superDatePickerstartDatePopoverButton"]'
-  ).click();
+  cy.get('[data-test-subj="superDatePickerShowDatesButton"]').click();
   cy.get('.euiTab__content').contains('Absolute').click();
   cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
     timeout: TIMEOUT_DELAY,

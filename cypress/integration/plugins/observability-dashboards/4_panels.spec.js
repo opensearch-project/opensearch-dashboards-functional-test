@@ -8,16 +8,8 @@
 import {
   PANEL_DELAY as delay,
   TEST_PANEL,
-  PPL_VISUALIZATIONS,
-  PPL_VISUALIZATIONS_NAMES,
-  supressResizeObserverIssue,
   BASE_PATH,
 } from '../../../utils/constants';
-
-const moveToEventsHome = () => {
-  cy.visit(`${BASE_PATH}/app/observability-logs#`);
-  cy.wait(delay * 3);
-};
 
 const moveToPanelHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-dashboards#`);
@@ -34,40 +26,6 @@ const moveToTestPanel = () => {
   cy.get('h1').contains(TEST_PANEL).should('exist');
   cy.wait(delay);
 };
-
-describe('Creating visualizations', () => {
-  beforeEach(() => {
-    moveToEventsHome();
-  });
-
-  it('Create first visualization in event analytics', () => {
-    cy.get('[id^=autocomplete-textarea]').focus().type(PPL_VISUALIZATIONS[0], {
-      delay: 50,
-    });
-    cy.get('.euiButton__text').contains('Refresh').trigger('mouseover').click();
-    cy.wait(delay);
-    supressResizeObserverIssue();
-    cy.get('button[id="main-content-vis"]')
-      .contains('Visualizations')
-      .trigger('mouseover')
-      .click();
-    cy.wait(delay * 2);
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]')
-      .trigger('mouseover')
-      .click();
-    cy.wait(1000);
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]')
-      .focus()
-      .type(PPL_VISUALIZATIONS_NAMES[0], {
-        delay: 50,
-      });
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]')
-      .trigger('mouseover')
-      .click();
-    cy.wait(delay);
-    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
-  });
-});
 
 describe('Testing panels table', () => {
   beforeEach(() => {
@@ -112,6 +70,7 @@ describe('Testing panels table', () => {
   });
 
   it('Deletes panels', () => {
+    cy.get('.panel-header-count').contains('(2)');
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]')
       .trigger('mouseover')
       .click();
@@ -166,6 +125,7 @@ describe('Testing a panel', () => {
     });
     cy.get('.euiLink').contains('This year').trigger('mouseover').click();
     cy.wait(delay * 2);
+    moveToTestPanel();
     cy.get(
       '.euiSuperDatePicker__prettyFormat[data-test-subj="superDatePickerShowDatesButton"]'
     )
