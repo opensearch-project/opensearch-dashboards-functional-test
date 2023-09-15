@@ -38,10 +38,10 @@ describe('Cypress', () => {
 
     cy.wait(12500);
     cy.get('[id="landingPageOnDemandDownload"]')
-      .contains('PDF')
+      .contains('CSV')
       .click({ force: true });
     cy.get('.euiToastHeader__title')
-      .contains('Successfully generated report')
+      .contains('Successfully downloaded report')
       .should('exist');
   });
 
