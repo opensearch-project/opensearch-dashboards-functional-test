@@ -30,7 +30,7 @@ describe('saved queries saved objects', () => {
         cy.setTopNavDate(fromTime, toTime)
 
         // Set up query and filter
-        cy.submitQuery('response:200')
+        cy.setTopNavQuery('response:200')
         cy.submitFilterFromDropDown('extension.raw', 'is one of', 'jpg')
 
         cy.waitForLoader();

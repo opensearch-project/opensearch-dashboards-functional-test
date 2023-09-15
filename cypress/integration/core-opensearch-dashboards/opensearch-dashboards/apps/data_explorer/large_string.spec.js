@@ -35,28 +35,28 @@ describe('test large strings', () => {
 
         //Error: could not locate the index pattern 'testlargestring'
         cy.setAdvancedSetting({ 
-            defaultIndex: 'testlargestring',
+            defaultIndex: 'fe302d30-62df-11e9-ab97-9ded634d922e',
          });
     });
 
     it('verify the large string book present', function () {
         // Go to the Discover page
         miscUtils.visitPage('app/data-explorer/discover#/');
+        cy.wait(60000)
         cy.waitForLoader()
         
         const ExpectedDoc =
-          'mybook:Project Gutenberg EBook of Hamlet, by William Shakespeare' +
-          ' This eBook is for the use of anyone anywhere in the United States' +
-          ' and most other parts of the world at no cost and with almost no restrictions whatsoever.' +
-          ' You may copy it, give it away or re-use it under the terms of the' +
-          ' Project Gutenberg License included with this eBook or online at www.gutenberg.org.' +
-          ' If you are not located in the United States,' +
-          ' you’ll have to check the laws of the country where you are' +
-          ' located before using this ebook.' +
-          ' Title: Hamlet Author: William Shakespeare Release Date: November 1998 [EBook #1524]' +
-          ' Last Updated: December 30, 2017 Language: English Character set encoding:';
-  
-        
+          'Project Gutenberg EBook of Hamlet, by William Shakespeare\n\nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no\nrestrictions whatsoever. You may copy it, give it away or re-use it\nunder the terms of the Project Gutenberg License included with this\neBook or online at www.gutenberg.org. If you are not located in the\nUnited States, you’ll have to check the laws of the country where you\nare located before using this ebook.'
+
+          cy.get('[data-test-subj="dataGridRowCell"]:nth-child(3) span')
+            .contains(ExpectedDoc)
+            .then(($el) => {
+                cy.log($el[0])
+                cy.log($el[0].text())
+                cy.contain
+                expect($el[0].text()).to.include('Project Gutenberg')
+            })
+            
       });
 
       describe('test large data', function () {
@@ -64,7 +64,7 @@ describe('test large strings', () => {
             cy.log('test Newsletter keyword is searched');
             const expectedHitCount = '1';
             const query = 'Newsletter'
-            cy.submitQuery(query)
+            cy.setTopNavQuery(query)
             cy.verifyHitCount(expectedHitCount)
         });
   

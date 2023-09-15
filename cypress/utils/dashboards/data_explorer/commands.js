@@ -79,15 +79,6 @@ Cypress.Commands.add('isChartIntervalWarningIconExist', () => {
       .should('be.visible')
 })
 
-Cypress.Commands.add('submitQuery', (query) => {
-    cy.log(`QueryBar.setQuery(${query})`)
-    cy.getElementByTestId('queryInput')
-      .clear()
-      .type(query)
-      .type('Cypress.io{enter}')
-    cy.waitForLoader()
-})
-
 Cypress.Commands.add('verifyMarkCount', (count) => {
     cy.getElementByTestId('docTable')
       .find('mark')
@@ -100,7 +91,10 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
     cy.getElementByTestId('filterFieldSuggestionList')
       .should('be.visible')
       .click()
-    cy.contains('button', field)
+    cy.getElementByTestId('comboBoxOptionsList filterFieldSuggestionList-optionsList')
+      .get('button')
+      .contains(field)
+      .click()
 
     cy.getElementByTestId('filterOperatorList')
       .should('be.visible')
@@ -115,4 +109,18 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
     cy.getElementByTestId('saveFilter')
       .click()
     cy.waitForLoader()
+})
+
+Cypress.Commands.add('saveQuery', (name, description) => {
+    cy.whenTestIdNotFound('saved-query-management-popover', () => {
+        cy.getElementByTestId('saved-query-management-popover-button')
+          .click()
+    })
+    cy.getElementByTestId('saved-query-management-save-button')
+      .click()
+    
+    cy.getElementByTestId('saveQueryFormTitle')
+      .type(name)
+    cy.getElementByTestId('saveQueryFormDescription')
+      .type(description)
 })

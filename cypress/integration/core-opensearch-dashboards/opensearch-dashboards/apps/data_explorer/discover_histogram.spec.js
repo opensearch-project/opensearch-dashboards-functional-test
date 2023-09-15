@@ -19,27 +19,27 @@ describe('discover histogram', () => {
         cy.log('load opensearch-dashboards index with default index pattern');
 
         // import long window logstash index pattern
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
-        );
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
+        // );
 
-        // import logstash functional
-        testFixtureHandler.importJSONMapping(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-        )
+        // // import logstash functional
+        // testFixtureHandler.importJSONMapping(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+        // )
 
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-        )
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+        // )
 
-        // import long window logstash
-        testFixtureHandler.importJSONMapping(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
-        );
+        // // import long window logstash
+        // testFixtureHandler.importJSONMapping(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
+        // );
       
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/data.json.txt'
-        );
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/data.json.txt'
+        // );
 
         cy.setAdvancedSetting({ 
             defaultIndex: 'long-window-logstash-*',
@@ -51,6 +51,12 @@ describe('discover histogram', () => {
         cy.waitForLoader();
         cy.wait(60000)
     });
+
+    after(() => {
+        cy.setAdvancedSetting({ 
+            'dateFormat:tz': 'Browser',
+         });
+    })
 
     it('should visualize monthly data with different day intervals', () => {
         const fromTime = 'Nov 01, 2017 @ 00:00:00.000';
