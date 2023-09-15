@@ -71,16 +71,20 @@ describe('CompositeLevelMonitor', () => {
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
       // Wait for input to load and then type in the monitor name
-      cy.get('input[name="name"]').type(SAMPLE_VISUAL_EDITOR_MONITOR);
+      cy.get('input[name="name"]').type(SAMPLE_VISUAL_EDITOR_MONITOR, {
+        force: true,
+      });
 
       // Select associated monitors
       cy.get('[data-test-subj="monitors_list_0"]').type('monitorOne', {
         delay: 50,
+        force: true,
       });
       cy.get('[title="monitorOne"]').click({ force: true });
 
       cy.get('[data-test-subj="monitors_list_1"]').type('monitorTwo', {
         delay: 50,
+        force: true,
       });
       cy.get('[title="monitorTwo"]').click({ force: true });
 
@@ -88,9 +92,9 @@ describe('CompositeLevelMonitor', () => {
 
       // Type trigger name
       cy.get('[data-test-subj="composite-trigger-name"]')
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('Composite trigger');
+        .type('{selectall}', { force: true })
+        .type('{backspace}', { force: true })
+        .type('Composite trigger', { force: true });
 
       cy.intercept('api/alerting/workflows').as('createMonitorRequest');
       cy.intercept(`api/alerting/monitors?*`).as('getMonitorsRequest');
