@@ -4,116 +4,97 @@
  */
 
 import {
-    MiscUtils,
-    TestFixtureHandler
-  } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-import { DX_DEFAULT_END_TIME, DX_DEFAULT_START_TIME } from '../../../../../utils/constants';
+  MiscUtils,
+  TestFixtureHandler,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
-    cy,
-    Cypress.env('openSearchUrl')
-  );
+  cy,
+  Cypress.env('openSearchUrl')
+);
 
 describe('discover field visualize button', () => {
-    before(() => {
+  before(() => {
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
 
-        // testFixtureHandler.importJSONMapping(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-        // );
-          
-        // testFixtureHandler.importJSONDoc(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-        // );
-        // // import long window logstash index pattern
-        // testFixtureHandler.importJSONDoc(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
-        // );
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
+    // import long window logstash index pattern
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
+    );
 
-        // // import logstash functional
-        // testFixtureHandler.importJSONMapping(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-        // )
+    // import logstash functional
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+    );
 
-        // testFixtureHandler.importJSONDoc(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-        // )
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
 
-        cy.setAdvancedSetting({ 
-            defaultIndex: 'logstash-*',
-         });
+    cy.setAdvancedSetting({
+      defaultIndex: 'logstash-*',
     });
+  });
 
-    beforeEach(() => {
-        miscUtils.visitPage(`app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`);
-        cy.waitForLoader()
-        cy.waitForSearch()
-    })
+  beforeEach(() => {
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
+    cy.waitForLoader();
+    cy.wait(60000);
+    cy.waitForSearch();
+  });
 
-    it('should be able to visualize a field and save the visualization', () => {
-        cy.getElementByTestId('fieldFilterSearchInput')
-          .type('type')
-        cy.log('visualize a type field');
-        cy.getElementByTestId('field-type-showDetails')
-          .click()
-        cy.getElementByTestId('fieldVisualize-type')
-          .click() 
-      });
-    
-    it('should visualize a field in area chart', () => {
-        cy.getElementByTestId('fieldFilterSearchInput')
-          .type('phpmemory')
-        cy.log('visualize a phpmemory field');
-        cy.getElementByTestId('field-phpmemory-showDetails')
-          .click()
-        cy.getElementByTestId('fieldVisualize-phpmemory')
-          .click()
-        cy.waitForLoader()
-        cy.get('.visEditor__canvas')
-          .should('be.visible')
-      });
+  it('should be able to visualize a field and save the visualization', () => {
+    cy.getElementByTestId('fieldFilterSearchInput').type('type');
+    cy.log('visualize a type field');
+    cy.getElementByTestId('field-type-showDetails').click();
+    cy.getElementByTestId('fieldVisualize-type').click();
+  });
 
-      it('should not show the "Visualize" button for geo field', () => {
-        cy.getElementByTestId('fieldFilterSearchInput')
-          .type('geo.coordinates')
-        cy.log('visualize a geo field');
-        cy.getElementByTestId('field-geo.coordinates-showDetails')
-          .click()
-        cy.getElementByTestId('fieldVisualize-geo.coordinates')
-          .should('not.exist')
-      });
+  it('should visualize a field in area chart', () => {
+    cy.getElementByTestId('fieldFilterSearchInput').type('phpmemory');
+    cy.log('visualize a phpmemory field');
+    cy.getElementByTestId('field-phpmemory-showDetails').click();
+    cy.getElementByTestId('fieldVisualize-phpmemory').click();
+    cy.waitForLoader();
+    cy.get('.visEditor__canvas').should('be.visible');
+  });
 
-      it('should preserve app filters in visualize', () => {
-        cy.submitFilterFromDropDown('bytes', 'exists') 
-        cy.getElementByTestId('fieldFilterSearchInput')
-          .type('geo.src')
-        cy.log('visualize a geo.src field with filter applied');
-        cy.getElementByTestId('field-geo.src-showDetails')
-          .click()
-        cy.getElementByTestId('fieldVisualize-geo.src')
-          .click()
-        cy.waitForLoader()
-        cy.get('.visEditor__canvas')
-          .should('be.visible')
-        cy.get('[data-test-subj~=filter-key-bytes]')
-          .should('be.visible')
-      });
+  it('should not show the "Visualize" button for geo field', () => {
+    cy.getElementByTestId('fieldFilterSearchInput').type('geo.coordinates');
+    cy.log('visualize a geo field');
+    cy.getElementByTestId('field-geo.coordinates-showDetails').click();
+    cy.getElementByTestId('fieldVisualize-geo.coordinates').should('not.exist');
+  });
 
-      it('should preserve query in visualize', () => {
-        const query = 'machine.os : ios'
-        cy.setTopNavQuery(query)
-        cy.getElementByTestId('fieldFilterSearchInput')
-          .type('geo.dest')
-        cy.log('visualize a geo.dest field with query applied');
-        cy.getElementByTestId('field-geo.dest-showDetails')
-          .click()
-        cy.getElementByTestId('fieldVisualize-geo.dest')
-          .click()
-        cy.waitForLoader()
-        cy.get('.visEditor__canvas')
-          .should('be.visible')
-  
-        cy.getElementByTestId('queryInput')
-          .should('have.text', query)
-      });
-})
+  it('should preserve app filters in visualize', () => {
+    cy.submitFilterFromDropDown('bytes', 'exists');
+    cy.getElementByTestId('fieldFilterSearchInput').type('geo.src');
+    cy.log('visualize a geo.src field with filter applied');
+    cy.getElementByTestId('field-geo.src-showDetails').click();
+    cy.getElementByTestId('fieldVisualize-geo.src').click();
+    cy.waitForLoader();
+    cy.get('.visEditor__canvas').should('be.visible');
+    cy.get('[data-test-subj~=filter-key-bytes]').should('be.visible');
+  });
+
+  it('should preserve query in visualize', () => {
+    const query = 'machine.os : ios';
+    cy.setTopNavQuery(query);
+    cy.getElementByTestId('fieldFilterSearchInput').type('geo.dest');
+    cy.log('visualize a geo.dest field with query applied');
+    cy.getElementByTestId('field-geo.dest-showDetails').click();
+    cy.getElementByTestId('fieldVisualize-geo.dest').click();
+    cy.waitForLoader();
+    cy.get('.visEditor__canvas').should('be.visible');
+
+    cy.getElementByTestId('queryInput').should('have.text', query);
+  });
+});

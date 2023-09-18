@@ -3,32 +3,26 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-    MiscUtils,
-  } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
 
 describe('inspector', () => {
-    before(() => {
-        cy.setAdvancedSetting({ 
-            defaultIndex: 'logstash-*',
-         });
-
-         miscUtils.visitPage('app/data-explorer/discover#/');
-         cy.waitForLoader()
+  before(() => {
+    cy.setAdvancedSetting({
+      defaultIndex: 'logstash-*',
     });
 
-    describe('should display request stats with no results', () => {
-        cy.getElementByTestId('openInspectorButton')
-          .click()
-        cy.getElementByTestId('inspectorPanel')
-          .should('be.visible')
-    });
+    miscUtils.visitPage('app/data-explorer/discover#/');
+    cy.waitForLoader();
+  });
 
-    after(() => {
-        cy.getElementByTestId('euiFlyoutCloseButton')
-          .should('be.visible')
-          .click()
-    })
-})
+  describe('should display request stats with no results', () => {
+    cy.getElementByTestId('openInspectorButton').click();
+    cy.getElementByTestId('inspectorPanel').should('be.visible');
+  });
+
+  after(() => {
+    cy.getElementByTestId('euiFlyoutCloseButton').should('be.visible').click();
+  });
+});

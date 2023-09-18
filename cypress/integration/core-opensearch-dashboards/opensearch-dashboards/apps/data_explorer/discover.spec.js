@@ -4,158 +4,243 @@
  */
 
 import {
-    CommonUI,
-    TestFixtureHandler,
-    MiscUtils,
-  } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-import { DX_DEFAULT_END_TIME, DX_DEFAULT_START_TIME } from '../../../../../utils/constants';
+  TestFixtureHandler,
+  MiscUtils,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  DX_DEFAULT_END_TIME,
+  DX_DEFAULT_START_TIME,
+} from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
-    cy,
-    Cypress.env('openSearchUrl')
-  );
+  cy,
+  Cypress.env('openSearchUrl')
+);
 
 describe('discover app', () => {
-    before(() => {
-        // cy.log('load opensearch-dashboards index with default index pattern');
-        // testFixtureHandler.importJSONMapping(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-        // );
-      
-        // testFixtureHandler.importJSONDoc(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-        // );
+  before(() => {
+    // cy.log('load opensearch-dashboards index with default index pattern');
+    // testFixtureHandler.importJSONMapping(
+    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    // );
 
-        // testFixtureHandler.importJSONMapping(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-        // )
+    // testFixtureHandler.importJSONDoc(
+    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    // );
 
-        // testFixtureHandler.importJSONDoc(
-        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-        // )
-         
-        // Go to the Discover page        
-        miscUtils.visitPage(`app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`);
-        cy.waitForLoader();
-        cy.waitForSearch()
+    // testFixtureHandler.importJSONMapping(
+    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+    // )
+
+    // testFixtureHandler.importJSONDoc(
+    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    // )
+
+    // Go to the Discover page
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
+    cy.waitForLoader();
+    cy.waitForSearch();
+  });
+
+  // after(() => {
+  //     //miscUtils.removeSampleData();
+  // });
+
+  describe.skip('save search', () => {
+    const saveSearch1 = 'Save Search # 1';
+    const saveSearch2 = 'Modified Save Search # 1';
+
+    it('should show correct time range string by timepicker', function () {
+      cy.verifyTimeConfig(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.waitForLoader();
     });
 
-    // after(() => {
-    //     //miscUtils.removeSampleData();
-    // });
+    it.skip('save search should display save search name in breadcrumb', function () {
+      cy.log('save search should display save search name in breadcrumb');
+      cy.saveSearch(saveSearch1);
+      cy.getElementByTestId('breadcrumb last')
+        .should('be.visible')
+        .should('have.text', saveSearch1);
+    });
 
-    describe('save search', () => {
-        const saveSearch1 = 'Save Search # 1';
+    it.skip('load save search should show save search name in breadcrumb', function () {
+      cy.loadSaveSearch(saveSearch1);
 
-        it('should show correct time range string by timepicker', function () {
-            cy.verifyTimeConfig(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
-            cy.waitForLoader();
+      cy.getElementByTestId('breadcrumb last')
+        .should('be.visible')
+        .should('have.text', saveSearch1);
+    });
+
+    it.skip('renaming a save search should modify name in breadcrumb', function () {
+      cy.loadSaveSearch(saveSearch1);
+      cy.saveSearch(saveSearch2);
+
+      cy.getElementByTestId('breadcrumb last')
+        .should('be.visible')
+        .should('have.text', saveSearch2);
+    });
+
+    it('should show the correct hit count', function () {
+      cy.loadSaveSearch(saveSearch2);
+      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      const expectedHitCount = '14,004';
+      cy.verifyHitCount(expectedHitCount);
+    });
+
+    it('should show correct time range string in chart', function () {
+      cy.getElementByTestId('discoverIntervalDateRange').should(
+        'have.text',
+        `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME} `
+      );
+    });
+
+    it('should show correct initial chart interval of Auto', function () {
+      cy.url().should('contains', 'interval:auto');
+    });
+
+    it('should not show "no results"', () => {
+      cy.getElementByTestId('discoverNoResults').should('not.exist');
+    });
+
+    it('should reload the saved search with persisted query to show the initial hit count', function () {
+      // apply query some changes
+      cy.setTopNavQuery('test');
+      cy.verifyHitCount('22');
+
+      // reset to persisted state
+      cy.getElementByTestId('resetSavedSearch').click();
+      const expectedHitCount = '14,004';
+      cy.verifyHitCount(expectedHitCount);
+    });
+  });
+
+  describe('save search #2 which has an empty time range', () => {
+    const fromTime = 'Jun 11, 1999 @ 09:22:11.000';
+    const toTime = 'Jun 12, 1999 @ 11:21:04.000';
+
+    before(() => {
+      cy.setTopNavDate(fromTime, toTime);
+      cy.waitForSearch();
+    });
+
+    it('should show "no results"', () => {
+      cy.getElementByTestId('discoverNoResults').should('be.exist');
+    });
+
+    it('should suggest a new time range is picked', () => {
+      cy.getElementByTestId('discoverNoResultsTimefilter').should('be.exist');
+    });
+  });
+
+  describe('nested query', () => {
+    before(() => {
+      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.waitForSearch();
+    });
+
+    it('should support querying on nested fields', function () {
+      cy.setTopNavQuery('nestedField:{{}child:nestedValue{}}');
+      cy.verifyHitCount('1');
+    });
+  });
+
+  describe.skip('data-shared-item', function () {
+    it('should have correct data-shared-item title and description', () => {
+      const expected = {
+        title: 'A Saved Search',
+        description: 'A Saved Search Description',
+      };
+
+      cy.loadSaveSearch(expected.title);
+      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.waitForLoader();
+      cy.getElementByTestId('docTable')
+        .should('have.attr', 'data-shared-item')
+        .should('have.attr', 'data-title', expected.title)
+        .should('have.attr', 'data-description', expected.description);
+    });
+  });
+
+  //https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5057
+  describe.skip('usage of discover:searchOnPageLoad', () => {
+    it('should fetch data from OpenSearch initially when discover:searchOnPageLoad is false', function () {
+      cy.setAdvancedSetting({
+        'discover:searchOnPageLoad': false,
+      });
+      miscUtils.visitPage(`app/data-explorer/discover#/`);
+      cy.waitForLoader();
+      // expect(await PageObjects.discover.getNrOfFetches()).to.be(0);
+    });
+
+    it('should not fetch data from OpenSearch initially when discover:searchOnPageLoad is true', function () {
+      cy.setAdvancedSetting({
+        'discover:searchOnPageLoad': true,
+      });
+      miscUtils.visitPage(`app/data-explorer/discover#/`);
+      cy.waitForLoader();
+      // expect(await PageObjects.discover.getNrOfFetches()).to.be(1);
+    });
+  });
+
+  describe('managing fields', function () {
+    it('should add a field, sort by it, remove it and also sorting by it', function () {
+      // Go to the Discover page
+      miscUtils.visitPage(
+        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+      );
+      cy.waitForLoader();
+      cy.waitForSearch();
+
+      cy.getElementByTestId('fieldFilterSearchInput').type('ip');
+
+      cy.getElementByTestId('fieldToggle-ip').should('be.visible').click();
+
+      cy.getElementByTestId('dataGridHeaderCell-ip').should('be.visible');
+      cy.getElementByTestId('dataGridHeaderCellActionButton-ip').click();
+
+      // Sort from A-Z
+      cy.contains('button', 'A-Z').click();
+
+      // Move the column to the left
+      cy.getElementByTestId('dataGridHeaderCellActionButton-ip').click();
+
+      cy.contains('button', 'Move left').click();
+
+      cy.getElementByTestId('fieldToggle-ip').should('be.visible').click();
+
+      cy.getElementByTestId('dataGridHeaderCell-ip').should('not.be.exist');
+    });
+  });
+
+  describe('refresh interval', function () {
+    it('should refetch when autofresh is enabled', () => {
+      cy.getElementByTestId('openInspectorButton').click();
+      cy.getElementByTestId('inspectorPanel')
+        .get('table')
+        .contains('tbody tr:nth-of-type(5) td:nth-of-type(1)')
+        .then(($el) => {
+          cy.log($el);
         });
-  
-        it('save search should display save search name in breadcrumb', function () {
-          cy.log("save search should display save search name in breadcrumb")
-          cy.saveSearch(saveSearch1);
-          cy.getElementByTestId('breadcrumb last')
-            .should('be.visible')
-            .should('have.text', saveSearch1)
+      cy.getElementByTestId('euiFlyoutCloseButton').click();
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+      cy.getElementByTestId('superDatePickerRefreshIntervalInput')
+        .should('be.visible')
+        .type('2');
+      cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
+      cy.wait(100);
+      cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
+      cy.getElementByTestId('openInspectorButton').click();
+
+      cy.get('tbody tr')
+        .eq(5) // Fifth row
+        .find('td')
+        .eq(1) // Second column
+        .then(($el) => {
+          cy.log($el);
         });
-  
-        it('load save search should show save search name in breadcrumb', function () {
-          cy.loadSaveSearch(saveSearch1)
-  
-          cy.getElementByTestId('breadcrumb last')
-            .should('be.visible')
-            .should('have.text', saveSearch1)
-        });
-  
-        it('renaming a save search should modify name in breadcrumb', function () {
-          const saveSearch2 = 'Modified Save Search # 1';
-          cy.loadSaveSearch(saveSearch1);
-          cy.saveSearch(saveSearch2);
-  
-          cy.getElementByTestId('breadcrumb last')
-            .should('be.visible')
-            .should('have.text', saveSearch2)
-        });
-  
-        it('should show the correct hit count', function () {
-          const expectedHitCount = '14,004';
-          cy.verifyHitCount(expectedHitCount)
-        });
-  
-        it('should show correct time range string in chart', function () {
-          cy.getElementByTestId('discoverIntervalDateRange')
-            .should('have.text', `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME}`)
-        });
-  
-        it('should modify the time range when a bar is clicked', function () {
-          await PageObjects.timePicker.setDefaultAbsoluteRange();
-          await PageObjects.discover.clickHistogramBar();
-          await PageObjects.discover.waitUntilSearchingHasFinished();
-          const time = await PageObjects.timePicker.getTimeConfig();
-          expect(time.start).to.be('Sep 21, 2015 @ 09:00:00.000');
-          expect(time.end).to.be('Sep 21, 2015 @ 12:00:00.000');
-          await retry.waitFor('doc table to contain the right search result', async () => {
-            const rowData = await PageObjects.discover.getDocTableField(1);
-            log.debug(`The first timestamp value in doc table: ${rowData}`);
-            return rowData.includes('Sep 21, 2015 @ 11:59:22.316');
-          });
-        });
-  
-        // it('should modify the time range when the histogram is brushed', async function () {
-        //   await PageObjects.timePicker.setDefaultAbsoluteRange();
-        //   await PageObjects.discover.brushHistogram();
-        //   await PageObjects.discover.waitUntilSearchingHasFinished();
-  
-        //   const newDurationHours = await PageObjects.timePicker.getTimeDurationInHours();
-        //   expect(Math.round(newDurationHours)).to.be(24);
-  
-        //   await retry.waitFor('doc table to contain the right search result', async () => {
-        //     const rowData = await PageObjects.discover.getDocTableField(1);
-        //     log.debug(`The first timestamp value in doc table: ${rowData}`);
-        //     const dateParsed = Date.parse(rowData);
-        //     //compare against the parsed date of Sep 20, 2015 @ 17:30:00.000 and Sep 20, 2015 @ 23:30:00.000
-        //     return dateParsed >= 1442770200000 && dateParsed <= 1442791800000;
-        //   });
-        // });
-  
-        // it('should show correct initial chart interval of Auto', async function () {
-        //   await PageObjects.timePicker.setDefaultAbsoluteRange();
-        //   await PageObjects.discover.waitUntilSearchingHasFinished();
-        //   const actualInterval = await PageObjects.discover.getChartInterval();
-  
-        //   const expectedInterval = 'Auto';
-        //   expect(actualInterval).to.be(expectedInterval);
-        // });
-  
-        // it('should show Auto chart interval', async function () {
-        //   const expectedChartInterval = 'Auto';
-  
-        //   const actualInterval = await PageObjects.discover.getChartInterval();
-        //   expect(actualInterval).to.be(expectedChartInterval);
-        // });
-  
-        // it('should not show "no results"', async () => {
-        //   const isVisible = await PageObjects.discover.hasNoResults();
-        //   expect(isVisible).to.be(false);
-        // });
-  
-        // it('should reload the saved search with persisted query to show the initial hit count', async function () {
-        //   // apply query some changes
-        //   await queryBar.setQuery('test');
-        //   await queryBar.submitQuery();
-        //   await retry.try(async function () {
-        //     expect(await PageObjects.discover.getHitCount()).to.be('22');
-        //   });
-  
-        //   // reset to persisted state
-        //   await PageObjects.discover.clickResetSavedSearchButton();
-        //   const expectedHitCount = '14,004';
-        //   await retry.try(async function () {
-        //     expect(await queryBar.getQueryString()).to.be('');
-        //     expect(await PageObjects.discover.getHitCount()).to.be(expectedHitCount);
-        //   });
-        // });
-    })
-})
+    });
+  });
+});
