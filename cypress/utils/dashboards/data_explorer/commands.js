@@ -23,7 +23,6 @@ Cypress.Commands.add('saveSearch', (name) => {
 
     cy.get('discoverSaveButton', opts)
       .click()
-      cy.log("in func save search 1")
     cy.getElementByTestId('savedObjectTitle').type(name);
     cy.getElementByTestId('confirmSaveSavedObjectButton').click();
 

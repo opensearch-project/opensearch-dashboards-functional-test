@@ -35,11 +35,10 @@ describe('discover app', () => {
         //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
         // )
          
-        // Go to the Discover page
-        miscUtils.visitPage('app/data-explorer/discover#/');
+        // Go to the Discover page        
+        miscUtils.visitPage(`app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`);
         cy.waitForLoader();
-        cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME)
-        cy.wait(2000)
+        cy.waitForSearch()
     });
 
     // after(() => {
@@ -49,7 +48,7 @@ describe('discover app', () => {
     describe('save search', () => {
         const saveSearch1 = 'Save Search # 1';
 
-        it.skip('should show correct time range string by timepicker', function () {
+        it('should show correct time range string by timepicker', function () {
             cy.verifyTimeConfig(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
             cy.waitForLoader();
         });
@@ -63,7 +62,6 @@ describe('discover app', () => {
         });
   
         it('load save search should show save search name in breadcrumb', function () {
-          cy.log("load save search should show save search name in breadcrumb")
           cy.loadSaveSearch(saveSearch1)
   
           cy.getElementByTestId('breadcrumb last')
@@ -86,25 +84,24 @@ describe('discover app', () => {
           cy.verifyHitCount(expectedHitCount)
         });
   
-        // it('should show correct time range string in chart', async function () {
-        //   const actualTimeString = await PageObjects.discover.getChartTimespan();
-        //   const expectedTimeString = `${PageObjects.timePicker.defaultStartTime} - ${PageObjects.timePicker.defaultEndTime}`;
-        //   expect(actualTimeString).to.be(expectedTimeString);
-        // });
+        it('should show correct time range string in chart', function () {
+          cy.getElementByTestId('discoverIntervalDateRange')
+            .should('have.text', `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME}`)
+        });
   
-        // it('should modify the time range when a bar is clicked', async function () {
-        //   await PageObjects.timePicker.setDefaultAbsoluteRange();
-        //   await PageObjects.discover.clickHistogramBar();
-        //   await PageObjects.discover.waitUntilSearchingHasFinished();
-        //   const time = await PageObjects.timePicker.getTimeConfig();
-        //   expect(time.start).to.be('Sep 21, 2015 @ 09:00:00.000');
-        //   expect(time.end).to.be('Sep 21, 2015 @ 12:00:00.000');
-        //   await retry.waitFor('doc table to contain the right search result', async () => {
-        //     const rowData = await PageObjects.discover.getDocTableField(1);
-        //     log.debug(`The first timestamp value in doc table: ${rowData}`);
-        //     return rowData.includes('Sep 21, 2015 @ 11:59:22.316');
-        //   });
-        // });
+        it('should modify the time range when a bar is clicked', function () {
+          await PageObjects.timePicker.setDefaultAbsoluteRange();
+          await PageObjects.discover.clickHistogramBar();
+          await PageObjects.discover.waitUntilSearchingHasFinished();
+          const time = await PageObjects.timePicker.getTimeConfig();
+          expect(time.start).to.be('Sep 21, 2015 @ 09:00:00.000');
+          expect(time.end).to.be('Sep 21, 2015 @ 12:00:00.000');
+          await retry.waitFor('doc table to contain the right search result', async () => {
+            const rowData = await PageObjects.discover.getDocTableField(1);
+            log.debug(`The first timestamp value in doc table: ${rowData}`);
+            return rowData.includes('Sep 21, 2015 @ 11:59:22.316');
+          });
+        });
   
         // it('should modify the time range when the histogram is brushed', async function () {
         //   await PageObjects.timePicker.setDefaultAbsoluteRange();

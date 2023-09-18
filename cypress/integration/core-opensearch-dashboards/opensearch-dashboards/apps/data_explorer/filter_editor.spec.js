@@ -21,13 +21,13 @@ describe('discover filter editor', () => {
     });
 
     describe('filter editor', function () {
-        it.skip('should add a phrases filter', function () {
+        it('should add a phrases filter', function () {
           cy.submitFilterFromDropDown('extension.raw', 'is one of', 'jpg')
           cy.get('[data-test-subj~="filter-key-extension.raw"]')
             .should('be.visible')
         });
   
-        it.skip('should show the phrases if you re-open a phrases filter', function () {
+        it('should show the phrases if you re-open a phrases filter', function () {
           cy.get('[data-test-subj~="filter-key-extension.raw"]')
             .click()
           cy.getElementByTestId('editFilter')
