@@ -18,26 +18,26 @@ const testFixtureHandler = new TestFixtureHandler(
 describe('discover field visualize button', () => {
     before(() => {
 
-        testFixtureHandler.importJSONMapping(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-        );
+        // testFixtureHandler.importJSONMapping(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+        // );
           
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-        );
-        // import long window logstash index pattern
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
-        );
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+        // );
+        // // import long window logstash index pattern
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
+        // );
 
-        // import logstash functional
-        testFixtureHandler.importJSONMapping(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-        )
+        // // import logstash functional
+        // testFixtureHandler.importJSONMapping(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+        // )
 
-        testFixtureHandler.importJSONDoc(
-            'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-        )
+        // testFixtureHandler.importJSONDoc(
+        //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+        // )
 
         cy.setAdvancedSetting({ 
             defaultIndex: 'logstash-*',
@@ -45,14 +45,12 @@ describe('discover field visualize button', () => {
     });
 
     beforeEach(() => {
-        miscUtils.visitPage('app/data-explorer/discover#/');
+        miscUtils.visitPage(`app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`);
         cy.waitForLoader()
-        cy.wait(60000)
-        cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME)
         cy.waitForSearch()
     })
 
-    it.skip('should be able to visualize a field and save the visualization', () => {
+    it('should be able to visualize a field and save the visualization', () => {
         cy.getElementByTestId('fieldFilterSearchInput')
           .type('type')
         cy.log('visualize a type field');
@@ -62,7 +60,7 @@ describe('discover field visualize button', () => {
           .click() 
       });
     
-    it.skip('should visualize a field in area chart', () => {
+    it('should visualize a field in area chart', () => {
         cy.getElementByTestId('fieldFilterSearchInput')
           .type('phpmemory')
         cy.log('visualize a phpmemory field');
@@ -75,7 +73,7 @@ describe('discover field visualize button', () => {
           .should('be.visible')
       });
 
-      it.skip('should not show the "Visualize" button for geo field', () => {
+      it('should not show the "Visualize" button for geo field', () => {
         cy.getElementByTestId('fieldFilterSearchInput')
           .type('geo.coordinates')
         cy.log('visualize a geo field');
@@ -97,12 +95,11 @@ describe('discover field visualize button', () => {
         cy.waitForLoader()
         cy.get('.visEditor__canvas')
           .should('be.visible')
-  
-        cy.getElementByTestId('filter filter-enabled filter-key-bytes filter-value-exists filter-unpinned')
+        cy.get('[data-test-subj~=filter-key-bytes]')
           .should('be.visible')
       });
 
-      it.skip('should preserve query in visualize', () => {
+      it('should preserve query in visualize', () => {
         const query = 'machine.os : ios'
         cy.setTopNavQuery(query)
         cy.getElementByTestId('fieldFilterSearchInput')

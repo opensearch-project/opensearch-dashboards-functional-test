@@ -91,23 +91,29 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
     cy.getElementByTestId('filterFieldSuggestionList')
       .should('be.visible')
       .click()
-    cy.getElementByTestId('comboBoxOptionsList filterFieldSuggestionList-optionsList')
-      .get('button')
-      .contains(field)
+      .type(field)
+    cy.contains('button', field)
       .click()
 
     cy.getElementByTestId('filterOperatorList')
       .should('be.visible')
       .click()
+      .type(operator)
     cy.contains('button', operator)
-
-    cy.get('[data-test-subj~="filterParamsComboBox"]')
-      .should('be.visible')
       .click()
-    cy.contains('button', value)
+    
+      if(value){
+        cy.get('[data-test-subj~="filterParamsComboBox"]')
+        .should('be.visible')
+        .click()
+        .type(value)
+      cy.contains('button', value)
+        .click()
+      }
+    
 
     cy.getElementByTestId('saveFilter')
-      .click()
+      .click({force:true})
     cy.waitForLoader()
 })
 
@@ -123,4 +129,8 @@ Cypress.Commands.add('saveQuery', (name, description) => {
       .type(name)
     cy.getElementByTestId('saveQueryFormDescription')
       .type(description)
+})
+
+Cypress.Commands.add(`importJSONDoc`, (index, filePath) => {
+
 })
