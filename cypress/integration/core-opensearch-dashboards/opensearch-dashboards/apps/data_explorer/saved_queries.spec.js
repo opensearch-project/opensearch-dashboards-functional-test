@@ -41,14 +41,16 @@ describe('saved queries saved objects', () => {
 
   describe('saved query management component functionality', function () {
     it('should show the saved query management component when there are no saved queries', () => {
-      cy.getElementByTestId('savedQueryPopover').click();
+      cy.getElementByTestId('saved-query-management-popover-button').click();
       cy.getElementByTestId('saved-query-management-popover')
         .should('be.visible')
-        .find('')
-        .contains(
-          'have.text',
-          'There are no saved queries. Save query text and filters that you want to use again.'
-        );
+        .get('[id="savedQueryManagementPopoverTitle"]')
+        .should('have.text', 'Saved Queries');
+
+      cy.get('[class~="osdSavedQueryManagement__text"]').should(
+        'have.text',
+        'There are no saved queries. Save query text and filters that you want to use again.'
+      );
     });
 
     it('should allow a query to be saved via the saved objects management component', () => {

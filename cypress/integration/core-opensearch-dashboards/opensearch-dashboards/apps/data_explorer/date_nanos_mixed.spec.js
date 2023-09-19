@@ -38,13 +38,20 @@ describe('date_nanos_mixed', () => {
   });
 
   it('shows a list of records of indices with date & date_nanos fields in the right order', function () {
-    // const rowData1 = await PageObjects.discover.getDocTableIndex(1);
-    // expect(rowData1.startsWith('Jan 1, 2019 @ 12:10:30.124000000')).to.be.ok();
-    // const rowData2 = await PageObjects.discover.getDocTableIndex(3);
-    // expect(rowData2.startsWith('Jan 1, 2019 @ 12:10:30.123498765')).to.be.ok();
-    // const rowData3 = await PageObjects.discover.getDocTableIndex(5);
-    // expect(rowData3.startsWith('Jan 1, 2019 @ 12:10:30.123456789')).to.be.ok();
-    // const rowData4 = await PageObjects.discover.getDocTableIndex(7);
-    // expect(rowData4.startsWith('Jan 1, 2019 @ 12:10:30.123000000')).to.be.ok();
+    cy.get(`[data-test-subj="dataGridRowCell"]`)
+      .eq(1)
+      .contains('Jan 1, 2019 @ 04:10:30.124000000');
+
+    cy.get(`[data-test-subj="dataGridRowCell"]`)
+      .eq(4)
+      .contains('Jan 1, 2019 @ 04:10:30.123498765');
+
+    cy.get(`[data-test-subj="dataGridRowCell"]`)
+      .eq(7)
+      .contains('Jan 1, 2019 @ 04:10:30.123456789');
+
+    cy.get(`[data-test-subj="dataGridRowCell"]`)
+      .eq(10)
+      .contains('Jan 1, 2019 @ 04:10:30.123000000');
   });
 });

@@ -20,28 +20,34 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('discover app', () => {
   before(() => {
-    // cy.log('load opensearch-dashboards index with default index pattern');
-    // testFixtureHandler.importJSONMapping(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-    // );
+    cy.log('load opensearch-dashboards index with default index pattern');
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
 
-    // testFixtureHandler.importJSONDoc(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-    // );
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
 
-    // testFixtureHandler.importJSONMapping(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-    // )
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+    );
 
-    // testFixtureHandler.importJSONDoc(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-    // )
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
 
     // Go to the Discover page
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.wait(30000);
+
+    cy.setAdvancedSetting({
+      defaultIndex: 'logstash-*',
+    });
+
     cy.waitForSearch();
   });
 
@@ -49,7 +55,7 @@ describe('discover app', () => {
   //     //miscUtils.removeSampleData();
   // });
 
-  describe.skip('save search', () => {
+  describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
 
@@ -58,7 +64,7 @@ describe('discover app', () => {
       cy.waitForLoader();
     });
 
-    it.skip('save search should display save search name in breadcrumb', function () {
+    it('save search should display save search name in breadcrumb', function () {
       cy.log('save search should display save search name in breadcrumb');
       cy.saveSearch(saveSearch1);
       cy.getElementByTestId('breadcrumb last')
@@ -66,7 +72,7 @@ describe('discover app', () => {
         .should('have.text', saveSearch1);
     });
 
-    it.skip('load save search should show save search name in breadcrumb', function () {
+    it('load save search should show save search name in breadcrumb', function () {
       cy.loadSaveSearch(saveSearch1);
 
       cy.getElementByTestId('breadcrumb last')
@@ -74,7 +80,7 @@ describe('discover app', () => {
         .should('have.text', saveSearch1);
     });
 
-    it.skip('renaming a save search should modify name in breadcrumb', function () {
+    it('renaming a save search should modify name in breadcrumb', function () {
       cy.loadSaveSearch(saveSearch1);
       cy.saveSearch(saveSearch2);
 
@@ -93,19 +99,22 @@ describe('discover app', () => {
     it('should show correct time range string in chart', function () {
       cy.getElementByTestId('discoverIntervalDateRange').should(
         'have.text',
-        `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME} `
+        `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME} per`
       );
     });
 
     it('should show correct initial chart interval of Auto', function () {
-      cy.url().should('contains', 'interval:auto');
+      cy.getElementByTestId('discoverIntervalSelect')
+        .select(0)
+        .should('have.value', 'auto');
     });
 
     it('should not show "no results"', () => {
       cy.getElementByTestId('discoverNoResults').should('not.exist');
     });
 
-    it('should reload the saved search with persisted query to show the initial hit count', function () {
+    // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5056
+    it.skip('should reload the saved search with persisted query to show the initial hit count', function () {
       // apply query some changes
       cy.setTopNavQuery('test');
       cy.verifyHitCount('22');
@@ -123,7 +132,6 @@ describe('discover app', () => {
 
     before(() => {
       cy.setTopNavDate(fromTime, toTime);
-      cy.waitForSearch();
     });
 
     it('should show "no results"', () => {

@@ -15,7 +15,7 @@ const testFixtureHandler = new TestFixtureHandler(
 const miscUtils = new MiscUtils(cy);
 
 describe('date_nanos', () => {
-  const fromTime = 'Sep 22, 2019 @ 20:31:44.000';
+  const fromTime = 'Sep 21, 2019 @ 20:31:44.000';
   const toTime = 'Sep 23, 2019 @ 03:31:44.000';
   before(() => {
     // import date nanos
@@ -39,7 +39,8 @@ describe('date_nanos', () => {
 
   it('should show a timestamp with nanoseconds in the first result row', function () {
     cy.verifyTimeConfig(fromTime, toTime);
-    //const rowData = await PageObjects.discover.getDocTableIndex(1);
-    //expect(rowData.startsWith('Sep 22, 2019 @ 23:50:13.253123345')).to.be.ok();
+    cy.get(`[data-test-subj="dataGridRowCell"]`)
+      .eq(1)
+      .contains('Sep 22, 2019 @ 16:50:13.253123345');
   });
 });

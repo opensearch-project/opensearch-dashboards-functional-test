@@ -98,7 +98,7 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
   //   .click()
 
   if (value) {
-    cy.get('[data-test-subj~="filterParamsComboBox"]')
+    cy.get('[data-test-subj~="phraseParamsComboBox"]')
       .should('be.visible')
       .click()
       .type(`${value}{downArrow}{enter}`)

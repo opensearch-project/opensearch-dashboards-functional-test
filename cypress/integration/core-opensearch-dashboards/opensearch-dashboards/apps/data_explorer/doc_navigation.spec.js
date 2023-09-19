@@ -26,16 +26,34 @@ describe('doc link in discover', () => {
       .click();
     cy.getElementByTestId(`documentDetailFlyOut`).should('be.visible');
 
-    cy.getElementByTestId('docTableRowAction')
-      .find('View single document')
-      .click();
+    // Both actions will take to the new tab
+    cy.getElementByTestId('docTableRowAction').contains('View single document');
 
-    cy.getElementByTestId('doc-hit').should('be.visible');
+    cy.getElementByTestId('docTableRowAction').contains(
+      'View surrounding documents'
+    );
   });
 
   it('if value is null, add filter should create a non-exist filter', function () {
     // Filter out special document
-    cy.submitFilterFromDropDown('agent', 'is', 'Missing/Fields');
+    cy.getElementByTestId('addFilter').click();
+    cy.getElementByTestId('filterFieldSuggestionList')
+      .should('be.visible')
+      .click()
+      .type(`agent{downArrow}{enter}`)
+      .trigger('blur', { force: true });
+
+    cy.getElementByTestId('filterOperatorList')
+      .should('be.visible')
+      .click()
+      .type(`is{downArrow}{enter}`)
+      .trigger('blur', { force: true });
+
+    cy.getElementByTestId('filterParams').type('Missing/Fields');
+
+    cy.getElementByTestId('saveFilter').click({ force: true });
+    cy.waitForLoader();
+
     cy.waitForSearch();
 
     cy.getElementByTestId(`docTableExpandToggleColumn-0`)
@@ -47,8 +65,19 @@ describe('doc link in discover', () => {
       .find(`[data-test-subj="addInclusiveFilterButton"]`)
       .click();
 
+    // Since the value of referer is null, the filter for value option will add a non-existing filter
     cy.get('[data-test-subj~="filter-key-referer"]').should('be.visible');
-
     cy.get('[data-test-subj~="filter-negated"]').should('be.visible');
+
+    // Filter out value option will add an existing filter
+    cy.getElementByTestId(`docTableExpandToggleColumn-0`)
+      .should('be.visible')
+      .click();
+
+    cy.getElementByTestId('tableDocViewRow-referer')
+      .find(`[data-test-subj="removeInclusiveFilterButton"]`)
+      .click();
+    cy.get('[data-test-subj~="filter-key-referer"]').should('be.visible');
+    cy.get('[data-test-subj~="filter-value-exists"]').should('be.visible');
   });
 });
