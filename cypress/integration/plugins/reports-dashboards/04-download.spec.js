@@ -68,7 +68,7 @@ describe('Cypress', () => {
     cy.get('#reportGenerationProgressModal');
   });
 
-  it.only('Download csv from saved search in-context menu', () => {
+  it('Download csv from saved search in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/discover#`);
     cy.wait(5000);
 
