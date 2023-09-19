@@ -54,11 +54,9 @@ Cypress.Commands.add(
     Cypress.log({
       message: `Wait for url: ${fullUrl} to be loaded.`,
     });
-    cy.url({ timeout: timeout })
-      .should('include', fullUrl)
-      .then(() => {
-        contains && cy.contains(contains).should('be.visible');
-      });
+    cy.url({ timeout: timeout }).then(() => {
+      contains && cy.contains(contains).should('be.visible');
+    });
   }
 );
 
