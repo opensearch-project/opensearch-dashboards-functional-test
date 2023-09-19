@@ -113,3 +113,29 @@ Cypress.Commands.add('saveQuery', (name, description) => {
   cy.getElementByTestId('saveQueryFormTitle').type(name);
   cy.getElementByTestId('saveQueryFormDescription').type(description);
 });
+
+Cypress.Commands.add('loadSaveQuery', (name) => {
+  cy.whenTestIdNotFound('saved-query-management-popover', () => {
+    cy.getElementByTestId('saved-query-management-popover-button').click();
+  });
+  cy.get(`[data-test-subj~="load-saved-query-${name}-button"]`)
+    .should('be.visible')
+    .click();
+});
+
+Cypress.Commands.add('clearSaveQuery', () => {
+  cy.whenTestIdNotFound('saved-query-management-popover', () => {
+    cy.getElementByTestId('saved-query-management-popover-button').click();
+  });
+  //clear save queries
+  cy.getElementByTestId('saved-query-management-clear-button').click();
+});
+
+Cypress.Commands.add('deleteSaveQuery', (name) => {
+  cy.getElementByTestId('saved-query-management-popover-button').click();
+
+  cy.get(`[data-test-subj~="delete-saved-query-${name}-button"]`)
+    .should('be.visible')
+    .click();
+  cy.getElementByTestId('confirmModalConfirmButton').click();
+});

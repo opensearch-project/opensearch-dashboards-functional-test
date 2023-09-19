@@ -17,5 +17,8 @@ declare namespace Cypress {
       verifyMarkCount(count: string): Chainable<any>;
       submitFilterFromDropDown(field: string, operator: string, value: string): Chainable<any>;
       saveQuery(name: string, description: string): Chainable<any>;
+      loadSaveQuery(name: string): Chainable<any>;
+      clearSaveQuery(): Chainable<any>;
+      deleteSaveQuery(name: string):Chainable<any>;
     }
   }
