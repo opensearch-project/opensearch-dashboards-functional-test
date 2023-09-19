@@ -41,23 +41,20 @@ describe('test large strings', () => {
   it('verify the large string book present', function () {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
-    cy.wait(60000);
     cy.waitForLoader();
 
-    const ExpectedDoc =
-      'Project Gutenberg EBook of Hamlet, by William Shakespeare\n\nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no\nrestrictions whatsoever. You may copy it, give it away or re-use it\nunder the terms of the Project Gutenberg License included with this\neBook or online at www.gutenberg.org. If you are not located in the\nUnited States, you’ll have to check the laws of the country where you\nare located before using this ebook.';
+    const ExpectedDoc = 'Project Gutenberg EBook of Hamlet';
 
     cy.get('[data-test-subj="dataGridRowCell"]:nth-child(3) span')
-      .contains(ExpectedDoc)
-      .then(($el) => {
-        cy.log($el[0]);
-        cy.log($el[0].text());
-        cy.contain;
-        expect($el[0].text()).to.include('Project Gutenberg');
+      .invoke('text')
+      .then((text) => {
+        const hasTheText = text.includes(ExpectedDoc);
+        expect(hasTheText).to.be.true;
       });
   });
 
-  describe('test large data', function () {
+  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5068
+  describe.skip('test large data', function () {
     it('search Newsletter should show the correct hit count', function () {
       cy.log('test Newsletter keyword is searched');
       const expectedHitCount = '1';

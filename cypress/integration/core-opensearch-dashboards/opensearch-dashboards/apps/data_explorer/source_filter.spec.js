@@ -14,7 +14,7 @@ const testFixtureHandler = new TestFixtureHandler(
   Cypress.env('openSearchUrl')
 );
 
-describe('test large strings', () => {
+describe('source filters', () => {
   before(() => {
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/mappings.json.txt'
@@ -24,27 +24,16 @@ describe('test large strings', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/data.json.txt'
     );
 
-    cy.setAdvancedSetting({
-      defaultIndex: 'logstash-*',
-    });
-
     // Go to the Discover page
-    miscUtils.visitPage('app/data-explorer/discover#/');
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
     cy.waitForLoader();
   });
 
   it('should not get the field referer', function () {
-    cy.get('[data-test-subj="dataGridRowCell"]:first-child').then(
-      ($elElement) => {
-        Cypress.log({
-          $el: $elElement,
-        });
-      }
-    );
+    cy.getElementByTestId('fieldFilterSearchInput').type('referer');
 
-    cy.get('[data-test-subj="fieldList-field"]').should('have.length', 5);
+    cy.getElementByTestId('fieldToggle-referer').should('not.exist');
   });
-  //   after(() => {
-  //     await opensearchArchiver.unload('index_pattern_with_encoded_id');
-  //   });
 });
