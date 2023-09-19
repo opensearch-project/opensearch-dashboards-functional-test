@@ -85,26 +85,19 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
     .click()
     .type(`${field}{downArrow}{enter}`)
     .trigger('blur', { force: true });
-  // cy.contains('button', field)
-  //   .click()
 
   cy.getElementByTestId('filterOperatorList')
     .should('be.visible')
     .click()
     .type(`${operator}{downArrow}{enter}`)
     .trigger('blur', { force: true });
-  // cy.get('.globalFilterItem__editorForm')
-  //   .contains('button', operator)
-  //   .click()
 
   if (value) {
-    cy.get('[data-test-subj~="phraseParamsComboBox"]')
+    cy.get('[data-test-subj^="filterParamsComboBox"]')
       .should('be.visible')
       .click()
       .type(`${value}{downArrow}{enter}`)
       .trigger('blur', { force: true });
-    // cy.contains('button', value)
-    //   .click()
   }
 
   cy.getElementByTestId('saveFilter').click({ force: true });

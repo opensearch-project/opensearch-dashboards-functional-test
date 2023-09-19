@@ -16,13 +16,13 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('index pattern without field spec', () => {
   before(() => {
-    // testFixtureHandler.importJSONMapping(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
-    // )
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
+    );
 
-    // testFixtureHandler.importJSONDoc(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/data.json.txt'
-    // )
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/data.json.txt'
+    );
 
     cy.setAdvancedSetting({
       defaultIndex: 'without-timefield',
@@ -39,7 +39,7 @@ describe('index pattern without field spec', () => {
 
   it('should not display a timepicker', () => {
     cy.getElementByTestId('superDatePickerToggleQuickMenuButton').should(
-      'not.be.visible'
+      'not.exist'
     );
   });
 

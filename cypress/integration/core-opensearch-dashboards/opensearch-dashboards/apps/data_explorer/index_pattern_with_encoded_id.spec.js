@@ -20,13 +20,13 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('index pattern with encoded id', () => {
   before(() => {
-    // testFixtureHandler.importJSONMapping(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/mappings.json.txt'
-    // )
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/mappings.json.txt'
+    );
 
-    // testFixtureHandler.importJSONDoc(
-    //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/data.json.txt'
-    // )
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/data.json.txt'
+    );
 
     cy.setAdvancedSetting({
       defaultIndex: 'with-encoded-id',
@@ -52,7 +52,7 @@ describe('index pattern with encoded id', () => {
     });
 
     it('should show the detail panel actions', function () {
-      cy.get('[data-test-id="docTableRowAction"]').should(`have.length`, 2);
+      cy.get('[data-test-subj="docTableRowAction"]').should(`have.length`, 2);
     });
   });
 });

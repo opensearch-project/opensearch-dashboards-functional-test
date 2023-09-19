@@ -240,6 +240,7 @@ describe('discover app', () => {
           cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
           cy.getElementByTestId('superDatePickerRefreshIntervalInput')
             .should('be.visible')
+            .clear()
             .type('2');
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 

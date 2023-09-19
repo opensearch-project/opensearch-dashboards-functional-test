@@ -8,7 +8,7 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 const miscUtils = new MiscUtils(cy);
 
 describe('discover doc table', () => {
-  beforeEach(() => {
+  before(() => {
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -38,9 +38,7 @@ describe('discover doc table', () => {
         .should('be.visible')
         .click();
 
-      cy.getElementByTestId('dataGridHeaderCell-phpmemory').should(
-        'not.be.visible'
-      );
+      cy.getElementByTestId('dataGridHeaderCell-phpmemory').should('not.exist');
     });
   });
 });

@@ -28,15 +28,11 @@ describe('errors', () => {
     testFixtureHandler.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/invalid_scripted_field/data.json.txt'
     );
-    cy.setAdvancedSetting({
-      defaultIndex: 'logstash-*',
-    });
 
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
 
     cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
-    cy.waitForSearch();
   });
 
   describe('invalid scripted field error', function () {
