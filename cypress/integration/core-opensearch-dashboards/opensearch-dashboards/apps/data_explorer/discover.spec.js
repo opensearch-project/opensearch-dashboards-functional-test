@@ -147,6 +147,7 @@ describe('discover app', () => {
     });
   });
 
+  //https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5058
   describe.skip('data-shared-item', function () {
     it('should have correct data-shared-item title and description', () => {
       const expected = {
@@ -219,27 +220,33 @@ describe('discover app', () => {
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')
-        .get('table')
-        .contains('tbody tr:nth-of-type(5) td:nth-of-type(1)')
-        .then(($el) => {
-          cy.log($el);
-        });
-      cy.getElementByTestId('euiFlyoutCloseButton').click();
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
-      cy.getElementByTestId('superDatePickerRefreshIntervalInput')
-        .should('be.visible')
-        .type('2');
-      cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
-      cy.wait(100);
-      cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
-      cy.getElementByTestId('openInspectorButton').click();
+        .get('.euiTable tr:nth-child(6) td:nth-child(2) span')
+        .invoke('text')
+        .then((timestamp) => {
+          // Get the time stamp of the previous request
+          cy.log('Time stamp is', timestamp);
 
-      cy.get('tbody tr')
-        .eq(5) // Fifth row
-        .find('td')
-        .eq(1) // Second column
-        .then(($el) => {
-          cy.log($el);
+          cy.getElementByTestId('euiFlyoutCloseButton').click();
+
+          // Turn on auto refresh
+          cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+          cy.getElementByTestId('superDatePickerRefreshIntervalInput')
+            .should('be.visible')
+            .type('2');
+          cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
+
+          // Let auto refresh run
+          cy.wait(100);
+
+          // Close the auto refresh
+          cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
+
+          // Check the timestamp of the last request, it should be different than the first timestamp
+          cy.getElementByTestId('openInspectorButton').click();
+          cy.getElementByTestId('inspectorPanel')
+            .get('.euiTable tr:nth-child(6) td:nth-child(2) span')
+            .invoke('text')
+            .should('not.equal', timestamp);
         });
     });
   });

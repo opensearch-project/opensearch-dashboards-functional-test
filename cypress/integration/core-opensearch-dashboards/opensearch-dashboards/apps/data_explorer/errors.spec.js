@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { 
+import {
   TestFixtureHandler,
-  MiscUtils
+  MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   DX_DEFAULT_END_TIME,
