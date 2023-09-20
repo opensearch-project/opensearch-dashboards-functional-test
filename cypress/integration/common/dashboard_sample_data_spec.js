@@ -58,11 +58,6 @@ export function dashboardSanityTests() {
         );
       });
 
-      it('checking management display', () => {
-        // Check that management is visable
-        commonUI.checkElementExists(`a[href="${path}/app/management"]`, 1);
-      });
-
       it('checking dev_tools display', () => {
         // Check that dev_tools is visable
         commonUI.checkElementExists(
@@ -186,7 +181,7 @@ export function dashboardSanityTests() {
 
       describe('checking saved objects', () => {
         before(() => {
-          miscUtils.visitPage('app/management/opensearch-dashboards/objects');
+          miscUtils.visitPage('app/objects');
         });
 
         after(() => {});
