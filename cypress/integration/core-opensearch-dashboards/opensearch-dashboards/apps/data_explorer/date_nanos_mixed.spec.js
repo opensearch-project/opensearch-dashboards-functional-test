@@ -37,6 +37,12 @@ describe('date_nanos_mixed', () => {
     cy.waitForSearch();
   });
 
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos_mix/mappings.json.txt'
+    );
+  });
+
   it('shows a list of records of indices with date & date_nanos fields in the right order', function () {
     cy.get(`[data-test-subj="dataGridRowCell"]`)
       .eq(1)

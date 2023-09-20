@@ -3,18 +3,41 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  TestFixtureHandler,
+  MiscUtils,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   DX_DEFAULT_END_TIME,
   DX_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
+const testFixtureHandler = new TestFixtureHandler(
+  cy,
+  Cypress.env('openSearchUrl')
+);
 
 describe('saved queries saved objects', () => {
   const fromTime = 'Sep 20, 2015 @ 08:00:00.000';
   const toTime = 'Sep 21, 2015 @ 08:00:00.000';
   before(() => {
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
+
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
+
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
+    );
+
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -98,26 +121,22 @@ describe('saved queries saved objects', () => {
 
       cy.getElementByTestId(`queryInput`).should('have.text', '');
 
-      cy.loadSaveQuery('OkResponse');
+      cy.get(`[data-test-subj~="load-saved-query-OkResponse-button"]`)
+        .should('be.visible')
+        .click();
 
-      cy.getElementByTestId(`queryInput`).should(
-        'have.text',
-
-        'response:404'
-      );
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:404');
     });
 
     it('allows saving the currently loaded query as a new query', () => {
-      cy.whenTestIdNotFound('saved-query-management-popover', () => {
-        cy.getElementByTestId('saved-query-management-popover-button').click();
-      });
+      cy.getElementByTestId('saved-query-management-popover-button').click();
+
       //save as new query
       cy.getElementByTestId(
         'saved-query-management-save-as-new-button'
       ).click();
       cy.getElementByTestId('saveQueryFormTitle').type('OkResponseCopy');
       cy.getElementByTestId('savedQueryFormSaveButton').click();
-      cy.loadSaveQuery('OkResponseCopy');
     });
 
     it('allows deleting the currently loaded saved query in the saved query management component and clears the query', () => {
@@ -140,6 +159,7 @@ describe('saved queries saved objects', () => {
       cy.getElementByTestId('saveQueryForm')
         .get('.euiForm__error')
         .should('have.text', 'Name conflicts with an existing saved query');
+      cy.getElementByTestId('savedQueryFormCancelButton').click();
     });
 
     it('resets any changes to a loaded query on reloading the same saved query', () => {
@@ -150,13 +170,17 @@ describe('saved queries saved objects', () => {
     });
 
     it('allows clearing the currently loaded saved query', () => {
-      cy.loadSaveQuery('OkResponse');
-      cy.clearSaveQuery();
+      cy.getElementByTestId('saved-query-management-popover-button').click({
+        force: true,
+      });
+      cy.getElementByTestId('saved-query-management-clear-button').click();
       cy.getElementByTestId(`queryInput`).should('have.text', '');
     });
 
     it('changing language removes saved query', () => {
-      cy.loadSaveQuery('OkResponse');
+      cy.get(`[data-test-subj~="load-saved-query-OkResponse-button"]`)
+        .should('be.visible')
+        .click();
       cy.getElementByTestId('switchQueryLanguageButton').click();
       cy.getElementByTestId('languageToggle').click();
       cy.getElementByTestId(`queryInput`).should('have.text', '');

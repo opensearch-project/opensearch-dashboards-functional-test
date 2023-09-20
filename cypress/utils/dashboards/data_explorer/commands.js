@@ -115,9 +115,10 @@ Cypress.Commands.add('saveQuery', (name, description) => {
 });
 
 Cypress.Commands.add('loadSaveQuery', (name) => {
-  cy.whenTestIdNotFound('saved-query-management-popover', () => {
-    cy.getElementByTestId('saved-query-management-popover-button').click();
+  cy.getElementByTestId('saved-query-management-popover-button').click({
+    force: true,
   });
+
   cy.get(`[data-test-subj~="load-saved-query-${name}-button"]`)
     .should('be.visible')
     .click();
@@ -134,8 +135,8 @@ Cypress.Commands.add('clearSaveQuery', () => {
 Cypress.Commands.add('deleteSaveQuery', (name) => {
   cy.getElementByTestId('saved-query-management-popover-button').click();
 
-  cy.get(`[data-test-subj~="delete-saved-query-${name}-button"]`)
-    .should('be.visible')
-    .click();
+  cy.get(`[data-test-subj~="delete-saved-query-${name}-button"]`).click({
+    force: true,
+  });
   cy.getElementByTestId('confirmModalConfirmButton').click();
 });

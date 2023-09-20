@@ -20,7 +20,6 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('discover app', () => {
   before(() => {
-    cy.log('load opensearch-dashboards index with default index pattern');
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
