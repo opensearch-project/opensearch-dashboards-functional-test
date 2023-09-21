@@ -37,6 +37,12 @@ describe('date_nanos', () => {
     cy.waitForSearch();
   });
 
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos/mappings.json.txt'
+    );
+  });
+
   it('should show a timestamp with nanoseconds in the first result row', function () {
     cy.verifyTimeConfig(fromTime, toTime);
     cy.get(`[data-test-subj="dataGridRowCell"]`)

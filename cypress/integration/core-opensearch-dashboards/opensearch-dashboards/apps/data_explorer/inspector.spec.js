@@ -5,8 +5,8 @@
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
-  DX_DEFAULT_END_TIME,
-  DX_DEFAULT_START_TIME,
+  DE_DEFAULT_END_TIME,
+  DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
@@ -31,7 +31,7 @@ describe('inspector', () => {
   });
 
   it('should display request stats with results', () => {
-    cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+    cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
     cy.waitForSearch();
     cy.getElementByTestId('openInspectorButton').click();
     cy.getElementByTestId('inspectorPanel')

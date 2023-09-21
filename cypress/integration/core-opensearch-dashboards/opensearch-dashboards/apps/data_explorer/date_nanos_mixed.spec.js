@@ -16,7 +16,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('date_nanos_mixed', () => {
   before(() => {
-    // import date nanos
+    //import date nanos
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos_mix/mappings.json.txt'
     );

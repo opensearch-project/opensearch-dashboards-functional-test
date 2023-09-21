@@ -8,8 +8,8 @@ import {
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
-  DX_DEFAULT_END_TIME,
-  DX_DEFAULT_START_TIME,
+  DE_DEFAULT_END_TIME,
+  DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
@@ -36,30 +36,24 @@ describe('discover app', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
+    cy.setAdvancedSetting({
+      defaultIndex: 'logstash-*',
+    });
+
     // Go to the Discover page
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
-    cy.wait(30000);
-
-    cy.setAdvancedSetting({
-      defaultIndex: 'logstash-*',
-    });
-
     cy.waitForSearch();
   });
-
-  // after(() => {
-  //     //miscUtils.removeSampleData();
-  // });
 
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
 
     it('should show correct time range string by timepicker', function () {
-      cy.verifyTimeConfig(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.verifyTimeConfig(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForLoader();
     });
 
@@ -90,7 +84,7 @@ describe('discover app', () => {
 
     it('should show the correct hit count', function () {
       cy.loadSaveSearch(saveSearch2);
-      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       const expectedHitCount = '14,004';
       cy.verifyHitCount(expectedHitCount);
     });
@@ -98,7 +92,7 @@ describe('discover app', () => {
     it('should show correct time range string in chart', function () {
       cy.getElementByTestId('discoverIntervalDateRange').should(
         'have.text',
-        `${DX_DEFAULT_START_TIME} - ${DX_DEFAULT_END_TIME} per`
+        `${DE_DEFAULT_START_TIME} - ${DE_DEFAULT_END_TIME} per`
       );
     });
 
@@ -144,7 +138,7 @@ describe('discover app', () => {
 
   describe('nested query', () => {
     before(() => {
-      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForSearch();
     });
 
@@ -163,7 +157,7 @@ describe('discover app', () => {
       };
 
       cy.loadSaveSearch(expected.title);
-      cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForLoader();
       cy.getElementByTestId('docTable')
         .should('have.attr', 'data-shared-item')

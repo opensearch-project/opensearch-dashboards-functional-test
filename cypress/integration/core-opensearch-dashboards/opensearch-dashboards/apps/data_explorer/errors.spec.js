@@ -8,8 +8,8 @@ import {
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
-  DX_DEFAULT_END_TIME,
-  DX_DEFAULT_START_TIME,
+  DE_DEFAULT_END_TIME,
+  DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
@@ -32,7 +32,7 @@ describe('errors', () => {
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
 
-    cy.setTopNavDate(DX_DEFAULT_START_TIME, DX_DEFAULT_END_TIME);
+    cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
   });
 
   describe('invalid scripted field error', function () {

@@ -49,13 +49,15 @@ describe('discover histogram', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
-    cy.wait(60000);
   });
 
   after(() => {
-    cy.setAdvancedSetting({
-      'dateFormat:tz': 'Browser',
-    });
+    miscUtils.visitPage('app/management/opensearch-dashboards/settings');
+    cy.getElementByTestId('advancedSetting-resetField-dateFormat:tz').click();
+    cy.getElementByTestId('advancedSetting-saveButton').click({ force: true });
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
+    );
   });
 
   it('should visualize monthly data with different day intervals', () => {
