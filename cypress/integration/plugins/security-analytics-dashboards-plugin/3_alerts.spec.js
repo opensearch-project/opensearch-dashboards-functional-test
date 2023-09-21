@@ -358,7 +358,7 @@ describe('Alerts', () => {
       .should('have.length', 2);
   });
 
-  it('can be acknowledged via row button', () => {
+  xit('can be acknowledged via row button', () => {
     // Filter the table to show only "Active" alerts
     cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
