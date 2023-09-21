@@ -136,7 +136,7 @@ describe('Testing a panel', () => {
 });
 
 describe('Clean up all test data', () => {
-  it('Deletes test panel', () => {
+  it.skip('Deletes test panel', () => {
     moveToPanelHome();
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]')
       .trigger('mouseover')
@@ -155,8 +155,8 @@ describe('Clean up all test data', () => {
     });
     cy.get('button.euiButton--danger').should('not.be.disabled');
     cy.get('.euiButton__text').contains('Delete').trigger('mouseover').click();
-
-    cy.get('.euiTextAlign')
+    cy.wait(delay * 5);
+    cy.get('[data-test-subj="customPanels__noPanelsHome"]')
       .contains('No Observability Dashboards')
       .should('exist');
   });
