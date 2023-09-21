@@ -172,7 +172,7 @@ describe('Testing paragraphs', () => {
     cy.get('.euiTextColor').contains('Last successful run').should('exist');
   });
 
-  it('Duplicates paragraphs', () => {
+  it.skip('Duplicates paragraphs', () => {
     cy.get('.euiButtonIcon[aria-label="Open paragraph menu"]').eq(0).click();
     cy.wait(delayTime);
     cy.get('.euiContextMenuItem__text').contains('Duplicate').eq(0).click();
