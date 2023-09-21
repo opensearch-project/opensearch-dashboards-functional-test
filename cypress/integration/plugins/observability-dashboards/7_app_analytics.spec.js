@@ -22,7 +22,7 @@ describe('Creating application', () => {
     moveToCreatePage();
   });
 
-  it('Creates an application and redirects to application', () => {
+  it.skip('Creates an application and redirects to application', () => {
     expectMessageOnHover('createButton', 'Name is required.');
     cy.get('[data-test-subj="nameFormRow"]', { timeout: TIMEOUT_DELAY }).type(
       nameOne

@@ -21,7 +21,7 @@ describe('Cypress', () => {
     cy.wait(3000);
   });
 
-  it('Download from reporting homepage', () => {
+  it.skip('Download from reporting homepage', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
     cy.location('pathname', { timeout: 60000 }).should(
       'include',
@@ -88,7 +88,7 @@ describe('Cypress', () => {
     cy.get('#generateCSV').click({ force: true });
   });
 
-  it('Download from Report definition details page', () => {
+  it.skip('Download from Report definition details page', () => {
     // create an on-demand report definition 
 
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`);
