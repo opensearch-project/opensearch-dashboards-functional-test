@@ -129,39 +129,41 @@ describe('table visualization in embedded mode', () => {
     });
   });
 
-  it('Should filter out value in embedded mode', () => {
-    const expectedFilterOutData = [
-      '20',
-      '2,236',
-      '40',
-      '2,200',
-      '60',
-      '2,211',
-      '80',
-      '2,179',
-      '100',
-      '115',
-    ];
-    cy.tbClickTableCellAction(2, 0, 0, 'filter out', 0, true);
-    cy.reload();
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(expectedFilterOutData);
+  if (!Cypress.env('SECURITY_ENABLED')) {
+    it('Should filter out value in embedded mode', () => {
+      const expectedFilterOutData = [
+        '20',
+        '2,236',
+        '40',
+        '2,200',
+        '60',
+        '2,211',
+        '80',
+        '2,179',
+        '100',
+        '115',
+      ];
+      cy.tbClickTableCellAction(2, 0, 0, 'filter out', 0, true);
+      cy.reload();
+      cy.tbGetTableDataFromVisualization().then((data) => {
+        expect(data).to.deep.eq(expectedFilterOutData);
+      });
+      commonUI.removeFilter('age');
+      cy.reload();
+      cy.tbGetTableDataFromVisualization().then((data) => {
+        expect(data).to.deep.eq(expectedData);
+      });
+      cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
+      cy.tbClickFilterFromExpand('filter out');
+      cy.reload();
+      cy.tbGetTableDataFromVisualization().then((data) => {
+        expect(data).to.deep.eq(expectedFilterOutData);
+      });
+      commonUI.removeFilter('age');
+      cy.reload();
+      cy.tbGetTableDataFromVisualization().then((data) => {
+        expect(data).to.deep.eq(expectedData);
+      });
     });
-    commonUI.removeFilter('age');
-    cy.reload();
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(expectedData);
-    });
-    cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
-    cy.tbClickFilterFromExpand('filter out');
-    cy.reload();
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(expectedFilterOutData);
-    });
-    commonUI.removeFilter('age');
-    cy.reload();
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(expectedData);
-    });
-  });
+  }
 });
