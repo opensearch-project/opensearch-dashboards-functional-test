@@ -65,15 +65,6 @@ Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {
   cy.waitForLoader();
 });
 
-Cypress.Commands.add('isChartCanvasExist', () => {
-  cy.get('.echChart canvas:last-of-type').should('be.visible');
-});
-
-Cypress.Commands.add('isChartIntervalWarningIconExist', () => {
-  cy.waitForLoader();
-  cy.get('.euiToolTipAnchor').should('be.visible');
-});
-
 Cypress.Commands.add('verifyMarkCount', (count) => {
   cy.getElementByTestId('docTable').find('mark').should('have.length', count);
 });

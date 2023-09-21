@@ -7,12 +7,8 @@ declare namespace Cypress {
       saveSearch(name: string): Chainable<any>;
       loadSaveSearch(name: string): Chainable<any>;
       verifyHitCount(count: string): Chainable<any>;
-
       waitForSearch(): Chainable<any>;
       prepareTest(fromTime: string, toTime: string, interval: string): Chainable<any>;
-      isChartCanvasExist(): Chainable<any>;
-      isChartIntervalWarningIconExist(): Chainable<any>;
-
       submitQuery(query: string): Chainable<any>;
       verifyMarkCount(count: string): Chainable<any>;
       submitFilterFromDropDown(field: string, operator: string, value: string): Chainable<any>;
