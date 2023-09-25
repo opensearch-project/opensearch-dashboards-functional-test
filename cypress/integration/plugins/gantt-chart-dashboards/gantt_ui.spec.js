@@ -18,7 +18,7 @@ const Y_LABEL = 'A unique label for Y-axis';
 const X_LABEL = 'A unique label for X-axis';
 const DEFAULT_SIZE = 10;
 
-var theVisualizationId = ''
+var theVisualizationId = '';
 
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
@@ -137,10 +137,8 @@ describe('Configure panel settings', () => {
   });
 
   it('Changes y-axis label', () => {
-    cy.get('input.euiFieldText[placeholder="Label"]')
-      .eq(0)
-      .focus()
-      .type(Y_LABEL);
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(0).focus();
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(0).type(Y_LABEL);
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
@@ -158,10 +156,8 @@ describe('Configure panel settings', () => {
   });
 
   it('Changes x-axis label', () => {
-    cy.get('input.euiFieldText[placeholder="Label"]')
-      .eq(1)
-      .focus()
-      .type(X_LABEL);
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(1).focus();
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(1).type(X_LABEL);
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
@@ -238,9 +234,7 @@ describe('Configure panel settings', () => {
   it('Hides legends', () => {
     cy.get('g.traces').should('have.length', DEFAULT_SIZE);
 
-    cy.get('.euiSwitch__label')
-      .contains('Show legend')
-      .click({ force: true });
+    cy.get('.euiSwitch__label').contains('Show legend').click({ force: true });
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
     cy.wait(delay);
@@ -255,9 +249,10 @@ describe('Add gantt chart to dashboard', () => {
 
     cy.contains('Add an existing').click({ force: true });
     cy.wait(delay);
-    cy.get('input[data-test-subj="savedObjectFinderSearchInput"]')
-      .focus()
-      .type(GANTT_VIS_NAME);
+    cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').focus();
+    cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').type(
+      GANTT_VIS_NAME
+    );
     cy.wait(delay);
     cy.get(`.euiListGroupItem__label[title="${GANTT_VIS_NAME}"]`).click({
       force: true,
