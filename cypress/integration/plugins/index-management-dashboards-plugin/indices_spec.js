@@ -256,7 +256,7 @@ describe('Indices', () => {
   });
 
   describe('can search with reindex & recovery status', () => {
-    const reindexedIndex = `${Date.now()}_reindex_sample_data_ecommerce_`;
+    const reindexedIndex = `${Date.now()}_reindex_sample_data_ecommerce`;
     const splittedIndex = 'split_opensearch_dashboards_sample_data_logs';
     before(() => {
       cy.deleteAllIndices();
