@@ -2,7 +2,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-if(Cypress.env('SECURITY_ENABLED')){
+if (Cypress.env('SECURITY_ENABLED')) {
     it('Tests if no role button redirects to logout screen', () => {
         cy.visit('/app/customerror/missing-role');
 
