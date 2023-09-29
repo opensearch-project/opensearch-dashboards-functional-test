@@ -148,8 +148,7 @@ describe('discover app', () => {
     });
   });
 
-  //https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5058
-  describe.skip('data-shared-item', function () {
+  describe('data-shared-item', function () {
     it('should have correct data-shared-item title and description', () => {
       const expected = {
         title: 'A Saved Search',
