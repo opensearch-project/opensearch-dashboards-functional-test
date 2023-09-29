@@ -130,5 +130,19 @@ if (Cypress.env('SECURITY_ENABLED')) {
           );
         });
     });
+    after(() => {
+      cy.deleteIndexPattern('index-pattern1', {
+        headers: {
+          securitytenant: ['global'],
+          'osd-xsrf': true,
+        },
+      });
+      cy.deleteIndexPattern('index-pattern2', {
+        headers: {
+          securitytenant: ['private'],
+          'osd-xsrf': true,
+        },
+      });
+    });
   });
 }
