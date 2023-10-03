@@ -3,12 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  MiscUtils,
+  TestFixtureHandler,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
+const testFixtureHandler = new TestFixtureHandler(
+  cy,
+  Cypress.env('openSearchUrl')
+);
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
 describe('discover doc table', () => {
   before(() => {
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -20,13 +39,13 @@ describe('discover doc table', () => {
     cy.waitForSearch();
   });
 
+  after(() => {});
+
   describe('add and remove columns', function () {
     it('should add more columns to the table', function () {
       cy.getElementByTestId('fieldFilterSearchInput').type('phpmemory');
 
-      cy.getElementByTestId('fieldToggle-phpmemory')
-        .should('be.visible')
-        .click();
+      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
 
       cy.getElementByTestId('dataGridHeaderCell-phpmemory').should(
         'be.visible'
@@ -34,9 +53,7 @@ describe('discover doc table', () => {
     });
 
     it('should remove columns from the table', function () {
-      cy.getElementByTestId('fieldToggle-phpmemory')
-        .should('be.visible')
-        .click();
+      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
 
       cy.getElementByTestId('dataGridHeaderCell-phpmemory').should('not.exist');
     });

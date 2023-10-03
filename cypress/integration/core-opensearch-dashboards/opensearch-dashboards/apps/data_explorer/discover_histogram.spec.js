@@ -13,8 +13,13 @@ const testFixtureHandler = new TestFixtureHandler(
   cy,
   Cypress.env('openSearchUrl')
 );
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
-describe('discover histogram', () => {
+describe('discover histogram', { scrollBehavior: false }, () => {
   before(() => {
     cy.log('load opensearch-dashboards index with default index pattern');
 
@@ -24,11 +29,9 @@ describe('discover histogram', () => {
     );
 
     // import logstash functional
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
@@ -53,6 +56,7 @@ describe('discover histogram', () => {
 
   after(() => {
     miscUtils.visitPage('app/management/opensearch-dashboards/settings');
+    cy.waitForLoader();
     cy.getElementByTestId('advancedSetting-resetField-dateFormat:tz').click();
     cy.getElementByTestId('advancedSetting-saveButton').click({ force: true });
     testFixtureHandler.clearJSONMapping(

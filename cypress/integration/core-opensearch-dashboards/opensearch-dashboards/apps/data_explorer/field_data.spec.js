@@ -13,24 +13,27 @@ const testFixtureHandler = new TestFixtureHandler(
   cy,
   Cypress.env('openSearchUrl')
 );
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
 describe('discover tab', () => {
   before(() => {
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
 
     testFixtureHandler.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-    );
-
-    // import logstash functional
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
     cy.setAdvancedSetting({
@@ -44,6 +47,8 @@ describe('discover tab', () => {
     cy.waitForSearch();
   });
 
+  after(() => {});
+
   describe('field data', function () {
     it('search php should show the correct hit count', function () {
       const expectedHitCount = '445';
@@ -54,7 +59,7 @@ describe('discover tab', () => {
     it('the search term should be highlighted in the field data', function () {
       cy.getElementByTestId('dataGridWrapper')
         .get('mark')
-        .should('have.length', 10);
+        .should('have.length', 100);
     });
 
     it('search type:apache should show the correct hit count', () => {
@@ -80,6 +85,7 @@ describe('discover tab', () => {
       const expectedError =
         'Expected ":", "<", "<=", ">", ">=", AND, OR, end of input, ' +
         'whitespace but "(" found.';
+      cy.getElementByTestId('queryInput').clear();
       cy.setTopNavQuery('xxx(yyy))');
       cy.getElementByTestId('errorToastMessage').contains(expectedError);
     });

@@ -3,16 +3,43 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  MiscUtils,
+  TestFixtureHandler,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   DE_DEFAULT_END_TIME,
   DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
+const testFixtureHandler = new TestFixtureHandler(
+  cy,
+  Cypress.env('openSearchUrl')
+);
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
 describe('test large strings', () => {
   before(() => {
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
+
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
+
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });

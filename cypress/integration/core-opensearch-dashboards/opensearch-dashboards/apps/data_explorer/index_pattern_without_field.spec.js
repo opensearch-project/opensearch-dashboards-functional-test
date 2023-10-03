@@ -33,9 +33,11 @@ describe('index pattern without field spec', () => {
     cy.waitForLoader();
   });
 
-  // after(() => {
-
-  // })
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
+    );
+  });
 
   it('should not display a timepicker', () => {
     cy.getElementByTestId('superDatePickerToggleQuickMenuButton').should(

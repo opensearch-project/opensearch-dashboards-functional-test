@@ -38,6 +38,15 @@ describe('test large strings', () => {
     });
   });
 
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/empty_opensearch_dashboards/mappings.json.txt'
+    );
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/hamlet/mappings.json.txt'
+    );
+  });
+
   it('verify the large string book present', function () {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
@@ -53,8 +62,7 @@ describe('test large strings', () => {
       });
   });
 
-  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5068
-  describe.skip('test large data', function () {
+  describe('test large data', function () {
     it('search Newsletter should show the correct hit count', function () {
       cy.log('test Newsletter keyword is searched');
       const expectedHitCount = '1';
@@ -69,8 +77,4 @@ describe('test large strings', () => {
       cy.verifyMarkCount(expectedMarkCount);
     });
   });
-
-  //   after(() => {
-  //     await opensearchArchiver.unload('index_pattern_with_encoded_id');
-  //   });
 });

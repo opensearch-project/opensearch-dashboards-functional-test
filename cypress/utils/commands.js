@@ -249,6 +249,15 @@ Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
   });
 });
 
+Cypress.Commands.add('getIndices', (index = null, settings = {}) => {
+  cy.request({
+    method: 'GET',
+    url: `${Cypress.env('openSearchUrl')}/_cat/indices/${index ? index : ''}`,
+    failOnStatusCode: false,
+    ...settings,
+  });
+});
+
 // TODO: Impliment chunking
 Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   const sendBulkAPIRequest = (ndjson) => {

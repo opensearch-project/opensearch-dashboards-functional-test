@@ -17,23 +17,27 @@ const testFixtureHandler = new TestFixtureHandler(
   cy,
   Cypress.env('openSearchUrl')
 );
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
-describe('discover app', () => {
+describe('discover app', { scrollBehavior: false }, () => {
   before(() => {
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
 
     testFixtureHandler.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-    );
-
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
     cy.setAdvancedSetting({
@@ -47,6 +51,8 @@ describe('discover app', () => {
     cy.waitForLoader();
     cy.waitForSearch();
   });
+
+  after(() => {});
 
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
@@ -119,22 +125,26 @@ describe('discover app', () => {
     });
   });
 
-  describe('save search #2 which has an empty time range', () => {
-    const fromTime = 'Jun 11, 1999 @ 09:22:11.000';
-    const toTime = 'Jun 12, 1999 @ 11:21:04.000';
+  describe(
+    'save search #2 which has an empty time range',
+    { scrollBehavior: false },
+    () => {
+      const fromTime = 'Jun 11, 1999 @ 09:22:11.000';
+      const toTime = 'Jun 12, 1999 @ 11:21:04.000';
 
-    before(() => {
-      cy.setTopNavDate(fromTime, toTime);
-    });
+      before(() => {
+        cy.setTopNavDate(fromTime, toTime);
+      });
 
-    it('should show "no results"', () => {
-      cy.getElementByTestId('discoverNoResults').should('be.exist');
-    });
+      it('should show "no results"', () => {
+        cy.getElementByTestId('discoverNoResults').should('be.exist');
+      });
 
-    it('should suggest a new time range is picked', () => {
-      cy.getElementByTestId('discoverNoResultsTimefilter').should('be.exist');
-    });
-  });
+      it('should suggest a new time range is picked', () => {
+        cy.getElementByTestId('discoverNoResultsTimefilter').should('be.exist');
+      });
+    }
+  );
 
   describe('nested query', () => {
     before(() => {
@@ -157,23 +167,33 @@ describe('discover app', () => {
 
       cy.loadSaveSearch(expected.title);
       cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
+      cy.waitForSearch();
       cy.waitForLoader();
-      cy.getElementByTestId('docTable')
-        .should('have.attr', 'data-shared-item')
-        .should('have.attr', 'data-title', expected.title)
-        .should('have.attr', 'data-description', expected.description);
+      cy.getElementByTestId('discoverTable').should(
+        'have.attr',
+        'data-shared-item'
+      );
+      cy.getElementByTestId('discoverTable').should(
+        'have.attr',
+        'data-title',
+        expected.title
+      );
+      cy.getElementByTestId('discoverTable').should(
+        'have.attr',
+        'data-description',
+        expected.description
+      );
     });
   });
 
-  //https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5057
-  describe.skip('usage of discover:searchOnPageLoad', () => {
+  describe('usage of discover:searchOnPageLoad', () => {
     it('should fetch data from OpenSearch initially when discover:searchOnPageLoad is false', function () {
       cy.setAdvancedSetting({
         'discover:searchOnPageLoad': false,
       });
       miscUtils.visitPage(`app/data-explorer/discover#/`);
       cy.waitForLoader();
-      // expect(await PageObjects.discover.getNrOfFetches()).to.be(0);
+      cy.getElementByTestId('discoverTable').should('not.exist');
     });
 
     it('should not fetch data from OpenSearch initially when discover:searchOnPageLoad is true', function () {
@@ -181,8 +201,10 @@ describe('discover app', () => {
         'discover:searchOnPageLoad': true,
       });
       miscUtils.visitPage(`app/data-explorer/discover#/`);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
+      cy.waitForSearch();
       cy.waitForLoader();
-      // expect(await PageObjects.discover.getNrOfFetches()).to.be(1);
+      cy.getElementByTestId('discoverTable').should('be.visible');
     });
   });
 
@@ -197,7 +219,7 @@ describe('discover app', () => {
 
       cy.getElementByTestId('fieldFilterSearchInput').type('ip');
 
-      cy.getElementByTestId('fieldToggle-ip').should('be.visible').click();
+      cy.getElementByTestId('fieldToggle-ip').click({ force: true });
 
       cy.getElementByTestId('dataGridHeaderCell-ip').should('be.visible');
       cy.getElementByTestId('dataGridHeaderCellActionButton-ip').click();
@@ -210,7 +232,7 @@ describe('discover app', () => {
 
       cy.contains('button', 'Move left').click();
 
-      cy.getElementByTestId('fieldToggle-ip').should('be.visible').click();
+      cy.getElementByTestId('fieldToggle-ip').click({ force: true });
 
       cy.getElementByTestId('dataGridHeaderCell-ip').should('not.be.exist');
     });

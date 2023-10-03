@@ -38,9 +38,11 @@ describe('index pattern with encoded id', () => {
     cy.waitForLoader();
   });
 
-  //   after(async () => {
-  //     await opensearchArchiver.unload('index_pattern_with_encoded_id');
-  //   });
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/mappings.json.txt'
+    );
+  });
 
   describe('expand a document row', function () {
     const rowToInspect = 1;

@@ -35,6 +35,12 @@ describe('errors', () => {
     cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
   });
 
+  // after(() => {
+  //   testFixtureHandler.clearJSONMapping(
+  //     'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/invalid_scripted_field/mappings.json.txt'
+  //   );
+  // });
+
   describe('invalid scripted field error', function () {
     it('is rendered', function () {
       cy.getElementByTestId('painlessStackTrace').should('be.visible');

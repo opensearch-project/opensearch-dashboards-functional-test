@@ -3,12 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import {
+  MiscUtils,
+  TestFixtureHandler,
+} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
+const testFixtureHandler = new TestFixtureHandler(
+  cy,
+  Cypress.env('openSearchUrl')
+);
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
 describe('doc link in discover', () => {
   beforeEach(() => {
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -20,6 +39,8 @@ describe('doc link in discover', () => {
     cy.waitForSearch();
   });
 
+  after(() => {});
+
   it('should open the doc view of the selected document', function () {
     cy.getElementByTestId(`docTableExpandToggleColumn-0`)
       .should('be.visible')
@@ -27,10 +48,14 @@ describe('doc link in discover', () => {
     cy.getElementByTestId(`documentDetailFlyOut`).should('be.visible');
 
     // Both actions will take to the new tab
-    cy.getElementByTestId('docTableRowAction').contains('View single document');
+    cy.getElementByTestId('docTableRowAction-0').should(
+      'have.text',
+      'View surrounding documents(opens in a new tab or window)'
+    );
 
-    cy.getElementByTestId('docTableRowAction').contains(
-      'View surrounding documents'
+    cy.getElementByTestId('docTableRowAction-1').should(
+      'have.text',
+      'View single document(opens in a new tab or window)'
     );
   });
 

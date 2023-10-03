@@ -17,6 +17,11 @@ const testFixtureHandler = new TestFixtureHandler(
   cy,
   Cypress.env('openSearchUrl')
 );
+const indexSet = [
+  'logstash-2015.09.22',
+  'logstash-2015.09.21',
+  'logstash-2015.09.20',
+];
 
 describe('saved queries saved objects', () => {
   const fromTime = 'Sep 20, 2015 @ 08:00:00.000';
@@ -30,11 +35,10 @@ describe('saved queries saved objects', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
     );
 
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
+    // import logstash functional
+    testFixtureHandler.importJSONDocIfNeeded(
+      indexSet,
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 

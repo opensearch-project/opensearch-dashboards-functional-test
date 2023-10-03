@@ -31,6 +31,12 @@ describe('source filters', () => {
     cy.waitForLoader();
   });
 
+  after(() => {
+    testFixtureHandler.clearJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/mappings.json.txt'
+    );
+  });
+
   it('should not get the field referer', function () {
     cy.getElementByTestId('fieldFilterSearchInput').type('referer');
 
