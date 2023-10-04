@@ -38,12 +38,6 @@ describe('test large strings', () => {
     });
   });
 
-  after(() => {
-    testFixtureHandler.clearJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/empty_opensearch_dashboards/mappings.json.txt'
-    );
-  });
-
   it('verify the large string book present', function () {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');

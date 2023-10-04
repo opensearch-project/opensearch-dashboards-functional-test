@@ -104,8 +104,9 @@ describe('discover app', { scrollBehavior: false }, () => {
 
     it('should show correct initial chart interval of Auto', function () {
       cy.getElementByTestId('discoverIntervalSelect')
-        .select(0, {force: true})
-        .should('have.value', 'auto');
+        .get('option')
+        .first()
+        .should('have.text', 'Auto');
     });
 
     it('should not show "no results"', () => {

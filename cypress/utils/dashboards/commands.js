@@ -109,5 +109,5 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
 });
 
 Cypress.Commands.add('updateTopNav', (options) => {
-  cy.getElementByTestId('querySubmitButton', options).click(options);
+  cy.getElementByTestId('querySubmitButton', options).click({ force: true });
 });

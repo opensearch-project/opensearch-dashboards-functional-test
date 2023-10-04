@@ -50,7 +50,7 @@ describe('discover sidebar', () => {
       cy.getElementByTestId('filterSelectionPanel').should('be.visible');
 
       cy.getElementByTestId('toggleFieldFilterButton').click();
-      cy.getElementByTestId('filterSelectionPanel').should('not.be.visible');
+      cy.getElementByTestId('filterSelectionPanel').should('not.exist');
     });
   });
 
