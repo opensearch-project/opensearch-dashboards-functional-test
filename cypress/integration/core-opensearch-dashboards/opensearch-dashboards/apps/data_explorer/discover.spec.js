@@ -222,13 +222,17 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.getElementByTestId('fieldToggle-ip').click({ force: true });
 
       cy.getElementByTestId('dataGridHeaderCell-ip').should('be.visible');
-      cy.getElementByTestId('dataGridHeaderCellActionButton-ip').click();
+      cy.getElementByTestId('dataGridHeaderCell-ip')
+        .getElementByTestId('dataGridHeaderCellActionButton-ip')
+        .click({ force: true });
 
       // Sort from A-Z
       cy.contains('button', 'A-Z').click();
 
       // Move the column to the left
-      cy.getElementByTestId('dataGridHeaderCellActionButton-ip').click();
+      cy.getElementByTestId('dataGridHeaderCell-ip')
+        .getElementByTestId('dataGridHeaderCellActionButton-ip')
+        .click({ force: true });
 
       cy.contains('button', 'Move left').click();
 

@@ -28,6 +28,14 @@ describe('doc link in discover', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
+
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -89,6 +97,8 @@ describe('doc link in discover', () => {
     cy.getElementByTestId('tableDocViewRow-referer')
       .find(`[data-test-subj="addInclusiveFilterButton"]`)
       .click();
+
+    cy.wait(100);
 
     // Since the value of referer is null, the filter for value option will add a non-existing filter
     cy.get('[data-test-subj~="filter-key-referer"]').should('be.visible');
