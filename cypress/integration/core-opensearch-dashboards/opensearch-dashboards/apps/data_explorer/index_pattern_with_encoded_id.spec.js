@@ -54,7 +54,7 @@ describe('index pattern with encoded id', () => {
     });
 
     it('should show the detail panel actions', function () {
-      cy.get('[data-test-subj="docTableRowAction"]').should(`have.length`, 2);
+      cy.get('[data-test-subj^="docTableRowAction"]').should(`have.length`, 2);
     });
   });
 });

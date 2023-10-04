@@ -42,9 +42,6 @@ describe('test large strings', () => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/empty_opensearch_dashboards/mappings.json.txt'
     );
-    testFixtureHandler.clearJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/hamlet/mappings.json.txt'
-    );
   });
 
   it('verify the large string book present', function () {

@@ -104,7 +104,7 @@ describe('discover app', { scrollBehavior: false }, () => {
 
     it('should show correct initial chart interval of Auto', function () {
       cy.getElementByTestId('discoverIntervalSelect')
-        .select(0)
+        .select(0, {force: true})
         .should('have.value', 'auto');
     });
 
@@ -112,8 +112,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.getElementByTestId('discoverNoResults').should('not.exist');
     });
 
-    // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5056
-    it.skip('should reload the saved search with persisted query to show the initial hit count', function () {
+    it('should reload the saved search with persisted query to show the initial hit count', function () {
       // apply query some changes
       cy.setTopNavQuery('test');
       cy.verifyHitCount('22');

@@ -23,7 +23,7 @@ const indexSet = [
   'logstash-2015.09.20',
 ];
 
-describe('test large strings', () => {
+describe('shared links', () => {
   before(() => {
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
