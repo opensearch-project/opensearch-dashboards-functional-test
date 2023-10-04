@@ -247,8 +247,9 @@ export function dashboardSanityTests() {
 
       describe('checking discover', () => {
         before(() => {
+          cy.setAdvancedSetting({ 'discover:v2': false });
           // Go to the Discover page
-          miscUtils.visitPage('app/data-explorer/discover#/');
+          miscUtils.visitPage('app/discover#/');
         });
 
         after(() => {});
@@ -279,7 +280,10 @@ export function dashboardSanityTests() {
         });
 
         it('checking index pattern switch button display', () => {
-          cy.getElementByTestId('dataExplorerDSSelect').should('be.visible');
+          commonUI.checkElementExists(
+            'button[data-test-subj="indexPattern-switch-link"]',
+            1
+          );
         });
 
         it('checking field filter display', () => {
