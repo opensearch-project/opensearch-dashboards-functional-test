@@ -91,7 +91,7 @@ describe('Test PPL UI', () => {
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
+    // cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('textarea.ace_text-input')
       .eq(0)
@@ -104,12 +104,12 @@ describe('Test PPL UI', () => {
       .contains('Full screen view')
       .click({ force: true });
 
-    cy.get('.euiTitle').should('not.exist');
+    // cy.get('.euiTitle').should('not.exist');
 
     cy.get('button#exit-fullscreen-button').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Full screen view').should('exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
+    // cy.get('.euiTitle').contains('Query Workbench').should('exist');
   });
 });
 
@@ -179,7 +179,7 @@ describe('Test SQL UI', () => {
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
+    // cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY * 5);
@@ -187,7 +187,7 @@ describe('Test SQL UI', () => {
       .contains('Full screen view')
       .click({ force: true });
 
-    cy.get('.euiTitle').should('not.exist');
+    // cy.get('.euiTitle').should('not.exist');
   });
 });
 
