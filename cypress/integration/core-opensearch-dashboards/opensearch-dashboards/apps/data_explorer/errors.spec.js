@@ -29,6 +29,10 @@ describe('errors', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/invalid_scripted_field/data.json.txt'
     );
 
+    cy.setAdvancedSetting({
+      defaultIndex: '18ea0c30-2d77-11e8-93f2-6f8a391f33ef',
+    });
+
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
 
