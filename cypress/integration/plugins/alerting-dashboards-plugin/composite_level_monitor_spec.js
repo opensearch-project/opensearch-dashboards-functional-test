@@ -180,7 +180,6 @@ describe('CompositeLevelMonitor', () => {
 
       // Wait for monitor to be created
       cy.wait('@updateMonitorRequest').then(() => {
-        cy.wait(5000);
         cy.contains(`${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`, {timeout: 5000});
       });
     });
