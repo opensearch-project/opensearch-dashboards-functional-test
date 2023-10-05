@@ -15,6 +15,8 @@ import {
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
 
+// DELETE ME add some change to run
+
 describe('Compare queries', () => {
   before(() => {
     const miscUtils = new MiscUtils(cy);
