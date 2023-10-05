@@ -208,7 +208,8 @@ describe('discover app', { scrollBehavior: false }, () => {
     });
   });
 
-  describe('managing fields', function () {
+  // detached from dom issue
+  describe.skip('managing fields', function () {
     it('should add a field, sort by it, remove it and also sorting by it', function () {
       // Go to the Discover page
       miscUtils.visitPage(

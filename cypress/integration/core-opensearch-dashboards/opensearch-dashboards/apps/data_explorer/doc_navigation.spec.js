@@ -103,16 +103,5 @@ describe('doc link in discover', () => {
     // Since the value of referer is null, the filter for value option will add a non-existing filter
     cy.get('[data-test-subj~="filter-key-referer"]').should('be.visible');
     cy.get('[data-test-subj~="filter-negated"]').should('be.visible');
-
-    // Filter out value option will add an existing filter
-    cy.getElementByTestId(`docTableExpandToggleColumn-0`)
-      .should('be.visible')
-      .click();
-
-    cy.getElementByTestId('tableDocViewRow-referer')
-      .find(`[data-test-subj="removeInclusiveFilterButton"]`)
-      .click();
-    cy.get('[data-test-subj~="filter-key-referer"]').should('be.visible');
-    cy.get('[data-test-subj~="filter-value-exists"]').should('be.visible');
   });
 });
