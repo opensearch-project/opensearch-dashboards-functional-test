@@ -57,7 +57,9 @@ describe('discover histogram', { scrollBehavior: false }, () => {
   after(() => {
     miscUtils.visitPage('app/management/opensearch-dashboards/settings');
     cy.waitForLoader();
-    cy.getElementByTestId('advancedSetting-resetField-dateFormat:tz').click();
+    cy.getElementByTestId('advancedSetting-resetField-dateFormat:tz').click({
+      force: true,
+    });
     cy.getElementByTestId('advancedSetting-saveButton').click({ force: true });
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'

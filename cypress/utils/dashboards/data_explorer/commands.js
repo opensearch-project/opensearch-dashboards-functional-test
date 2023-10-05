@@ -59,10 +59,12 @@ Cypress.Commands.add('waitForSearch', () => {
 
 Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {
   cy.setTopNavDate(fromTime, toTime);
+  cy.waitForLoader();
   // wait until the search has been finished
   cy.waitForSearch();
   cy.get('select').select(`${interval}`);
   cy.waitForLoader();
+  cy.waitForSearch();
 });
 
 Cypress.Commands.add('verifyMarkCount', (count) => {

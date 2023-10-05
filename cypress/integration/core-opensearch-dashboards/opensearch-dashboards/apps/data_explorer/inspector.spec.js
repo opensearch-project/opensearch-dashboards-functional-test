@@ -43,7 +43,9 @@ describe('inspector', () => {
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
+  });
 
+  beforeEach(() => {
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
   });
@@ -52,7 +54,7 @@ describe('inspector', () => {
 
   it('should display request stats with no results', () => {
     cy.getElementByTestId('openInspectorButton').click();
-
+    cy.wait(1000);
     cy.getElementByTestId('inspectorPanel')
       .get('.euiTable tr:nth-child(2) td:nth-child(2) span')
       .invoke('text')
@@ -63,13 +65,10 @@ describe('inspector', () => {
     cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
     cy.waitForSearch();
     cy.getElementByTestId('openInspectorButton').click();
+    cy.wait(1000);
     cy.getElementByTestId('inspectorPanel')
       .get('.euiTable tr:nth-child(2) td:nth-child(2) span')
       .invoke('text')
       .should('eq', '14004');
-  });
-
-  afterEach(() => {
-    cy.getElementByTestId('euiFlyoutCloseButton').should('be.visible').click();
   });
 });

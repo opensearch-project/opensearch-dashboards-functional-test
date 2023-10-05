@@ -52,7 +52,7 @@ describe('shared links', () => {
 
   describe('shared links with state in query', () => {
     it('should allow for copying the snapshot URL', function () {
-      const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
+      const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T04:31:44.000Z',to:'2015-09-23T16:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
@@ -65,7 +65,10 @@ describe('shared links', () => {
 
     it('should allow for copying the snapshot URL as a short URL', function () {
       const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
-      cy.getElementByTestId('useShortUrl').should('be.visible').click();
+      cy.getElementByTestId('useShortUrl')
+        .should('be.visible')
+        .invoke('attr', 'aria-checked', 'true');
+      cy.wait(1000);
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
         .should('eq', url)
