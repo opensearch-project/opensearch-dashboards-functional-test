@@ -14,6 +14,8 @@ import {
   ensureDetectorIsLinked,
   ensureDetectorDetails,
   openDetectorDetailsPageFromFlyout,
+  validateVisSnapshot,
+  setDateRangeTo7Days,
 } from '../../../../utils/helpers';
 import {
   INDEX_PATTERN_FILEPATH_SIMPLE,
@@ -51,6 +53,8 @@ describe('Anomaly detection integration with vis augmenter', () => {
       dashboardName,
       [visualizationSpec]
     );
+    // Setting viewport so the snapshots in the tests are consistent
+    cy.viewport(1280, 720);
   });
 
   after(() => {
@@ -82,6 +86,13 @@ describe('Anomaly detection integration with vis augmenter', () => {
     // the number of features will equal the number of metrics we have specified.
     ensureDetectorDetails(detectorName, visualizationSpec.metrics.length);
 
+    cy.visitDashboard(dashboardName);
+    setDateRangeTo7Days();
+    validateVisSnapshot(
+      visualizationName,
+      `${visualizationName}-with-created-detector`
+    );
+
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
   });
 
@@ -96,6 +107,14 @@ describe('Anomaly detection integration with vis augmenter', () => {
     associateDetectorFromVis(detectorName);
 
     ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
+
+    cy.visitDashboard(dashboardName);
+    setDateRangeTo7Days();
+    validateVisSnapshot(
+      visualizationName,
+      `${visualizationName}-with-associated-detector`
+    );
+
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
   });
 
@@ -105,6 +124,14 @@ describe('Anomaly detection integration with vis augmenter', () => {
     associateDetectorFromVis(detectorName);
 
     ensureDetectorIsLinked(dashboardName, visualizationName, detectorName);
+
+    cy.visitDashboard(dashboardName);
+    setDateRangeTo7Days();
+    validateVisSnapshot(
+      visualizationName,
+      `${visualizationName}-with-associated-detector-2`
+    );
+
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
   });
 

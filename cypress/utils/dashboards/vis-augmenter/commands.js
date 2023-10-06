@@ -17,6 +17,13 @@ Cypress.Commands.add('openVisContextMenu', { prevSubject: true }, (panel) =>
     .then(() => cy.get('.euiContextMenu'))
 );
 
+Cypress.Commands.add('closeVisContextMenu', { prevSubject: true }, (panel) =>
+  cy
+    .wrap(panel)
+    .find(`[data-test-subj="embeddablePanelContextMenuOpen"]`)
+    .click()
+);
+
 Cypress.Commands.add(
   'clickVisPanelMenuItem',
   { prevSubject: 'optional' },

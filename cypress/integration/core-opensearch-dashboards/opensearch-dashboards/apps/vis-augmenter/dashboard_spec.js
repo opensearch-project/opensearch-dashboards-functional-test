@@ -11,6 +11,8 @@ import {
 import {
   deleteVisAugmenterData,
   bootstrapDashboard,
+  validateVisSnapshot,
+  setDateRangeTo7Days,
 } from '../../../../../utils/dashboards/vis-augmenter/helpers';
 
 describe('Vis augmenter - existing dashboards work as expected', () => {
@@ -89,6 +91,8 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
         dashboardName,
         visualizationSpecs
       );
+      // Setting viewport so the snapshots in the tests are consistent
+      cy.viewport(1280, 720);
     });
 
     beforeEach(() => {
@@ -105,12 +109,25 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
     });
 
     it('View events option does not exist for any visualization', () => {
+      // Change date range to 7 days so there is less variability in charts
+      // which can cause flakiness (e.g., chart snapshot comparisons).
+      setDateRangeTo7Days();
+
       visualizationNames.forEach((visualizationName) => {
+        // Validating after making each vis full-screen. This is because if there
+        // is a lot of visualizations on the screen, not all may be visible at the
+        // same time on the dashboard - some may require scrolling to be in view.
+        validateVisSnapshot(
+          visualizationName,
+          `${visualizationName}-last-7-days`,
+          true
+        );
         cy.getVisPanelByTitle(visualizationName)
           .openVisContextMenu()
           .getMenuItems()
           .contains('View Events')
           .should('not.exist');
+        cy.getVisPanelByTitle(visualizationName).closeVisContextMenu();
       });
     });
 
