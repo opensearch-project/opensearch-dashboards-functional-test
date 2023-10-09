@@ -79,7 +79,9 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.get('.euiLink').contains('13').click();
+    cy.get('[data-test-subj="dashboard-table-traces-button"]')
+      .contains('13')
+      .click();
     cy.wait(delayTime);
 
     cy.contains(' (13)').should('exist');
@@ -107,7 +109,9 @@ describe('Testing plots', () => {
 
   it('Renders service map', () => {
     // plotly scale texts are in attribute "data-unformatted"
-    cy.get('text.ytitle[data-unformatted="Latency (ms)"]').should('exist');
+    cy.get('text.ytitle[data-unformatted="Average duration (ms)"]').should(
+      'exist'
+    );
     cy.get('text[data-unformatted="200"]').should('exist');
     cy.get('.vis-network').should('exist');
 

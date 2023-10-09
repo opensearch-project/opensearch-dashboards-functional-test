@@ -138,7 +138,8 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
         // Save and return
         cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
 
-        cy.getElementByTestId('visualizationLoader').should(
+
+        cy.getElementByTestId('visBuilderLoader').should(
           'contain.text',
           newLabel
         );
