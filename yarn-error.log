@@ -1,0 +1,104 @@
+Arguments: 
+  /usr/local/bin/node /usr/local/bin/yarn lint --fix
+
+PATH: 
+  /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/opt/homebrew/bin:/opt/homebrew/sbin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.14.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  SyntaxError: /Users/qingyah/opensearch-funtional/opensearch-dashboards-functional-test/package.json: Unexpected token } in JSON at position 6319
+      at JSON.parse (<anonymous>)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (/usr/local/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/local/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "opensearch-dashboards-functional-test",
+    "version": "3.0.0",
+    "description": "Maintains functional tests for OpenSearch Dashboards and Dashboards plugins",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "cypress:open": "cypress open",
+      "cypress:run-without-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=false",
+      "cypress:run-with-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,WAIT_FOR_LOADER_BUFFER_MS=500",
+      "cypress:run-with-security-and-aggregation-view": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=500",
+      "cypress:run-plugin-tests-without-security": "yarn cypress:run-without-security --spec 'cypress/integration/plugins/*/*.js'",
+      "cypress:run-plugin-tests-with-security": "yarn cypress:run-with-security --spec 'cypress/integration/plugins/*/*.js'",
+      "cypress:release-chrome": "yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-electron": "yarn cypress:run-with-security --browser electron --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-chromium": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-chromium-10": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=10 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-chromium-20": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=20 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-chromium-5": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=5 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-chromium-0": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=0 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-firefox": "yarn cypress:run-with-security --browser firefox --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
+      "cypress:release-ad-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'",
+      "cypress:release-ism-only": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'",
+      "lint": "eslint . --ext .js",
+      "pkg-version": "./scripts/getpkgversion.sh",
+      "generate:test-data": "node ./scripts/generate_data/index.js",
+      "postinstall": "husky install",
+      "osd:ciGroup1": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis_builder/*.js'\"",
+      "osd:ciGroup2": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis_type_table/*.js'\"",
+      "osd:ciGroup3": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis-augmenter/*.js'\"",
+      "osd:ciGroup4": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/dashboard_sample_data_with_datasource_spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/dashboard_sanity_test_spec.js'\"",
+      "osd:ciGroup5": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/datasource-management-plugin/*.js'\"",
+      "osd:ciGroup6": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/date_nanos_mixed.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/date_nanos.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover_histogram.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover.spec.js'\"",
+      "osd:ciGroup7": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/doc_navigation.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/doc_table.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/errors.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/field_data.spec.js'\"",
+      "osd:ciGroup8": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/field_visualize.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/filter_editor.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/index_pattern_with_encoded_id.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/index_pattern_without_field.spec.js'\"",
+      "osd:ciGroup9": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/inspector.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/large_string.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/saved_queries.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/shared_links.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/sidebar.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/source_filter.spec.js'\"",
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/opensearch-project/opensearch-dashboards-functional-test.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+      "url": "https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues"
+    },
+    "homepage": "https://github.com/opensearch-project/opensearch-dashboards-functional-test",
+    "dependencies": {
+      "@cypress/skip-test": "^2.6.1",
+      "@opensearch-dashboards-test/opensearch-dashboards-test-library": "https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.6.tar.gz",
+      "brace": "^0.11.1",
+      "prettier": "^2.5.1"
+    },
+    "devDependencies": {
+      "@faker-js/faker": "^7.6.0",
+      "commander": "^9.4.1",
+      "cypress": "9.5.4",
+      "cypress-multi-reporters": "^1.5.0",
+      "cypress-real-events": "1.7.6",
+      "eslint": "^7.0.0",
+      "eslint-config-prettier": "^8.5.0",
+      "eslint-plugin-cypress": "^2.12.1",
+      "eslint-plugin-header": "^3.1.1",
+      "eslint-plugin-import": "^2.26.0",
+      "eslint-plugin-prettier": "^4.0.0",
+      "husky": "^6.0.0",
+      "luxon": "^3.2.1",
+      "mocha-junit-reporter": "^2.0.0"
+    },
+    "overrides": {
+      "tough-cookie": "^4.1.3",
+      "optionator": "^0.9.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

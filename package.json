@@ -24,7 +24,16 @@
     "lint": "eslint . --ext .js",
     "pkg-version": "./scripts/getpkgversion.sh",
     "generate:test-data": "node ./scripts/generate_data/index.js",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "osd:ciGroup1": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis_builder/*.js'\"",
+    "osd:ciGroup2": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis_type_table/*.js'\"",
+    "osd:ciGroup3": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis-augmenter/*.js'\"",
+    "osd:ciGroup4": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/dashboard_sample_data_with_datasource_spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/dashboard_sanity_test_spec.js'\"",
+    "osd:ciGroup5": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/datasource-management-plugin/*.js'\"",
+    "osd:ciGroup6": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/date_nanos_mixed.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/date_nanos.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover_histogram.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover.spec.js'\"",
+    "osd:ciGroup7": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/doc_navigation.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/doc_table.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/errors.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/field_data.spec.js'\"",
+    "osd:ciGroup8": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/field_visualize.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/filter_editor.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/index_pattern_with_encoded_id.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/index_pattern_without_field.spec.js'\"",
+    "osd:ciGroup9": "echo \"--spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/inspector.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/large_string.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/saved_queries.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/shared_links.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/sidebar.spec.js, cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/source_filter.spec.js'\""
   },
   "repository": {
     "type": "git",
