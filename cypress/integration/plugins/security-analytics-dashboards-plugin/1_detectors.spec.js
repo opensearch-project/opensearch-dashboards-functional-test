@@ -136,9 +136,9 @@ const validatePendingFieldMappingsPanel = (mappings) => {
 const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().sa_selectComboboxItem(dataSource);
-  getDataSourceField().blur();
+  getDataSourceField().focus().blur();
   getLogTypeField().sa_selectComboboxItem(cypressLogTypeDns);
-  getLogTypeField().blur();
+  getLogTypeField().focus().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
