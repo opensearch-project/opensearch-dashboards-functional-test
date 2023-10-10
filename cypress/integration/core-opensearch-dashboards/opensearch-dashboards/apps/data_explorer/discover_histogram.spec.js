@@ -64,6 +64,8 @@ describe('discover histogram', { scrollBehavior: false }, () => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
     );
+    cy.deleteIndex('long-window-logstash-0');
+    cy.deleteSavedObjectByType('index-pattern');
   });
 
   it('should visualize monthly data with different day intervals', () => {
