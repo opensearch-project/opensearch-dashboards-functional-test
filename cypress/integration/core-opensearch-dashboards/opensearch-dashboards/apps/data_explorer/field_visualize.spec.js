@@ -28,10 +28,6 @@ describe('discover field visualize button', () => {
     testFixtureHandler.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
     );
-    // import long window logstash index pattern
-    testFixtureHandler.importJSONDoc(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
-    );
 
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
