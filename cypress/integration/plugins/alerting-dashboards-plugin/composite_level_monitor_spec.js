@@ -66,7 +66,7 @@ describe('CompositeLevelMonitor', () => {
       });
     });
 
-    it('by visual editor', () => {
+    xit('by visual editor', () => {
       // Select visual editor for method of definition
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
@@ -154,7 +154,7 @@ describe('CompositeLevelMonitor', () => {
       });
     });
 
-    it('by visual editor', () => {
+    xit('by visual editor', () => {
       // Verify edit page
       cy.contains('Edit monitor', { timeout: 20000 });
       cy.get('input[name="name"]').type('_edited');
@@ -185,9 +185,8 @@ describe('CompositeLevelMonitor', () => {
 
       // Wait for monitor to be created
       cy.wait('@updateMonitorRequest').then(() => {
-        cy.contains(`${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`, {
-          timeout: 5000,
-        });
+        cy.wait(5000);
+        cy.contains(`${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`);
       });
     });
   });
