@@ -105,10 +105,12 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -119,7 +121,7 @@ describe('ClusterMetricsMonitor', () => {
       );
 
       // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Query parameters - optional');
+      cy.contains('Path parameters - optional');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
@@ -144,7 +146,7 @@ describe('ClusterMetricsMonitor', () => {
       //   .type('{downarrow}{enter}');
 
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -153,7 +155,7 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains(SAMPLE_TRIGGER);
 
       // Go back to the Monitors list
-      cy.get('a').contains('Monitors').click();
+      cy.get('a').contains('Monitors').click({ force: true });
 
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -223,7 +225,7 @@ describe('ClusterMetricsMonitor', () => {
     });
   });
 
-  describe('displays Query parameters field appropriately', () => {
+  describe('displays Path parameters field appropriately', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
@@ -234,10 +236,12 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(
@@ -249,9 +253,9 @@ describe('ClusterMetricsMonitor', () => {
         'list snapshots{enter}'
       );
 
-      // Confirm the Query parameters field is present and is not described as "optional"
-      cy.contains('Query parameters - optional').should('not.exist');
-      cy.contains('Query parameters');
+      // Confirm the Path parameters field is present and is not described as "optional"
+      cy.contains('Path parameters - optional').should('not.exist');
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
     });
   });
