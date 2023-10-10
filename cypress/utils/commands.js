@@ -46,7 +46,13 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
-    newOptions.qs = { security_tenant: CURRENT_TENANT.defaultTenant };
+    if (!newOptions.excludeTenant) {
+      newOptions.qs = {
+        ...newOptions.qs,
+        security_tenant: CURRENT_TENANT.defaultTenant,
+      };
+    }
+
     if (waitForGetTenant) {
       cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
       orig(url, newOptions);
@@ -363,6 +369,23 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
     body: JSON.stringify({
       attributes,
       references: [],
+    }),
+  });
+});
+
+Cypress.Commands.add('createDashboard', (attributes = {}, headers = {}) => {
+  const url = `${Cypress.config().baseUrl}/api/saved_objects/dashboard`;
+
+  cy.request({
+    method: 'POST',
+    url,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+      ...headers,
+    },
+    body: JSON.stringify({
+      attributes,
     }),
   });
 });
