@@ -66,7 +66,7 @@ describe('Testing panels table', () => {
       .contains('Duplicate')
       .trigger('mouseover')
       .click();
-    cy.wait(delay);
+    cy.get('.panel-header-count').contains('(2)');
   });
 
   it('Deletes panels', () => {
@@ -108,7 +108,7 @@ describe('Testing panels table', () => {
       .contains(/^Create$/)
       .trigger('mouseover')
       .click();
-    cy.wait(delay * 2);
+    cy.contains(TEST_PANEL).should('exist');
   });
 });
 
