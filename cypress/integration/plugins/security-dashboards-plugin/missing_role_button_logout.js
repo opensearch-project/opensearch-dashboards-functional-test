@@ -9,8 +9,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
     cy.contains('button', 'Logout').should('be.visible').click();
 
     cy.intercept({
-    method: 'POST',
-    url: '/auth/logout',
+      method: 'POST',
+      url: '/auth/logout',
     });
 
     cy.getElementByTestId('submit').should('contain.text', 'Log in');
