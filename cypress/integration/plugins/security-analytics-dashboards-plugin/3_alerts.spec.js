@@ -55,7 +55,7 @@ describe('Alerts', () => {
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
-    cy.waitForPageLoad('alerts', {
+    cy.sa_waitForPageLoad('alerts', {
       contains: 'Security alerts',
     });
 
@@ -145,7 +145,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('Cypress USB Rule');
         expect($tr, `detector name`).to.contain(testDetectorCfg.name);
-        expect($tr, `log type`).to.contain('windows');
+        expect($tr, `log type`).to.contain('System Activity: Windows');
       });
 
       // Close the flyout
@@ -466,5 +466,5 @@ describe('Alerts', () => {
     );
   });
 
-  after(() => cy.cleanUpTests());
+  after(() => cy.sa_cleanUpTests());
 });
