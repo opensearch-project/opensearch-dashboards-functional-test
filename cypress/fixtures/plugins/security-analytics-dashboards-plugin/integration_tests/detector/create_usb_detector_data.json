@@ -27,7 +27,7 @@
   "triggers": [
     {
       "name": "USB plugged in alert",
-      "sev_levels": ["low"],
+      "sev_levels": ["high"],
       "tags": ["windows.usb"],
       "actions": [
         {
@@ -35,11 +35,11 @@
           "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: USB Detector",
           "destination_id": "",
           "subject_template": {
-            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: USB Detector",
+            "source": "Triggered alert condition:  - Severity: 1 (Highest)  - Threat detector: USB Detector",
             "lang": "mustache"
           },
           "message_template": {
-            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: USB Detector\nDescription: Detect USB plugged in.\nDetector data sources:\n\twindows",
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest) \nThreat detector: USB Detector\nDescription: Detect USB plugged in.\nDetector data sources:\n\twindows",
             "lang": "mustache"
           },
           "throttle_enabled": false,
