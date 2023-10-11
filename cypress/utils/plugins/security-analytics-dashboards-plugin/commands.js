@@ -36,19 +36,19 @@ const { BACKEND_BASE_PATH } = require('../../base_constants');
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('cleanUpTests', () => {
-  cy.deleteAllCustomRules();
-  cy.deleteAllDetectors();
+Cypress.Commands.add('sa_cleanUpTests', () => {
+  cy.sa_deleteAllCustomRules();
+  cy.sa_deleteAllDetectors();
   cy.sa_deleteAllIndices();
 });
 
-Cypress.Commands.add('getTableFirstRow', (selector) => {
+Cypress.Commands.add('sa_getTableFirstRow', (selector) => {
   if (!selector) return cy.get('tbody > tr').first();
   return cy.get('tbody > tr:first').find(selector);
 });
 
 Cypress.Commands.add(
-  'waitForPageLoad',
+  'sa_waitForPageLoad',
   (pathname, { timeout = 60000, contains = null }) => {
     const fullUrl = `${OPENSEARCH_DASHBOARDS_URL}/${pathname}`;
     Cypress.log({
@@ -60,7 +60,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('createDetector', (detectorJSON) => {
+Cypress.Commands.add('sa_createDetector', (detectorJSON) => {
   cy.request(
     'POST',
     `${BACKEND_BASE_PATH}${NODE_API.DETECTORS_BASE}`,
@@ -69,7 +69,7 @@ Cypress.Commands.add('createDetector', (detectorJSON) => {
 });
 
 Cypress.Commands.add(
-  'createAliasMappings',
+  'sa_createAliasMappings',
   (indexName, ruleTopic, aliasMappingsBody, partial = true) => {
     const body = {
       index_name: indexName,
@@ -85,7 +85,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
+Cypress.Commands.add('sa_updateDetector', (detectorId, detectorJSON) => {
   cy.request(
     'PUT',
     `${BACKEND_BASE_PATH}${NODE_API.DETECTORS_BASE}/${detectorId}`,
@@ -93,7 +93,7 @@ Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
   );
 });
 
-Cypress.Commands.add('deleteDetector', (detectorName) => {
+Cypress.Commands.add('sa_deleteDetector', (detectorName) => {
   const body = {
     from: 0,
     size: 5000,
@@ -125,7 +125,7 @@ Cypress.Commands.add('deleteDetector', (detectorName) => {
   });
 });
 
-Cypress.Commands.add('deleteAllDetectors', () => {
+Cypress.Commands.add('sa_deleteAllDetectors', () => {
   cy.request({
     method: 'DELETE',
     url: `${BACKEND_BASE_PATH}/.opensearch-sap-detectors-config`,
@@ -136,58 +136,58 @@ Cypress.Commands.add('deleteAllDetectors', () => {
   });
 });
 
-Cypress.Commands.add('getElementByText', (locator, text) => {
+Cypress.Commands.add('sa_getElementByText', (locator, text) => {
   Cypress.log({ message: `Get element by text: ${text}` });
   return locator
     ? cy.get(locator).filter(`:contains("${text}")`).should('be.visible')
     : cy.contains(text).should('be.visible');
 });
 
-Cypress.Commands.add('getButtonByText', (text) => {
+Cypress.Commands.add('sa_getButtonByText', (text) => {
   Cypress.log({ message: `Get button by text: ${text}` });
-  return cy.getElementByText('.euiButton', text);
+  return cy.sa_getElementByText('.euiButton', text);
 });
 
-Cypress.Commands.add('getInputByPlaceholder', (placeholder) => {
+Cypress.Commands.add('sa_getInputByPlaceholder', (placeholder) => {
   Cypress.log({ message: `Get input element by placeholder: ${placeholder}` });
   return cy.get(`input[placeholder="${placeholder}"]`);
 });
 
-Cypress.Commands.add('getComboboxByPlaceholder', (placeholder) => {
+Cypress.Commands.add('sa_getComboboxByPlaceholder', (placeholder) => {
   Cypress.log({
     message: `Get combobox element by placeholder: ${placeholder}`,
   });
   return cy
-    .getElementByText('.euiComboBoxPlaceholder', placeholder)
+    .sa_getElementByText('.euiComboBoxPlaceholder', placeholder)
     .siblings('.euiComboBox__input')
     .find('input');
 });
 
-Cypress.Commands.add('getFieldByLabel', (label, type = 'input') => {
+Cypress.Commands.add('sa_getFieldByLabel', (label, type = 'input') => {
   Cypress.log({ message: `Get field by label: ${label}` });
   return cy
-    .getElementByText('.euiFormRow__labelWrapper', label)
+    .sa_getElementByText('.euiFormRow__labelWrapper', label)
     .siblings()
     .find(type);
 });
 
-Cypress.Commands.add('getTextareaByLabel', (label) => {
+Cypress.Commands.add('sa_getTextareaByLabel', (label) => {
   Cypress.log({ message: `Get textarea by label: ${label}` });
-  return cy.getFieldByLabel(label, 'textarea');
+  return cy.sa_getFieldByLabel(label, 'textarea');
 });
 
-Cypress.Commands.add('getElementByTestSubject', (subject) => {
+Cypress.Commands.add('sa_getElementByTestSubject', (subject) => {
   Cypress.log({ message: `Get element by test subject: ${subject}` });
   return cy.get(`[data-test-subj="${subject}"]`);
 });
 
-Cypress.Commands.add('getRadioButtonById', (id) => {
+Cypress.Commands.add('sa_getRadioButtonById', (id) => {
   Cypress.log({ message: `Get radio button by id: ${id}` });
   return cy.get(`input[id="${id}"]`);
 });
 
 Cypress.Commands.add(
-  'selectComboboxItem',
+  'sa_selectComboboxItem',
   {
     prevSubject: true,
   },
@@ -196,12 +196,15 @@ Cypress.Commands.add(
       items = [items];
     }
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
-    items.map((item) => cy.wrap(subject).type(item).type('{enter}'));
+    items.map((item) => {
+      cy.wrap(subject).type(item);
+      cy.get(`[title="${item}"]`).click({ force: true });
+    });
   }
 );
 
 Cypress.Commands.add(
-  'clearCombobox',
+  'sa_clearCombobox',
   {
     prevSubject: true,
   },
@@ -215,7 +218,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'containsValue',
+  'sa_containsValue',
   {
     prevSubject: true,
   },
@@ -226,7 +229,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'clearValue',
+  'sa_clearValue',
   {
     prevSubject: true,
   },
@@ -234,7 +237,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'containsError',
+  'sa_containsError',
   {
     prevSubject: true,
   },
@@ -247,7 +250,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'containsHelperText',
+  'sa_containsHelperText',
   {
     prevSubject: true,
   },
@@ -260,7 +263,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'shouldNotHaveError',
+  'sa_shouldNotHaveError',
   {
     prevSubject: true,
   },
@@ -272,24 +275,24 @@ Cypress.Commands.add(
       .should('not.exist')
 );
 
-Cypress.Commands.add('validateDetailsItem', (label, value) => {
+Cypress.Commands.add('sa_validateDetailsItem', (label, value) => {
   Cypress.log({
     message: `Validate details item by label: ${label} and value: ${value}`,
   });
   return cy
-    .getElementByText('.euiFlexItem label', label)
+    .sa_getElementByText('.euiFlexItem label', label)
     .parent()
     .siblings()
     .contains(value);
 });
 
-Cypress.Commands.add('urlShouldContain', (path) => {
+Cypress.Commands.add('sa_urlShouldContain', (path) => {
   Cypress.log({ message: `Url should contain path: ${path}` });
   return cy.url().should('contain', `#/${path}`);
 });
 
 Cypress.Commands.add(
-  'pressEnterKey',
+  'sa_pressEnterKey',
   {
     prevSubject: true,
   },
@@ -311,7 +314,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'validateTable',
+  'sa_validateTable',
   {
     prevSubject: true,
   },
@@ -352,12 +355,12 @@ Cypress.Commands.add('sa_createIndex', (index, settings = {}) => {
   );
 });
 
-Cypress.Commands.add('ingestDocument', (indexId, documentJSON) => {
+Cypress.Commands.add('sa_ingestDocument', (indexId, documentJSON) => {
   cy.request('POST', `${BACKEND_BASE_PATH}/${indexId}/_doc`, documentJSON);
 });
 
 Cypress.Commands.add(
-  'insertDocumentToIndex',
+  'sa_insertDocumentToIndex',
   (indexName, documentId, documentBody) => {
     cy.request({
       method: 'POST',
@@ -379,7 +382,7 @@ Cypress.Commands.add('sa_deleteAllIndices', () => {
   });
 });
 
-Cypress.Commands.add('createRule', (ruleJSON) => {
+Cypress.Commands.add('sa_createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
     url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
@@ -390,7 +393,7 @@ Cypress.Commands.add('createRule', (ruleJSON) => {
   });
 });
 
-Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
+Cypress.Commands.add('sa_updateRule', (ruleId, ruleJSON) => {
   cy.request(
     'PUT',
     `${BACKEND_BASE_PATH}${NODE_API.RULES_BASE}/${ruleId}`,
@@ -398,7 +401,7 @@ Cypress.Commands.add('updateRule', (ruleId, ruleJSON) => {
   );
 });
 
-Cypress.Commands.add('deleteRule', (ruleName) => {
+Cypress.Commands.add('sa_deleteRule', (ruleName) => {
   const body = {
     from: 0,
     size: 5000,
@@ -431,7 +434,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
   });
 });
 
-Cypress.Commands.add('deleteAllCustomRules', () => {
+Cypress.Commands.add('sa_deleteAllCustomRules', () => {
   const url = `${BACKEND_BASE_PATH}/.opensearch-sap-custom-rules-config`;
   cy.request({
     method: 'DELETE',
@@ -445,17 +448,17 @@ Cypress.Commands.add('deleteAllCustomRules', () => {
 });
 
 Cypress.Commands.add(
-  'ospSearch',
+  'sa_ospSearch',
   {
     prevSubject: true,
   },
   (subject, text) => {
-    return cy.get(subject).clear().ospType(text).realPress('Enter');
+    return cy.get(subject).clear().sa_ospType(text).realPress('Enter');
   }
 );
 
 Cypress.Commands.add(
-  'ospClear',
+  'sa_ospClear',
   {
     prevSubject: true,
   },
@@ -470,7 +473,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add(
-  'ospType',
+  'sa_ospType',
   {
     prevSubject: true,
   },
