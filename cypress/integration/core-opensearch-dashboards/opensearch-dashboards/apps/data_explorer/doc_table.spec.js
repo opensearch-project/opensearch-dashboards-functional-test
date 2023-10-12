@@ -28,6 +28,14 @@ describe('discover doc table', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
+    testFixtureHandler.importJSONMapping(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
+    );
+
+    testFixtureHandler.importJSONDoc(
+      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
+    );
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
