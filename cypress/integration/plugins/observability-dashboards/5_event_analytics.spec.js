@@ -64,7 +64,9 @@ describe('Saves a query on explorer page', () => {
     cy.get(
       '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
     ).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]').type(SAVE_QUERY2);
+    cy.get('[data-test-subj="eventExplorer__querySaveName"]')
+      .focus()
+      .type(SAVE_QUERY2, { force: true });
     cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]').click();
     cy.wait(delayTime * 2);
 
