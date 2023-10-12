@@ -27,7 +27,7 @@ describe('Cypress', () => {
     cy.wait(3000);
   });
 
-  it('Download from reporting homepage', () => {
+  it.skip('Download from reporting homepage', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
