@@ -6,6 +6,7 @@
 import './vis_builder/commands';
 import './vis_type_table/commands';
 import './vis-augmenter/commands';
+import './data_explorer/commands';
 
 Cypress.Commands.add('waitForLoader', () => {
   const opts = { log: false };
@@ -108,5 +109,5 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
 });
 
 Cypress.Commands.add('updateTopNav', (options) => {
-  cy.getElementByTestId('querySubmitButton', options).click(options);
+  cy.getElementByTestId('querySubmitButton', options).click({ force: true });
 });
