@@ -5,39 +5,7 @@
 
 import { isEmpty } from 'lodash';
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-
-const apiRequest = (url, method = 'POST', body = undefined, qs = undefined) =>
-  cy.request({
-    method: method,
-    failOnStatusCode: false,
-    url: url,
-    headers: {
-      'content-type': 'application/json',
-      'osd-xsrf': true,
-    },
-    body: body,
-    qs: qs,
-  });
-
-const devToolsRequest = (
-  url,
-  method = 'POST',
-  body = undefined,
-  qs = undefined
-) =>
-  cy.request({
-    method: 'POST',
-    form: false,
-    failOnStatusCode: false,
-    url: encodeURI(`api/console/proxy?path=${url}&method=${method}`),
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    body: body,
-    qs: qs,
-  });
-
+import { devToolsRequest, apiRequest } from '../../helpers';
 /**
  * Cleans up the index & all associated saved objects (index pattern, visualizations,
  * dashboards, etc.) created during the test run
@@ -146,7 +114,7 @@ const setXAxisDateHistogram = () => {
     .find('[data-test-subj="visEditorAdd_buckets"]')
     .click();
 
-  cy.getElementByTestId('visEditorAdd_buckets_X-axis').click();
+  cy.getElementByTestId('visEditorAdd_buckets_X-axis').click({ force: true });
 
   cy.get('.euiTitle')
     .contains('Buckets')
