@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import _ from 'lodash';
 import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_data.json';
 
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
@@ -125,4 +126,26 @@ export const createDetector = (
   }
 
   return detectorConfig;
+};
+
+export const logTypeLabels = {
+  cloudtrail: 'AWS Cloudtrail',
+  dns: 'DNS',
+  vpcflow: 'VPC Flow',
+  ad_ldap: 'AD/LDAP',
+  apache_access: 'Apache Access',
+  m365: 'Microsoft 365',
+  okta: 'Okta',
+  waf: 'WAF',
+  s3: 'AWS S3',
+  github: 'Github',
+  gworkspace: 'Google Workspace',
+  windows: 'Microsoft Windows',
+  network: 'Network',
+  linux: 'Linux System Logs',
+  azure: 'Microsoft Azure',
+};
+
+export const getLogTypeLabel = (name) => {
+  return !name ? '-' : logTypeLabels[name.toLowerCase()] || _.startCase(name);
 };

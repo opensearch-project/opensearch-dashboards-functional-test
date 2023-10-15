@@ -6,6 +6,7 @@
 import {
   createDetector,
   DETECTOR_TRIGGER_TIMEOUT,
+  getLogTypeLabel,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import indexSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
@@ -55,7 +56,7 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('windows');
+    cy.contains(getLogTypeLabel('windows'));
     cy.contains('High');
   });
 

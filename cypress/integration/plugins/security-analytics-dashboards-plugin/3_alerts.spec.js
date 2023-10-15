@@ -8,6 +8,7 @@ import {
   OPENSEARCH_DASHBOARDS_URL,
   NODE_API,
   createDetector,
+  getLogTypeLabel,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import indexSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
 import aliasMappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
@@ -145,7 +146,9 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `rule name`).to.contain('Cypress USB Rule');
         expect($tr, `detector name`).to.contain(testDetectorCfg.name);
-        expect($tr, `log type`).to.contain('windows');
+        expect($tr, `log type`).to.contain(
+          getLogTypeLabel(testDetectorCfg.detector_type)
+        );
       });
 
       // Close the flyout
@@ -230,7 +233,7 @@ describe('Alerts', () => {
         // Confirm the rule category
         cy.get(
           '[data-test-subj="finding-details-flyout-rule-category"]'
-        ).contains('Windows');
+        ).contains(getLogTypeLabel(testDetectorCfg.detector_type));
 
         // Confirm the rule description
         cy.get(

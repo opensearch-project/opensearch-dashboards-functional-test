@@ -4,6 +4,7 @@
  */
 
 import {
+  getLogTypeLabel,
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
@@ -137,7 +138,7 @@ const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().selectComboboxItem(dataSource);
   getDataSourceField().blur();
-  getLogTypeField().selectComboboxItem(cypressLogTypeDns);
+  getLogTypeField().selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
   getLogTypeField().blur();
 };
 
@@ -151,7 +152,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     'Detection rules (14 selected)'
   )
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
+    .then(() =>
+      cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns))
+    );
 
   cy.getElementByText(
     '.euiAccordion .euiTitle',

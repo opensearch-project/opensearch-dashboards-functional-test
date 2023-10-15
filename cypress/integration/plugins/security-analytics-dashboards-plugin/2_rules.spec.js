@@ -4,6 +4,7 @@
  */
 
 import {
+  getLogTypeLabel,
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
@@ -72,7 +73,7 @@ const checkRulesFlyout = () => {
 
       // Validate log type
       cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(
-        SAMPLE_RULE.logType
+        getLogTypeLabel(SAMPLE_RULE.logType)
       );
 
       // Validate description
@@ -195,7 +196,7 @@ const fillCreateForm = () => {
   getAuthorField().type(`${SAMPLE_RULE.author}`);
 
   // rule details
-  getLogTypeField().type(SAMPLE_RULE.logType);
+  getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
   getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
 
   // rule detection
@@ -333,7 +334,9 @@ describe('Rules', () => {
       getLogTypeField().focus().blur();
       getLogTypeField().containsError('Log type is required');
 
-      getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
+      getLogTypeField().selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
       getLogTypeField().focus().blur().shouldNotHaveError();
     });
 
@@ -480,7 +483,9 @@ describe('Rules', () => {
       // log field
       getLogTypeField().clearCombobox();
       toastShouldExist();
-      getLogTypeField().selectComboboxItem(SAMPLE_RULE.logType);
+      getLogTypeField().selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
 
       // severity field
       getRuleLevelField().clearCombobox();
@@ -615,10 +620,12 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().type(SAMPLE_RULE.logType).type('{enter}');
+      getLogTypeField().selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
       getLogTypeField()
         .containsValue(SAMPLE_RULE.logType)
-        .contains(SAMPLE_RULE.logType);
+        .contains(getLogTypeLabel(SAMPLE_RULE.logType));
 
       SAMPLE_RULE.description += ' edited';
       YAML_RULE_LINES[4] = `description: ${SAMPLE_RULE.description}`;
