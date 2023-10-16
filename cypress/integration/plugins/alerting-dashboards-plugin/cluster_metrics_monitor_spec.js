@@ -118,8 +118,8 @@ describe('ClusterMetricsMonitor', () => {
         'cluster health{enter}'
       );
 
-      // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Query parameters - optional');
+      // Confirm the Path parameters field is present and described as "optional"
+      cy.contains('Path parameters - optional');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
@@ -179,8 +179,8 @@ describe('ClusterMetricsMonitor', () => {
         'nodes stats{enter}'
       );
 
-      // Confirm the Query parameters field is not present
-      cy.contains('Query parameters').should('not.exist');
+      // Confirm the Path parameters field is not present
+      cy.contains('Path parameters').should('not.exist');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]').should(
         'not.exist'
       );
@@ -223,7 +223,7 @@ describe('ClusterMetricsMonitor', () => {
     });
   });
 
-  describe('displays Query parameters field appropriately', () => {
+  describe('displays Path parameters field appropriately', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
@@ -249,9 +249,9 @@ describe('ClusterMetricsMonitor', () => {
         'list snapshots{enter}'
       );
 
-      // Confirm the Query parameters field is present and is not described as "optional"
-      cy.contains('Query parameters - optional').should('not.exist');
-      cy.contains('Query parameters');
+      // Confirm the Path parameters field is present and is not described as "optional"
+      cy.contains('Path parameters - optional').should('not.exist');
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
     });
   });
@@ -409,6 +409,7 @@ describe('ClusterMetricsMonitor', () => {
   describe('can update', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
+      cy.reload();
     });
 
     describe('Cluster Health API monitor', () => {

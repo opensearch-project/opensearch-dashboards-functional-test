@@ -12,12 +12,12 @@
   ],
   "tags": [
     {
-      "value": "dns.low"
+      "value": "dns.high"
     }
   ],
   "log_source": "",
-  "detection": "selection:\n  query:\n    - QWE\n    - ASD\n    - YXC\ncondition: selection",
-  "level": "low",
+  "detection": "selection:\n  dns-question-name:\n    - QuestionName\ncondition: selection",
+  "level": "high",
   "false_positives": [
     {
       "value": ""
