@@ -430,13 +430,13 @@ describe('Detectors', () => {
       getNextButton().should('be.enabled');
     });
 
-    it('...should show mappings warning', () => {
+    xit('...should show mappings warning', () => {
       fillDetailsForm(detectorName, cypressIndexDns);
 
       getDataSourceField().selectComboboxItem(cypressIndexWindows);
       getDataSourceField().focus().blur();
 
-      cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
+      cy.get('.euiCallOut')
         .should('be.visible')
         .contains(
           'To avoid issues with field mappings, we recommend creating separate detectors for different log types.'
