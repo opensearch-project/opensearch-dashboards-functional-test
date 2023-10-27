@@ -6,7 +6,6 @@
 /// <reference types="cypress" />
 
 import {
-  delayTime,
   SERVICE_NAME,
   setTimeFilter,
 } from '../../../utils/constants';
