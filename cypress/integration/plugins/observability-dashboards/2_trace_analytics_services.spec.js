@@ -5,10 +5,7 @@
 
 /// <reference types="cypress" />
 
-import {
-  SERVICE_NAME,
-  setTimeFilter,
-} from '../../../utils/constants';
+import { SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing services table', () => {
   beforeEach(() => {
