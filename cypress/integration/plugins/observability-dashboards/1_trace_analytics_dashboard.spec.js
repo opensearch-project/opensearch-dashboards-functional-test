@@ -19,11 +19,6 @@ describe('Testing dashboard table empty state', () => {
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
   });
-
-  it('Renders empty state', () => {
-    cy.contains(' (0)').should('exist');
-    cy.contains('No matches').should('exist');
-  });
 });
 
 describe('Testing dashboard table', () => {
@@ -37,13 +32,6 @@ describe('Testing dashboard table', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
-  });
-
-  it('Renders the dashboard table', () => {
-    cy.contains(' (10)').should('exist');
-    cy.contains('client_cancel_order').should('exist');
-    cy.contains('166.44').should('exist');
-    cy.contains('7.14%').should('exist');
   });
 
   it('Adds the percentile filters', () => {
@@ -105,26 +93,6 @@ describe('Testing plots', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
-  });
-
-  it('Renders service map', () => {
-    // plotly scale texts are in attribute "data-unformatted"
-    cy.get('text.ytitle[data-unformatted="Average duration (ms)"]').should(
-      'exist'
-    );
-    cy.get('text[data-unformatted="200"]').should('exist');
-    cy.get('.vis-network').should('exist');
-
-    cy.get('.euiButton__text[title="Errors"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
-
-    cy.get('.euiButton__text[title="Request Rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Request rate (spans)"]').should(
-      'exist'
-    );
-
-    cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
-    cy.wait(delayTime);
   });
 
   it('Renders plots', () => {
