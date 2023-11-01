@@ -56,20 +56,3 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
     Cypress.Cookies.preserveOnce('security_authentication');
   });
 }
-
-cy.on('before:browser:launch', (browser = {}, launchOptions) => {
-  if (
-    (browser.name === 'chrome' || browser.name === 'chromium') &&
-    browser.isHeadless
-  ) {
-    launchOptions.args = launchOptions.args.map((arg) => {
-      if (arg === '--headless') {
-        return '--headless=new';
-      }
-
-      return arg;
-    });
-  }
-
-  return launchOptions;
-});

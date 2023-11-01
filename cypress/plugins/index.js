@@ -24,4 +24,20 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+  on('before:browser:launch', (browser = {}, launchOptions) => {
+    if (
+      (browser.name === 'chrome' || browser.name === 'chromium') &&
+      browser.isHeadless
+    ) {
+      launchOptions.args = launchOptions.args.map((arg) => {
+        if (arg === '--headless') {
+          return '--headless=new';
+        }
+
+        return arg;
+      });
+    }
+
+    return launchOptions;
+  });
 };
