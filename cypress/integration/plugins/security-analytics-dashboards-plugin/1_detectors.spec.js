@@ -7,6 +7,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import { getLogTypeLabel } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 import sample_windows_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
 import sample_dns_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_dns_index_settings.json';
 import dns_name_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule_with_name_selection.json';
@@ -40,7 +41,7 @@ const dataSourceLabel = 'Select or input source indexes or index patterns';
 
 const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
-const logTypeLabel = 'Select a log type you would like to detect';
+const logTypeLabel = 'Log type';
 
 const getLogTypeField = () => cy.sa_getFieldByLabel(logTypeLabel);
 
@@ -138,7 +139,7 @@ const fillDetailsForm = (detectorName, dataSource) => {
   getNameField().type(detectorName);
   getDataSourceField().sa_selectComboboxItem(dataSource);
   getDataSourceField().focus().blur();
-  getLogTypeField().sa_selectComboboxItem(cypressLogTypeDns);
+  getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
   getLogTypeField().focus().blur();
 };
 
@@ -149,10 +150,10 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   cy.sa_getElementByText(
     '.euiAccordion .euiTitle',
-    'Detection rules (14 selected)'
+    'Selected detection rules (14)'
   )
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', 'Dns'));
+    .then(() => cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns)));
 
   cy.sa_getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
@@ -169,18 +170,11 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   // Open the trigger details accordion
   cy.get('[data-test-subj="trigger-details-btn"]').click({ force: true });
   cy.sa_getElementByText('.euiTitle.euiTitle--medium', 'Set up alert triggers');
-  cy.sa_getInputByPlaceholder(
-    'Enter a name to describe the alert condition'
-  ).type('test_trigger');
   cy.sa_getElementByTestSubject('alert-tags-combo-box')
     .type(`attack.defense_evasion{enter}`)
     .find('input')
     .focus()
     .blur();
-
-  cy.sa_getFieldByLabel('Specify alert severity').sa_selectComboboxItem(
-    '1 (Highest)'
-  );
 
   cy.intercept('POST', NODE_API.MAPPINGS_BASE).as('createMappingsRequest');
   cy.intercept('POST', NODE_API.DETECTORS_BASE).as('createDetectorRequest');
@@ -213,7 +207,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
             cy.sa_getElementByText('button.euiTab', 'Alert triggers')
               .should('be.visible')
-              .click();
+              .click({ force: true });
             validateAlertPanel('Trigger 1');
           });
         });
