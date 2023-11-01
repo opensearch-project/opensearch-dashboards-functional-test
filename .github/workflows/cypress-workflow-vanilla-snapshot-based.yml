@@ -50,7 +50,7 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}-linux-x64
-          bin/opensearch-dashboards serve &
+          bin/opensearch-dashboards serve --server.host="0.0.0.0" &
           timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
         id: cypress_version
