@@ -103,6 +103,7 @@ describe('Alerts', () => {
         // Click the "View details" button for the first alert
         cy.get('[aria-label="View details"]').click({ force: true });
       });
+    cy.wait(3000);
 
     // Get the details flyout, and validate its content
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
@@ -145,7 +146,7 @@ describe('Alerts', () => {
         expect($tr, `timestamp`).to.contain(date);
         expect($tr, `detection type`).to.contain('Detection rules');
         expect($tr, `detector name`).to.contain(testDetectorCfg.name);
-        expect($tr, `log type`).to.contain('System Activity: Windows');
+        expect($tr, `log type`).to.contain('System Activity: Microsoft Windows');
       });
 
       // Close the flyout
@@ -166,6 +167,8 @@ describe('Alerts', () => {
         // Click the "View details" button for the first alert
         cy.get('[aria-label="View details"]').click({ force: true });
       });
+  
+    cy.wait(3000);
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
