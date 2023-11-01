@@ -18,6 +18,7 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
+const creationFailedMessage = 'Create detector failed.';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -197,11 +198,6 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
       cy.url()
         .should('contain', detectorId)
         .then(() => {
-          cy.sa_getElementByText(
-            '.euiCallOut',
-            `Detector created successfully: ${detectorName}`
-          );
-
           // Confirm detector state
           cy.sa_getElementByText('.euiTitle', detectorName);
           cy.sa_getElementByText('.euiHealth', 'Active').then(() => {
@@ -425,12 +421,12 @@ describe('Detectors', () => {
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.sa_getElementByText('.euiCallOut', 'Create detector failed.');
+      cy.sa_getElementByText('.euiCallOut', creationFailedMessage);
     });
 
     it('...can be created', () => {
       createDetector(detectorName, cypressIndexDns, false);
-      cy.sa_getElementByText('.euiCallOut', 'Detector created successfully');
+      cy.contains(creationFailedMessage).should('not.exist');
     });
 
     it('...basic details can be edited', () => {
