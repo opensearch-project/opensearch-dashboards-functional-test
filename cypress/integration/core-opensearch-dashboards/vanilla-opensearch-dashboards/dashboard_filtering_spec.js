@@ -328,28 +328,23 @@ describe('dashboard filtering', () => {
 
   describe('nested filtering', () => {
     before(() => {
-      cy.log('start nested filtering');
       // Go to the Dashboards list page
       miscUtils.visitPage('app/dashboards/list');
-      cy.log('miscUtils.visitPage');
 
       // Click the "Create dashboard" button
       miscUtils.createNewDashboard(20000);
-      cy.log('miscUtils.createNewDashboard');
 
       // Change the time to be between Jan 1 2018 and Apr 13, 2018
       cy.setTopNavDate(
         'Jan 1, 2018 @ 00:00:00.000',
         'Apr 13, 2018 @ 00:00:00.000'
       );
-      cy.log('cy.setTopNavDate');
 
       dashboardPage.addDashboardPanels(
         'Rendering Test: animal sounds pie',
         'visualization',
         false
       );
-      cy.log('dashboardPage.addDashboardPanels');
     });
 
     it('visualization saved with a query filters data', () => {
