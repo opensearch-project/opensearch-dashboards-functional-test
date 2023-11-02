@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
-    "cypress:run-without-security": "env TZ=America/Los_Angeles NO_COLOR=1 DEBUG=cypress:* cypress run --headless --env SECURITY_ENABLED=false",
+    "cypress:run-without-security": "env TZ=America/Los_Angeles NO_COLOR=1 DEBUG=cypress:server:util:process_profiler cypress run --headless --config numTestsKeptInMemory=10 --env SECURITY_ENABLED=false",
     "cypress:run-with-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,WAIT_FOR_LOADER_BUFFER_MS=500",
     "cypress:run-with-security-and-aggregation-view": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=500",
     "cypress:run-plugin-tests-without-security": "yarn cypress:run-without-security --spec 'cypress/integration/plugins/*/*.js'",
