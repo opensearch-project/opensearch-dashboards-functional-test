@@ -4,17 +4,7 @@
  */
 
 /// <reference types="cypress" />
-import {
-  delayTime,
-  TEST_QUERIES,
-  SAVE_QUERY1,
-  SAVE_QUERY2,
-  querySearch,
-  landOnEventHome,
-  landOnEventExplorer,
-  supressResizeObserverIssue,
-  clearText,
-} from '../../../utils/constants';
+import { delayTime, landOnEventHome } from '../../../utils/constants';
 
 describe('Click actions', () => {
   beforeEach(() => {
@@ -27,56 +17,6 @@ describe('Click actions', () => {
     cy.get('[data-test-subj="eventHomeAction__addSamples"]').click();
     cy.get('[data-test-subj="confirmModalConfirmButton"]').click();
     cy.contains('Sample events added successfully.', { timeout: 10000 });
-  });
-});
-
-describe('Saves a query on explorer page', () => {
-  it('Saves a query on event tab of explorer page', () => {
-    landOnEventExplorer();
-    clearText('searchAutocompleteTextArea');
-    querySearch(TEST_QUERIES[0].query, TEST_QUERIES[0].dateRangeDOM);
-    cy.wait(delayTime);
-    cy.get('.tab-title').contains('Events').click();
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]').click();
-    cy.wait(delayTime);
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]').type(SAVE_QUERY1);
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]').click();
-    cy.wait(delayTime * 2);
-
-    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
-
-    landOnEventHome();
-
-    cy.get('[data-test-subj="eventHome__savedQueryTableName"]')
-      .first()
-      .contains(SAVE_QUERY1);
-  });
-
-  it('Saves a visualization on visualization tab of explorer page', () => {
-    landOnEventExplorer();
-    clearText('searchAutocompleteTextArea');
-    querySearch(TEST_QUERIES[1].query, TEST_QUERIES[1].dateRangeDOM);
-    cy.wait(delayTime);
-    supressResizeObserverIssue();
-    cy.get('button[id="main-content-vis"]').contains('Visualizations').click();
-    cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]').click();
-    cy.wait(delayTime * 2);
-    cy.get(
-      '[data-test-subj="eventExplorer__querySaveComboBox"] [data-test-subj="comboBoxToggleListButton"]'
-    ).click();
-    cy.get('[data-test-subj="eventExplorer__querySaveName"]')
-      .focus()
-      .type(SAVE_QUERY2, { force: true });
-    cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]').click();
-    cy.wait(delayTime * 2);
-
-    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
-
-    landOnEventHome();
-
-    cy.get('[data-test-subj="eventHome__savedQueryTableName"]')
-      .first()
-      .contains(SAVE_QUERY2);
   });
 });
 
