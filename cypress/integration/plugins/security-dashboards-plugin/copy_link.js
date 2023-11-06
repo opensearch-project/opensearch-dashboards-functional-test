@@ -14,6 +14,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('span[title="Discover"]').click();
       cy.getElementByTestId('shareTopNavButton').click();
       cy.getElementByTestId('copyShareUrlButton').click();
+      cy.window().its('navigator.clipboard').invoke('readText').then(cy.visit);
     });
   });
 }
