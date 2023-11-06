@@ -4,10 +4,7 @@
  */
 
 /// <reference types="cypress" />
-import {
-  delayTime,
-  landOnEventHome,
-} from '../../../utils/constants';
+import { delayTime, landOnEventHome } from '../../../utils/constants';
 
 describe('Click actions', () => {
   beforeEach(() => {
