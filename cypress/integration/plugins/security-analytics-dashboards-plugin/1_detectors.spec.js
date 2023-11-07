@@ -10,6 +10,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const testMappings = {
   properties: {
@@ -42,12 +43,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .realType(dataSource);
 
-  cy.intercept({
-    pathname: `/_dashboards/${NODE_API.RULES_SEARCH}`,
-    query: {
-      prePackaged: 'true',
-    },
-  }).as('getSigmaRules');
+  setupIntercept(cy, NODE_API.RULES_SEARCH, 'getSigmaRules', {
+    prePackaged: 'true',
+  });
 
   // Select threat detector type (Windows logs)
   cy.get(`input[id="dns"]`).click({ force: true });
@@ -187,9 +185,7 @@ describe('Detectors', () => {
   });
 
   beforeEach(() => {
-    cy.intercept(`/_dashboards/${NODE_API.SEARCH_DETECTORS}`).as(
-      'detectorsSearch'
-    );
+    setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
@@ -222,6 +218,10 @@ describe('Detectors', () => {
       .focus()
       .realType(cypressIndexWindows)
       .realPress('Enter');
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .blur();
+    cy.wait(1000);
 
     cy.get('.euiCallOut')
       .should('be.visible')
@@ -391,9 +391,7 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    cy.intercept(`/_dashboards/${NODE_API.MAPPINGS_VIEW}`).as(
-      'getMappingsView'
-    );
+    setupIntercept(cy, NODE_API.MAPPINGS_VIEW, 'getMappingsView');
 
     cy.get('table th').within(() => {
       cy.get('button').first().click({ force: true });

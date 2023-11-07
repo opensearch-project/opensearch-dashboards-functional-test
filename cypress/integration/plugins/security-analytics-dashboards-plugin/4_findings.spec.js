@@ -12,6 +12,7 @@ import sample_document from '../../../fixtures/plugins/security-analytics-dashbo
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 import sample_field_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_field_mappings.json';
 import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 describe('Findings', () => {
   const ruleTags = ['low', 'windows'];
@@ -159,11 +160,18 @@ describe('Findings', () => {
     );
 
     // intercept detectors and rules requests
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('getDetector');
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`).as(
-      'getPrePackagedRules'
-    );
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`).as('getRules');
+    // cy.intercept(NODE_API.SEARCH_DETECTORS).as('getDetector');
+    // cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`).as(
+    //   'getPrePackagedRules'
+    // );
+    // cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`).as('getRules');
+    setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'getDetector');
+    setupIntercept(cy, NODE_API.RULES_SEARCH, 'getPrePackagedRules', {
+      prePackaged: true,
+    });
+    setupIntercept(cy, NODE_API.RULES_SEARCH, 'getRules', {
+      prePackaged: false,
+    });
 
     // Click on detector to be removed
     cy.contains('sample_detector').click({ force: true });

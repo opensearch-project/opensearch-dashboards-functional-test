@@ -7,6 +7,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -230,9 +231,10 @@ describe('Rules', () => {
       cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
     );
 
-    cy.intercept({
-      url: `/_dashboards/${NODE_API.RULES_BASE}`,
-    }).as('getRules');
+    // cy.intercept({
+    //   url: `/_dashboards/${NODE_API.RULES_BASE}`,
+    // }).as('getRules');
+    setupIntercept(cy, NODE_API.RULES_BASE, 'getRules');
 
     // Click "create" button
     cy.get('[data-test-subj="submit_rule_form_button"]').click({
@@ -307,13 +309,35 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=true`, {
-      delay: 5000,
-    }).as('getPrePackagedRules');
+    // cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=true`, {
+    //   delay: 5000,
+    // }).as('getPrePackagedRules');
+    setupIntercept(
+      cy,
+      NODE_API.RULES_SEARCH,
+      'getPrePackagedRules',
+      {
+        prePackaged: true,
+      },
+      {
+        delay: 5000,
+      }
+    );
 
-    cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=false`, {
-      delay: 5000,
-    }).as('getCustomRules');
+    // cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=false`, {
+    //   delay: 5000,
+    // }).as('getCustomRules');
+    setupIntercept(
+      cy,
+      NODE_API.RULES_SEARCH,
+      'getCustomRules',
+      {
+        prePackaged: false,
+      },
+      {
+        delay: 5000,
+      }
+    );
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
