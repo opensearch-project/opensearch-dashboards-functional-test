@@ -7,7 +7,10 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import { getLogTypeLabel, setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
+import {
+  getLogTypeLabel,
+  setupIntercept,
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -333,7 +336,9 @@ describe('Rules', () => {
       getLogTypeField().focus().blur();
       getLogTypeField().sa_containsError('Log type is required');
 
-      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
       getLogTypeField().focus().blur().sa_shouldNotHaveError();
     });
 
@@ -480,7 +485,9 @@ describe('Rules', () => {
       // log field
       getLogTypeField().sa_clearCombobox();
       toastShouldExist();
-      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
 
       // severity field
       getRuleLevelField().sa_clearCombobox();
@@ -613,7 +620,9 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
       getLogTypeField()
         .sa_containsValue(SAMPLE_RULE.logType)
         .contains(getLogTypeLabel(SAMPLE_RULE.logType));
@@ -639,7 +648,7 @@ describe('Rules', () => {
 
     it('...can be deleted', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules', 'POST', {
-        delay: 5000
+        delay: 5000,
       });
 
       cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(
