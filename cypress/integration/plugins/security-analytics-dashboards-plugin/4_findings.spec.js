@@ -55,7 +55,7 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('System Activity: Windows');
+    cy.contains('System Activity: Microsoft Windows');
     cy.contains('High');
   });
 

@@ -7,7 +7,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import { getLogTypeLabel } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
+import { getLogTypeLabel, setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -227,9 +227,7 @@ describe('Rules', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=true`).as(
-        'rulesSearch'
-      );
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -546,9 +544,7 @@ describe('Rules', () => {
 
   describe('...should validate create rule flow', () => {
     beforeEach(() => {
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=false`).as(
-        'rulesSearch'
-      );
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -573,9 +569,7 @@ describe('Rules', () => {
         cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
       );
 
-      cy.intercept({
-        url: `${NODE_API.RULES_BASE}/_search?prePackaged=false`,
-      }).as('getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
       submitRule();
 
@@ -630,9 +624,7 @@ describe('Rules', () => {
       getDescriptionField().type(SAMPLE_RULE.description);
       getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
-      cy.intercept({
-        url: `${NODE_API.RULES_BASE}/_search?prePackaged=false`,
-      }).as('getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
       submitRule();
 
@@ -646,13 +638,9 @@ describe('Rules', () => {
     });
 
     it('...can be deleted', () => {
-      cy.intercept('POST', `${NODE_API.RULES_BASE}/_search?prePackaged=true`, {
-        delay: 5000,
-      }).as('getPrePackagedRules');
-
-      cy.intercept('POST', `${NODE_API.RULES_BASE}/_search?prePackaged=false`, {
-        delay: 5000,
-      }).as('getCustomRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules', 'POST', {
+        delay: 5000
+      });
 
       cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(
         SAMPLE_RULE.name
@@ -678,8 +666,7 @@ describe('Rules', () => {
             );
 
           cy.wait(5000);
-          cy.wait('@getCustomRules');
-          cy.wait('@getPrePackagedRules');
+          cy.wait('@getRules');
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);

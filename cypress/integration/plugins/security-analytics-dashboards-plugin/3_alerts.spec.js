@@ -13,6 +13,7 @@ import indexSettings from '../../../fixtures/plugins/security-analytics-dashboar
 import aliasMappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
 import indexDoc from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
 import ruleSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_windows_usb_rule.json';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const indexName = 'test-index';
 const detectorName = 'test-detector';
@@ -49,7 +50,7 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.intercept(`${NODE_API.DETECTORS_BASE}/_search`).as('detectorsSearch');
+    setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
