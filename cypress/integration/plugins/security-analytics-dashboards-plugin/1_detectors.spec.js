@@ -7,7 +7,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import { getLogTypeLabel } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
+import { getLogTypeLabel, setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 import sample_windows_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
 import sample_dns_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_dns_index_settings.json';
 import dns_name_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule_with_name_selection.json';
@@ -176,8 +176,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .blur();
 
-  cy.intercept('POST', NODE_API.MAPPINGS_BASE).as('createMappingsRequest');
-  cy.intercept('POST', NODE_API.DETECTORS_BASE).as('createDetectorRequest');
+  setupIntercept(cy, NODE_API.MAPPINGS_BASE, 'createMappingsRequest');
+  setupIntercept(cy, NODE_API.DETECTORS_BASE, 'createDetectorRequest');
 
   // create the detector
   cy.sa_getElementByText('button', 'Create').click({ force: true });
@@ -255,7 +255,7 @@ describe('Detectors', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
+      setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -404,9 +404,7 @@ describe('Detectors', () => {
 
   describe('...validate create detector flow', () => {
     beforeEach(() => {
-      cy.intercept(NODE_API.SEARCH_DETECTORS)
-        .as('detectorsSearch')
-        .as('detectorsSearch');
+      setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
@@ -424,7 +422,7 @@ describe('Detectors', () => {
     });
 
     it('...basic details can be edited', () => {
-      cy.intercept('GET', NODE_API.INDICES_BASE).as('getIndices');
+      setupIntercept(cy, NODE_API.INDICES_BASE, 'getIndices', 'GET');
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Detector details');
@@ -484,10 +482,8 @@ describe('Detectors', () => {
     });
 
     xit('...should update field mappings if data source is changed', () => {
-      cy.intercept(
-        `${NODE_API.MAPPINGS_VIEW}?indexName=cypress-index-dns&ruleTopic=dns`
-      ).as('getMappingsView');
-      cy.intercept('GET', NODE_API.INDICES_BASE).as('getIndices');
+      setupIntercept(cy, `${NODE_API.MAPPINGS_VIEW}?indexName=cypress-index-dns&ruleTopic=dns`, 'getMappingsView', 'GET');
+      setupIntercept(cy, NODE_API.INDICES_BASE, 'getIndices', 'GET');
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Detector details');
@@ -509,9 +505,7 @@ describe('Detectors', () => {
     });
 
     xit('...should show field mappings if rule selection is changed', () => {
-      cy.intercept(
-        `${NODE_API.MAPPINGS_VIEW}?indexName=cypress-index-windows&ruleTopic=dns`
-      ).as('getMappingsView');
+      setupIntercept(cy, `${NODE_API.MAPPINGS_VIEW}`, 'getMappingsView', 'GET');
 
       openDetectorDetails(detectorName);
 
@@ -534,22 +528,16 @@ describe('Detectors', () => {
     });
 
     it('...can be deleted', () => {
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=true`).as(
-        'getSigmaRules'
-      );
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=false`).as(
-        'getCustomRules'
-      );
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getSigmaRules');
       openDetectorDetails(detectorName);
 
       cy.wait('@detectorsSearch');
-      cy.wait('@getCustomRules');
       cy.wait('@getSigmaRules');
 
       cy.sa_getButtonByText('Actions')
         .click({ force: true })
         .then(() => {
-          cy.intercept(`${NODE_API.DETECTORS_BASE}/_search`).as('detectors');
+          setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectors');
           cy.sa_getElementByText('.euiContextMenuItem', 'Delete').click({
             force: true,
           });
