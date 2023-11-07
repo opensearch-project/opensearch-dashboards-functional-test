@@ -7,7 +7,10 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import { getLogTypeLabel, setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
+import {
+  getLogTypeLabel,
+  setupIntercept,
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 import sample_windows_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
 import sample_dns_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_dns_index_settings.json';
 import dns_name_rule_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_dns_rule_with_name_selection.json';
@@ -153,7 +156,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     'Selected detection rules (14)'
   )
     .click({ force: true, timeout: 5000 })
-    .then(() => cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns)));
+    .then(() =>
+      cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns))
+    );
 
   cy.sa_getElementByText('.euiAccordion .euiTitle', 'Field mapping - optional');
   cy.get('[aria-controls="mappedTitleFieldsAccordion"]').then(($btn) => {
@@ -482,7 +487,12 @@ describe('Detectors', () => {
     });
 
     xit('...should update field mappings if data source is changed', () => {
-      setupIntercept(cy, `${NODE_API.MAPPINGS_VIEW}?indexName=cypress-index-dns&ruleTopic=dns`, 'getMappingsView', 'GET');
+      setupIntercept(
+        cy,
+        `${NODE_API.MAPPINGS_VIEW}?indexName=cypress-index-dns&ruleTopic=dns`,
+        'getMappingsView',
+        'GET'
+      );
       setupIntercept(cy, NODE_API.INDICES_BASE, 'getIndices', 'GET');
       openDetectorDetails(detectorName);
 
