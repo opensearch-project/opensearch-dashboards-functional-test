@@ -17,7 +17,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Capture the copied content
       cy.window().then((win) => {
         // Access the clipboard contents
-        cy.document().then((doc) => {
+        cy.document().then(() => {
           cy.wait(1000); // Wait for clipboard data to be available
           cy.log('Trying to read clipboard data...');
 
@@ -31,7 +31,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
             cy.visit(clipboardData);
             cy.waitForLoader();
 
-            // Now on the page referred to by the copied URL
+            // Now on copied URL page
           });
         });
       });
