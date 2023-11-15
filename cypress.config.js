@@ -16,6 +16,8 @@ module.exports = defineConfig({
     },
     viewportWidth: 2000,
     viewportHeight: 1320,
+    supportFile: 'cypress/support/index.js',
+    specPattern: 'cypress/integration/**/*',
     env: {
       openSearchUrl: 'http://localhost:9200',
       SECURITY_ENABLED: false,
