@@ -20,7 +20,7 @@ jobs:
 
   tests:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    # if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security Analytics
