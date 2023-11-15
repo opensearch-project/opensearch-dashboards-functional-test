@@ -23,6 +23,8 @@ jobs:
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+      # make Node run in ipv4 first so that cypress can detect 5601 port in CI environmen
+      NODE_OPTIONS: '--max-old-space-size=6144 --dns-result-order=ipv4first'
     steps:
       - name: Set up JDK
         uses: actions/setup-java@v1
@@ -84,12 +86,12 @@ jobs:
               ./bin/opensearch-dashboards-plugin remove securityDashboards
               sed -i /^opensearch_security/d config/opensearch_dashboards.yml
               sed -i 's/https/http/' config/opensearch_dashboards.yml
-              bin/opensearch-dashboards serve --server.host="0.0.0.0" ${{ inputs.osd-serve-args }} &
+              bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status
           else
               echo "Keep Dashboards Security"
-              bin/opensearch-dashboards serve --server.host="0.0.0.0" ${{ inputs.osd-serve-args }} &
+              bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl -u admin:admin -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status -u admin:admin --insecure
           fi
