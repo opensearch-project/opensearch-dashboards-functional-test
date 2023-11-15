@@ -24,25 +24,22 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-
   /**
    * For cypress on 9.6.0 and chrome larger than 117, --headless=new is needed.
    * https://github.com/cypress-io/cypress-documentation/issues/5479#issuecomment-1719336938
    */
-  on('before:browser:launch', (browser = {}, launchOptions) => {
-    if (
-      (browser.name === 'chrome' || browser.name === 'chromium') &&
-      browser.isHeadless
-    ) {
-      launchOptions.args = launchOptions.args.map((arg) => {
-        if (arg === '--headless') {
-          return '--headless=new';
-        }
-
-        return arg;
-      });
-    }
-
-    return launchOptions;
-  });
+  // on('before:browser:launch', (browser = {}, launchOptions) => {
+  //   if (
+  //     (browser.name === 'chrome' || browser.name === 'chromium') &&
+  //     browser.isHeadless
+  //   ) {
+  //     launchOptions.args = launchOptions.args.map((arg) => {
+  //       if (arg === '--headless') {
+  //         return '--headless=new';
+  //       }
+  //       return arg;
+  //     });
+  //   }
+  //   return launchOptions;
+  // });
 };
