@@ -20,6 +20,8 @@
     "VISBUILDER_ENABLED": true,
     "DATASOURCE_MANAGEMENT_ENABLED": false,
     "ML_COMMONS_DASHBOARDS_ENABLED": true,
-    "WAIT_FOR_LOADER_BUFFER_MS": 0
+    "WAIT_FOR_LOADER_BUFFER_MS": 0,
+    "_COMMENT_FOR_NO_COMMAND_LOG_": "Set NO_COMMAND_LOG to 1 to reduce memory usage, or some test cases will hang there forever.",
+    "NO_COMMAND_LOG": 1
   }
 }
