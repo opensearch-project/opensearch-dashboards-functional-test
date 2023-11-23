@@ -11,6 +11,7 @@ import {
   DE_DEFAULT_END_TIME,
   DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -20,6 +21,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('index pattern with encoded id', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_with_encoded_id/mappings.json.txt'
     );
