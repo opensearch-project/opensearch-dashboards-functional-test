@@ -20,6 +20,8 @@ jobs:
       CI: 1
       # avoid warnings like "tput: No value for $TERM and no -T specified"
       TERM: xterm
+      # make Node run in ipv4 first so that cypress can detect 5601 port in CI environmen
+      NODE_OPTIONS: '--max-old-space-size=6144 --dns-result-order=ipv4first'
     steps:
       - name: Set up JDK
         uses: actions/setup-java@v1
