@@ -7,6 +7,7 @@ import {
   TestFixtureHandler,
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -16,6 +17,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('index pattern without field spec', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
