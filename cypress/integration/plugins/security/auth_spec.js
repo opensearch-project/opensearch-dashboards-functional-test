@@ -27,6 +27,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
     const username = 'newuser';
     const password = 'ew4q56a4d6as51!*asSS';
+    const roleName = 'newRole';
+    const tenantName = 'yourTenantName'; // Replace with your tenant name
 
     beforeEach(() => {
       // Visit the OpenSearch Dashboards login page
@@ -78,32 +80,15 @@ if (Cypress.env('SECURITY_ENABLED')) {
           cy.get('[data-test-subj="addSampleDataSetflights"]').click();
         } else {
           // The element does not exist, you can log a message or take other actions
-          cy.get('[data-test-subj="launchSampleDataSetecommerce"]').click();
+          cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
         }
       });
-
-      // if(cy.find('[data-test-subj="addSampleDataSetflights"]').then(($el) => {
-      //   if ($el.length()) {
-      //     cy.get('[data-test-subj="addSampleDataSetflights"]').click();
-      //   } else {
-      //     cy.get('[data-test-subj="launchSampleDataSetecommerce"]').click();
-      //   }
-      // });
-
-      // //[data-test-subj="addSampleDataSetflights"').click();
-      // cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
-      //   timeout: 90000,
-      // })
-      //   .contains(/Add data/)
-      //   .click();
-      // // cy.wait(60000);
 
       // Navigate to Security/Roles section
       cy.visit('/app/security-dashboards-plugin#/roles/create');
 
       // Click on 'Add new role' button
       // Set role name
-      const roleName = 'newRole';
       cy.get('input[data-test-subj="name-text"]').type(roleName);
 
       // Add Cluster Permissions
@@ -125,7 +110,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .type('FlightNum');
 
       // Add Tenant Permissions
-      const tenantName = 'yourTenantName'; // Replace with your tenant name
       cy.get('input[id="roles-tenant-permission-box"]')
         .type(tenantName)
         .type('{enter}');
@@ -135,6 +119,75 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       // Verify that the role is created
       cy.contains(roleName).should('exist');
+
+      //TODO checkTenantText exist
+      //TODO checkClusterPermisio exist
+      //TODO checkIndexPermissionText exist
+    });
+
+    it('should add a new role mapping', () => {
+      // Navigate to Role Mappings
+      cy.visit(
+        'http://localhost:5601/app/security-dashboards-plugin#/users/edit/' +
+          username
+      );
+
+      // Choose the role you created earlier
+      cy.get('[placeholder="Type in backend role"]').type(roleName); //Not iDeal use placeholder
+
+      // Submit the role mapping
+      cy.get('button[id="submit"]').click();
+
+      // Optional: Verify that the role mapping was added
+      // This can include checking for a success message or verifying the list of role mappings
+    });
+
+    it.only('should create a new index pattern', () => {
+      cy.visit('/');
+      // Step 1: Change tenant to the newly created tenant  user-icon-btn
+      cy.get('[id="user-icon-btn"]').click({ force: true });
+
+      cy.get('body').then(($body) => {
+        if ($body.find('[data-test-subj="tenant-switch-modal"]').length == 0) {
+          cy.get('[id="user-icon-btn"]').click({ force: true });
+          cy.get('button[data-test-subj="switch-tenants"]').click();
+
+          // If the element exists, click on it
+          cy.get('[data-test-subj="addSampleDataSetflights"]').click();
+        } else {
+          // The element does not exist, you can log a message or take other actions
+          cy.log('POTATO');
+        }
+      });
+
+      cy.get('button[data-test-subj="switch-tenants"]').click();
+      cy.get('button[title="${tenantName}"]').click();
+      cy.get('button[data-test-subj="confirm"]').click();
+      // Step 2: Add sample flight data if it's not already present
+
+      cy.visit('/app/home#/tutorial_directory/sampleData');
+      cy.get('button').contains('Add data').click(); // Adjust if the button text or selectors differ
+
+      // Step 3: Navigate to Manage data to add an index pattern
+      cy.visit('/app/home');
+      cy.get('button').contains('Manage data').click(); // Adjust the selector as needed
+
+      // Step 4: Add the index pattern
+      cy.contains('Index patterns').click();
+      cy.contains('Add an index pattern').click();
+      cy.get('input[type="text"]').type(
+        'opensearch_dashboards_sample_data_flights'
+      );
+      cy.contains('Next step').click();
+
+      // Assuming a timestamp field needs to be selected
+      cy.get('yourTimestampFieldSelector').click(); // Replace with actual selector
+
+      // Step 5: Create index pattern
+      cy.contains('Create index pattern').click();
+
+      // Step 6: Additional verification if needed
+      // Navigate to verify if necessary, or perform checks to ensure index pattern creation
     });
   });
 
