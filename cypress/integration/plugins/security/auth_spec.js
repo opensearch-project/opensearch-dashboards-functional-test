@@ -22,6 +22,7 @@ import '../../../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../../../utils/plugins/notifications-dashboards/commands';
 
 import 'cypress-real-events';
+import { switchTenantTo } from '../security-dashboards-plugin/switch_tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
@@ -41,29 +42,29 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // cy.contains('Welcome to OpenSearch Dashboards', { timeout: 12000 }).should('be.visible');
     });
 
-    // it.skip('should create a new internal user', () => {
-    //   // Navigate to Security/Internal User Database section
-    //   cy.visit('/app/security-dashboards-plugin#/users');
-    //
-    //   // Click on 'Add internal user' button
-    //   // cy.get('button').contains('Create internal user').click();
-    //   cy.get('a[href="#/users/create"]').click({
-    //     force: true,
-    //   });
-    //   // Provide username and password for the new user
-    //   cy.get('input[data-test-subj="name-text"]').type(username);
-    //   cy.get('input[data-test-subj="password"]').type(password);
-    //   cy.get('input[data-test-subj="re-enter-password"]').type(password);
-    //
-    //   // Optionally add backend role and user attribute
-    //   // Skipping as per the instruction [No backend role]
-    //
-    //   // Submit the form to create the user
-    //   cy.get('button').contains('Create').click();
-    //
-    //   // Verify that the user is created
-    //   cy.contains(username).should('exist');
-    // });
+    it('should create a new internal user', () => {
+      // Navigate to Security/Internal User Database section
+      cy.visit('/app/security-dashboards-plugin#/users');
+
+      // Click on 'Add internal user' button
+      // cy.get('button').contains('Create internal user').click();
+      cy.get('a[href="#/users/create"]').click({
+        force: true,
+      });
+      // Provide username and password for the new user
+      cy.get('input[data-test-subj="name-text"]').type(username);
+      cy.get('input[data-test-subj="password"]').type(password);
+      cy.get('input[data-test-subj="re-enter-password"]').type(password);
+
+      // Optionally add backend role and user attribute
+      // Skipping as per the instruction [No backend role]
+
+      // Submit the form to create the user
+      cy.get('button').contains('Create').click();
+
+      // Verify that the user is created
+      cy.contains(username).should('exist');
+    });
     // it('should create a new role with specific permissions', () => {
 
     it('should create a new role with specific permissions', () => {
@@ -143,87 +144,102 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it.only('should create a new index pattern', () => {
-      cy.visit('/');
+      cy.visit('http://localhost:5601/app/home?security_tenant=' + tenantName);
       // Step 1: Change tenant to the newly created tenant  user-icon-btn
-      cy.get('[id="user-icon-btn"]').click({ force: true });
+
+      // cy.get('body').then(($body) => {
+      //   if ($body.find('[data-test-subj="tenant-switch-modal"]').length == 0) {
+      //     cy.get('[id="user-icon-btn"]').click({ force: true });
+      //     cy.get('button[data-test-subj="switch-tenants"]').click();
+      //
+      //     // If the element exists, click on it
+      //     cy.get('[data-test-subj="addSampleDataSetflights"]').click();
+      //   } else {
+      //     // The element does not exist, you can log a message or take other actions
+      //     cy.log('POTATO');
+      //   }
+      // });
+
+      // cy.get('button[data-test-subj="switch-tenants"]').click();
+      // cy.get('button[title="${tenantName}"]').click();
+      // cy.get('button[data-test-subj="confirm"]').click();
+
+      cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+        retryOnStatusCodeFailure: true,
+      });
 
       cy.get('body').then(($body) => {
-        if ($body.find('[data-test-subj="tenant-switch-modal"]').length == 0) {
-          cy.get('[id="user-icon-btn"]').click({ force: true });
-          cy.get('button[data-test-subj="switch-tenants"]').click();
-
+        if (
+          $body.find('[data-test-subj="addSampleDataSetflights"]').length > 0
+        ) {
           // If the element exists, click on it
           cy.get('[data-test-subj="addSampleDataSetflights"]').click();
         } else {
           // The element does not exist, you can log a message or take other actions
-          cy.log('POTATO');
+          cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
         }
       });
 
-      cy.get('button[data-test-subj="switch-tenants"]').click();
-      cy.get('button[title="${tenantName}"]').click();
-      cy.get('button[data-test-subj="confirm"]').click();
-      // Step 2: Add sample flight data if it's not already present
-
-      cy.visit('/app/home#/tutorial_directory/sampleData');
-      cy.get('button').contains('Add data').click(); // Adjust if the button text or selectors differ
-
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit('/app/home');
-      cy.get('button').contains('Manage data').click(); // Adjust the selector as needed
+      cy.get('button[aria-label="Closes this modal window"]').click();
+      cy.get('a').contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
-      cy.contains('Index patterns').click();
-      cy.contains('Add an index pattern').click();
-      cy.get('input[type="text"]').type(
-        'opensearch_dashboards_sample_data_flights'
+      cy.get('[data-test-subj="indexPatterns"]').click();
+      cy.get('[data-test-subj="createIndexPatternButton"]').click();
+      cy.get('input[data-test-subj="createIndexPatternNameInput"]').type(
+        'opensearch_dashboards_sample_data_flights*'
       );
-      cy.contains('Next step').click();
+      cy.get(
+        'button[data-test-subj="createIndexPatternGoToStep2Button"]'
+      ).click();
 
       // Assuming a timestamp field needs to be selected
-      cy.get('yourTimestampFieldSelector').click(); // Replace with actual selector
+      cy.get(
+        'select[data-test-subj="createIndexPatternTimeFieldSelect"]'
+      ).select('timestamp');
 
-      // Step 5: Create index pattern
-      cy.contains('Create index pattern').click();
+      cy.get('option[value="timestamp"]');
+      cy.get('button[data-test-subj="createIndexPatternButton"]').click();
 
-      // Step 6: Additional verification if needed
-      // Navigate to verify if necessary, or perform checks to ensure index pattern creation
+      // Additional verification if needed
     });
   });
 
-  // describe.skip('Authc and Authz page', () => {
-  //   // start a server so that server responses can be mocked via fixtures
-  //   // in all of the below test cases
-  //   before(() => {
-  //     cy.server();
-  //   });
-  //
-  //   it.skip('authentication and authorization section should exist', () => {
-  //     cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
-  //       cy.visit(SEC_UI_AUTH_PATH);
-  //     });
-  //
-  //     cy.contains('h3', 'Authentication sequences');
-  //     cy.contains('span', 'kerberos_auth_domain');
-  //
-  //     cy.contains('h3', 'Authorization');
-  //     cy.contains('span', 'roles_from_another_ldap');
-  //   });
-  //
-  //   it.skip('View Expression Modal should display and close correctly', () => {
-  //     cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
-  //       cy.visit(SEC_UI_AUTH_PATH);
-  //     });
-  //
-  //     cy.get('.euiModal').should('not.exist');
-  //
-  //     cy.get('[data-test-subj=view-expression]').first().click({ force: true });
-  //
-  //     cy.get('.euiModal').should('be.visible');
-  //
-  //     cy.get('.euiModal__closeIcon').click({ force: true });
-  //
-  //     cy.get('.euiModal').should('not.exist');
-  //   });
-  // });
+  describe('Authc and Authz page', () => {
+    // start a server so that server responses can be mocked via fixtures
+    // in all of the below test cases
+    before(() => {
+      cy.server();
+    });
+
+    it('authentication and authorization section should exist', () => {
+      cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
+        cy.visit(SEC_UI_AUTH_PATH);
+      });
+
+      cy.contains('h3', 'Authentication sequences');
+      cy.contains('span', 'kerberos_auth_domain');
+
+      cy.contains('h3', 'Authorization');
+      cy.contains('span', 'roles_from_another_ldap');
+    });
+
+    it('View Expression Modal should display and close correctly', () => {
+      cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
+        cy.visit(SEC_UI_AUTH_PATH);
+      });
+
+      cy.get('.euiModal').should('not.exist');
+
+      cy.get('[data-test-subj=view-expression]').first().click({ force: true });
+
+      cy.get('.euiModal').should('be.visible');
+
+      cy.get('.euiModal__closeIcon').click({ force: true });
+
+      cy.get('.euiModal').should('not.exist');
+    });
+  });
 }
