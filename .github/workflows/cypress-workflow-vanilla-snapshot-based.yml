@@ -12,8 +12,6 @@ jobs:
   tests:
     name: Run Cypress E2E tests
     runs-on: ubuntu-latest
-    container:
-      image: mattermost/actions-runner:2.308.0-1
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -22,6 +20,46 @@ jobs:
       # make Node run in ipv4 first so that cypress can detect 5601 port in CI environment
       NODE_OPTIONS: '--max-old-space-size=6144 --dns-result-order=ipv4first'
     steps:
+      - name: Set up Chrome v115
+        run: |
+          wget -q -O chrome.deb https://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_115.0.5790.170-1_amd64.deb
+          sudo dpkg -i chrome.deb
+          sudo apt-get install -f
+
+      - name: Set up ChromeDriver v115
+        run: |
+          wget https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/115.0.5790.170/linux64/chromedriver-linux64.zip
+          unzip chromedriver-linux64.zip
+          sudo mv ./chromedriver-linux64/chromedriver /usr/local/bin
+          rm chromedriver-linux64.zip
+          rm -rf ./chromedriver-linux64
+
+      - name: Set up Chromium v115
+        run: |
+          CHROMIUM_DIR="/usr/local/share/chromium"
+          CHROMIUM_BIN="${CHROMIUM_DIR}/chrome-linux/chrome"
+          ## install Chromium on version 115, the version greater than 115 will hang under some cases
+          wget -q -O chromium.zip https://www.googleapis.com/download/storage/v1/b/chromium-browser-snapshots/o/Linux_x64%2F1148103%2Fchrome-linux.zip?alt=media
+          sudo rm -rf $CHROMIUM_DIR
+          sudo mkdir $CHROMIUM_DIR
+
+          ## remove exist chromium installed by runner-image
+          sudo unzip -qq chromium.zip -d $CHROMIUM_DIR
+          sudo unlink /usr/bin/chromium
+          sudo unlink /usr/bin/chromium-browser
+
+          ## add link to the installed Chromium
+          sudo ln -s $CHROMIUM_BIN /usr/local/bin/chromium
+          sudo ln -s $CHROMIUM_BIN /usr/local/bin/chromium-browser
+
+          rm chromium.zip
+
+      - name: Check versions
+        run: |
+          google-chrome --version
+          chromedriver --version
+          chromium --version
+
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
