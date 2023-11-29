@@ -30,9 +30,6 @@ const commonUI = new CommonUI(cy);
 const dashboardPage = new DashboardPage(cy);
 const miscUtils = new MiscUtils(cy);
 describe('dashboard filtering', () => {
-  beforeEach(() => {
-    cy.wait(1000);
-  });
   before(() => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/data/mappings.json.txt'
