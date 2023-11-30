@@ -9,26 +9,14 @@ import {
   SEC_TENANTS_FIXTURES_PATH,
 } from '../../../utils/constants';
 
-import '../../../utils/commands';
-import '../../../utils/dashboards/commands';
-import '../../../utils/dashboards/datasource-management-dashboards-plugin/commands';
-import '../../../utils/plugins/index-management-dashboards-plugin/commands';
-import '../../../utils/plugins/anomaly-detection-dashboards-plugin/commands';
-import '../../../utils/plugins/security/commands';
-import '../../../utils/plugins/security-dashboards-plugin/commands';
-import '../../../utils/plugins/alerting-dashboards-plugin/commands';
-import '../../../utils/plugins/ml-commons-dashboards/commands';
-import '../../../utils/plugins/security-analytics-dashboards-plugin/commands';
-import '../../../utils/plugins/notifications-dashboards/commands';
-
 import 'cypress-real-events';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
-    const username = 'newuser7';
+    const username = 'newuser';
     const password = 'ew4q56a4d6as51!*asSS';
-    const roleName = 'newRole7';
-    const tenantName = 'yourTenantName7'; // Replace with your tenant name
+    const roleName = 'newRole';
+    const tenantName = 'yourTenantName'; // Replace with your tenant name
     const tenantDescription = 'Test description';
 
     const indexPattern = 'opensearch_dashboards_sample_data_flight';
@@ -160,10 +148,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       // Verify that the role is created
       cy.contains(roleName).should('exist');
-
-      //TODO checkTenantText exist
-      //TODO checkClusterPermisio exist
-      //TODO checkIndexPermissionText exist
     });
 
     it('should add a new role mapping', () => {
@@ -176,15 +160,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.get('div[data-test-subj="comboBoxInput"]').type(username);
       cy.get('button[id="map"]').click();
-
-      // Choose the role you created earlier
-      // cy.get('[placeholder="Type in backend role"]').type(roleName); //Not iDeal use placeholder
-      //
-      // // Submit the role mapping
-      // cy.get('button[id="submit"]').click();
-
-      // Optional: Verify that the role mapping was added
-      // This can include checking for a success message or verifying the list of role mappings
     });
 
     it.skip('should create a new index pattern', () => {
