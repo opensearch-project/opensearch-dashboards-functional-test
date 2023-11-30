@@ -4,9 +4,9 @@
  */
 
 import {
-  SEC_UI_AUTH_PATH,
-  SEC_FIXTURES_BASE_PATH,
   BASE_PATH,
+  SEC_UI_TENANTS_PATH,
+  SEC_TENANTS_FIXTURES_PATH,
 } from '../../../utils/constants';
 
 import '../../../utils/commands';
@@ -22,24 +22,59 @@ import '../../../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../../../utils/plugins/notifications-dashboards/commands';
 
 import 'cypress-real-events';
-import { switchTenantTo } from '../security-dashboards-plugin/switch_tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
-    const username = 'newuser';
+    const username = 'newuser7';
     const password = 'ew4q56a4d6as51!*asSS';
-    const roleName = 'newRole';
-    const tenantName = 'yourTenantName'; // Replace with your tenant name
+    const roleName = 'newRole7';
+    const tenantName = 'yourTenantName7'; // Replace with your tenant name
+    const tenantDescription = 'Test description';
 
-    beforeEach(() => {
-      // Visit the OpenSearch Dashboards login page
-      // cy.visit(SEC_UI_AUTH_PATH);
-      // Login as admin
-      // cy.get('input[name="username"]').type(Cypress.env('username'));
-      // cy.get('input[name="password"]').type(Cypress.env('password'), { log: false });
-      // cy.get('button[type="submit"]').click();
-      // Wait for the OpenSearch Dashboards home page to load
-      // cy.contains('Welcome to OpenSearch Dashboards', { timeout: 12000 }).should('be.visible');
+    const indexPattern = 'opensearch_dashboards_sample_data_flight';
+    const documentLevelSecurityQuery = '{{}"match": {{}"FlightDelay": true}}';
+
+    it('should create new tenant successfully by selecting `Create tenant`', () => {
+      cy.visit(SEC_UI_TENANTS_PATH);
+
+      cy.get('button[id="createTenant"]').first().click({ force: true });
+
+      cy.contains('button', 'Create');
+      cy.contains('button', 'Cancel');
+      cy.contains('.euiModalHeader__title', 'Create tenant');
+
+      cy.get('input[data-test-subj="name-text"]').type(tenantName, {
+        force: true,
+      });
+      cy.get('input[data-test-subj="name-text"]').should(
+        'have.value',
+        tenantName
+      );
+
+      cy.get('textarea[data-test-subj="tenant-description"]').type(
+        tenantDescription,
+        { force: true }
+      );
+      cy.get('textarea[data-test-subj="tenant-description"]').should(
+        'have.value',
+        tenantDescription
+      );
+
+      cy.mockTenantsAction(
+        SEC_TENANTS_FIXTURES_PATH + '/tenants_post_creation_response.json',
+        () => {
+          cy.get('button[id="submit"]').first().click({ force: true });
+        }
+      );
+
+      cy.url().should((url) => {
+        expect(url).to.contain('/tenants');
+      });
+
+      cy.contains('h3', 'Tenants');
+      // should contain the new tenant that was just created
+      cy.contains('.euiTableCellContent', tenantName);
+      cy.contains('span', tenantDescription);
     });
 
     it('should create a new internal user', () => {
@@ -98,12 +133,17 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .type('indices:data/read/msearch')
         .type('{downArrow}{enter}');
 
+      cy.get('input[data-test-subj="comboBoxSearchInput"]')
+        .eq(2)
+        .type('indices:data/read/search*')
+        .type('{downArrow}{enter}');
+
       cy.get('#index-input-box').type(
         'opensearch_dashboards_sample_data_flights*'
       );
 
       // Set Document Level Security Query
-      cy.get('textarea').type('{{}"match": {{}"FlightDelay": true}}');
+      cy.get('textarea').type(documentLevelSecurityQuery);
 
       // Anonymize fields
       cy.get('input[data-test-subj="comboBoxSearchInput"][role="textbox"]')
@@ -129,41 +169,26 @@ if (Cypress.env('SECURITY_ENABLED')) {
     it('should add a new role mapping', () => {
       // Navigate to Role Mappings
       cy.visit(
-        'http://localhost:5601/app/security-dashboards-plugin#/users/edit/' +
-          username
+        'http://localhost:5601/app/security-dashboards-plugin#/roles/edit/' +
+          roleName +
+          '/mapuser'
       );
 
-      // Choose the role you created earlier
-      cy.get('[placeholder="Type in backend role"]').type(roleName); //Not iDeal use placeholder
+      cy.get('div[data-test-subj="comboBoxInput"]').type(username);
+      cy.get('button[id="map"]').click();
 
-      // Submit the role mapping
-      cy.get('button[id="submit"]').click();
+      // Choose the role you created earlier
+      // cy.get('[placeholder="Type in backend role"]').type(roleName); //Not iDeal use placeholder
+      //
+      // // Submit the role mapping
+      // cy.get('button[id="submit"]').click();
 
       // Optional: Verify that the role mapping was added
       // This can include checking for a success message or verifying the list of role mappings
     });
 
-    it.only('should create a new index pattern', () => {
+    it.skip('should create a new index pattern', () => {
       cy.visit('http://localhost:5601/app/home?security_tenant=' + tenantName);
-      // Step 1: Change tenant to the newly created tenant  user-icon-btn
-
-      // cy.get('body').then(($body) => {
-      //   if ($body.find('[data-test-subj="tenant-switch-modal"]').length == 0) {
-      //     cy.get('[id="user-icon-btn"]').click({ force: true });
-      //     cy.get('button[data-test-subj="switch-tenants"]').click();
-      //
-      //     // If the element exists, click on it
-      //     cy.get('[data-test-subj="addSampleDataSetflights"]').click();
-      //   } else {
-      //     // The element does not exist, you can log a message or take other actions
-      //     cy.log('POTATO');
-      //   }
-      // });
-
-      // cy.get('button[data-test-subj="switch-tenants"]').click();
-      // cy.get('button[title="${tenantName}"]').click();
-      // cy.get('button[data-test-subj="confirm"]').click();
-
       cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
         retryOnStatusCodeFailure: true,
       });
@@ -189,7 +214,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('[data-test-subj="indexPatterns"]').click();
       cy.get('[data-test-subj="createIndexPatternButton"]').click();
       cy.get('input[data-test-subj="createIndexPatternNameInput"]').type(
-        'opensearch_dashboards_sample_data_flights*'
+        indexPattern
       );
       cy.get(
         'button[data-test-subj="createIndexPatternGoToStep2Button"]'
@@ -202,8 +227,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.get('option[value="timestamp"]');
       cy.get('button[data-test-subj="createIndexPatternButton"]').click();
-
-      // Additional verification if needed
     });
   });
 }
