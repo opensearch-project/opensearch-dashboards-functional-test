@@ -9,8 +9,6 @@ import {
   SEC_TENANTS_FIXTURES_PATH,
 } from '../../../utils/constants';
 
-import 'cypress-real-events';
-
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
     const username = 'newuser';
@@ -67,7 +65,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
     it('should create a new internal user', () => {
       // Navigate to Security/Internal User Database section
-      cy.visit('/app/security-dashboards-plugin#/users');
+      cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
 
       // Click on 'Add internal user' button
       // cy.get('button').contains('Create internal user').click();
@@ -109,7 +107,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       });
 
       // Navigate to Security/Roles section
-      cy.visit('/app/security-dashboards-plugin#/roles/create');
+      cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/roles/create`);
 
       // Click on 'Add new role' button
       // Set role name
@@ -153,9 +151,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     it('should add a new role mapping', () => {
       // Navigate to Role Mappings
       cy.visit(
-        'http://localhost:5601/app/security-dashboards-plugin#/roles/edit/' +
-          roleName +
-          '/mapuser'
+        `${BASE_PATH}/app/security-dashboards-plugin#/roles/edit/${roleName}/mapuser`
       );
 
       cy.get('div[data-test-subj="comboBoxInput"]').type(username);
@@ -163,7 +159,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it.skip('should create a new index pattern', () => {
-      cy.visit('http://localhost:5601/app/home?security_tenant=' + tenantName);
+      cy.visit(`${BASE_PATH}/app/home?security_tenant=${tenantName}`);
       cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
         retryOnStatusCodeFailure: true,
       });
@@ -181,7 +177,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       });
 
       // Step 3: Navigate to Manage data to add an index pattern
-      cy.visit('/app/home');
+      cy.visit(`${BASE_PATH}/app/home`);
       cy.get('button[aria-label="Closes this modal window"]').click();
       cy.get('a').contains('Manage').click(); // Adjust the selector as needed
 
