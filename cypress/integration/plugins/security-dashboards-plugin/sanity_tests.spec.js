@@ -7,9 +7,12 @@ import {
   BASE_PATH,
   SEC_UI_TENANTS_PATH,
   SEC_TENANTS_FIXTURES_PATH,
+  SEC_INTERNALUSERS_FIXTURES_PATH,
+  SEC_UI_INTERNAL_USERS_PATH,
 } from '../../../utils/constants';
 
 import 'cypress-real-events';
+import cypress from 'cypress';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
@@ -21,6 +24,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
     const indexPattern = 'opensearch_dashboards_sample_data_flight';
     const documentLevelSecurityQuery = '{{}"match": {{}"FlightDelay": true}}';
+
+    before(() => {
+      cy.server();
+    });
 
     it('should create new tenant successfully by selecting `Create tenant`', () => {
       cy.visit(SEC_UI_TENANTS_PATH);
@@ -66,6 +73,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should create a new internal user', () => {
+      cy.mockInternalUsersAction(
+        SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
+        () => {
+          cy.visit(SEC_UI_INTERNAL_USERS_PATH);
+        }
+      );
+
       // Navigate to Security/Internal User Database section
       cy.visit('/app/security-dashboards-plugin#/users');
 
@@ -103,7 +117,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
           // If the element exists, click on it
           cy.get('[data-test-subj="addSampleDataSetflights"]').click();
         } else {
-          // The element does not exist, you can log a message or take other actions
           cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
         }
       });
@@ -153,7 +166,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     it('should add a new role mapping', () => {
       // Navigate to Role Mappings
       cy.visit(
-        'http://localhost:5601/app/security-dashboards-plugin#/roles/edit/' +
+        '${BASE_PATH}/app/security-dashboards-plugin#/roles/edit/' +
           roleName +
           '/mapuser'
       );
@@ -162,8 +175,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('button[id="map"]').click();
     });
 
-    it.skip('should create a new index pattern', () => {
-      cy.visit('http://localhost:5601/app/home?security_tenant=' + tenantName);
+    it('should create a new index pattern', () => {
+      cy.visit('${BASE_PATH}/app/home?security_tenant=' + tenantName);
       cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
         retryOnStatusCodeFailure: true,
       });
@@ -172,10 +185,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         if (
           $body.find('[data-test-subj="addSampleDataSetflights"]').length > 0
         ) {
-          // If the element exists, click on it
           cy.get('[data-test-subj="addSampleDataSetflights"]').click();
         } else {
-          // The element does not exist, you can log a message or take other actions
           cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
         }
       });
@@ -195,7 +206,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
         'button[data-test-subj="createIndexPatternGoToStep2Button"]'
       ).click();
 
-      // Assuming a timestamp field needs to be selected
       cy.get(
         'select[data-test-subj="createIndexPatternTimeFieldSelect"]'
       ).select('timestamp');
