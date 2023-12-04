@@ -7,11 +7,13 @@ import {
   BASE_PATH,
   SEC_UI_TENANTS_PATH,
   SEC_TENANTS_FIXTURES_PATH,
+  SEC_INTERNALUSERS_FIXTURES_PATH,
+  SEC_API_INTERNAL_USERS_PATH,
 } from '../../../utils/constants';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
-    const username = 'newuser';
+    const username = 'test';
     const password = 'ew4q56a4d6as51!*asSS';
     const roleName = 'newRole';
     const tenantName = 'yourTenantName'; // Replace with your tenant name
@@ -65,7 +67,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
     it('should create a new internal user', () => {
       // Navigate to Security/Internal User Database section
+
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
+      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+        fixture:
+          SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
+      }).as('listUserResponse');
+      cy.wait('@listUserResponse');
 
       // Click on 'Add internal user' button
       // cy.get('button').contains('Create internal user').click();
@@ -77,13 +85,14 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('input[data-test-subj="password"]').type(password);
       cy.get('input[data-test-subj="re-enter-password"]').type(password);
 
-      // Optionally add backend role and user attribute
-      // Skipping as per the instruction [No backend role]
-
       // Submit the form to create the user
       cy.get('button').contains('Create').click();
 
-      // Verify that the user is created
+      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+        fixture:
+          SEC_INTERNALUSERS_FIXTURES_PATH +
+          '/internalusers_response_post_new_user_creation.json',
+      }).as('createUserResponse');
       cy.contains(username).should('exist');
     });
     // it('should create a new role with specific permissions', () => {
