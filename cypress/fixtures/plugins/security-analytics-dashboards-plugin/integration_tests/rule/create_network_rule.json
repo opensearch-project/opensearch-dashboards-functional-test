@@ -12,12 +12,12 @@
   ],
   "tags": [
     {
-      "value": "network.low"
+      "value": "network.high"
     }
   ],
   "log_source": "",
   "detection": "selection:\n  keywords:\n    - erase\n    - delete\n    - YXC\ncondition: selection",
-  "level": "low",
+  "level": "high",
   "false_positives": [
     {
       "value": ""

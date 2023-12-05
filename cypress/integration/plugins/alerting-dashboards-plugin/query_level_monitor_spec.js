@@ -34,7 +34,12 @@ const addVisualQueryLevelTrigger = (
   thresholdValue
 ) => {
   // Click 'Add trigger' button
-  cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+  if (triggerIndex === 0)
+    cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+  else
+    cy.contains('Add another trigger', { timeout: 20000 }).click({
+      force: true,
+    });
 
   if (isEdit) {
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
@@ -244,6 +249,10 @@ describe('Query-Level Monitors', () => {
 
       // Click the Delete button
       cy.contains('Delete').click({ force: true });
+      cy.wait(1000);
+      cy.get('[data-test-subj="confirmModalConfirmButton"]').click({
+        force: true,
+      });
 
       // Confirm we can see an empty monitor list
       cy.contains('There are no existing monitors');

@@ -27,19 +27,19 @@
   "triggers": [
     {
       "name": "DNS name alert",
-      "sev_levels": ["low"],
-      "tags": ["dns.low"],
+      "sev_levels": ["high"],
+      "tags": ["dns.high"],
       "actions": [
         {
           "id": "",
-          "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: Cypress DNS Detector",
+          "name": "Triggered alert condition:  - Severity: 1 (Highest)  - Threat detector: Cypress DNS Detector",
           "destination_id": "",
           "subject_template": {
-            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: Cypress DNS Detector",
+            "source": "Triggered alert condition:  - Severity: 1 (Highest)  - Threat detector: Cypress DNS Detector",
             "lang": "mustache"
           },
           "message_template": {
-            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: Cypress DNS Detector\nDescription: Detects DNS names.\nDetector data sources:\n\tdns",
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest) \nThreat detector: Cypress DNS Detector\nDescription: Detects DNS names.\nDetector data sources:\n\tdns",
             "lang": "mustache"
           },
           "throttle_enabled": false,

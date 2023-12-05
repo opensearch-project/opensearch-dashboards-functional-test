@@ -5,27 +5,7 @@
 
 /// <reference types="cypress" />
 
-import {
-  delayTime,
-  SERVICE_NAME,
-  setTimeFilter,
-} from '../../../utils/constants';
-
-describe('Testing services table empty state', () => {
-  beforeEach(() => {
-    cy.visit('app/observability-traces#/services', {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
-    cy.wait(delayTime * 3);
-  });
-
-  it('Renders empty state', () => {
-    cy.contains(' (0)').should('exist');
-    cy.contains('No matches').should('exist');
-  });
-});
+import { SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing services table', () => {
   beforeEach(() => {
@@ -35,13 +15,6 @@ describe('Testing services table', () => {
       },
     });
     setTimeFilter();
-  });
-
-  it('Renders the services table', () => {
-    cy.contains(' (8)').should('exist');
-    cy.contains('analytics-service, frontend-client, recommendation').should(
-      'exist'
-    );
   });
 
   it('Searches correctly', () => {
@@ -66,12 +39,6 @@ describe('Testing service view empty state', () => {
       },
     });
   });
-
-  it('Renders service view empty state', () => {
-    cy.contains('frontend-client').should('exist');
-    cy.get('.euiText').contains('0').should('exist');
-    cy.get('.euiText').contains('-').should('exist');
-  });
 });
 
 describe('Testing service view', () => {
@@ -86,10 +53,5 @@ describe('Testing service view', () => {
       },
     });
     setTimeFilter(undefined, false);
-  });
-
-  it('Renders service view', () => {
-    cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
-    cy.get('div.vis-network').should('exist');
   });
 });

@@ -248,7 +248,7 @@ export function dashboardSanityTests() {
       describe('checking discover', () => {
         before(() => {
           // Go to the Discover page
-          miscUtils.visitPage('app/discover#/');
+          miscUtils.visitPage('app/data-explorer/discover#/');
         });
 
         after(() => {});
@@ -279,10 +279,7 @@ export function dashboardSanityTests() {
         });
 
         it('checking index pattern switch button display', () => {
-          commonUI.checkElementExists(
-            'button[data-test-subj="indexPattern-switch-link"]',
-            1
-          );
+          cy.getElementByTestId('dataExplorerDSSelect').should('be.visible');
         });
 
         it('checking field filter display', () => {

@@ -1,16 +1,8 @@
 {
   "properties": {
-    "source_ip": {
+    "winlog.event_id": {
       "type": "alias",
-      "path": "src_ip"
-    },
-    "windows-event_data-CommandLine": {
-      "path": "CommandLine",
-      "type": "alias"
-    },
-    "event_uid": {
-      "path": "EventID",
-      "type": "alias"
+      "path": "EventID"
     }
   }
 }

@@ -1,22 +1,10 @@
 {
   "mappings": {
     "properties": {
-      "CommandLine": {
-        "type": "text"
-      },
       "EventID": {
         "type": "integer"
       },
-      "HostName": {
-        "type": "text"
-      },
-      "Message": {
-        "type": "text"
-      },
-      "Provider_Name": {
-        "type": "text"
-      },
-      "ServiceName": {
+      "winlog.provider_name": {
         "type": "text"
       }
     }
