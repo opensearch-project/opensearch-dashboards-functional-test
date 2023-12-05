@@ -103,17 +103,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         retryOnStatusCodeFailure: true,
       });
 
-      cy.get('body').then(($body) => {
-        if (
-          $body.find('[data-test-subj="addSampleDataSetflights"]').length > 0
-        ) {
-          // If the element exists, click on it
-          cy.get('[data-test-subj="addSampleDataSetflights"]').click();
-        } else {
-          // The element does not exist, you can log a message or take other actions
-          cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
-        }
-      });
+      createSampleFlightDataIfDoesntExist();
 
       // Navigate to Security/Roles section
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/roles/create`);
@@ -167,24 +157,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('button[id="map"]').click();
     });
 
-    it.skip('should create a new index pattern', () => {
+    it('should create a new index pattern', () => {
       cy.visit(`${BASE_PATH}/app/home?security_tenant=${tenantName}`);
       cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
         retryOnStatusCodeFailure: true,
       });
 
-      cy.get('body').then(($body) => {
-        if (
-          $body.find('[data-test-subj="addSampleDataSetflights"]').length > 0
-        ) {
-          // If the element exists, click on it
-          cy.get('[data-test-subj="addSampleDataSetflights"]').click();
-        } else {
-          // The element does not exist, you can log a message or take other actions
-          cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
-        }
-      });
-
+      createSampleFlightDataIfDoesntExist();
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
       cy.get('button[aria-label="Closes this modal window"]').click();
@@ -208,5 +187,17 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('option[value="timestamp"]');
       cy.get('button[data-test-subj="createIndexPatternButton"]').click();
     });
+  });
+}
+
+function createSampleFlightDataIfDoesntExist() {
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-test-subj="addSampleDataSetflights"]').length > 0) {
+      // If the element exists, click on it
+      cy.get('[data-test-subj="addSampleDataSetflights"]').click();
+    } else {
+      // The element does not exist, you can log a message or take other actions
+      cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
+    }
   });
 }
