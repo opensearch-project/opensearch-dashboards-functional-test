@@ -146,7 +146,8 @@ describe('discover app', { scrollBehavior: false }, () => {
     }
   );
 
-  describe('nested query', () => {
+  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5495
+  describe.skip('nested query', () => {
     before(() => {
       cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForSearch();
@@ -158,7 +159,8 @@ describe('discover app', { scrollBehavior: false }, () => {
     });
   });
 
-  describe('data-shared-item', function () {
+  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5495
+  describe.skip('data-shared-item', function () {
     it('should have correct data-shared-item title and description', () => {
       const expected = {
         title: 'A Saved Search',
