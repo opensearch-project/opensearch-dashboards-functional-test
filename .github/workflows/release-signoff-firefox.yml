@@ -13,6 +13,8 @@ jobs:
       TERM: xterm
       # make Node run in ipv4 first so that cypress can detect 5601 port in CI environment
       NODE_OPTIONS: '--max-old-space-size=6144 --dns-result-order=ipv4first'
+      # 2.12 onwards security demo configuration require a custom admin password
+      OPENSEARCH_INTIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
       - name: Checkout functional-test
         uses: actions/checkout@v2
@@ -29,7 +31,7 @@ jobs:
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
           ./opensearch-tar-install.sh &
-          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin${{ env.OPENSEARCH_INTIAL_ADMIN_PASSWORD }} -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
