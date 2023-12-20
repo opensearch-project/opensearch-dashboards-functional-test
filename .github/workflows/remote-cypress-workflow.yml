@@ -1,0 +1,26 @@
+name: Trigger Remote Cypress Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_workflow:
+        description: 'Trigger Remote Cypress Workflow'
+        required: false
+  push:
+    branches: [ '**' ]
+
+jobs:
+  trigger-cypress:
+    runs-on: ubuntu-latest
+    name: Remote Cypress Tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Run Bash Script
+        env:
+          GITHUB_SECRET_TOKEN: ${{ secrets.REMOTE_GITHUB_PAT }}
+        run: |
+          ./remoteCypress.sh -r "manasvinibs/OpenSearch-Dashboards" -w "remote_cypress_workflow.yml" -o "tes_OS_URL" -d "test_OSD_URL" -b "POC"
+
