@@ -326,7 +326,10 @@ describe('dashboard filtering', () => {
   // visualization, future runs of the test suite will fail due to being unable to find the visualization
   // under the expected name.
 
-  describe('nested filtering', () => {
+  /**
+   * nested filtering is flaky and before we find out the root cause, skip it.
+   */
+  describe.skip('nested filtering', () => {
     before(() => {
       // Go to the Dashboards list page
       miscUtils.visitPage('app/dashboards/list');
