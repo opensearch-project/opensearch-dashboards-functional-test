@@ -16,11 +16,24 @@ export function switchTenantTo(newTenant) {
   }).as('waitForAccountInfo');
 
   cy.getElementByTestId('switch-tenants').click();
-  //should ensures the dialog window is fully loaded and the radios can be selected.
-  cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should(
-    'be.enabled'
-  );
-  cy.get('.euiRadio__label[for="' + newTenant + '"]').click();
+
+  if (['global', 'private'].includes(newTenant)) {
+    cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should(
+      'be.enabled'
+    );
+    cy.get('.euiRadio__label[for="' + newTenant + '"]').click();
+  } else {
+    cy.get('[id="custom"][name="tenantSwitchRadios"]').should('be.enabled');
+
+    cy.getElementByTestId('tenant-switch-modal')
+      .find('[data-test-subj="comboBoxInput"]')
+      .click();
+
+    // typo in data-test-subj
+    cy.getElementByTestId('comboBoxOptionsList ')
+      .find(`[title="${newTenant}"]`)
+      .click();
+  }
 
   cy.intercept({
     method: 'POST',
