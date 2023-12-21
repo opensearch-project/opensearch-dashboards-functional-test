@@ -62,8 +62,8 @@ jobs:
           else
               echo "Keep OpenSearch Security"
               nohup ./opensearch-windows-install.bat &
-              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do echo sleeping 5; sleep 5; done'
-              curl -sk https://localhost:9200/_cluster/health?pretty -u admin:admin
+              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:${{ env.OPENSEARCH_INTIAL_ADMIN_PASSWORD }} -k https://localhost:9200)" != "200" ]]; do echo sleeping 5; sleep 5; done'
+              curl -sk https://localhost:9200/_cluster/health?pretty -u admin:${{ env.OPENSEARCH_INTIAL_ADMIN_PASSWORD }}
           fi
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
         shell: bash
@@ -104,8 +104,8 @@ jobs:
           else
               echo "Keep Dashboards Security"
               bin/opensearch-dashboards.bat &
-              timeout 300 bash -c 'while [[ "$(curl -k http://localhost:5601/api/status -u admin:admin | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
-              curl -sk localhost:5601/api/status -u admin:admin | jq
+              timeout 300 bash -c 'while [[ "$(curl -k http://localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INTIAL_ADMIN_PASSWORD }} | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
+              curl -sk localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INTIAL_ADMIN_PASSWORD }} | jq
           fi
           netstat -anP tcp | grep LISTEN | grep 5601 || netstat -ntlp | grep 5601
         shell: bash
