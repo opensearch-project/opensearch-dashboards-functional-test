@@ -116,6 +116,7 @@ describe('ClusterMetricsMonitor', () => {
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
       // Wait for the API types to load and then type in the Cluster Health API
+      cy.wait(5000);
       cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
         'cluster health{enter}'
       );
