@@ -493,3 +493,12 @@ Cypress.Commands.add(
       });
   }
 );
+
+// type: logs, ecommerce, flights
+Cypress.Commands.add('loadSampleData', (type) => {
+  cy.request({
+    method: 'POST',
+    headers: { 'osd-xsrf': 'opensearch-dashboards' },
+    url: `${BASE_PATH}/api/sample_data/${type}`,
+  });
+});
