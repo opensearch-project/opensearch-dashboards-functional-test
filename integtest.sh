@@ -78,16 +78,10 @@ then
   SECURITY_ENABLED="true"
 fi
 
-IFS='.' read -ra version_array <<< "$VERSION"
-
 if [ -z "$CREDENTIAL" ]
 then
   # Starting in 2.12.0, security demo configuration script requires an initial admin password
-  if (( ${version_array[0]} > 2 || (${version_array[0]} == 2 && ${version_array[1]} >= 12) )); then
-      CREDENTIAL="admin:myStrongPassword123!"
-  else
-      CREDENTIAL="admin:admin"
-  fi
+  CREDENTIAL="admin:myStrongPassword123!"
 fi
 
 USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
