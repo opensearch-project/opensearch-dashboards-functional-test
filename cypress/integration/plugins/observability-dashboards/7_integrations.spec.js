@@ -1,0 +1,58 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+/// <reference types="cypress" />
+
+import { BASE_PATH } from '../../../utils/base_constants';
+
+const testInstanceName = 'test_integration_cypress';
+
+const moveToAvailableNginxIntegration = () => {
+  cy.visit(`${BASE_PATH}/app/integrations#/available/nginx`);
+};
+
+const moveToAddedIntegrations = () => {
+  cy.visit(`${BASE_PATH}/app/integrations#/installed`);
+};
+
+const createSamples = () => {
+  moveToAvailableNginxIntegration();
+  cy.get('[data-test-subj="try-it-button"]').click();
+  cy.get('.euiToastHeader__title').should('contain', 'successfully');
+};
+
+describe('Add nginx integration instance flow', () => {
+  it('Navigates to nginx page and triggers the adds the instance flow', () => {
+    createSamples();
+    moveToAvailableNginxIntegration();
+    cy.get('[data-test-subj="add-integration-button"]').click();
+    cy.get('[data-test-subj="new-instance-name"]').should(
+      'have.value',
+      'nginx Integration'
+    );
+    cy.get('[data-test-subj="create-instance-button"]').should('be.disabled');
+    // Modifies the name of the integration
+    cy.get('[data-test-subj="new-instance-name"]').clear();
+    cy.get('[data-test-subj="new-instance-name"]').type(testInstanceName);
+    // Validates the created sample index
+    cy.get('[data-test-subj="data-source-name"]').type(
+      'ss4o_logs-nginx-sample-sample{enter}'
+    );
+    cy.get('[data-test-subj="create-instance-button"]').click();
+    cy.get('[data-test-subj="eventHomePageTitle"]').should(
+      'contain',
+      testInstanceName
+    );
+  });
+
+  it('Navigates to installed integrations page and verifies that installed integration exists', () => {
+    moveToAddedIntegrations();
+    cy.contains(testInstanceName).should('exist');
+    cy.get('input[type="search"]').eq(0).focus();
+    cy.get('input[type="search"]').eq(0).type(`${testInstanceName}{enter}`);
+    cy.get('.euiTableRow').should('have.length', 1); //Filters correctly to the test integration instance
+    cy.get(`[data-test-subj="${testInstanceName}IntegrationLink"]`).click();
+  });
+});
