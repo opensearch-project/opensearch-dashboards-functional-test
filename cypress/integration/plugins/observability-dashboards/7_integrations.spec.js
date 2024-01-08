@@ -54,5 +54,9 @@ describe('Add nginx integration instance flow', () => {
     cy.get('input[type="search"]').eq(0).type(`${testInstanceName}{enter}`);
     cy.get('.euiTableRow').should('have.length', 1); //Filters correctly to the test integration instance
     cy.get(`[data-test-subj="${testInstanceName}IntegrationLink"]`).click();
+    cy.get('[data-test-subj="eventHomePageTitle"]').should(
+      'contain',
+      testInstanceName
+    );
   });
 });
