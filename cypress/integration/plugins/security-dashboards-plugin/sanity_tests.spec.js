@@ -74,9 +74,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
           SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
       }).as('listUserResponse');
       cy.wait('@listUserResponse');
-
-      // Click on 'Add internal user' button
-      // cy.get('button').contains('Create internal user').click();
       cy.get('a[href="#/users/create"]').click({
         force: true,
       });
@@ -95,7 +92,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
       }).as('createUserResponse');
       cy.contains(username).should('exist');
     });
-    // it('should create a new role with specific permissions', () => {
 
     it('should create a new role with specific permissions', () => {
       // Add sample data if it hasn't been added yet
