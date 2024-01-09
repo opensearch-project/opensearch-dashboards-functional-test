@@ -76,7 +76,7 @@ To run tests against a local cluster
 without security:
 
 ```
-$ yarn cypress:run-without-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
+$ yarn cypress:run-without-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
 with security:
