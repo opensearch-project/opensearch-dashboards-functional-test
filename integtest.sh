@@ -80,10 +80,12 @@ fi
 
 if [ -z "$CREDENTIAL" ]
 then
-  CREDENTIAL="admin:admin"
-  USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
-  PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+  # Starting in 2.12.0, security demo configuration script requires an initial admin password
+  CREDENTIAL="admin:myStrongPassword123!"
 fi
+
+USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
+PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 
 # User can send custom browser path through env variable
 if [ -z "$BROWSER_PATH" ]
