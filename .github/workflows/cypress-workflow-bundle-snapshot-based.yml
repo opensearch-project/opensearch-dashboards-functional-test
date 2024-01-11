@@ -11,9 +11,11 @@ jobs:
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
+      - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: ${{ github.ref }}
           filters: |
             tests:
               - 'cypress/**/core-opensearch-dashboards/**'
