@@ -50,7 +50,7 @@ jobs:
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
           bin/opensearch-dashboards serve &
-          timeout 300 bash -c 'while [[ "$(curl -s localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+          timeout 300 bash -c 'while [[ "$(curl -s -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
         id: cypress_version
         run: |
