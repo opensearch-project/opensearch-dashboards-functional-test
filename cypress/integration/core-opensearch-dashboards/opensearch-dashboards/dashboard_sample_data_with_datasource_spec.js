@@ -45,6 +45,31 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
 
+    describe('checking legacy home page', () => {
+      before(() => {
+        // Go to the home page
+        miscUtils.visitPage('app/home#/legacy');
+        cy.window().then((win) =>
+          win.localStorage.setItem('home:welcome:show', false)
+        );
+        cy.reload(true);
+      });
+
+      after(() => {
+        cy.window().then((win) =>
+          win.localStorage.removeItem('home:welcome:show')
+        );
+      });
+
+      it('checking tutorial_directory display', () => {
+        // Check that tutorial_directory is visible
+        commonUI.checkElementExists(
+          `a[href="${path}/app/home#/tutorial_directory"]`,
+          2
+        );
+      });
+    });
+
     describe('adding sample data', () => {
       before(() => {
         miscUtils.addSampleData();
