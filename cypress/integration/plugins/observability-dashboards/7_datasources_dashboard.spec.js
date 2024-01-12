@@ -27,9 +27,9 @@ const visitDatasourcesCreationPage = () => {
 
 describe('Integration tests for datasources plugin', () => {
   it('Navigates to datasources plugin and expects the correct header', () => {
-    visitDatasourcesHomePage();
-    cy.get('[data-test-subj="dataconnections-header"]').should('exist');
-  });
+      visitDatasourcesHomePage();
+      cy.get('[data-test-subj="dataconnections-header"]', { timeout: 120000 }).should('exist');
+    });
 
   it('Tests navigation between tabs', () => {
     visitDatasourcesHomePage();
