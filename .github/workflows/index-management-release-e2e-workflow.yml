@@ -22,3 +22,4 @@ jobs:
     with:
       test-name: Index Management
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/index-management-dashboards-plugin/*'
+      security-enabled: true

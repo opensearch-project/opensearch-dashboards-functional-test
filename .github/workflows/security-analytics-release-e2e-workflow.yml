@@ -25,3 +25,4 @@ jobs:
     with:
       test-name: Security Analytics
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security-analytics-dashboards-plugin/*'
+      security-enabled: true

@@ -22,3 +22,4 @@ jobs:
     with:
       test-name: Query Workbench
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-workbench-dashboards/*'
+      security-enabled: true
