@@ -83,6 +83,10 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
+          echo "Remove Dashboards Assistant to fix register content renderer error"
+          ./bin/opensearch-dashboards-plugin remove assistantDashboards
+          echo "List installed plugins"
+          ./bin/opensearch-dashboards-plugin list
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove Dashboards Security"
               ./bin/opensearch-dashboards-plugin remove securityDashboards
