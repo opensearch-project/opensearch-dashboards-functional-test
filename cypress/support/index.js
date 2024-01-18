@@ -30,6 +30,7 @@ import '../utils/plugins/alerting-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/notifications-dashboards/commands';
+import '../utils/plugins/dashboards-assistant/commands';
 
 import 'cypress-real-events';
 
@@ -54,5 +55,12 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('security_authentication');
+  });
+}
+
+if (Cypress.env('CYPRESS_ASSISTANT_AGENT_INITIALIZE_REQUIRED')) {
+  before(() => {
+    cy.addAssistantRequiredSettings();
+    cy.registerRootAgent();
   });
 }
