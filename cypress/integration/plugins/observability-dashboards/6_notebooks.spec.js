@@ -100,7 +100,9 @@ describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
     moveToNotebookHome();
     cy.get('.euiTableCellContent').contains(TEST_NOTEBOOK).click();
-    cy.wait(delayTime * 3); //page needs to process before checking
+    cy.get('h1[data-test-subj="notebookTitle"]')
+      .contains(TEST_NOTEBOOK)
+      .should('exist');
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
