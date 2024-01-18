@@ -111,6 +111,10 @@ POST _plugins/_sql/_explain
 | a3 | b3 | c3 | d3 |
 `;
 
+export const SAMPLE_SQL_QUERY = `%sql
+select 1
+`;
+
 export const SQL_QUERY_TEXT = `%sql
 select * from opensearch_dashboards_sample_data_flights limit 20
 `;
