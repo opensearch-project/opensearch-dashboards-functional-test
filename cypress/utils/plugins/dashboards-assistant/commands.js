@@ -14,7 +14,7 @@ Cypress.Commands.add('addAssistantRequiredSettings', () => {
       'plugins.ml_commons.memory_feature_enabled': true,
       'plugins.flow_framework.enabled': true,
       'plugins.ml_commons.trusted_connector_endpoints_regex': [
-        '^https://bedrock-runtime\\.us-west-2\\.amazonaws\\.com/.*$',
+        '^https://opensearch.free.beeceptor.com/.*$',
       ],
     },
   });
@@ -24,17 +24,7 @@ Cypress.Commands.add('registerRootAgent', () => {
   cy.request(
     'POST',
     `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}`,
-    JSON.parse(
-      JSON.stringify(FlowTemplateJSON)
-        .replace(
-          '${CYPRESS_AWS_ACCOUNT_ACCESS_KEY}',
-          Cypress.env('CYPRESS_AWS_ACCOUNT_ACCESS_KEY') || ''
-        )
-        .replace(
-          '${CYPRESS_AWS_ACCOUNT_SECRET_KEY}',
-          Cypress.env('CYPRESS_AWS_ACCOUNT_SECRET_KEY') || ''
-        )
-    )
+    FlowTemplateJSON
   ).then((resp) => {
     // ML needs 10 seconds to initialize its master key
     // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.

@@ -4,8 +4,6 @@ on:
     branches: ['**']
 env:
   CYPRESS_ASSISTANT_AGENT_INITIALIZE_REQUIRED: true
-  CYPRESS_AWS_ACCOUNT_ACCESS_KEY: ${{ secrets.CYPRESS_AWS_ACCOUNT_ACCESS_KEY }}
-  CYPRESS_AWS_ACCOUNT_SECRET_KEY: ${{ secrets.CYPRESS_AWS_ACCOUNT_SECRET_KEY }}
 jobs:
   changes:
     runs-on: ubuntu-latest
