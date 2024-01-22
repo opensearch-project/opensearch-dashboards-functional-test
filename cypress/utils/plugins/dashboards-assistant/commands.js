@@ -14,7 +14,7 @@ Cypress.Commands.add('addAssistantRequiredSettings', () => {
       'plugins.ml_commons.memory_feature_enabled': true,
       'plugins.flow_framework.enabled': true,
       'plugins.ml_commons.trusted_connector_endpoints_regex': [
-        '^https://opensearch.free.beeceptor.com/.*$',
+        '^http://127.0.0.1:3000$',
       ],
     },
   });

@@ -4,10 +4,7 @@
   "use_case": "REGISTER_AGENT",
   "version": {
     "template": "1.0.0",
-    "compatibility": [
-      "2.12.0",
-      "3.0.0"
-    ]
+    "compatibility": ["2.12.0", "3.0.0"]
   },
   "workflows": {
     "provision": {
@@ -19,10 +16,9 @@
           "previous_node_inputs": {},
           "user_inputs": {
             "version": "1",
-            "name": "Dummy Connector",
-            "protocol": "http",
-            "description": "Dummy connector to a local service",
-            "credential": {},
+            "name": "Claude instant runtime Connector",
+            "protocol": "aws_sigv4",
+            "description": "The connector to BedRock service for claude model",
             "actions": [
               {
                 "headers": {
@@ -30,12 +26,26 @@
                   "content-type": "application/json"
                 },
                 "method": "POST",
-                "request_body": "{\"prompt\":\"${parameters.prompt}\" }",
+                "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
                 "action_type": "predict",
-                "url": "https://opensearch.free.beeceptor.com/dummy_llm"
+                "url": "http://127.0.0.1:3000"
               }
             ],
-            "parameters": {}
+            "credential": {
+              "access_key": "<key>",
+              "secret_key": "<value>"
+            },
+            "parameters": {
+              "endpoint": "bedrock-runtime.us-west-2.amazonaws.com",
+              "content_type": "application/json",
+              "auth": "Sig_V4",
+              "max_tokens_to_sample": "8000",
+              "service_name": "bedrock",
+              "temperature": "0.0001",
+              "response_filter": "$.completion",
+              "region": "us-west-2",
+              "anthropic_version": "bedrock-2023-05-31"
+            }
           }
         },
         {
@@ -149,10 +159,7 @@
             "app_type": "chatbot",
             "name": "Cypress test agent",
             "description": "this is the root agent",
-            "tools_order": [
-              "agent_tool",
-              "ml_model_tool"
-            ],
+            "tools_order": ["agent_tool", "ml_model_tool"],
             "memory": {
               "type": "conversation_index"
             },
