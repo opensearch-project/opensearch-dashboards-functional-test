@@ -43,7 +43,7 @@ export const testIndexDataSet = [
   },
 ];
 
-export const supressResizeObserverIssue = () => {
+export const suppressResizeObserverIssue = () => {
   // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
   cy.on('uncaught:exception', (err) => {
     if (err.message.includes('ResizeObserver loop')) return false;
@@ -185,7 +185,7 @@ export const landOnEventVisualizations = () => {
   cy.get('button[id="main-content-vis"]', { timeout: TIMEOUT_DELAY })
     .contains('Visualizations')
     .click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime);
 };
 
@@ -256,7 +256,7 @@ export const moveToCreatePage = () => {
   })
     .eq(0)
     .click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get('[data-test-subj="createPageTitle"]', {
     timeout: TIMEOUT_DELAY,
@@ -267,7 +267,7 @@ export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-applications#`, {
     waitForGetTenant: true,
   });
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
     timeout: TIMEOUT_DELAY,
@@ -286,7 +286,7 @@ export const moveToEditPage = () => {
   cy.get('[data-test-subj="editApplicationButton"]', {
     timeout: TIMEOUT_DELAY,
   }).click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime);
   cy.get('[data-test-subj="createPageTitle"]', {
     timeout: TIMEOUT_DELAY,
