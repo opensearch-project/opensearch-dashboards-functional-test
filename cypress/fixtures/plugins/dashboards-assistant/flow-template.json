@@ -74,26 +74,11 @@
           }
         },
         {
-          "id": "visualization_tool",
-          "type": "create_tool",
-          "previous_node_inputs": {},
-          "user_inputs": {
-            "description": "Use this tool to find user created visualizations. This tool takes the visualization name as input and returns the first 3 matching visualizations",
-            "include_output_in_agent_response": true,
-            "type": "VisualizationTool",
-            "parameters": {
-              "index": ".kibana"
-            },
-            "name": "VisualizationTool"
-          }
-        },
-        {
           "id": "sub_agent",
           "type": "register_agent",
           "previous_node_inputs": {
             "cat_index_tool": "tools",
-            "register_model_2": "model_id",
-            "visualization_tool": "tools"
+            "register_model_2": "model_id"
           },
           "user_inputs": {
             "parameters": {},

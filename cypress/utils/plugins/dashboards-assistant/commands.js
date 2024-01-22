@@ -79,9 +79,7 @@ Cypress.Commands.add('registerRootAgent', () => {
               nodesMap.register_agent[0].user_inputs['llm.parameters'],
             model_id: agentParameters.modelId,
           },
-          tools: [nodesMap.create_tool[0], nodesMap.create_tool[1]].map(
-            (item) => item.user_inputs
-          ),
+          tools: [nodesMap.create_tool[0]].map((item) => item.user_inputs),
         }
       );
     })
@@ -94,16 +92,16 @@ Cypress.Commands.add('registerRootAgent', () => {
           ...nodesMap.register_agent[1].user_inputs,
           tools: [
             {
-              ...nodesMap.create_tool[2].user_inputs,
+              ...nodesMap.create_tool[1].user_inputs,
               parameters: {
-                ...nodesMap.create_tool[2].user_inputs.parameters,
+                ...nodesMap.create_tool[1].user_inputs.parameters,
                 agent_id: agentParameters.conversationalAgentId,
               },
             },
             {
-              ...nodesMap.create_tool[3].user_inputs,
+              ...nodesMap.create_tool[2].user_inputs,
               parameters: {
-                ...nodesMap.create_tool[3].user_inputs.parameters,
+                ...nodesMap.create_tool[2].user_inputs.parameters,
                 model_id: agentParameters.modelId,
               },
             },
