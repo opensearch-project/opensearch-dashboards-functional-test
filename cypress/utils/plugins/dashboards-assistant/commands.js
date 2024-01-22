@@ -6,18 +6,10 @@
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
 import { BACKEND_BASE_PATH } from '../../constants';
 import { ML_COMMONS_API } from './constants';
+import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/cluster_settings.json';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
-  cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, {
-    persistent: {
-      'plugins.ml_commons.only_run_on_ml_node': false,
-      'plugins.ml_commons.memory_feature_enabled': true,
-      'plugins.flow_framework.enabled': true,
-      'plugins.ml_commons.trusted_connector_endpoints_regex': [
-        '^http://127.0.0.1:3000$',
-      ],
-    },
-  });
+  cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
 });
 
 const agentParameters = {
