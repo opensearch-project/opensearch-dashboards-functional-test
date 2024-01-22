@@ -13,6 +13,7 @@ describe('Assistant basic spec', () => {
 
     cy.addAssistantRequiredSettings();
     cy.registerRootAgent();
+    cy.startDummyServer();
   });
 
   beforeEach(() => {
@@ -26,7 +27,7 @@ describe('Assistant basic spec', () => {
     );
   });
 
-  describe('show up', () => {
+  describe('Interact with Agent framework', () => {
     it('toggle Chatbot and enable to interact', () => {
       // enable to toggle and show Chatbot
       cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
@@ -46,5 +47,6 @@ describe('Assistant basic spec', () => {
 
   after(() => {
     cy.cleanRootAgent();
+    cy.stopDummyServer();
   });
 });

@@ -145,11 +145,6 @@ Create a new workflow by referring to [this template](https://github.com/opensea
 
 To make the build repo enable your experimental feature when spinning up OSD service, make sure that you update [this file](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) You could either modify the start command or the yml file. To avoid a potentially long start command, it is preferred to modify the yml file to turn on the feature.
 
-### Develop test cases for dashboards-assistant
-dashboards-assistant relies on a dummy LLM server to run its integration test so when it comes to the repo you need to prepare some extra prerequisites.
-
-- run `yarn start-dummy-llm-server` to start a dummy LLM server in your env on the port of 3000.
-
 ## General
 
 ### Formatting
