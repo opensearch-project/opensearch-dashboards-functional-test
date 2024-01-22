@@ -5,7 +5,7 @@
 
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
 import { BACKEND_BASE_PATH } from '../../constants';
-import { FLOW_FRAMEWORK_API } from './constants';
+import { ML_COMMONS_API } from './constants';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, {
@@ -20,42 +20,123 @@ Cypress.Commands.add('addAssistantRequiredSettings', () => {
   });
 });
 
-let usingWorkflowId = '';
+const agentParameters = {
+  connectorId: '',
+  modelId: '',
+  conversationalAgentId: '',
+  rootAgentId: '',
+};
 
 Cypress.Commands.add('registerRootAgent', () => {
   // ML needs 10 seconds to initialize its master key
   // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.
   cy.wait(10000);
+  /**
+   * TODO use flow framework if the plugin get integrate in the future.
+   */
+  // cy.request(
+  //   'POST',
+  //   `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}`,
+  //   FlowTemplateJSON
+  // ).then((resp) => {
+  //   usingWorkflowId = resp.body.workflow_id;
+  //   if (usingWorkflowId) {
+  //     cy.request(
+  //       'POST',
+  //       `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_provision`
+  //     );
+  //     /**
+  //      * wait for 2s
+  //      */
+  //     cy.wait(2000);
+  //   } else {
+  //     throw new Error(resp);
+  //   }
+  // });
+  const nodesMap = {};
+  FlowTemplateJSON.workflows.provision.nodes.forEach((node) => {
+    nodesMap[node.type] = nodesMap[node.type] || [];
+    nodesMap[node.type].push(node);
+  });
   cy.request(
     'POST',
-    `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}`,
-    FlowTemplateJSON
-  ).then((resp) => {
-    usingWorkflowId = resp.body.workflow_id;
-    if (usingWorkflowId) {
-      cy.request(
+    `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_CONNECTOR}`,
+    nodesMap.create_connector[0].user_inputs
+  )
+    .then((resp) => {
+      agentParameters.connectorId = resp.body.connector_id;
+      return cy.request(
         'POST',
-        `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_provision`
+        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_MODEL}?deploy=true`,
+        {
+          ...nodesMap.register_remote_model[0].user_inputs,
+          connector_id: agentParameters.connectorId,
+          function_name: 'remote',
+        }
       );
-      /**
-       * wait for 2s
-       */
-      cy.wait(2000);
-    } else {
-      throw new Error(resp);
-    }
-  });
+    })
+    .then((resp) => {
+      agentParameters.modelId = resp.body.model_id;
+      return cy.request(
+        'POST',
+        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
+        {
+          ...nodesMap.register_agent[0].user_inputs,
+          llm: {
+            parameters:
+              nodesMap.register_agent[0].user_inputs['llm.parameters'],
+            model_id: agentParameters.modelId,
+          },
+          tools: [nodesMap.create_tool[0], nodesMap.create_tool[1]].map(
+            (item) => item.user_inputs
+          ),
+        }
+      );
+    })
+    .then((resp) => {
+      agentParameters.conversationalAgentId = resp.body.agent_id;
+      return cy.request(
+        'POST',
+        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
+        {
+          ...nodesMap.register_agent[1].user_inputs,
+          tools: [
+            {
+              ...nodesMap.create_tool[2].user_inputs,
+              parameters: {
+                ...nodesMap.create_tool[2].user_inputs.parameters,
+                agent_id: agentParameters.conversationalAgentId,
+              },
+            },
+            {
+              ...nodesMap.create_tool[3].user_inputs,
+              parameters: {
+                ...nodesMap.create_tool[3].user_inputs.parameters,
+                model_id: agentParameters.modelId,
+              },
+            },
+          ],
+        }
+      );
+    })
+    .then((resp) => {
+      agentParameters.rootAgentId = resp.body.agent_id;
+    });
 });
 
 Cypress.Commands.add('cleanRootAgent', () => {
-  cy.request(
-    'POST',
-    `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_deprovision`
-  );
+  return;
   /**
-   * wait for 2s
+   * TODO wait for flow framework to be built into snapshot.
    */
-  cy.wait(2000);
+  // cy.request(
+  //   'POST',
+  //   `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_deprovision`
+  // );
+  // /**
+  //  * wait for 2s
+  //  */
+  // cy.wait(2000);
 });
 
 Cypress.Commands.add('startDummyServer', () => {
