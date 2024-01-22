@@ -8,6 +8,11 @@ describe('Assistant basic spec', () => {
   before(() => {
     // Set welcome screen tracking to false
     localStorage.setItem('home:welcome:show', 'false');
+    // Set new theme modal to false
+    localStorage.setItem('home:newThemeModal:show', 'false');
+
+    cy.addAssistantRequiredSettings();
+    cy.registerRootAgent();
   });
 
   beforeEach(() => {
@@ -22,6 +27,24 @@ describe('Assistant basic spec', () => {
   });
 
   describe('show up', () => {
-    it.only('successfully', () => {});
+    it('toggle Chatbot and enable to interact', () => {
+      // enable to toggle and show Chatbot
+      cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+
+      // click suggestions to generate response
+      cy.contains('What are the indices in my cluster?').click();
+
+      // should have a LLM Response
+      cy.contains(
+        'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
+      );
+
+      // should have a suggestion section
+      cy.get(`[aria-label="chat suggestions"]`).should('be.length', 1);
+    });
+  });
+
+  after(() => {
+    cy.cleanRootAgent();
   });
 });

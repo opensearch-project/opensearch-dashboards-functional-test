@@ -24,13 +24,16 @@ const server = http.createServer((req, res) => {
   // Listen for the end of the request
   req.on('end', () => {
     try {
-      if (requestBody.includes(MATCH_AGENT_FRAMEWORK_PROMPT)) {
-        res.end(JSON.stringify(agentFrameworkJson));
-      } else if (requestBody.includes(MATCH_SUGGESTION_PROMPT)) {
-        res.end(JSON.stringify(suggestionJson));
-      }
+      // Why add a delay here? reference: https://github.com/opensearch-project/ml-commons/issues/1894
+      setTimeout(() => {
+        if (requestBody.includes(MATCH_AGENT_FRAMEWORK_PROMPT)) {
+          return res.end(JSON.stringify(agentFrameworkJson));
+        } else if (requestBody.includes(MATCH_SUGGESTION_PROMPT)) {
+          return res.end(JSON.stringify(suggestionJson));
+        }
 
-      res.end('');
+        res.end('');
+      }, 100);
     } catch (error) {
       // Handle JSON parsing errors
       res.statusCode = 400;

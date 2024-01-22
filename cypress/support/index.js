@@ -57,10 +57,3 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
     Cypress.Cookies.preserveOnce('security_authentication');
   });
 }
-
-if (Cypress.env('CYPRESS_ASSISTANT_AGENT_INITIALIZE_REQUIRED')) {
-  before(() => {
-    cy.addAssistantRequiredSettings();
-    cy.registerRootAgent();
-  });
-}

@@ -2,8 +2,6 @@ name: Assistant Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
     branches: ['**']
-env:
-  CYPRESS_ASSISTANT_AGENT_INITIALIZE_REQUIRED: true
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -23,5 +21,5 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: node ./cypress/support/assistant-dummy-llm.js & yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*'
+      test-command: yarn start-dummy-llm-server & yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*'
       osd-serve-args: --assistant.chat.enabled=true --assistant.chat.rootAgentName="Cypress test agent"

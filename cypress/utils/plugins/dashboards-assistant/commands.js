@@ -20,20 +20,22 @@ Cypress.Commands.add('addAssistantRequiredSettings', () => {
   });
 });
 
+let usingWorkflowId = '';
+
 Cypress.Commands.add('registerRootAgent', () => {
+  // ML needs 10 seconds to initialize its master key
+  // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.
+  cy.wait(10000);
   cy.request(
     'POST',
     `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}`,
     FlowTemplateJSON
   ).then((resp) => {
-    // ML needs 10 seconds to initialize its master key
-    // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.
-    cy.wait(10000);
-    const workflowId = resp.body.workflow_id;
-    if (workflowId) {
+    usingWorkflowId = resp.body.workflow_id;
+    if (usingWorkflowId) {
       cy.request(
         'POST',
-        `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${workflowId}/_provision`
+        `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_provision`
       );
       /**
        * wait for 2s
@@ -43,4 +45,15 @@ Cypress.Commands.add('registerRootAgent', () => {
       throw new Error(resp);
     }
   });
+});
+
+Cypress.Commands.add('cleanRootAgent', () => {
+  cy.request(
+    'POST',
+    `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_deprovision`
+  );
+  /**
+   * wait for 2s
+   */
+  cy.wait(2000);
 });
