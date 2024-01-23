@@ -11,10 +11,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       localStorage.setItem('home:welcome:show', 'false');
       // Set new theme modal to false
       localStorage.setItem('home:newThemeModal:show', 'false');
-
-      cy.addAssistantRequiredSettings();
-      cy.registerRootAgent();
-      cy.startDummyServer();
     });
 
     beforeEach(() => {
@@ -44,11 +40,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         // should have a suggestion section
         cy.get(`[aria-label="chat suggestions"]`).should('be.length', 1);
       });
-    });
-
-    after(() => {
-      cy.cleanRootAgent();
-      cy.stopDummyServer();
     });
   });
 }
