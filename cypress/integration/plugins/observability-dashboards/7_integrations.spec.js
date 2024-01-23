@@ -24,8 +24,44 @@ const createSamples = () => {
 };
 
 describe('Add nginx integration instance flow', () => {
-  it('Navigates to nginx page and triggers the adds the instance flow', () => {
+  beforeEach(() => {
     createSamples();
+  });
+
+  afterEach(() => {
+    // First delete any integration index data
+    cy.request({
+      method: 'POST',
+      form: false,
+      url: 'api/console/proxy',
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+        'osd-xsrf': true,
+      },
+      qs: {
+        path: `ss4o_logs-nginx-*`, // All tests work with ss4o nginx data
+        method: 'DELETE',
+      },
+      body: '{}',
+    });
+    // Then clear all installed integrations
+    cy.request({
+      method: 'POST',
+      form: false,
+      url: 'api/console/proxy',
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+        'osd-xsrf': true,
+      },
+      qs: {
+        path: `.kibana/_delete_by_query`,
+        method: 'POST',
+      },
+      body: `{ "query": { "match": { "type": "integration-instance" } } }`,
+    });
+  });
+
+  it('Navigates to nginx page and triggers the adds the instance flow', () => {
     moveToAvailableNginxIntegration();
     cy.get('[data-test-subj="add-integration-button"]').click();
     cy.get('[data-test-subj="new-instance-name"]').should(
@@ -48,15 +84,16 @@ describe('Add nginx integration instance flow', () => {
   });
 
   it('Navigates to installed integrations page and verifies that installed integration exists', () => {
+    const sampleName = 'nginx-sample';
     moveToAddedIntegrations();
-    cy.contains(testInstanceName).should('exist');
+    cy.contains(sampleName).should('exist');
     cy.get('input[type="search"]').eq(0).focus();
-    cy.get('input[type="search"]').eq(0).type(`${testInstanceName}{enter}`);
+    cy.get('input[type="search"]').eq(0).type(`${sampleName}{enter}`);
     cy.get('.euiTableRow').should('have.length', 1); //Filters correctly to the test integration instance
-    cy.get(`[data-test-subj="${testInstanceName}IntegrationLink"]`).click();
+    cy.get(`[data-test-subj="${sampleName}IntegrationLink"]`).click();
     cy.get('[data-test-subj="eventHomePageTitle"]').should(
       'contain',
-      testInstanceName
+      sampleName
     );
   });
 });
