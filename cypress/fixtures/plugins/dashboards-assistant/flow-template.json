@@ -25,7 +25,7 @@
                   "x-amz-content-sha256": "required",
                   "content-type": "application/json"
                 },
-                "method": "POST",
+                "method": "GET",
                 "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
                 "action_type": "predict",
                 "url": "http://127.0.0.1:3000"

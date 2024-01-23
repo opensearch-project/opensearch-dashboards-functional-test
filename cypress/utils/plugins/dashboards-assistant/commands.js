@@ -136,5 +136,19 @@ Cypress.Commands.add('startDummyServer', () => {
 });
 
 Cypress.Commands.add('stopDummyServer', () => {
-  cy.exec(`lsof -ti :3000 -sTCP:LISTEN | xargs kill`);
+  /**
+   * For windows and Linux
+   */
+  cy.exec(`netstat -ano | grep "3000" | awk '{print $5}' | xargs kill -9`, {
+    failOnNonZeroExit: false,
+  }).then((result) => {
+    if (result.stderr) {
+      /**
+       * For Macos
+       */
+      cy.exec(`lsof -ti :3000 -sTCP:LISTEN | xargs kill`, {
+        failOnNonZeroExit: false,
+      });
+    }
+  });
 });
