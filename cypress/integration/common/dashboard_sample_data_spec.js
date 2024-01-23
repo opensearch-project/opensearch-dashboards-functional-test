@@ -42,8 +42,80 @@ export function dashboardSanityTests() {
         );
       });
 
+      it('checking sections display', () => {
+        // Check that we have two homepageSection
+        commonUI.checkElementExists(`[data-test-subj="homepageSection"]`, 2);
+      });
+
+      it('checking tutorial_directory display', () => {
+        // Check that tutorial_directory is visable
+        commonUI.checkElementExists(
+          `a[href="${path}/app/home#/tutorial_directory"]`,
+          2
+        );
+      });
+
+      it('checking management display', () => {
+        // Check that management is visable
+        commonUI.checkElementExists(`a[href="${path}/app/management"]`, 1);
+      });
+
+      it('checking dev_tools display', () => {
+        // Check that dev_tools is visable
+        commonUI.checkElementExists(
+          `a[href="${path}/app/dev_tools#/console"]`,
+          1
+        );
+      });
+
+      it('settings display', () => {
+        // Check that settings is visable
+        commonUI.checkElementExists(
+          `a[href="${path}/app/management/opensearch-dashboards/settings#defaultRoute"]`,
+          1
+        );
+      });
+
+      it('checking feature_directory display', () => {
+        // Check that feature_directory is visable
+        commonUI.checkElementExists(
+          `a[href="${path}/app/home#/feature_directory"]`,
+          1
+        );
+      });
+
+      it('checking navigation display', () => {
+        // Check that navigation is visable
+        commonUI.checkElementExists(
+          'button[data-test-subj="toggleNavButton"]',
+          1
+        );
+      });
+
+      it('checking Help menu display', () => {
+        // Check that Help menu is visable
+        commonUI.checkElementExists('button[aria-label="Help menu"]', 1);
+      });
+    });
+
+    describe('checking legacy home page', () => {
+      before(() => {
+        // Go to the home page
+        miscUtils.visitPage('app/home#/legacy');
+        cy.window().then((win) =>
+          win.localStorage.setItem('home:welcome:show', false)
+        );
+        cy.reload(true);
+      });
+
+      after(() => {
+        cy.window().then((win) =>
+          win.localStorage.removeItem('home:welcome:show')
+        );
+      });
+
       it('checking opensearch_dashboards_overview display', () => {
-        // Check that opensearch_dashboards_overview is visable
+        // Check that opensearch_dashboards_overview is visible
         commonUI.checkElementExists(
           `a[href="${path}/app/opensearch_dashboards_overview"]`,
           1
