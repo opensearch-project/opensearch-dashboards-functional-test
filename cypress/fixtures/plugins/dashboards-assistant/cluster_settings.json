@@ -1,0 +1,9 @@
+{
+  "persistent": {
+    "plugins.ml_commons.only_run_on_ml_node": false,
+    "plugins.ml_commons.memory_feature_enabled": true,
+    "plugins.ml_commons.trusted_connector_endpoints_regex": [
+      "^http://127.0.0.1:3000$"
+    ]
+  }
+}
