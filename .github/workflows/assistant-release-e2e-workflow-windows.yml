@@ -4,7 +4,7 @@ on:
     branches: ['**']
 jobs:
   changes:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
@@ -17,7 +17,7 @@ jobs:
 
   tests:
     needs: changes
-    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: dashboards assistant
       test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*'
