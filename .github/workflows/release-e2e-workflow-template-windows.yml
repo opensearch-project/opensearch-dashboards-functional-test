@@ -8,6 +8,9 @@ on:
       test-command:
         required: true
         type: string
+      osd-serve-args:
+        required: false
+        type: string
       security-enabled:
         required: false
         type: string
