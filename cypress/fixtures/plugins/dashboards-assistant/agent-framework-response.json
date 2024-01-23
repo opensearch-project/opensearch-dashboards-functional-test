@@ -1,0 +1,5 @@
+{
+  "completion": " ```json\n{\n  \"thought\": \"Now I know the final answer\",\n  \"final_answer\": \"The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices. This included index names like .plugins-ml-model-group, security-auditlog-2024.01.16, opensearch_dashboards_sample_data_ecommerce and others along with health, status and other details.\"\n}\n```\n",
+  "stop_reason": "stop_sequence",
+  "stop": "\n\nHuman:"
+}
