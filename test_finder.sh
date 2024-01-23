@@ -22,6 +22,7 @@ OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
                          "searchRelevanceDashboards:search-relevance-dashboards"
                          "mlCommonsDashboards:ml-commons-dashboards"
                          "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
+                         "assistantDashboards:dashboards-assistant"
                        )
 
 if [ -z $TEST_TYPE ]; then
