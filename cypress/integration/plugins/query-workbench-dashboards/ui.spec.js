@@ -5,10 +5,8 @@
 
 /// <reference types="cypress" />
 
-import { edit } from 'brace';
 import {
   files,
-  QUERY_WORKBENCH_DELAY,
   testDataSet,
   testQueries,
   verifyDownloadData,
@@ -34,7 +32,7 @@ describe('Dump test data', () => {
         });
       });
 
-    testDataSet.forEach(({url, index}) => dumpDataSet(url, index));
+    testDataSet.forEach(({ url, index }) => dumpDataSet(url, index));
   });
 });
 
@@ -47,23 +45,26 @@ describe('Test PPL UI', () => {
   });
 
   it('Test Run button', () => {
-    cy.get('textarea.ace_text-input').eq(0).focus().type('source=accounts', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('source=accounts', { force: true });
     cy.get('button[data-test-subj="pplRunButton"]').contains('Run').click();
     cy.get('.euiTab__content').contains('Events').click({ force: true });
-    
-    cy.get('.euiTableRow') 
-      .contains('Nanette')
-      .should('exist') 
-      .then(($element) => {
-        const text = $element.text(); 
-    });
+
+    cy.get('.euiTableRow').contains('Nanette').should('exist');
   });
 
   it('Test Clear button', () => {
-    cy.get('textarea.ace_text-input').eq(0).focus().type('search source=.kibana', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('search source=.kibana', { force: true });
     cy.get('button[data-test-subj="pplRunButton"]').contains('Run').click();
     cy.get('.euiTab__content').contains('Events').click({ force: true });
-    cy.get('button[data-test-subj="pplClearButton"]').contains('Clear').click({ force: true });
+    cy.get('button[data-test-subj="pplClearButton"]')
+      .contains('Clear')
+      .click({ force: true });
 
     cy.get('.euiTitle').should('not.exist');
   });
@@ -71,9 +72,14 @@ describe('Test PPL UI', () => {
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
-    cy.get('textarea.ace_text-input').eq(0).focus().type('search source=.kibana', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('search source=.kibana', { force: true });
     cy.get('button[data-test-subj="pplRunButton"]').contains('Run').click();
-    cy.get('button[data-test-subj="fullScreenView"]').contains('Full screen view').click();
+    cy.get('button[data-test-subj="fullScreenView"]')
+      .contains('Full screen view')
+      .click();
 
     cy.get('.euiTitle').should('not.exist');
   });
@@ -98,17 +104,16 @@ describe('Test SQL UI', () => {
       .eq(0)
       .focus()
       .type('{enter}', { force: true });
-      cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
-    cy.get('.euiTab__content').contains('SHOW tables LIKE \'%\'').click({ force: true });
+    cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
+    cy.get('.euiTab__content')
+      .contains("SHOW tables LIKE '%'")
+      .click({ force: true });
   });
 
   it('Test Translate button', () => {
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type('{enter}', {
-        force: true,
-      });
+    cy.get('textarea.ace_text-input').eq(0).focus().type('{enter}', {
+      force: true,
+    });
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
 
     // hard to get euiCodeBlock content, check length instead
@@ -116,17 +121,20 @@ describe('Test SQL UI', () => {
   });
 
   it('Test Clear button', () => {
-    cy.get('button[data-test-subj="sqlClearButton"]').contains('Clear').click({ force: true });
+    cy.get('button[data-test-subj="sqlClearButton"]')
+      .contains('Clear')
+      .click({ force: true });
 
     cy.get('.euiTitle').should('not.exist');
-
   });
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
     cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
-    cy.get('button[data-test-subj="fullScreenView"]').contains('Full screen view').click();
+    cy.get('button[data-test-subj="fullScreenView"]')
+      .contains('Full screen view')
+      .click();
 
     cy.get('.euiTitle').should('not.exist');
   });
@@ -160,17 +168,24 @@ describe('Test table display', () => {
     cy.wait(1000);
     cy.get('[data-test-subj="SQL"]').click({ force: true });
     cy.wait(1000);
-    cy.get('textarea.ace_text-input').eq(0).focus().type('{selectall}{backspace}', { force: true });
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('{selectall}{backspace}', { force: true });
     cy.wait(1000);
   });
 
   testQueries.map(({ title, query, cell_idx, expected_string }) => {
     it(title, () => {
-      cy.get('button[data-test-subj="sqlClearButton"]').contains('Clear').click();
+      cy.get('button[data-test-subj="sqlClearButton"]')
+        .contains('Clear')
+        .click();
       cy.get('div[data-test-subj="sqlCodeEditor"]')
-        .click({force:true})
+        .click({ force: true })
         .type(`{selectall}{backspace}${query}`);
-      cy.get('div[data-test-subj="sqlCodeEditor"]').contains(`${query}`).should('exist');
+      cy.get('div[data-test-subj="sqlCodeEditor"]')
+        .contains(`${query}`)
+        .should('exist');
       cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
       cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
       // cy.get('.euiTab__content').contains('employee_nested').should('exist');
