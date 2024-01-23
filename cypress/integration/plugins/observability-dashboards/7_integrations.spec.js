@@ -21,42 +21,52 @@ const createSamples = () => {
   cy.get('.euiToastHeader__title').should('contain', 'successfully');
 };
 
+const integrationsTeardown = () => {
+  // Delete all integration instances
+  cy.request({
+    method: 'GET',
+    form: false,
+    url: `api/integrations/store`,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+    },
+  }).then((response) => {
+    for (const instance of response.body.data.hits) {
+      cy.request({
+        method: 'DELETE',
+        url: `/api/integrations/store/${instance.id}`,
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+      });
+    }
+  });
+  // Also clean up indices
+  cy.request({
+    method: 'POST',
+    form: false,
+    url: 'api/console/proxy',
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+    },
+    qs: {
+      path: `ss4o_logs-nginx-*`, // All tests work with ss4o nginx data
+      method: 'DELETE',
+    },
+    body: '{}',
+  });
+};
+
 describe('Add nginx integration instance flow', () => {
   beforeEach(() => {
     createSamples();
   });
 
   afterEach(() => {
-    // First delete any integration index data
-    cy.request({
-      method: 'POST',
-      form: false,
-      url: 'api/console/proxy',
-      headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'osd-xsrf': true,
-      },
-      qs: {
-        path: `ss4o_logs-nginx-*`, // All tests work with ss4o nginx data
-        method: 'DELETE',
-      },
-      body: '{}',
-    });
-    // Then clear all installed integrations
-    cy.request({
-      method: 'POST',
-      form: false,
-      url: 'api/console/proxy',
-      headers: {
-        'content-type': 'application/json;charset=UTF-8',
-        'osd-xsrf': true,
-      },
-      qs: {
-        path: `.kibana/_delete_by_query`,
-        method: 'POST',
-      },
-      body: `{ "query": { "match": { "type": "integration-instance" } } }`,
-    });
+    integrationsTeardown();
   });
 
   it('Navigates to nginx page and triggers the adds the instance flow', () => {
