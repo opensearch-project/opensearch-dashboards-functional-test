@@ -7,8 +7,6 @@
 
 import { BASE_PATH } from '../../../utils/base_constants';
 
-const testInstanceName = 'test_integration_cypress';
-
 const moveToAvailableNginxIntegration = () => {
   cy.visit(`${BASE_PATH}/app/integrations#/available/nginx`);
 };
@@ -62,6 +60,7 @@ describe('Add nginx integration instance flow', () => {
   });
 
   it('Navigates to nginx page and triggers the adds the instance flow', () => {
+    const testInstanceName = 'test_integration_cypress';
     moveToAvailableNginxIntegration();
     cy.get('[data-test-subj="add-integration-button"]').click();
     cy.get('[data-test-subj="new-instance-name"]').should(
