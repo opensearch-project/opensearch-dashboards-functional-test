@@ -5,27 +5,6 @@
 import { BASE_PATH } from '../../../utils/constants';
 import '@cypress/skip-test/support';
 
-const conversations = [];
-const constructConversations = () => {
-  cy.sendMessage({
-    input: {
-      type: 'input',
-      content: 'What are the indices in my cluster?',
-      contentType: 'text',
-    },
-  }).then((result) => {
-    if (result.status !== 200) {
-      throw result.body;
-    }
-    conversations.push(result.body);
-  });
-};
-
-const clearConversations = () =>
-  conversations.map(({ conversationId }) =>
-    cy.deleteConversation(conversationId)
-  );
-
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
     before(() => {
@@ -61,19 +40,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         });
     });
     describe('panel operations', () => {
-      it('should show created conversation in the history list', () => {
-        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
-
-        cy.get('.llm-chat-flyout').contains('Conversations');
-        conversations.forEach(({ conversationId }) => {
-          cy.get(
-            `div[data-test-subj="chatHistoryItem-${conversationId}"]`
-          ).should('exist');
-        });
-        cy.contains('What are the indices in my cluster?');
-        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
-      });
-
       it('should toggle history list', () => {
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
         cy.get('.llm-chat-flyout-body')
@@ -115,14 +81,42 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       });
     });
     describe('history item operations', () => {
+      const conversations = [];
+
       before(() => {
         // Create conversations data
-        constructConversations();
+        cy.sendMessage({
+          input: {
+            type: 'input',
+            content: 'What are the indices in my cluster?',
+            contentType: 'text',
+          },
+        }).then((result) => {
+          if (result.status !== 200) {
+            throw result.body;
+          }
+          conversations.push(result.body);
+        });
       });
 
       after(() => {
         // Clear created conversations in tests
-        clearConversations();
+        conversations.map(({ conversationId }) =>
+          cy.deleteConversation(conversationId)
+        );
+      });
+
+      it('should show created conversation in the history list', () => {
+        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
+
+        cy.get('.llm-chat-flyout').contains('Conversations');
+        conversations.forEach(({ conversationId }) => {
+          cy.get(
+            `div[data-test-subj="chatHistoryItem-${conversationId}"]`
+          ).should('exist');
+        });
+        cy.contains('What are the indices in my cluster?');
+        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
       });
 
       it('should load conversation in chat panel', () => {
