@@ -136,3 +136,8 @@ jobs:
         with:
           name: cypress-results
           path: cypress-test/cypress/results
+      - uses: actions/upload-artifact@v1
+        if: always()
+        with:
+          name: opensearch-dashboards-log
+          path: opensearch-dashboards-${{ env.VERSION }}/opensearch-dashboards.log
