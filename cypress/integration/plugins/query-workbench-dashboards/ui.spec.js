@@ -131,6 +131,10 @@ describe('Test SQL UI', () => {
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type("SHOW tables LIKE '%'", { force: true });
     cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
     cy.get('button[data-test-subj="fullScreenView"]')
       .contains('Full screen view')
@@ -188,7 +192,6 @@ describe('Test table display', () => {
         .should('exist');
       cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
       cy.get('button[data-test-subj="sqlRunButton"]').contains('Run').click();
-      // cy.get('.euiTab__content').contains('employee_nested').should('exist');
       cy.get('span.euiTableCellContent__text')
         .eq(cell_idx)
         .should((cell) => {
