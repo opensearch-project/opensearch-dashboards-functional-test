@@ -103,12 +103,12 @@ jobs:
               ./bin/opensearch-dashboards-plugin.bat remove securityDashboards
               sed -i /^opensearch_security/d config/opensearch_dashboards.yml
               sed -i 's/https/http/' config/opensearch_dashboards.yml
-              bin/opensearch-dashboards.bat &
+              bin/opensearch-dashboards.bat serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
               curl -s http://localhost:5601/api/status | jq
           else
               echo "Keep Dashboards Security"
-              bin/opensearch-dashboards.bat &
+              bin/opensearch-dashboards.bat serve ${{ inputs.osd-serve-args }} &
               timeout 300 bash -c 'while [[ "$(curl -k http://localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} | jq -r '.status.overall.state')" != "green" ]]; do echo sleeping 5; sleep 5; done'
               curl -sk localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} | jq
           fi
