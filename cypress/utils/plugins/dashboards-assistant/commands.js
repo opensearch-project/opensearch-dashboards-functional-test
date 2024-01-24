@@ -4,9 +4,10 @@
  */
 
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
-import { BACKEND_BASE_PATH } from '../../constants';
-import { ML_COMMONS_API } from './constants';
+import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
+import { ML_COMMONS_API, ASSISTANT_API } from './constants';
 import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/cluster_settings.json';
+import { apiRequest } from '../../helpers';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
@@ -152,3 +153,14 @@ Cypress.Commands.add('stopDummyServer', () => {
     }
   });
 });
+
+Cypress.Commands.add('sendMessage', (body) =>
+  apiRequest(`${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}`, 'POST', body)
+);
+
+Cypress.Commands.add('deleteConversation', (conversationId) =>
+  apiRequest(
+    `${BASE_PATH}${ASSISTANT_API.CONVERSATION}/${conversationId}`,
+    'DELETE'
+  )
+);
