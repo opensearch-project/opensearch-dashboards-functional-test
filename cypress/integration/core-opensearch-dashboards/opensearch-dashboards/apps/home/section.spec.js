@@ -7,10 +7,12 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 
 const miscUtils = new MiscUtils(cy);
 
+const nextHomeSuffix = Cypress.env('NEXT_HOME_ENABLED') ? '' : '/next-home';
+
 describe('home sections', { scrollBehavior: false }, () => {
   before(() => {
     // Go to the home page
-    miscUtils.visitPage('app/home#');
+    miscUtils.visitPage(`app/home#${nextHomeSuffix}`);
   });
 
   it('should all appear expanded', function () {

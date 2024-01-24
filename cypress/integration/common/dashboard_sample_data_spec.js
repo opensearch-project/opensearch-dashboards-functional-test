@@ -8,6 +8,9 @@ import {
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
+const nextHomeSuffix = Cypress.env('NEXT_HOME_ENABLED') ? '' : '/next-home';
+const legacyHomeSuffix = Cypress.env('NEXT_HOME_ENABLED') ? '/legacy-home' : '';
+
 /**
  * dashboard_sample_data test suite description:
  * 1) Visit the home page of opensearchdashboard, check key UI elements display
@@ -29,7 +32,7 @@ export function dashboardSanityTests() {
     describe('checking home page', () => {
       before(() => {
         // Go to the home page
-        miscUtils.visitPage('app/home#');
+        miscUtils.visitPage(`app/home#${nextHomeSuffix}`);
         cy.window().then((win) =>
           win.localStorage.setItem('home:welcome:show', false)
         );
@@ -101,7 +104,7 @@ export function dashboardSanityTests() {
     describe('checking legacy home page', () => {
       before(() => {
         // Go to the home page
-        miscUtils.visitPage('app/home#/legacy');
+        miscUtils.visitPage(`app/home#${legacyHomeSuffix}`);
         cy.window().then((win) =>
           win.localStorage.setItem('home:welcome:show', false)
         );
