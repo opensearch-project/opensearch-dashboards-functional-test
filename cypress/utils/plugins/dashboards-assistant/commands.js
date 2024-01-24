@@ -132,7 +132,12 @@ Cypress.Commands.add('cleanRootAgent', () => {
 Cypress.Commands.add('startDummyServer', () => {
   // Not a good practice to start a server inside Cypress https://docs.cypress.io/guides/references/best-practices#Web-Servers
   // But in out case, we need to reuse release e2e template and let's make it a tradeoff.
-  cy.exec(`nohup yarn start-dummy-llm-server > /dev/null 2>&1 &`);
+  cy.exec(`nohup yarn start-dummy-llm-server > /dev/null 2>&1 &`).then(
+    (result) => {
+      console.log(JSON.stringify(result));
+      cy.log(JSON.stringify(result));
+    }
+  );
 });
 
 Cypress.Commands.add('stopDummyServer', () => {
