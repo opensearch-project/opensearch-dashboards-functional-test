@@ -3,15 +3,32 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BASE_PATH } from '../../../utils/constants';
-import '@cypress/skip-test/support';
+
+const setLocalStorageItem = (key, value) => {
+  const oldValue = localStorage.getItem(key);
+  localStorage.setItem(key, value);
+  return () => {
+    if (oldValue === null) {
+      localStorage.removeItem(key);
+    } else {
+      localStorage.setItem(key, oldValue);
+    }
+  };
+};
 
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
+    let restoreShowHome;
+    let restoreNewThemeModal;
+
     before(() => {
       // Set welcome screen tracking to false
-      localStorage.setItem('home:welcome:show', 'false');
+      restoreShowHome = setLocalStorageItem('home:welcome:show', 'false');
       // Hide new theme modal
-      localStorage.setItem('home:newThemeModal:show', 'false');
+      restoreNewThemeModal = setLocalStorageItem(
+        'home:newThemeModal:show',
+        'false'
+      );
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
       // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
@@ -20,33 +37,38 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         1
       );
 
-      // Open chat flyout
-      cy.get('body')
-        .then(($body) => $body.find('.llm-chat-flyout').length !== 0)
-        .then((chatFlyoutOpened) => {
-          if (!chatFlyoutOpened) {
-            cy.get('img[aria-label="toggle chat flyout icon"]').click();
-          }
-        });
+      // Open assistant flyout
+      // The flyout button will be detached and can't be clicked, add 10s delayed fix it.
+      cy.wait(10000);
+      cy.get('img[aria-label="toggle chat flyout icon"]').click();
     });
     after(() => {
-      // Close Chat bot
-      cy.get('body')
-        .then(($body) => $body.find('.llm-chat-flyout').length !== 0)
-        .then((chatFlyoutOpened) => {
-          if (chatFlyoutOpened) {
-            cy.get('img[aria-label="toggle chat flyout icon"]').click();
-          }
-        });
+      if (restoreShowHome) {
+        restoreShowHome();
+      }
+      if (restoreNewThemeModal) {
+        restoreNewThemeModal();
+      }
+      // Close assistant flyout
+      cy.get('img[aria-label="toggle chat flyout icon"]').click();
     });
+
+    beforeEach(() => {
+      cy.get('.llm-chat-flyout', { timeout: 60000 }).should('be.visible');
+    });
+
     describe('panel operations', () => {
       it('should toggle history list', () => {
-        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
+        cy.get('.llm-chat-flyout button[aria-label="history"]')
+          .should('be.visible')
+          .click();
         cy.get('.llm-chat-flyout-body')
           .contains('Conversations')
           .should('be.visible');
 
-        cy.get('.llm-chat-flyout button[aria-label="history"]').click();
+        cy.get('.llm-chat-flyout button[aria-label="history"]')
+          .should('be.visible')
+          .click();
         cy.get('textarea[placeholder="Ask me anything..."]').should('exist');
         cy.get('.llm-chat-flyout-body')
           .contains('Conversations')
@@ -85,7 +107,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
       before(() => {
         // Create conversations data
-        cy.sendMessage({
+        cy.sendAssistantMessage({
           input: {
             type: 'input',
             content: 'What are the indices in my cluster?',
@@ -120,7 +142,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       });
 
       it('should load conversation in chat panel', () => {
-        cy.skipOn(conversations.length === 0);
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
 
         const conversationToLoad = conversations[0];
@@ -137,7 +158,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       });
 
       it('should able to update conversation title', () => {
-        cy.skipOn(conversations.length === 0);
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
 
         const conversationToUpdate = conversations[0];
@@ -166,7 +186,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       });
 
       it('should able to delete conversation', () => {
-        cy.skipOn(conversations.length === 0);
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
 
         const conversationToDelete = conversations[0];

@@ -154,7 +154,7 @@ Cypress.Commands.add('stopDummyServer', () => {
   });
 });
 
-Cypress.Commands.add('sendMessage', (body) =>
+Cypress.Commands.add('sendAssistantMessage', (body) =>
   apiRequest(`${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}`, 'POST', body)
 );
 
