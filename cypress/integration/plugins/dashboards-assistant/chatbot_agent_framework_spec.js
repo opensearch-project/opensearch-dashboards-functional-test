@@ -26,11 +26,10 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     describe('Interact with Agent framework', () => {
       it('toggle Chatbot and enable to interact', () => {
-        // enable to toggle and show Chatbot
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
-
-        // click suggestions to generate response
-        cy.contains('What are the indices in my cluster?').click();
+        // input question
+        cy.get(`input[placeholder="Ask question"]`)
+          .focus()
+          .type('What are the indices in my cluster?{enter}');
 
         // should have a LLM Response
         cy.contains(
