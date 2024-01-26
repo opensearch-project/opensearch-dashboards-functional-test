@@ -6,6 +6,7 @@
 /// <reference types="cypress" />
 
 import { TestFixtureHandler } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const testFixtureHandler = new TestFixtureHandler(
   cy,
@@ -14,6 +15,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('After', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     //cy.deleteAllIndices();
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
