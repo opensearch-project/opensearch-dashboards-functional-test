@@ -23,7 +23,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       );
 
       cy.get(`input[placeholder="Ask question"]`)
-        .focus()
+        .click()
         .type('What are the indices in my cluster?{enter}');
 
       // should have a LLM Response

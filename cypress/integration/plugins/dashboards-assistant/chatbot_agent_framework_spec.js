@@ -28,7 +28,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       it('toggle Chatbot and enable to interact', () => {
         // input question
         cy.get(`input[placeholder="Ask question"]`)
-          .focus()
+          .click()
           .type('What are the indices in my cluster?{enter}');
 
         // should have a LLM Response
