@@ -27,6 +27,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     describe('Interact with Agent framework', () => {
       it('toggle Chatbot and enable to interact', () => {
         // input question
+        cy.wait(1000);
         cy.get(`input[placeholder="Ask question"]`)
           .click()
           .type('What are the indices in my cluster?{enter}');

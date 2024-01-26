@@ -17,12 +17,14 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // cy.waitForLoader();
 
       // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).should(
-        'be.length',
-        1
+      cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).as(
+        'chatInput'
       );
+      cy.get('@chatInput').should('be.length', 1);
 
-      cy.get(`input[placeholder="Ask question"]`)
+      cy.wait(1000);
+
+      cy.get('@chatInput')
         .click()
         .type('What are the indices in my cluster?{enter}');
 
@@ -37,38 +39,33 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         // click How was this generated? to view trace
         cy.contains('How was this generated?').click();
 
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
+        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
+        cy.get('@tracePage')
           .find(`button[aria-label="back"]`)
           .should('have.length', 1);
 
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
+        cy.get('@tracePage')
           .find(`button[aria-label="close"]`)
           .should('have.length', 0);
 
         // title
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).contains(
-          'h1',
-          'How was this generated'
-        );
+        cy.get('@tracePage').contains('h1', 'How was this generated');
 
         // question
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).contains(
-          'What are the indices in my cluster?'
-        );
+        cy.get('@tracePage').contains('What are the indices in my cluster?');
 
         // result
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).contains(
+        cy.get('@tracePage').contains(
           'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
         );
       });
 
       it('tools invocation displayed in trace steps', () => {
         // trace
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
-          .find('.euiAccordion')
-          .should('have.length', 1);
+        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
+        cy.get('@tracePage').find('.euiAccordion').should('have.length', 1);
 
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
+        cy.get('@tracePage')
           .find('.euiAccordion')
           // tool name
           .contains('Step 1 - CatIndexTool')
@@ -84,11 +81,12 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           .click({ force: true });
 
         // show close button
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
+        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
+        cy.get('@tracePage')
           .find(`button[aria-label="close"]`)
           .should('have.length', 1);
 
-        cy.get(`.llm-chat-flyout .llm-chat-flyout-body`)
+        cy.get('@tracePage')
           .find(`button[aria-label="back"]`)
           .should('have.length', 0);
 
