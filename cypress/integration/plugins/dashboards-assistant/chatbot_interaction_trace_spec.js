@@ -16,7 +16,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.visit(`${BASE_PATH}/app/home`);
       // cy.waitForLoader();
 
-      // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
+      // Common text to wait for to confirm page loaded, give up to 120 seconds for initial load
       cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).as(
         'chatInput'
       );
@@ -32,6 +32,12 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.contains(
         'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
       );
+    });
+
+    // clean up localStorage items
+    after(() => {
+      localStorage.removeItem('home:welcome:show');
+      localStorage.removeItem('home:newThemeModal:show');
     });
 
     describe('Trace page', () => {
