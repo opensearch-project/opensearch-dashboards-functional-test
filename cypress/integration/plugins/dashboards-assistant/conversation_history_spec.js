@@ -3,18 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BASE_PATH } from '../../../utils/constants';
-
-const setLocalStorageItem = (key, value) => {
-  const oldValue = localStorage.getItem(key);
-  localStorage.setItem(key, value);
-  return () => {
-    if (oldValue === null) {
-      localStorage.removeItem(key);
-    } else {
-      localStorage.setItem(key, oldValue);
-    }
-  };
-};
+import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
 
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
@@ -23,9 +12,14 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     before(() => {
       // Set welcome screen tracking to false
-      restoreShowHome = setLocalStorageItem('home:welcome:show', 'false');
+      restoreShowHome = setStorageItem(
+        localStorage,
+        'home:welcome:show',
+        'false'
+      );
       // Hide new theme modal
-      restoreNewThemeModal = setLocalStorageItem(
+      restoreNewThemeModal = setStorageItem(
+        localStorage,
         'home:newThemeModal:show',
         'false'
       );
@@ -133,9 +127,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
         cy.get('.llm-chat-flyout').contains('Conversations');
         conversations.forEach(({ conversationId }) => {
-          cy.get(
-            `div[data-test-subj="chatHistoryItem-${conversationId}"]`
-          ).should('exist');
+          cy.getElementByTestId(`chatHistoryItem-${conversationId}`).should(
+            'exist'
+          );
         });
         cy.contains('What are the indices in my cluster?');
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
@@ -146,8 +140,8 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
         const conversationToLoad = conversations[0];
 
-        cy.get(
-          `div[data-test-subj="chatHistoryItem-${conversationToLoad.conversationId}"]`
+        cy.getElementByTestId(
+          `chatHistoryItem-${conversationToLoad.conversationId}`
         )
           .contains(conversationToLoad.title)
           .click();
@@ -163,19 +157,21 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         const conversationToUpdate = conversations[0];
         const newTitle = 'New title';
 
-        cy.get(
-          `div[data-test-subj="chatHistoryItem-${conversationToUpdate.conversationId}"] button[aria-label="Edit conversation name"]`
-        ).click();
+        cy.getElementByTestId(
+          `chatHistoryItem-${conversationToUpdate.conversationId}`
+        )
+          .find('button[aria-label="Edit conversation name"]')
+          .click();
         cy.contains('Edit conversation name');
 
         cy.get('input[aria-label="Conversation name input"').type(newTitle);
-        cy.get('button[data-test-subj="confirmModalConfirmButton"]')
+        cy.getElementByTestId('confirmModalConfirmButton')
           .contains('Confirm name')
           .click();
 
         conversationToUpdate.title = newTitle;
-        cy.get(
-          `div[data-test-subj="chatHistoryItem-${conversationToUpdate.conversationId}"]`
+        cy.getElementByTestId(
+          `chatHistoryItem-${conversationToUpdate.conversationId}`
         ).contains(conversationToUpdate.title);
         cy.contains('Edit conversation name', { timeout: 3000 }).should(
           'not.exist'
@@ -190,19 +186,21 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
         const conversationToDelete = conversations[0];
 
-        cy.get(
-          `div[data-test-subj="chatHistoryItem-${conversationToDelete.conversationId}"] button[aria-label="Delete conversation"]`
-        ).click();
-        cy.get('div[data-test-subj="confirmModalTitleText"]').contains(
+        cy.getElementByTestId(
+          `chatHistoryItem-${conversationToDelete.conversationId}`
+        )
+          .find('button[aria-label="Delete conversation"]')
+          .click();
+        cy.getElementByTestId('confirmModalTitleText').contains(
           'Delete conversation'
         );
 
-        cy.get('button[data-test-subj="confirmModalConfirmButton"]')
+        cy.getElementByTestId('confirmModalConfirmButton')
           .contains('Delete conversation')
           .click();
 
-        cy.get(
-          `div[data-test-subj="chatHistoryItem-${conversationToDelete.conversationId}"]`
+        cy.getElementByTestId(
+          `chatHistoryItem-${conversationToDelete.conversationId}`
         ).should('not.exist');
         conversations.shift();
 
