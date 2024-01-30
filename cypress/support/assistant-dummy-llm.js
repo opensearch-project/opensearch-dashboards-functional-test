@@ -4,11 +4,13 @@
  */
 const http = require('http');
 const agentFrameworkJson = require('../fixtures/plugins/dashboards-assistant/agent-framework-response.json');
+const agentFrameworkThoughtJson = require('../fixtures/plugins/dashboards-assistant/agent-framework-thought-response.json');
 const suggestionJson = require('../fixtures/plugins/dashboards-assistant/suggestion-response.json');
 
 const MATCH_AGENT_FRAMEWORK_PROMPT =
   'Assistant is designed to be able to assist with a wide range of tasks';
 const MATCH_SUGGESTION_PROMPT = 'You are an AI that only speaks JSON';
+const TOOL_RESPONSE = 'TOOL RESPONSE:';
 
 const server = http.createServer((req, res) => {
   // Set the content type to JSON
@@ -27,7 +29,11 @@ const server = http.createServer((req, res) => {
       // Why add a delay here? reference: https://github.com/opensearch-project/ml-commons/issues/1894
       setTimeout(() => {
         if (requestBody.includes(MATCH_AGENT_FRAMEWORK_PROMPT)) {
-          return res.end(JSON.stringify(agentFrameworkJson));
+          if (requestBody.includes(TOOL_RESPONSE)) {
+            return res.end(JSON.stringify(agentFrameworkJson));
+          } else {
+            return res.end(JSON.stringify(agentFrameworkThoughtJson));
+          }
         } else if (requestBody.includes(MATCH_SUGGESTION_PROMPT)) {
           return res.end(JSON.stringify(suggestionJson));
         }
