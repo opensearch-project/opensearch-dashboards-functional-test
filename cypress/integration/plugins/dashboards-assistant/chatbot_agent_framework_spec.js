@@ -26,6 +26,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     describe('Interact with Agent framework', () => {
       it('toggle Chatbot and enable to interact', () => {
+        // The header may render multiple times, wait for UI to be stable
+        cy.wait(10000);
+
         // enable to toggle and show Chatbot
         cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
 
