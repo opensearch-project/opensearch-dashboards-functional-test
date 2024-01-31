@@ -43,14 +43,11 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         // Click regenerate button
         cy.get(`button[title="regenerate message"]`).click();
 
-        // The previous message should be gone
+        // The previous message and the regenerate button should be gone
         cy.get(`button[title="regenerate message"]`).should('be.length', 0);
 
         // suggestions should be gone
         cy.get(`[aria-label="chat suggestions"]`).should('be.length', 0);
-
-        // wait for 1 second
-        cy.wait(1000);
 
         // The regenrate message should be there
         cy.contains(
