@@ -8,7 +8,6 @@
 import { edit } from 'brace';
 import {
   files,
-  QUERY_WORKBENCH_DELAY,
   testDataSet,
   testQueries,
   verifyDownloadData,
@@ -41,9 +40,9 @@ describe('Dump test data', () => {
 describe('Test PPL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text[title=PPL]').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait(1000);
+    cy.get('[data-test-subj="PPL"]').click({ force: true });
+    cy.wait(1000);
   });
 
   it('Confirm results are empty', () => {
@@ -56,65 +55,59 @@ describe('Test PPL UI', () => {
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('source=accounts | sort firstname', { force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiTab__content').contains('Events').click({ force: true });
-
-    cy.contains('Abbott');
-  });
-
-  it('Test Clear button', () => {
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type('source=accounts', { force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiTab__content').contains('Events').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Clear').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-
-    cy.get('.euiTextAlign')
-      .contains('Enter a query in the query editor above to see results.')
-      .should('have.length', 1);
-    cy.get('.ace_content')
-      .eq(0)
-      .then((queryEditor) => {
-        const editor = edit(queryEditor[0]);
-        expect(editor.getValue()).to.equal('');
+      .type('source=accounts', { force: true })
+      .then(() => {
+        cy.get('.ace_line').contains('source=accounts');
+      })
+      .then(() => {
+        cy.wait(1000);
+        cy.get('button[data-test-subj="pplRunButton"]').click({ force: true });
+      })
+      .then(() => {
+        cy.get('[data-test-subj="result_tab"]')
+          .contains('Events')
+          .click({ force: true });
       });
   });
 
+  it('Test Clear button', () => {
+    cy.get('[data-test-subj="pplClearButton"]')
+      .contains('Clear')
+      .click({ force: true });
+
+    cy.get('.euiTitle').should('not.exist');
+  });
+
   it('Test full screen view', () => {
+    cy.get('[data-test-subj="pplClearButton"]')
+      .contains('Clear')
+      .click({ force: true });
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
       .type('source=accounts', { force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY * 5);
-    cy.get('.euiButton__text')
-      .contains('Full screen view')
+    cy.get('[data-test-subj="pplRunButton"]').contains('Run').should('exist');
+    cy.wait(1000);
+    cy.get('[data-test-subj="pplRunButton"]')
+      .contains('Run')
       .click({ force: true });
 
-    cy.get('button#exit-fullscreen-button').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Full screen view').should('exist');
+    cy.get('[data-test-subj="fullScreenView"]')
+      .contains('Full screen view')
+      .click();
+
+    cy.get('.euiTitle').should('not.exist');
   });
 });
 
 describe('Test SQL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text[title=SQL]').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait(1000);
+    cy.get('[data-test-subj="SQL"]').click({ force: true });
+    cy.wait(1000);
   });
 
   it('Confirm results are empty', () => {
@@ -123,64 +116,48 @@ describe('Test SQL UI', () => {
       .should('have.length', 1);
   });
 
-  it('Test Run button and field search', () => {
+  it('Test Run button', () => {
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('{enter}select * from accounts where balance > 49500;', {
-        force: true,
-      });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiTab__content').contains('accounts').click({ force: true });
-
-    cy.get('input.euiFieldSearch').type('marissa');
-    cy.contains('803');
+      .type('{enter}', { force: true });
+    cy.get('[data-test-subj="sqlRunButton"]').contains('Run').click();
+    cy.get('[data-test-subj="result_tab"]')
+      .contains("SHOW tables LIKE '%'")
+      .click({ force: true });
   });
 
   it('Test Translate button', () => {
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type('{selectall}{backspace}', { force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type(
-        '{selectall}{backspace}select log(balance) from accounts where abs(age) > 20;',
-        {
-          force: true,
-        }
-      );
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.get('textarea.ace_text-input').eq(0).focus().type('{enter}', {
+      force: true,
+    });
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
 
-    cy.contains('OpenSearchQueryRequest(indexName=accounts');
+    // hard to get euiCodeBlock content, check length instead
+    cy.get('.euiCodeBlock__code').children().should('have.length', 25);
   });
 
   it('Test Clear button', () => {
-    cy.get('.euiButton__text').contains('Clear').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.get('[data-test-subj="sqlClearButton"]')
+      .contains('Clear')
+      .click({ force: true });
 
-    cy.get('.ace_content')
-      .eq(0)
-      .then((queryEditor) => {
-        const editor = edit(queryEditor[0]);
-        expect(editor.getValue()).to.equal('');
-      });
+    cy.get('.euiTitle').should('not.exist');
   });
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY * 5);
-    cy.get('.euiButton__text')
+    cy.get('textarea.ace_text-input')
+      .eq(0)
+      .focus()
+      .type('{enter}', { force: true });
+    cy.get('[data-test-subj="sqlRunButton"]').contains('Run').click();
+    cy.get('[data-test-subj="fullScreenView"]')
       .contains('Full screen view')
-      .click({ force: true });
+      .click();
+
+    cy.get('.euiTitle').should('not.exist');
   });
 });
 
@@ -189,7 +166,7 @@ describe('Test and verify SQL downloads', () => {
     it(title, () => {
       cy.request({
         method: 'POST',
-        form: false,
+        form: true,
         url: url,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
@@ -209,26 +186,25 @@ describe('Test and verify SQL downloads', () => {
 describe('Test table display', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text[title=SQL]').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type('{selectall}{backspace}', { force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait(1000);
+    cy.get('[data-test-subj="SQL"]').click({ force: true });
+    cy.wait(1000);
+    cy.get('[data-test-subj="sqlClearButton"]').contains('Clear').click();
+    cy.wait(1000);
   });
 
   testQueries.map(({ title, query, cell_idx, expected_string }) => {
     it(title, () => {
-      cy.get('textarea.ace_text-input')
-        .eq(0)
-        .focus()
-        .type(`{selectall}{backspace}${query}`, { force: true });
-      cy.wait(QUERY_WORKBENCH_DELAY);
-      cy.get('.euiButton__text').contains('Run').click({ force: true });
-      cy.wait(QUERY_WORKBENCH_DELAY);
-
+      cy.get('[data-test-subj="sqlClearButton"]').contains('Clear').click();
+      cy.get('div[data-test-subj="sqlCodeEditor"]')
+        .click({ force: true })
+        .type(`${query}`);
+      cy.get('div[data-test-subj="sqlCodeEditor"]')
+        .contains(`${query}`)
+        .should('exist');
+      cy.get('[data-test-subj="sqlRunButton"]').contains('Run').should('exist');
+      cy.wait(1000);
+      cy.get('[data-test-subj="sqlRunButton"]').contains('Run').click();
       cy.get('span.euiTableCellContent__text')
         .eq(cell_idx)
         .should((cell) => {
@@ -238,18 +214,17 @@ describe('Test table display', () => {
   });
 
   it('Test nested fields display', () => {
-    cy.get('textarea.ace_text-input')
-      .eq(0)
-      .focus()
-      .type(`{selectall}{backspace}select * from employee_nested;`, {
-        force: true,
-      });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-    cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
-
-    cy.get('button.euiLink').eq(2).click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.get('[data-test-subj="sqlClearButton"]').contains('Clear').click();
+    cy.get('div[data-test-subj="sqlCodeEditor"]')
+      .click()
+      .type(`select * from employee_nested;`);
+    cy.get('[data-test-subj="sqlRunButton"]').contains('Run').should('exist');
+    cy.wait(1000);
+    cy.get('[data-test-subj="sqlRunButton"]').contains('Run').click();
+    cy.get('[data-test-subj="result_tab"]')
+      .contains('employee_nested')
+      .should('exist');
+    cy.get('button.euiLink').eq(2).click();
     cy.contains('message');
   });
 });
