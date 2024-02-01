@@ -79,7 +79,10 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
   cy.getElementByTestId('superDatePickerAbsoluteDateInput', opts)
     .click(opts)
     .clear(opts)
-    .type(start, opts);
+    .type(start, {
+      ...opts,
+      delay: 0,
+    });
 
   // Click end date
   cy.getElementByTestId('superDatePickerendDatePopoverButton', opts)
@@ -96,7 +99,10 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
     .last(opts)
     .click(opts)
     .clear(opts)
-    .type(end, opts);
+    .type(end, {
+      ...opts,
+      delay: 0,
+    });
 
   // Close popup
   cy.getElementByTestId('superDatePickerendDatePopoverButton', opts).click(

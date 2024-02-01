@@ -34,7 +34,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.changeDefaultTenant({
         multitenancy_enabled: true,
         private_tenant_enabled: true,
-        default_tenant: 'Global',
+        default_tenant: 'global',
       });
     }
     CURRENT_TENANT.newTenant = 'global';
