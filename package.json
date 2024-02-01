@@ -13,7 +13,7 @@
     "cypress:run-plugin-tests-with-security": "yarn cypress:run-with-security --spec 'cypress/integration/plugins/*/*.js'",
     "cypress:release-chrome": "yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-electron": "yarn cypress:run-with-security --browser electron --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
-    "cypress:release-chromium": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover.spec.js",
+    "cypress:release-chromium": "yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/data_explorer/discover.spec.js'",
     "cypress:release-chromium-10": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=10 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-chromium-20": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=20 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
     "cypress:release-chromium-5": "yarn cypress:run-with-security --browser chromium --config numTestsKeptInMemory=5 --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
