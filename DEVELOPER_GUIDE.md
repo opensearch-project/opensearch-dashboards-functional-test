@@ -23,9 +23,11 @@ If you would like to install and develop OpenSearch Dashboards or its plugins, p
 
 You should have a running instance of OpenSearch Dashboards to run these tests against them. Refer to the [OpenSearch Dashboards Developer guide](https://github.com/opensearch-project/OpenSearch-Dashboards/blob/main/DEVELOPER_GUIDE.md) for details on how to do that.
 
+- Node v16.20.0
+
 ### Installation
 
-To install the dependencies run 
+To install the dependencies run
 
 ```
 npm install
@@ -74,16 +76,16 @@ To run tests against a local cluster
 without security:
 
 ```
-$ yarn cypress run-without-security --spec "cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js"
+$ yarn cypress:run-without-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
 with security:
 
 ```
-$ yarn cypress run-with-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
+$ yarn cypress:run-with-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
-These tests run in headless mode by default. 
+These tests run in headless mode by default.
 
 And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
@@ -96,7 +98,6 @@ $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opense
 `ENDPOINT_WITH_PROXY`: for an OpenSearch endpoint wrapped with a proxy that redirects the visiting url to the login url, even with auth option provided in `cy.visit`, the redirection to the login url still happens. So a login request before tests and cache the security cookie are needed and can be switched on by this argument.
 
 `MANAGED_SERVICE_ENDPOINT`: set to true if tests are running against managed service domains.
-
 
 ## Writing tests
 
@@ -123,6 +124,7 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
         /plugins
             /<YOUR_PLUGIN_NAME>
 ```
+
 ### Experimental Features
 
 When writing tests for experimental features, please follow these steps.
@@ -144,6 +146,7 @@ Create a new workflow by referring to [this template](https://github.com/opensea
 To make the build repo enable your experimental feature when spinning up OSD service, make sure that you update [this file](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) You could either modify the start command or the yml file. To avoid a potentially long start command, it is preferred to modify the yml file to turn on the feature.
 
 ## General
+
 ### Formatting
 
 `prettier` and `ESLint` is integrated and used to standardize formatting of files, where `prettier` takes care of the code formatting and `ESLint` takes care of the code style. You can check the formatting of all files (new and existing) by running
@@ -151,7 +154,9 @@ To make the build repo enable your experimental feature when spinning up OSD ser
 ```
 $ yarn lint
 ```
+
 and auto fix the formatting of all files (new and existing) by running
+
 ```
 $ yarn lint --fix
 ```

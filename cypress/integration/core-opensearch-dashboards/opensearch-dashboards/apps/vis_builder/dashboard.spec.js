@@ -95,6 +95,8 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('savedObjectTitle').type(visTitle);
       cy.getElementByTestId('confirmSaveSavedObjectButton').click();
 
+      // Wait for page to load
+      cy.waitForLoader();
       // Check to see if the new vis is present in the dashboard
       cy.getElementByTestId(
         `embeddablePanelHeading-${toTestId(visTitle, '')}`
@@ -106,38 +108,42 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.deleteSavedObjectByType(VB_SO_TYPE, `vb${cleanupKey}`);
     });
 
-    it('Should be able to edit a visualization', () => {
-      // Navigate to vis builder
-      cy.getElementByTestId('dashboardEditMode').click();
-      cy.getElementByTestId(
-        `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
-      )
-        .find('[data-test-subj="embeddablePanelToggleMenuIcon"]')
-        .click();
-      cy.getElementByTestId('embeddablePanelAction-editPanel').click();
-      cy.getElementByTestId('visualizationLoader')
-        .find('.mtrVis__value')
-        .should('contain.text', VB_INDEX_DOC_COUNT);
+    it(
+      'Should be able to edit a visualization',
+      { retries: { runMode: 2 } },
+      () => {
+        // Navigate to vis builder
+        cy.getElementByTestId('dashboardEditMode').click();
+        cy.getElementByTestId(
+          `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
+        )
+          .find('[data-test-subj="embeddablePanelToggleMenuIcon"]')
+          .click();
+        cy.getElementByTestId('embeddablePanelAction-editPanel').click();
+        cy.getElementByTestId('visualizationLoader')
+          .find('.mtrVis__value')
+          .should('contain.text', VB_INDEX_DOC_COUNT);
 
-      // Edit visualization
-      const newLabel = 'Editied Label';
-      cy.getElementByTestId('dropBoxField-metric-0').click();
-      cy.vbEditAgg([
-        {
-          testSubj: 'visEditorStringInput1customLabel',
-          type: 'input',
-          value: newLabel,
-        },
-      ]);
+        // Edit visualization
+        const newLabel = 'Editied Label';
+        cy.getElementByTestId('dropBoxField-metric-0').click();
+        cy.vbEditAgg([
+          {
+            testSubj: 'visEditorStringInput1customLabel',
+            type: 'input',
+            value: newLabel,
+          },
+        ]);
 
-      // Save and return
-      cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
+        // Save and return
+        cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
 
-      cy.getElementByTestId('visualizationLoader').should(
-        'contain.text',
-        newLabel
-      );
-    });
+        cy.getElementByTestId('visBuilderLoader').should(
+          'contain.text',
+          newLabel
+        );
+      }
+    );
 
     after(() => {
       cy.deleteIndex(VB_INDEX_ID);

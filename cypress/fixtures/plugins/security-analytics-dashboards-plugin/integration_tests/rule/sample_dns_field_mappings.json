@@ -1,0 +1,5 @@
+{
+  "dns-question-registered_domain": "dns.question.registered_domain",
+  "dns-question-name": "dns.question.name",
+  "dns-answers-type": "dns.answers.type"
+}

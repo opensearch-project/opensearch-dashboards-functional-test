@@ -12,7 +12,8 @@
 
 <body onload="setDefaultValues()">
   <div class="topNav">
-    <span>OpenSearch Dashboards Test Results Explorer</span>
+    <img src="https://opensearch.org/assets/brand/SVG/Logo/opensearch_dashboards_logo_darkmode.svg"/>
+    <span>Functional Test Results Explorer</span>
     <a href="https://github.com/opensearch-project/opensearch-dashboards-functional-test">
       Github
     </a>
@@ -96,10 +97,14 @@
     <table id="advancedInputsTable">
       <tr>
         <th>Test Job Name</th>
+        <th>Legacy Tests Results</th>
       </tr>
       <tr>
         <td>
           <input style="width:50vw" type="text" id="testJobName" value="integ-test-opensearch-dashboards">
+        </td>
+        <td id="legacyTd">
+          <input type="checkbox" id="legacyResults">
         </td>
       </tr>
     </table>
@@ -131,6 +136,9 @@
     <table>
       <tr>
         <td id="pluginButtonsTd">
+          <button id="opensearchDashboardsButton" onclick="getPluginLinks('opensearch-dashboards')">
+            OpenSearch Dashboards
+          </button>
           <button id="alertingDashboardsButton" onclick="getPluginLinks('alerting-dashboards-plugin')">
             alertingDashboards
           </button>

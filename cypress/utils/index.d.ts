@@ -2,7 +2,25 @@
 /// <reference types="cypress" />
 
 declare namespace Cypress {
-  interface Chainable<Subject> {
+  interface Chainable<Subject> { /**
+     * Call a function when an element with a test id cannot be found
+     * @example
+     * cy.whenTestIdNotFound(['query', 'puery'], () => {...})
+     */
+    whenTestIdNotFound<S = any>(
+      testIds: string | string[],
+      callbackFn: void,
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Chainable<S>;
+    /**
+     * Get elements by their test ids
+     * @example
+     * cy.getElementsByTestIds(['query', 'puery'])
+     */
+    getElementsByTestIds<S = any>(
+      testIds: string | string[],
+      options?: Partial<Loggable & Timeoutable & Withinable & Shadow>
+    ): Chainable<S>;
     /**
      * Get an element by its test id
      * @example
@@ -87,6 +105,20 @@ declare namespace Cypress {
       header: string,
     ): Chainable<S>;
 
+    /**
+     * Adds a dashboard
+     * @example
+     * cy.createDashboard({ title: 'My dashboard'})
+     */
+    createDashboard<S = any>(
+      attributes: {
+        title: string;
+        [key: string]: any;
+      },
+      headers?: {
+        [key: string]: any;
+      }
+    ): Chainable<S>;
 
     /**
      * Changes the Default tenant for the domain.

@@ -57,7 +57,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         }
       );
 
-      cy.contains('span', 'Create internal user');
+      cy.contains('span', 'Create user account');
 
       cy.url().should((url) => {
         expect(url).to.not.contain('/users/create');
@@ -83,7 +83,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('span', 'Create');
 
       const userName = 'test';
-      const password = 'Password12';
+      const password = 'testUserPassword123';
 
       cy.get('input[data-test-subj="name-text"]').type(userName, {
         force: true,

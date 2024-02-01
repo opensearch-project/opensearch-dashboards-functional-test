@@ -5,92 +5,43 @@
 
 import {
   DETECTOR_TRIGGER_TIMEOUT,
-  NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
+  NODE_API,
+  createDetector,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
-import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
-import sample_alias_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
-import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
-import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
+import indexSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_windows_index_settings.json';
+import aliasMappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
+import indexDoc from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
+import ruleSettings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/rule/create_windows_usb_rule.json';
 
-const testIndex = 'sample_alerts_spec_cypress_test_index';
-const testDetectorName = 'alerts_spec_cypress_test_detector';
-const testDetectorAlertCondition = `${testDetectorName} alert condition`;
+const indexName = 'test-index';
+const detectorName = 'test-detector';
+const alertName = `${detectorName} alert condition`;
 
-// Creating a unique detector JSON for this test spec
-const testDetector = {
-  ...sample_detector,
-  name: testDetectorName,
-  inputs: [
-    {
-      detector_input: {
-        ...sample_detector.inputs[0].detector_input,
-        description: `Description for ${testDetectorName}`,
-        indices: [testIndex],
-      },
-    },
-  ],
-  triggers: [
-    {
-      ...sample_detector.triggers[0],
-      name: testDetectorAlertCondition,
-    },
-  ],
-};
+function getFormattedDate(date) {
+  let year = date.getFullYear() % 100;
+  let month = (1 + date.getMonth()).toString().padStart(2, '0');
+  let day = date.getDate().toString().padStart(2, '0');
 
-// The exact minutes/seconds for the start and last updated time will be difficult to predict,
-// but all of the alert time fields should all contain the date in this format.
+  return month + '/' + day + '/' + year;
+}
 
-// Moment is not available in this repository, so refactored this variable to use Date.
-// const date = moment(moment.now()).format('MM/DD/YY');
-const now = new Date(Date.now());
-const month =
-  now.getMonth() + 1 < 10 ? `0${now.getMonth() + 1}` : `${now.getMonth() + 1}`;
-const day = now.getDate() < 10 ? `0${now.getDate()}` : `${now.getDate()}`;
-const year = `${now.getFullYear()}`.substr(2);
-const date = `${month}/${day}/${year}`;
-
+const date = getFormattedDate(new Date(Date.now())); //moment(moment.now()).format('MM/DD/YY');
 const docCount = 4;
+
+let testDetectorCfg;
+
 describe('Alerts', () => {
   before(() => {
-    // Delete any pre-existing test detectors
-    cy.cleanUpTests()
-      // Create test index
-      .then(() => cy.createIndex(testIndex, null, sample_index_settings))
-
-      // Create field mappings
-      .then(() =>
-        cy.createAliasMappings(
-          testIndex,
-          testDetector.detector_type,
-          sample_alias_mappings,
-          true
-        )
-      )
-
-      // Create test detector
-      .then(() => cy.createDetector(testDetector))
-
-      .then(() => {
-        // Go to the detectors table page
-        cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-
-        // Check that correct page is showing
-        cy.contains('Threat detectors');
-
-        // Filter table to only show the test detector
-        cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
-
-        // Confirm detector was created
-        cy.get('tbody > tr').should(($tr) => {
-          expect($tr, 'detector name').to.contain(testDetector.name);
-        });
-      });
-
-    // Ingest documents to the test index
-    for (let i = 0; i < docCount; i++) {
-      cy.insertDocumentToIndex(testIndex, '', sample_document);
-    }
+    testDetectorCfg = createDetector(
+      detectorName,
+      indexName,
+      indexSettings,
+      aliasMappings,
+      ruleSettings,
+      indexDoc,
+      4
+    );
 
     // Wait for the detector to execute
     cy.wait(DETECTOR_TRIGGER_TIMEOUT);
@@ -98,16 +49,18 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
+    cy.intercept(`${NODE_API.DETECTORS_BASE}/_search`).as('detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
-    cy.contains('Security alerts');
+    cy.sa_waitForPageLoad('alerts', {
+      contains: 'Security alerts',
+    });
 
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    cy.get(`input[type="search"]`).type(`${testDetectorCfg.name}{enter}`);
 
     // Adjust the date range picker to display alerts from today
     cy.get(
@@ -128,7 +81,7 @@ describe('Alerts', () => {
 
     // Confirm there are alerts created
     cy.get('tbody > tr')
-      .filter(`:contains(${testDetectorAlertCondition})`)
+      .filter(`:contains(${alertName})`)
       .should('have.length', docCount);
   });
 
@@ -136,10 +89,10 @@ describe('Alerts', () => {
     // Confirm there is a row containing the expected values
     cy.get('tbody > tr').should(($tr) => {
       expect($tr, 'start time').to.contain(date);
-      expect($tr, 'trigger name').to.contain(testDetector.triggers[0].name);
-      expect($tr, 'detector name').to.contain(testDetector.name);
+      expect($tr, 'trigger name').to.contain(testDetectorCfg.triggers[0].name);
+      expect($tr, 'detector name').to.contain(testDetectorCfg.name);
       expect($tr, 'status').to.contain('Active');
-      expect($tr, 'severity').to.contain('4 (Low)');
+      expect($tr, 'severity').to.contain('1 (Highest)');
     });
   });
 
@@ -156,7 +109,7 @@ describe('Alerts', () => {
       // Confirm alert condition name
       cy.get(
         '[data-test-subj="text-details-group-content-alert-trigger-name"]'
-      ).contains(testDetector.triggers[0].name);
+      ).contains(testDetectorCfg.triggers[0].name);
 
       // Confirm alert status
       cy.get(
@@ -166,7 +119,7 @@ describe('Alerts', () => {
       // Confirm alert severity
       cy.get(
         '[data-test-subj="text-details-group-content-alert-severity"]'
-      ).contains('4 (Low)');
+      ).contains('1 (Highest)');
 
       // Confirm alert start time is present
       cy.get(
@@ -180,19 +133,19 @@ describe('Alerts', () => {
 
       // Confirm alert detector name
       cy.get('[data-test-subj="text-details-group-content-detector"]').contains(
-        testDetector.name
+        testDetectorCfg.name
       );
 
       // Wait for the findings table to finish loading
       cy.contains('Findings (1)');
-      cy.contains('USB Device Plugged');
+      cy.contains('Cypress USB Rule');
 
       // Confirm alert findings contain expected values
       cy.get('tbody > tr').should(($tr) => {
         expect($tr, `timestamp`).to.contain(date);
-        expect($tr, `rule name`).to.contain('USB Device Plugged');
-        expect($tr, `detector name`).to.contain(testDetector.name);
-        expect($tr, `log type`).to.contain('Windows');
+        expect($tr, `rule name`).to.contain('Cypress USB Rule');
+        expect($tr, `detector name`).to.contain(testDetectorCfg.name);
+        expect($tr, `log type`).to.contain('System Activity: Windows');
       });
 
       // Close the flyout
@@ -216,7 +169,7 @@ describe('Alerts', () => {
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
-      cy.contains('USB Device Plugged');
+      cy.contains('Cypress USB Rule');
 
       // Click the details button for the first finding
       cy.get('tbody > tr')
@@ -243,7 +196,7 @@ describe('Alerts', () => {
       // Confirm finding detector name
       cy.get(
         '[data-test-subj="finding-details-flyout-detector-link"]'
-      ).contains(testDetector.name);
+      ).contains(testDetectorCfg.name);
 
       // Confirm there's only 1 rule details accordion
       cy.get(
@@ -257,22 +210,22 @@ describe('Alerts', () => {
         // Confirm the accordion button contains the expected name
         cy.get(
           '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
-        ).contains('USB Device Plugged');
+        ).contains('Cypress USB Rule');
 
         // Confirm the accordion button contains the expected severity
         cy.get(
           '[data-test-subj="finding-details-flyout-rule-accordion-button"]'
-        ).contains('Severity: Low');
+        ).contains('Severity: High');
 
         // Confirm the rule name
         cy.get(
-          '[data-test-subj="finding-details-flyout-USB Device Plugged-details"]'
-        ).contains('USB Device Plugged');
+          '[data-test-subj="finding-details-flyout-Cypress USB Rule-details"]'
+        ).contains('Cypress USB Rule');
 
         // Confirm the rule severity
         cy.get(
           '[data-test-subj="finding-details-flyout-rule-severity"]'
-        ).contains('Low');
+        ).contains('High');
 
         // Confirm the rule category
         cy.get(
@@ -282,16 +235,14 @@ describe('Alerts', () => {
         // Confirm the rule description
         cy.get(
           '[data-test-subj="finding-details-flyout-rule-description"]'
-        ).contains('Detects plugged USB devices');
+        ).contains('USB plugged-in rule');
 
         // Confirm the rule tags
-        ['low', 'windows', 'attack.initial_access', 'attack.t1200'].forEach(
-          (tag) => {
-            cy.get(
-              '[data-test-subj="finding-details-flyout-rule-tags"]'
-            ).contains(tag);
-          }
-        );
+        ['high', 'windows'].forEach((tag) => {
+          cy.get(
+            '[data-test-subj="finding-details-flyout-rule-tags"]'
+          ).contains(tag);
+        });
       });
 
       // Confirm the rule document ID is present
@@ -302,19 +253,13 @@ describe('Alerts', () => {
       // Confirm the rule index
       cy.get(
         '[data-test-subj="finding-details-flyout-rule-document-index"]'
-      ).contains(testIndex);
+      ).contains(indexName);
 
       // Confirm the rule document matches
       // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
       // so this test formats the expected document into an array of strings,
       // and matches each entry with the corresponding element line.
-      const document = JSON.stringify(
-        JSON.parse(
-          '{"EventTime":"2020-02-04T14:59:39.343541+00:00","HostName":"EC2AMAZ-EPO7HKA","Keywords":"9223372036854775808","SeverityValue":2,"Severity":"INFO","EventID":2003,"SourceName":"Microsoft-Windows-Sysmon","ProviderGuid":"{5770385F-C22A-43E0-BF4C-06F5698FFBD9}","Version":5,"TaskValue":22,"OpcodeValue":0,"RecordNumber":9532,"ExecutionProcessID":1996,"ExecutionThreadID":2616,"Channel":"Microsoft-Windows-Sysmon/Operational","Domain":"NT AUTHORITY","AccountName":"SYSTEM","UserID":"S-1-5-18","AccountType":"User","Message":"Dns query:\\r\\nRuleName: \\r\\nUtcTime: 2020-02-04 14:59:38.349\\r\\nProcessGuid: {b3c285a4-3cda-5dc0-0000-001077270b00}\\r\\nProcessId: 1904\\r\\nQueryName: EC2AMAZ-EPO7HKA\\r\\nQueryStatus: 0\\r\\nQueryResults: 172.31.46.38;\\r\\nImage: C:\\\\Program Files\\\\nxlog\\\\nxlog.exe","Category":"Dns query (rule: DnsQuery)","Opcode":"Info","UtcTime":"2020-02-04 14:59:38.349","ProcessGuid":"{b3c285a4-3cda-5dc0-0000-001077270b00}","ProcessId":"1904","QueryName":"EC2AMAZ-EPO7HKA","QueryStatus":"0","QueryResults":"172.31.46.38;","Image":"C:\\\\Program Files\\\\nxlog\\\\regsvr32.exe","EventReceivedTime":"2020-02-04T14:59:40.780905+00:00","SourceModuleName":"in","SourceModuleType":"im_msvistalog","CommandLine":"eachtest","Initiated":"true","Provider_Name":"Microsoft-Windows-Kernel-General","TargetObject":"\\\\SOFTWARE\\\\Microsoft\\\\Office\\\\Outlook\\\\Security","EventType":"SetValue"}'
-        ),
-        null,
-        2
-      );
+      const document = JSON.stringify(JSON.parse('{"EventID": 2003}'), null, 2);
       const documentLines = document.split('\n');
       cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
         .get('[class="euiCodeBlock__line"]')
@@ -350,7 +295,7 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       cy.get(
         '[data-test-subj="text-details-group-content-alert-trigger-name"]'
-      ).contains(testDetector.triggers[0].name);
+      ).contains(testDetectorCfg.triggers[0].name);
     });
   });
 
@@ -369,6 +314,11 @@ describe('Alerts', () => {
       .within(() => {
         cy.get('[class="euiCheckbox__input"]').click({ force: true });
       });
+    cy.get('tbody > tr')
+      .last()
+      .within(() => {
+        cy.get('[class="euiCheckbox__input"]').click({ force: true });
+      });
 
     // Press the "Acknowledge" button
     cy.get('[data-test-subj="acknowledge-button"]').click({ force: true });
@@ -384,21 +334,28 @@ describe('Alerts', () => {
 
     // Confirm there is an "Acknowledged" alert
     cy.get('tbody > tr').should(($tr) => {
-      expect($tr, `alert name`).to.contain(testDetectorAlertCondition);
+      expect($tr, `alert name`).to.contain(alertName);
       expect($tr, `status`).to.contain('Acknowledged');
-    });
-
-    // Filter the table to show only "Active" alerts
-    cy.get('[data-text="Status"]');
-    cy.get('[class="euiFilterSelect__items"]').within(() => {
-      cy.contains('Acknowledged').click({ force: true });
     });
 
     // Confirm there are now 2 "Acknowledged" alerts
     cy.get('tbody > tr')
-      .filter(`:contains(${testDetectorAlertCondition})`)
-      .should('contain', 'Active')
-      .should('contain', 'Acknowledged');
+      .filter(`:contains(${alertName})`)
+      .should('have.length', 2);
+
+    // Filter the table to show only "Active" alerts
+    cy.get('[class="euiFilterSelect__items"]').within(() => {
+      cy.contains('Acknowledged').click({ force: true });
+      cy.contains('Active').click({ force: true });
+    });
+
+    // Confirm there are now 2 "Acknowledged" alerts
+    cy.get('tbody > tr')
+      .filter(`:contains(${alertName})`)
+      .should('contain', 'Active');
+    cy.get('tbody > tr')
+      .filter(`:contains(${alertName})`)
+      .should('have.length', 2);
   });
 
   it('can be acknowledged via row button', () => {
@@ -409,8 +366,8 @@ describe('Alerts', () => {
     });
 
     cy.get('tbody > tr')
-      .filter(`:contains(${testDetectorAlertCondition})`)
-      .should('have.length', 3);
+      .filter(`:contains(${alertName})`)
+      .should('have.length', 2);
 
     cy.get('tbody > tr')
       // Click the "Acknowledge" icon button in the first row
@@ -420,11 +377,10 @@ describe('Alerts', () => {
       });
 
     cy.get('tbody > tr')
-      .filter(`:contains(${testDetectorAlertCondition})`)
-      .should('have.length', 2);
+      .filter(`:contains(${alertName})`)
+      .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[data-text="Status"]');
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
@@ -432,8 +388,8 @@ describe('Alerts', () => {
 
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
-      .filter(`:contains(${testDetectorAlertCondition})`)
-      .should('have.length', 2);
+      .filter(`:contains(${alertName})`)
+      .should('have.length', 3);
   });
 
   it('can be acknowledged via flyout button', () => {
@@ -484,7 +440,7 @@ describe('Alerts', () => {
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Wait for findings table to finish loading
-      cy.contains('USB Device Plugged');
+      cy.contains('Cypress USB Rule');
 
       // Click the details button for the first finding
       cy.get('tbody > tr')
@@ -506,9 +462,9 @@ describe('Alerts', () => {
 
     // Confirm the detector details page is for the expected detector
     cy.get('[data-test-subj="detector-details-detector-name"]').contains(
-      testDetector.name
+      testDetectorCfg.name
     );
   });
 
-  after(() => cy.cleanUpTests());
+  after(() => cy.sa_cleanUpTests());
 });

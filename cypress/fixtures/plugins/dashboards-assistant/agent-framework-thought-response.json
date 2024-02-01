@@ -1,0 +1,5 @@
+{
+  "completion": " ```json\n{\n  \"thought\": \"Thought: Let me use tool to figure out\",\n  \"action\": \"CatIndexTool\",\n  \"action_input\": \"\"}\n```\n",
+  "stop_reason": "stop_sequence",
+  "stop": "\n\nHuman:"
+}

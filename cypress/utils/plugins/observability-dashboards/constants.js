@@ -6,6 +6,13 @@ import { BASE_PATH } from '../../base_constants';
 
 export const delayTime = 1500;
 
+//Datasources API Constants
+export const DATASOURCES_API_PREFIX = '/app/datasources';
+export const DATASOURCES_PATH = {
+  DATASOURCES_CREATION_BASE: `${DATASOURCES_API_PREFIX}#/new`,
+  DATASOURCES_CONFIG_BASE: `${DATASOURCES_API_PREFIX}#/configure`,
+};
+
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
 export const SPAN_ID = 'a673bc074b438374';
@@ -36,7 +43,7 @@ export const testIndexDataSet = [
   },
 ];
 
-export const supressResizeObserverIssue = () => {
+export const suppressResizeObserverIssue = () => {
   // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
   cy.on('uncaught:exception', (err) => {
     if (err.message.includes('ResizeObserver loop')) return false;
@@ -50,10 +57,7 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     timeout: TIMEOUT_DELAY,
   }).click();
   cy.get('.euiQuickSelect__applyButton').click();
-  cy.get('.euiSuperDatePicker__prettyFormatLink').click();
-  cy.get(
-    'button.euiDatePopoverButton--start[data-test-subj="superDatePickerstartDatePopoverButton"]'
-  ).click();
+  cy.get('[data-test-subj="superDatePickerShowDatesButton"]').click();
   cy.get('.euiTab__content').contains('Absolute').click();
   cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
     timeout: TIMEOUT_DELAY,
@@ -105,6 +109,10 @@ POST _plugins/_sql/_explain
 |----|----|----|----|
 | a2 | b2 | c2 | d2 |
 | a3 | b3 | c3 | d3 |
+`;
+
+export const SAMPLE_SQL_QUERY = `%sql
+select 1
 `;
 
 export const SQL_QUERY_TEXT = `%sql
@@ -181,7 +189,7 @@ export const landOnEventVisualizations = () => {
   cy.get('button[id="main-content-vis"]', { timeout: TIMEOUT_DELAY })
     .contains('Visualizations')
     .click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime);
 };
 
@@ -252,7 +260,7 @@ export const moveToCreatePage = () => {
   })
     .eq(0)
     .click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get('[data-test-subj="createPageTitle"]', {
     timeout: TIMEOUT_DELAY,
@@ -263,7 +271,7 @@ export const moveToApplication = (name) => {
   cy.visit(`${BASE_PATH}/app/observability-applications#`, {
     waitForGetTenant: true,
   });
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime * 2);
   cy.get(`[data-test-subj="${name}ApplicationLink"]`, {
     timeout: TIMEOUT_DELAY,
@@ -282,7 +290,7 @@ export const moveToEditPage = () => {
   cy.get('[data-test-subj="editApplicationButton"]', {
     timeout: TIMEOUT_DELAY,
   }).click();
-  supressResizeObserverIssue();
+  suppressResizeObserverIssue();
   cy.wait(delayTime);
   cy.get('[data-test-subj="createPageTitle"]', {
     timeout: TIMEOUT_DELAY,

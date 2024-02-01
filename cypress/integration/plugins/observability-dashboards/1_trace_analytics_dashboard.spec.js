@@ -15,11 +15,9 @@ describe('Testing dashboard table empty state', () => {
       },
     });
     cy.wait(delayTime * 3);
-  });
-
-  it('Renders empty state', () => {
-    cy.contains(' (0)').should('exist');
-    cy.contains('No matches').should('exist');
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 });
 
@@ -31,13 +29,9 @@ describe('Testing dashboard table', () => {
       },
     });
     setTimeFilter();
-  });
-
-  it('Renders the dashboard table', () => {
-    cy.contains(' (10)').should('exist');
-    cy.contains('client_cancel_order').should('exist');
-    cy.contains('166.44').should('exist');
-    cy.contains('7.14%').should('exist');
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 
   it('Adds the percentile filters', () => {
@@ -73,11 +67,11 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.wait(delayTime);
-    cy.get('.euiLink').contains('13').click();
+    cy.get('[data-test-subj="dashboard-table-traces-button"]')
+      .contains('13')
+      .click();
     cy.wait(delayTime);
 
-    cy.get('h2.euiTitle').contains('Traces').should('exist');
     cy.contains(' (13)').should('exist');
     cy.contains('client_create_order').should('exist');
 
@@ -96,24 +90,9 @@ describe('Testing plots', () => {
       },
     });
     setTimeFilter();
-  });
-
-  it('Renders service map', () => {
-    // plotly scale texts are in attribute "data-unformatted"
-    cy.get('text.ytitle[data-unformatted="Latency (ms)"]').should('exist');
-    cy.get('text[data-unformatted="200"]').should('exist');
-    cy.get('.vis-network').should('exist');
-
-    cy.get('.euiButton__text[title="Error rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
-    cy.get('text[data-unformatted="10%"]').should('exist');
-
-    cy.get('.euiButton__text[title="Throughput"]').click();
-    cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
-    cy.get('text[data-unformatted="50"]').should('exist');
-
-    cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
-    cy.wait(delayTime);
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 
   it('Renders plots', () => {

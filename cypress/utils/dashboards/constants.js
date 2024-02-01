@@ -16,3 +16,6 @@ export const SAVED_OBJECTS_PATH =
   STACK_MANAGEMENT_PATH + '/opensearch-dashboards/objects';
 
 export * from './vis_builder/constants';
+export * from './vis_type_table/constants';
+export * from './vis-augmenter/constants';
+export * from './data_explorer/constants';

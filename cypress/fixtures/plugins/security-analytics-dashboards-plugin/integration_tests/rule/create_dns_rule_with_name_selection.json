@@ -1,0 +1,26 @@
+{
+  "id": "25b9c01c-350d-4b95-bed1-836d04a4f325",
+  "category": "dns",
+  "title": "Cypress DNS Rule",
+  "description": "Detects DNS name as QWE",
+  "status": "experimental",
+  "author": "Cypress Tests",
+  "references": [
+    {
+      "value": ""
+    }
+  ],
+  "tags": [
+    {
+      "value": "dns.high"
+    }
+  ],
+  "log_source": "",
+  "detection": "selection:\n  dns-question-name:\n    - QuestionName\ncondition: selection",
+  "level": "high",
+  "false_positives": [
+    {
+      "value": ""
+    }
+  ]
+}

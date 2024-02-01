@@ -80,9 +80,17 @@ fi
 
 if [ -z "$CREDENTIAL" ]
 then
-  CREDENTIAL="admin:admin"
-  USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
-  PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+  # Starting in 2.12.0, security demo configuration script requires an initial admin password
+  CREDENTIAL="admin:myStrongPassword123!"
+fi
+
+USERNAME=`echo $CREDENTIAL | awk -F ':' '{print $1}'`
+PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
+
+# User can send custom browser path through env variable
+if [ -z "$BROWSER_PATH" ]
+then
+  BROWSER_PATH="chromium"
 fi
 
 . ./test_finder.sh
@@ -92,6 +100,7 @@ npm install
 TEST_FILES=`get_test_list $TEST_COMPONENTS`
 echo -e "Test Files List:"
 echo $TEST_FILES | tr ',' '\n'
+echo "BROWSER_PATH: $BROWSER_PATH"
 
 ## WARNING: THIS LOGIC NEEDS TO BE THE LAST IN THIS FILE! ##
 # Cypress returns back the test failure count in the error code
@@ -102,8 +111,8 @@ echo $TEST_FILES | tr ',' '\n'
 if [ $SECURITY_ENABLED = "true" ]
 then
    echo "run security enabled tests"
-   yarn cypress:run-with-security --browser chromium --spec "$TEST_FILES"
+   yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
 else
    echo "run security disabled tests"
-   yarn cypress:run-without-security --browser chromium --spec "$TEST_FILES"
+   yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
 fi

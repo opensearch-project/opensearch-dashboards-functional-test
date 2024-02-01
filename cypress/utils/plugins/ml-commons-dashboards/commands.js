@@ -9,7 +9,7 @@ Cypress.Commands.add('cyclingCheckTask', ({ taskId, rejectOnError = true }) =>
     new Cypress.Promise((resolve, reject) => {
       const checkTask = () => {
         cy.getMLCommonsTask(taskId).then((payload) => {
-          if (payload.error) {
+          if (payload && payload.error) {
             if (rejectOnError) {
               reject(new Error(payload.error));
               return;
@@ -17,7 +17,7 @@ Cypress.Commands.add('cyclingCheckTask', ({ taskId, rejectOnError = true }) =>
             resolve(payload);
             return;
           }
-          if (payload.state === 'COMPLETED') {
+          if (payload && payload.state === 'COMPLETED') {
             resolve(payload);
             return;
           }
@@ -36,6 +36,17 @@ Cypress.Commands.add('uploadModelByUrl', (body) =>
       method: 'POST',
       url: MLC_API.MODEL_UPLOAD,
       body,
+    })
+    .then(({ body }) => body)
+);
+
+Cypress.Commands.add('registerModelGroup', (body) =>
+  cy
+    .request({
+      method: 'POST',
+      url: MLC_API.MODEL_GROUP_REGISTER,
+      body,
+      failOnStatusCode: false,
     })
     .then(({ body }) => body)
 );
@@ -86,3 +97,60 @@ Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
     },
   });
 });
+
+Cypress.Commands.add('enableRegisterModelViaURL', () => {
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    body: {
+      transient: {
+        'plugins.ml_commons.allow_registering_model_via_url': true,
+      },
+    },
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('disableConnectorAccessControl', () => {
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+    transient: {
+      'plugins.ml_commons.connector_access_control_enabled': false,
+    },
+  });
+});
+
+Cypress.Commands.add(
+  'setTrustedConnectorEndpointsRegex',
+  (trustedConnectorEndpointsRegex) => {
+    cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+      transient: {
+        'plugins.ml_commons.trusted_connector_endpoints_regex':
+          trustedConnectorEndpointsRegex,
+      },
+    });
+  }
+);
+
+Cypress.Commands.add('createModelConnector', (body) =>
+  cy
+    .request({
+      method: 'POST',
+      url: MLC_API.CONNECTOR_CREATE,
+      body,
+    })
+    .then(({ body }) => body)
+);
+
+Cypress.Commands.add('registerModel', (body) =>
+  cy
+    .request({
+      method: 'POST',
+      url: MLC_API.MODEL_REGISTER,
+      body,
+    })
+    .then(({ body }) => body)
+);
+
+Cypress.Commands.add('deleteModelConnector', (connectorId) =>
+  cy.request('DELETE', `${MLC_API.CONNECTOR_BASE}/${connectorId}`)
+);
