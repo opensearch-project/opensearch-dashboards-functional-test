@@ -5,7 +5,6 @@
 
 /// <reference types="cypress" />
 
-import { edit } from 'brace';
 import {
   files,
   testDataSet,
