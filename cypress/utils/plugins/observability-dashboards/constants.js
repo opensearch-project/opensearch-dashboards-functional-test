@@ -6,6 +6,13 @@ import { BASE_PATH } from '../../base_constants';
 
 export const delayTime = 1500;
 
+//Datasources API Constants
+export const DATASOURCES_API_PREFIX = '/app/datasources';
+export const DATASOURCES_PATH = {
+  DATASOURCES_CREATION_BASE: `${DATASOURCES_API_PREFIX}#/new`,
+  DATASOURCES_CONFIG_BASE: `${DATASOURCES_API_PREFIX}#/configure`,
+};
+
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
 export const SPAN_ID = 'a673bc074b438374';
