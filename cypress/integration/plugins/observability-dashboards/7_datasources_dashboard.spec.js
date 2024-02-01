@@ -56,10 +56,7 @@ describe('Integration tests for datasources plugin', () => {
     visitDatasourcesCreationPage();
 
     cy.get(createS3Button).should('be.visible').click();
-    cy.url().should(
-      'include',
-      'configure/AmazonS3AWSGlue'
-    );
+    cy.url().should('include', 'configure/AmazonS3AWSGlue');
 
     cy.get('h1.euiTitle.euiTitle--medium')
       .should('be.visible')
@@ -70,10 +67,7 @@ describe('Integration tests for datasources plugin', () => {
     visitDatasourcesCreationPage();
 
     cy.get(createPrometheusButton).should('be.visible').click();
-    cy.url().should(
-      'include',
-      'configure/Prometheus'
-    );
+    cy.url().should('include', 'configure/Prometheus');
 
     cy.get('h4.euiTitle.euiTitle--medium')
       .should('be.visible')
