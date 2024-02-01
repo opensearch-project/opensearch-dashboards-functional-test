@@ -278,6 +278,12 @@ export const bootstrapDashboard = (
   cy.getElementByTestId('confirmSaveSavedObjectButton').click({
     force: true,
   });
+
+  // wait for dashbaord to be saved
+  cy.wait(5000);
+
+  // make newly created dashboards searchable
+  devToolsRequest('.kibana/_refresh', 'POST');
 };
 
 export const filterByObjectType = (type) => {
