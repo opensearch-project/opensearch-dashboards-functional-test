@@ -2,28 +2,15 @@ name: Bundle Snapshot based E2E Cypress tests workflow for core Dashboards (Wind
 on:
   pull_request:
     branches: [ '**' ]
+    paths:
+      - 'cypress/**/core-opensearch-dashboards/**'
   push:
     branches: [ '**' ]
+    paths:
+      - 'cypress/**/core-opensearch-dashboards/**'
 
 jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      tests: ${{ steps.filter.outputs.tests }}
-    steps:
-      - uses: actions/checkout@v2
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          base: ${{ github.ref }}
-          filters: |
-            tests:
-              - 'cypress/**/core-opensearch-dashboards/**'
-              - 'cypress/utils/dashboards/**'
-
   tests-with-security:
-    needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
@@ -32,8 +19,6 @@ jobs:
       #osd-serve-args: --data_source.enabled=true --vis_builder.enabled=true
 
   tests-without-security:
-    needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
