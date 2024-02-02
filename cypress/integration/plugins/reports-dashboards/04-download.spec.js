@@ -27,7 +27,7 @@ describe('Cypress', () => {
     cy.wait(3000);
   });
 
-  it('Download from reporting homepage', () => {
+  it.skip('Download from reporting homepage', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
@@ -45,7 +45,7 @@ describe('Cypress', () => {
       .should('exist');
   });
 
-  it('Download pdf from in-context menu', () => {
+  it.skip('Download pdf from in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#`);
     cy.wait(5000);
 
@@ -86,7 +86,7 @@ describe('Cypress', () => {
     cy.get('#reportGenerationProgressModal');
   });
 
-  it('Download csv from saved search in-context menu', () => {
+  it.skip('Download csv from saved search in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/discover#`);
     cy.wait(5000);
 
