@@ -17,6 +17,7 @@ jobs:
           filters: |
             tests:
               - 'cypress/**/core-opensearch-dashboards/**'
+              - 'cypress/utils/dashboards/**'
 
   tests-with-security:
     needs: changes
