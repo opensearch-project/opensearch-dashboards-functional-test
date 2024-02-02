@@ -81,7 +81,7 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
     .clear(opts)
     .type(start, {
       ...opts,
-      delay: 0,
+      delay: 0, // add a delay here, cypress sometimes fails to type all the content into the input.
     });
 
   // Click end date
@@ -101,7 +101,7 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
     .clear(opts)
     .type(end, {
       ...opts,
-      delay: 0,
+      delay: 0, // add a delay here, cypress sometimes fails to type all the content into the input.
     });
 
   // Close popup
