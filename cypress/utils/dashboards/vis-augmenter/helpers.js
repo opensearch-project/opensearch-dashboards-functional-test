@@ -283,7 +283,7 @@ export const bootstrapDashboard = (
   cy.wait(5000);
 
   // make newly created dashboards searchable
-  devToolsRequest('.kibana/_refresh', 'POST');
+  devToolsRequest('.kibana*/_refresh', 'POST');
 };
 
 export const filterByObjectType = (type) => {
