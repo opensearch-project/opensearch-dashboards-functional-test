@@ -111,6 +111,15 @@ echo -e "Test Files List:"
 echo $TEST_FILES | tr ',' '\n'
 echo "BROWSER_PATH: $BROWSER_PATH"
 
+# Verify if GITHUB_TOKEN is empty and if yes call groovy function to get the credentials as part of Jenkins pipeline step
+if [ -z "$GITHUB_TOKEN" ]; then
+    # integtest script is run as part of release CI jenkins job where groovy is installed
+    groovy auth.groovy
+    export GITHUB_TOKEN="$REMOTE_GITHUB_TOKEN"
+else
+    echo "GITHUB_TOKEN is not empty. Skipping credential retrieval."
+fi
+
 # Can be used as Jenkins environment variable set for the orchestrator feature flag, default: true
 ORCHESTRATOR_FEATURE_FLAG=${ORCHESTRATOR_FEATURE_FLAG:-true}
 
@@ -167,7 +176,7 @@ wait_file() {
     done < "$pid_file"
 }
 
-if [[ $REMOTE_CYPRESS_ENABLED = "true" &&  $ORCHESTRATOR_FEATURE_FLAG = 'true' ]]; then
+if [[ -n "$GITHUB_TOKEN" && $REMOTE_CYPRESS_ENABLED && $ORCHESTRATOR_FEATURE_FLAG ]]; then
     # Parse the JSON file to iterate over the components array
     components=$(jq -c '.components[]' "$REMOTE_MANIFEST_FILE")
     echo "Components: $components"
