@@ -18,7 +18,8 @@ on:
       branch_ref:
         description: 'Test branch name or commit reference id'
         required: true
-
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   trigger-cypress:
     runs-on: ubuntu-latest
@@ -27,10 +28,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Run Bash Script
-        env:
-          GITHUB_SECRET_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          ./remoteCypress.sh -r "${{ github.event.inputs.repo }}" -w "${{ github.event.inputs.workflow_name }}" -o "${{ github.event.inputs.os_url }}" -d "${{ github.event.inputs.osd_url }}" -b "${{ github.event.inputs.branch_ref }}"
 
+      - name: Run Remote Cypress Orchestrator Script
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Executing remoteCypress script for workflow_dispatch event"
+          ./remoteCypress.sh -r "${{ github.event.inputs.repo }}" -w "${{ github.event.inputs.workflow_name }}" -o "${{ github.event.inputs.os_url }}" -d "${{ github.event.inputs.osd_url }}" -b "${{ github.event.inputs.branch_ref }}"
