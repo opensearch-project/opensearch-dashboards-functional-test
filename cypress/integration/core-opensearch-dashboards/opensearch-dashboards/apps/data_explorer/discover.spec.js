@@ -62,6 +62,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
     cy.waitForSearch();
   });
 

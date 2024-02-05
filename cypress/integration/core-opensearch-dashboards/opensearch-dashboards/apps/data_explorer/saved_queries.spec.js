@@ -50,6 +50,8 @@ describe('saved queries saved objects', () => {
 
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
+    cy.waitForLoader();
+    cy.switchDiscoverTable('new');
 
     // Set time filter
     cy.setTopNavDate(fromTime, toTime);
@@ -62,6 +64,10 @@ describe('saved queries saved objects', () => {
   });
 
   describe('saved query management component functionality', function () {
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
+
     it('should show the saved query management component when there are no saved queries', () => {
       cy.getElementByTestId('saved-query-management-popover-button').click();
       cy.getElementByTestId('saved-query-management-popover')
