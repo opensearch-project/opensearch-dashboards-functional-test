@@ -65,7 +65,7 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   before(() => {
     cy.addAssistantRequiredSettings();
-    cy.registerRootAgent();
+    cy.readOrRegisterRootAgent();
     cy.startDummyServer();
   });
   after(() => {

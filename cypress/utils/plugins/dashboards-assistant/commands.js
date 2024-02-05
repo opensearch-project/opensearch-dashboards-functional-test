@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { get } from 'lodash';
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
 import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
 import { ML_COMMONS_API, ASSISTANT_API } from './constants';
@@ -20,10 +21,23 @@ const agentParameters = {
   rootAgentId: '',
 };
 
+Cypress.Commands.add('readOrRegisterRootAgent', () => {
+  cy.request({
+    url: `${BACKEND_BASE_PATH}${ML_COMMONS_API.AGENT_CONFIG}`,
+    method: 'GET',
+    failOnStatusCode: false,
+  }).then((resp) => {
+    const agentId = get(resp, 'body.configuration.agent_id');
+    if (agentId) {
+      cy.log(`Already initialized agent: ${agentId}, skip the initialize step`);
+    } else {
+      cy.log(`Agent id not initialized yet, set up agent`);
+      return cy.registerRootAgent();
+    }
+  });
+});
+
 Cypress.Commands.add('registerRootAgent', () => {
-  // ML needs 10 seconds to initialize its master key
-  // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.
-  cy.wait(10000);
   /**
    * TODO use flow framework if the plugin get integrate in the future.
    */
