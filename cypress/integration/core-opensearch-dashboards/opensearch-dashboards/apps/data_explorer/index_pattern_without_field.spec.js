@@ -29,17 +29,20 @@ describe('index pattern without field spec', () => {
     cy.setAdvancedSetting({
       defaultIndex: 'without-timefield',
     });
-
-    // Go to the Discover page
-    miscUtils.visitPage('app/data-explorer/discover#/');
-    cy.waitForLoader();
-    cy.switchDiscoverTable('new');
   });
 
   after(() => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
+  });
+
+  beforeEach(() => {
+    // Move visit page to before each to avoid test cases failed in security enabled
+    // Go to the Discover page
+    miscUtils.visitPage('app/data-explorer/discover#/');
+    cy.waitForLoader();
+    cy.switchDiscoverTable('new');
   });
 
   it('should not display a timepicker', () => {
