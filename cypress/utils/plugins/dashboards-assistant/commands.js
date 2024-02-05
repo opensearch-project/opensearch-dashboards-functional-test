@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { merge } from 'lodash';
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
 import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
 import { ML_COMMONS_API, ASSISTANT_API } from './constants';
@@ -11,15 +10,7 @@ import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/clus
 import { apiRequest } from '../../helpers';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
-  let mergedSettings = clusterSettings;
-  if (Cypress.env('SECURITY_ENABLED')) {
-    mergedSettings = merge({}, clusterSettings, {
-      persistent: {
-        'plugins.security.system_indices.enabled': false,
-      },
-    });
-  }
-  cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, mergedSettings);
+  cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
 });
 
 const agentParameters = {
