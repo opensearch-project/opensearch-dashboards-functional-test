@@ -112,6 +112,16 @@ Cypress.Commands.add('registerRootAgent', () => {
     })
     .then((resp) => {
       agentParameters.rootAgentId = resp.body.agent_id;
+      return cy.request(
+        'POST',
+        `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
+        {
+          type: 'os_chat_root_agent',
+          configuration: {
+            agent_id: agentParameters.rootAgentId,
+          },
+        }
+      );
     });
 });
 
