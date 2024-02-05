@@ -28,7 +28,13 @@ if [ -z $TEST_TYPE ]; then
     [ -f $OSD_BUILD_MANIFEST ] && TEST_TYPE="manifest" || TEST_TYPE="default"
 fi
 
-[ ! `echo $SHELL | grep 'bash'` ] && echo "You must run this script with bash as other shells like zsh will fail the script, exit in 10" && sleep 10 && exit 1
+if [ `echo $OSTYPE | grep -i 'linux'` ] || [ `echo $OSTYPE | grep -i 'darwin'` ]
+then
+    [ ! `echo $SHELL | grep -i 'bash'` ] && echo "You must run this script with bash as other shells like zsh will fail the script, exit in 10!" && sleep 10 && exit 1
+else
+    [ ! `readlink /proc/$$/exe | grep -i 'bash'` ] && echo "You must run this script with bash as other shells like zsh will fail the script, exit in 10!!" && sleep 10 && exit 1
+fi
+
 
 # Checks if build manifest in parent directory of current directory under local-test-cluster/opensearch-dashboards-*
 # When the test script executed in the CI, it scales up OpenSearch Dashboards under local-test-cluster with a 
