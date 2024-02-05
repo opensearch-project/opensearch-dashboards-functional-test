@@ -15,3 +15,10 @@ export const ML_COMMONS_API = {
   CREATE_MODEL: `${ML_COMMONS_API_PREFIX}/models/_register`,
   CREATE_AGENT: `${ML_COMMONS_API_PREFIX}/agents/_register`,
 };
+
+export const ASSISTANT_API_BASE = '/api/assistant';
+
+export const ASSISTANT_API = {
+  SEND_MESSAGE: `${ASSISTANT_API_BASE}/send_message`,
+  CONVERSATION: `${ASSISTANT_API_BASE}/conversation`,
+};

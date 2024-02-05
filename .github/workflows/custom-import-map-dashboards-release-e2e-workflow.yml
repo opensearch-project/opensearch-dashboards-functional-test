@@ -20,5 +20,5 @@ jobs:
     ## if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
-      test-name: Observability
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+      test-name: Maps Dashboards
+      test-command: yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
