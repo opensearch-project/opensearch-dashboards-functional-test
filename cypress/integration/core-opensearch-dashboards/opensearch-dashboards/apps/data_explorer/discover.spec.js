@@ -26,6 +26,17 @@ const indexSet = [
 
 describe('discover app', { scrollBehavior: false }, () => {
   before(() => {
+    if (Cypress.env('SECURITY_ENABLED')) {
+      /**
+       * Security plugin is using private tenant as default.
+       * So here we'd need to set global tenant as default manually.
+       */
+      cy.changeDefaultTenant({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'global',
+      });
+    }
     CURRENT_TENANT.newTenant = 'global';
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
