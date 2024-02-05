@@ -7,7 +7,6 @@
 
 import {
   TEST_PANEL,
-  TEST_PANEL_COPY,
   BASE_PATH,
   PANELS_TIMEOUT,
 } from '../../../utils/constants';
