@@ -71,6 +71,9 @@ describe('discover app', { scrollBehavior: false }, () => {
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
 
     it('should show correct time range string by timepicker', function () {
       cy.verifyTimeConfig(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
@@ -147,6 +150,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       const toTime = 'Jun 12, 1999 @ 11:21:04.000';
 
       before(() => {
+        cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
       });
 
@@ -260,6 +264,10 @@ describe('discover app', { scrollBehavior: false }, () => {
   });
 
   describe('refresh interval', function () {
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
+
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')
@@ -277,12 +285,15 @@ describe('discover app', { scrollBehavior: false }, () => {
             .should('be.visible')
             .clear()
             .type('2');
+
+          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Let auto refresh run
           cy.wait(100);
 
           // Close the auto refresh
+          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Check the timestamp of the last request, it should be different than the first timestamp

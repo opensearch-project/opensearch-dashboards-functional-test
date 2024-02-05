@@ -150,6 +150,18 @@ Cypress.Commands.add('switchDiscoverTable', (name) => {
     });
 });
 
+Cypress.Commands.add('makeDatePickerMenuOpen', () => {
+  cy.get(
+    '[class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"]'
+  ).then(($popover) => {
+    // Check if the popover does not have the 'euiPopover-isOpen' class
+    if (!$popover.hasClass('euiPopover-isOpen')) {
+      // If not open, click the button to open the quick menu
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+    }
+  });
+});
+
 function checkForElementVisibility() {
   cy.getElementsByTestIds('queryInput')
     .should('be.visible')
