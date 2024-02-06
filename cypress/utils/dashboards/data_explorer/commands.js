@@ -137,10 +137,12 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
 Cypress.Commands.add('switchDiscoverTable', (name) => {
   cy.getElementByTestId('datagridTableButton')
     .then(($button) => {
-      if (name === 'new' && $button.attr('aria-checked') === 'false') {
+      const buttonText = $button.text();
+
+      if (name === 'new' && buttonText.includes('Try new Discover')) {
         cy.wrap($button).click();
       }
-      if (name === 'legacy' && $button.attr('aria-checked') === 'true') {
+      if (name === 'legacy' && buttonText.includes('Use legacy Discover')) {
         cy.wrap($button).click();
       }
       cy.waitForLoader();
