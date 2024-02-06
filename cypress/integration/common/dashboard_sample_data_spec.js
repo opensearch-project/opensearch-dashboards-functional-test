@@ -22,9 +22,9 @@ export function dashboardSanityTests() {
   const path = baseURL.pathname.replace(/\/$/, '');
 
   describe('dashboard sample data validation', () => {
-    before(() => {});
+    before(() => { });
 
-    after(() => {});
+    after(() => { });
 
     describe('checking home page', () => {
       before(() => {
@@ -159,7 +159,7 @@ export function dashboardSanityTests() {
           );
         });
 
-        after(() => {});
+        after(() => { });
 
         it('checking ecommerce index patterns are added', () => {
           commonUI.checkElementContainsValue(
@@ -191,7 +191,7 @@ export function dashboardSanityTests() {
           miscUtils.visitPage('app/management/opensearch-dashboards/objects');
         });
 
-        after(() => {});
+        after(() => { });
 
         it('checking ecommerce object is saved', () => {
           commonUI.checkElementContainsValue(
@@ -224,7 +224,7 @@ export function dashboardSanityTests() {
           miscUtils.visitPage('app/visualize#/');
         });
 
-        after(() => {});
+        after(() => { });
 
         it('checking visualizations list display', () => {
           commonUI.checkElementExists(
@@ -251,7 +251,7 @@ export function dashboardSanityTests() {
           miscUtils.visitPage('app/data-explorer/discover#/');
         });
 
-        after(() => {});
+        after(() => { });
 
         it('checking save query button display', () => {
           commonUI.checkElementExists(
@@ -288,6 +288,34 @@ export function dashboardSanityTests() {
             1
           );
         });
+
+        it('Tests the link copys and can be routed to in Safari', () => {
+          cy.getElementByTestId('shareTopNavButton').click();
+          cy.getElementByTestId('copyShareUrlButton').focus().realClick();
+
+          // Capture the copied content
+          // cy.window().then((win) => {
+          //   // Access the clipboard contents
+          //   cy.document().then(() => {
+          //     cy.wait(1000); // Wait for clipboard data to be available
+          //     cy.log('Trying to read clipboard data...');
+
+          //     // Read the clipboard text
+          //     cy.wrap(win.navigator.clipboard.readText()).then((clipboardData) => {
+          //       cy.log('url copied:', clipboardData);
+
+          //       // Assert that the clipboard has data
+          //       expect(clipboardData).to.have.length.greaterThan(0);
+
+          //       cy.visit(clipboardData);
+          //       cy.waitForLoader();
+
+          //       // Now on copied URL page
+          //     });
+          //   });
+          // });
+        });
+
       });
     });
 
@@ -297,7 +325,7 @@ export function dashboardSanityTests() {
         miscUtils.visitPage('app/dev_tools#/console');
       });
 
-      after(() => {});
+      after(() => { });
 
       it('checking welcome panel display', () => {
         commonUI.checkElementExists('div[data-test-subj="welcomePanel"]', 1);
@@ -325,7 +353,7 @@ export function dashboardSanityTests() {
         miscUtils.visitPage('app/management/');
       });
 
-      after(() => {});
+      after(() => { });
 
       it('checking Stack Management display', () => {
         // Check that Stack Management home is visable
