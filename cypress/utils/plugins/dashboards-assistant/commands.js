@@ -9,6 +9,10 @@ import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
 import { ML_COMMONS_API, ASSISTANT_API } from './constants';
 import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/cluster_settings.json';
 import { apiRequest } from '../../helpers';
+import {
+  certPrivateKeyContent,
+  certPublicKeyContent,
+} from '../../../fixtures/plugins/dashboards-assistant/security-cert';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
@@ -126,17 +130,28 @@ Cypress.Commands.add('registerRootAgent', () => {
     })
     .then((resp) => {
       agentParameters.rootAgentId = resp.body.agent_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
-        {
-          type: 'os_chat_root_agent',
-          configuration: {
-            agent_id: agentParameters.rootAgentId,
-          },
-        }
-      );
+      return cy.putRootAgentId(agentParameters.rootAgentId);
     });
+});
+
+Cypress.Commands.add('putRootAgentId', (agentId) => {
+  if (Cypress.env('SECURITY_ENABLED')) {
+    // The .plugins-ml-config index is a system index and need to call the API by using certificate file
+    return cy.exec(
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
+    );
+  } else {
+    return cy.request(
+      'POST',
+      `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
+      {
+        type: 'os_chat_root_agent',
+        configuration: {
+          agent_id: agentId,
+        },
+      }
+    );
+  }
 });
 
 Cypress.Commands.add('cleanRootAgent', () => {
