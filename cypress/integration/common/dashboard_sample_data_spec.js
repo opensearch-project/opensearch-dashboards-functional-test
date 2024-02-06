@@ -300,8 +300,9 @@ export function dashboardSanityTests() {
               cy.wait(1000); // Wait for clipboard data to be available
               cy.log('Trying to read clipboard data...');
 
-              // Read the clipboard text
-              cy.wrap(win.navigator.clipboard.readText()).then((clipboardData) => {
+              cy.getElementByTestId('copyShareUrlButton').addEventListener('click', async () => {
+                cy.wait(1000);
+                const clipboardData = await win.navigator.clipboard.readText();
                 cy.log('url copied:', clipboardData);
 
                 // Assert that the clipboard has data
@@ -309,8 +310,6 @@ export function dashboardSanityTests() {
 
                 cy.visit(clipboardData);
                 cy.waitForLoader();
-
-                // Now on copied URL page
               });
             });
           });
