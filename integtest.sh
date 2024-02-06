@@ -202,8 +202,8 @@ if [[ $REMOTE_CYPRESS_ENABLED = "true" &&  $ORCHESTRATOR_FEATURE_FLAG = 'true' ]
 
     # Delete the temporary log files and folder after writing to CI
     rm -rf "$log_directory"
+    rm "$pid_file"
 fi
-rm "$pid_file"
 
 ## WARNING: THIS LOGIC NEEDS TO BE THE LAST IN THIS FILE! ##
 # Cypress returns back the test failure count in the error code
@@ -212,7 +212,14 @@ rm "$pid_file"
 # We need to ensure the cypress tests are the last execute process to
 # the error code gets passed to the CI.
 
-if [ $SECURITY_ENABLED = "true" ]; then
+if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
+    echo "Disable video recording in Windows due to ffmpeg missing libs in Windows Docker Container"
+    echo "TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/1068"
+    jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
+    mv -v cypress_new.json cypress.json
+fi
+
+if [ "$SECURITY_ENABLED" = "true" ]; then
     echo "Running security enabled tests"
     yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
 else
