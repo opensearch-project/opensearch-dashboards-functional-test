@@ -142,7 +142,7 @@ Cypress.Commands.add('putRootAgentId', (agentId) => {
     );
   } else {
     return cy.request(
-      'POST',
+      'PUT',
       `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
       {
         type: 'os_chat_root_agent',
