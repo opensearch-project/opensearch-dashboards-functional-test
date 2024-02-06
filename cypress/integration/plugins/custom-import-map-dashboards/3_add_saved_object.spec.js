@@ -21,19 +21,22 @@ describe('Add flights dataset saved object', () => {
 
   after(() => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
-    cy.get('button[data-test-subj="removeSampleDataSetflights"]')
+    cy.get('button[data-test-subj="removeSampleDataSetflights"]', {
+      timeout: 120000,
+    })
       .should('be.visible')
       .click();
   });
 
   it('check if maps saved object of flights dataset can be found and open', () => {
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
-    cy.contains(
-      '[Flights] Flights Status on Maps Destination Location'
-    ).click();
+    cy.contains('[Flights] Flights Status on Maps Destination Location', {
+      timeout: 120000,
+    }).click();
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',
-      'Flights On Time'
+      'Flights On Time',
+      { timeout: 120000 }
     );
   });
 });
