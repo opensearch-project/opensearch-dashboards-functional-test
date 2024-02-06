@@ -3,6 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/**
+ * This file should be somewhere else like plugins/security but as assistant is the only consumer of the content
+ * Would be better to keep within the directory of dashboards-assistant.
+ */
+
 export const certPublicKeyContent = `
 -----BEGIN CERTIFICATE-----
 MIIEmDCCA4CgAwIBAgIUZjrlDPP8azRDPZchA/XEsx0X2iYwDQYJKoZIhvcNAQEL
