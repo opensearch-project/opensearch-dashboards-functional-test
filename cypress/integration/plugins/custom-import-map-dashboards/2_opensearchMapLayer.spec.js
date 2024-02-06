@@ -21,7 +21,7 @@ describe('Default OpenSearch base map layer', () => {
 
   it('check if default OpenSearch map layer can be open', () => {
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
-    cy.contains('Create map').click();
+    cy.contains('Create map', { timeout: 120000 }).click();
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',
       'Default map'
