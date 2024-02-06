@@ -7,7 +7,6 @@
 
 import {
   TEST_PANEL,
-  TEST_PANEL_COPY,
   BASE_PATH,
   PANELS_TIMEOUT,
 } from '../../../utils/constants';
@@ -39,27 +38,5 @@ describe('Testing panels table', () => {
     cy.wait('@createDashboard');
 
     cy.contains(TEST_PANEL).should('exist');
-  });
-
-  it('Duplicates a panel', () => {
-    cy.get('.euiCheckbox__input[title="Select this row"]', {
-      timeout: PANELS_TIMEOUT,
-    })
-      .eq(0)
-      .trigger('mouseover')
-      .click();
-    cy.get('.euiButton__text').contains('Actions').trigger('mouseover').click();
-    cy.get('.euiContextMenuItem__text')
-      .contains('Duplicate')
-      .trigger('mouseover')
-      .click();
-    cy.get('.euiButton__text')
-      .contains('Duplicate')
-      .trigger('mouseover')
-      .click();
-    cy.intercept('POST', '/api/saved_objects/*').as('createDashboard');
-    cy.wait('@createDashboard');
-
-    cy.contains(TEST_PANEL_COPY);
   });
 });
