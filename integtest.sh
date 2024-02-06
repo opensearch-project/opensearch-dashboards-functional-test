@@ -19,11 +19,12 @@ function usage() {
     echo -e "-t TEST_COMPONENTS\t(OpenSearch-Dashboards reportsDashboards etc.), optional, specify test components, separate with space, else test everything."
     echo -e "-v VERSION\t, no defaults, indicates the OpenSearch version to test."
     echo -e "-o OPTION\t, no defaults, determine the TEST_TYPE value among(default, manifest) in test_finder.sh, optional."
+    echo -e "-r REMOTE_CYPRESS_ENABLED\t(true | false), defaults to true. Feature flag set to specify remote cypress orchestrator runs are enabled or not."
     echo -e "-h\tPrint this message."
     echo "--------------------------------------------------------------------------"
 }
 
-while getopts ":hb:p:s:c:t:v:o:" arg; do
+while getopts ":hb:p:s:c:t:v:o:r:" arg; do
     case $arg in
         h)
             usage
@@ -49,6 +50,9 @@ while getopts ":hb:p:s:c:t:v:o:" arg; do
             ;;
         o)
             OPTION=$OPTARG
+            ;;
+        r)
+            REMOTE_CYPRESS_ENABLED=$OPTARG
             ;;
         :)
             echo "-${OPTARG} requires an argument"
@@ -76,6 +80,11 @@ fi
 if [ -z "$SECURITY_ENABLED" ]
 then
   SECURITY_ENABLED="true"
+fi
+
+if [ -z "$REMOTE_CYPRESS_ENABLED" ]
+then
+  REMOTE_CYPRESS_ENABLED="true"
 fi
 
 if [ -z "$CREDENTIAL" ]
@@ -108,7 +117,15 @@ echo "BROWSER_PATH: $BROWSER_PATH"
 #
 # We need to ensure the cypress tests are the last execute process to
 # the error code gets passed to the CI.
-if [ $SECURITY_ENABLED = "true" ]
+
+if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
+    echo "Disable video recording in Windows due to ffmpeg missing libs in Windows Docker Container"
+    echo "TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/1068"
+    jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
+    mv -v cypress_new.json cypress.json
+fi
+
+if [ "$SECURITY_ENABLED" = "true" ]
 then
    echo "run security enabled tests"
    yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
