@@ -174,10 +174,6 @@ const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
 const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
 const getConditionField = () =>
   cy.get('[data-test-subj="rule_detection_field"]');
-const getConditionAddButton = () =>
-  cy.get('[data-test-subj="condition-add-selection-btn"]');
-const getConditionRemoveButton = (index) =>
-  cy.get(`[data-test-subj="selection-exp-field-item-remove-${index}"]`);
 const getRuleSubmitButton = () =>
   cy.get('[data-test-subj="submit_rule_form_button"]');
 const getTagField = (index) =>
@@ -211,8 +207,6 @@ const fillCreateForm = () => {
     getTextRadioField().click({ force: true });
     getMapValueField().type('FieldValue');
   });
-
-  getConditionAddButton().click({ force: true });
 
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
@@ -387,7 +381,7 @@ describe('Rules', () => {
         getMapKeyField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
-          .contains('Key name is required');
+          .contains('Invalid key name');
 
         getMapKeyField().type('FieldKey');
         getMapKeyField()
@@ -443,15 +437,8 @@ describe('Rules', () => {
       getRuleSubmitButton().click({ force: true });
       getConditionField()
         .parents('.euiFormRow__fieldWrapper')
-        .contains('Condition is required');
-
-      getConditionAddButton().click({ force: true });
-      getConditionField().find('.euiFormErrorText').should('not.exist');
-
-      getConditionRemoveButton(0).click({ force: true });
-      getConditionField()
-        .parents('.euiFormRow__fieldWrapper')
-        .contains('Condition is required');
+        .contains('Condition is required')
+        .should('not.exist');
     });
 
     it('...should validate tag field', () => {
@@ -512,7 +499,6 @@ describe('Rules', () => {
       getSelectionPanelByIndex(0).within(() =>
         getMapKeyField().type('{selectall}').type('{backspace}')
       );
-      toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
         getMapKeyField().type('FieldKey')
       );
@@ -536,11 +522,6 @@ describe('Rules', () => {
         getListRadioField().click({ force: true });
         getMapListField().type('FieldValue');
       });
-
-      // condition field
-      getConditionRemoveButton(0).click({ force: true });
-      toastShouldExist();
-      getConditionAddButton().click({ force: true });
 
       // tags field
       getTagField(0).sa_clearValue().type('wrong.tag');
