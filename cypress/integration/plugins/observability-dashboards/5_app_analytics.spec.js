@@ -158,7 +158,7 @@ describe('Viewing application', () => {
     ).click();
     cy.get('[data-test-subj="dashboardTable"]')
       .first()
-      .within(($table) => {
+      .within(() => {
         cy.get('.plot-container').should('have.length.at.least', 1);
       });
   });
@@ -182,7 +182,7 @@ describe('Viewing application', () => {
     cy.get('[data-test-subj="app-analytics-traceTab"]').click();
     cy.get('[title="03f9c770db5ee2f1caac0afc36db49ba"]').click();
     cy.get('[data-test-subj="traceDetailFlyoutTitle"]').should('be.visible');
-    cy.get('[data-test-subj="traceDetailFlyout"]').within(($flyout) => {
+    cy.get('[data-test-subj="traceDetailFlyout"]').within(() => {
       cy.get('[data-test-subj="LatencyDescriptionList"]').should(
         'contain',
         '224.99'
@@ -207,7 +207,7 @@ describe('Viewing application', () => {
       .contains('5ff3516909562c60')
       .click();
     cy.get('[data-test-subj="spanDetailFlyout"]').should('be.visible');
-    cy.get('[data-test-subj="spanDetailFlyout"]').within(($flyout) => {
+    cy.get('[data-test-subj="spanDetailFlyout"]').within(() => {
       cy.get('[data-test-subj="OperationDescriptionList"]').should(
         'contain',
         'HTTP GET'
@@ -480,7 +480,7 @@ describe('Separate from other plugins', () => {
     );
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     cy.get('[data-test-subj="operationalPanelsActionsButton"]', {
@@ -583,7 +583,7 @@ describe('Application Analytics home page', () => {
     );
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiLink').contains(newName).should('exist');
       });
   });
@@ -596,7 +596,7 @@ describe('Application Analytics home page', () => {
     cy.get('[data-test-subj="appAnalyticsActionsButton"]').click();
     cy.get('.euiTableRow')
       .first()
-      .within(($row) => {
+      .within(() => {
         cy.get('.euiCheckbox').click();
       });
     cy.wait(2000);
