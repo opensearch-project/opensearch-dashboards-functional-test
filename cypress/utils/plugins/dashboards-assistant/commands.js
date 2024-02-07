@@ -3,10 +3,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { get } from 'lodash';
 import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
-import { BACKEND_BASE_PATH } from '../../constants';
-import { ML_COMMONS_API } from './constants';
+import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
+import { ML_COMMONS_API, ASSISTANT_API } from './constants';
 import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/cluster_settings.json';
+import { apiRequest } from '../../helpers';
+import {
+  certPrivateKeyContent,
+  certPublicKeyContent,
+} from '../../../fixtures/plugins/dashboards-assistant/security-cert';
 
 Cypress.Commands.add('addAssistantRequiredSettings', () => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
@@ -19,10 +25,23 @@ const agentParameters = {
   rootAgentId: '',
 };
 
+Cypress.Commands.add('readOrRegisterRootAgent', () => {
+  cy.request({
+    url: `${BACKEND_BASE_PATH}${ML_COMMONS_API.AGENT_CONFIG}`,
+    method: 'GET',
+    failOnStatusCode: false,
+  }).then((resp) => {
+    const agentId = get(resp, 'body.configuration.agent_id');
+    if (agentId) {
+      cy.log(`Already initialized agent: ${agentId}, skip the initialize step`);
+    } else {
+      cy.log(`Agent id not initialized yet, set up agent`);
+      return cy.registerRootAgent();
+    }
+  });
+});
+
 Cypress.Commands.add('registerRootAgent', () => {
-  // ML needs 10 seconds to initialize its master key
-  // The ML encryption master key has not been initialized yet. Please retry after waiting for 10 seconds.
-  cy.wait(10000);
   /**
    * TODO use flow framework if the plugin get integrate in the future.
    */
@@ -111,7 +130,28 @@ Cypress.Commands.add('registerRootAgent', () => {
     })
     .then((resp) => {
       agentParameters.rootAgentId = resp.body.agent_id;
+      return cy.putRootAgentId(agentParameters.rootAgentId);
     });
+});
+
+Cypress.Commands.add('putRootAgentId', (agentId) => {
+  if (Cypress.env('SECURITY_ENABLED')) {
+    // The .plugins-ml-config index is a system index and need to call the API by using certificate file
+    return cy.exec(
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
+    );
+  } else {
+    return cy.request(
+      'PUT',
+      `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
+      {
+        type: 'os_chat_root_agent',
+        configuration: {
+          agent_id: agentId,
+        },
+      }
+    );
+  }
 });
 
 Cypress.Commands.add('cleanRootAgent', () => {
@@ -152,3 +192,14 @@ Cypress.Commands.add('stopDummyServer', () => {
     }
   });
 });
+
+Cypress.Commands.add('sendAssistantMessage', (body) =>
+  apiRequest(`${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}`, 'POST', body)
+);
+
+Cypress.Commands.add('deleteConversation', (conversationId) =>
+  apiRequest(
+    `${BASE_PATH}${ASSISTANT_API.CONVERSATION}/${conversationId}`,
+    'DELETE'
+  )
+);
