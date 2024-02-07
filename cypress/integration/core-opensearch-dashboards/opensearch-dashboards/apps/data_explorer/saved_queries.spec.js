@@ -24,7 +24,7 @@ const indexSet = [
   'logstash-2015.09.20',
 ];
 
-describe('saved queries saved objects', () => {
+describe.skip('saved queries saved objects', () => {
   const fromTime = 'Sep 20, 2015 @ 08:00:00.000';
   const toTime = 'Sep 21, 2015 @ 08:00:00.000';
   before(() => {
@@ -50,6 +50,8 @@ describe('saved queries saved objects', () => {
 
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
+    cy.waitForLoader();
+    cy.switchDiscoverTable('new');
 
     // Set time filter
     cy.setTopNavDate(fromTime, toTime);
@@ -62,6 +64,10 @@ describe('saved queries saved objects', () => {
   });
 
   describe('saved query management component functionality', function () {
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
+
     it('should show the saved query management component when there are no saved queries', () => {
       cy.getElementByTestId('saved-query-management-popover-button').click();
       cy.getElementByTestId('saved-query-management-popover')

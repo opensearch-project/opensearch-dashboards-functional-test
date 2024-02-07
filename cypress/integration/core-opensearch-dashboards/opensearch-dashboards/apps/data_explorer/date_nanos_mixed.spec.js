@@ -31,6 +31,7 @@ describe('date_nanos_mixed', () => {
     });
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
 
     const fromTime = 'Jan 1, 2019 @ 00:00:00.000';
     const toTime = 'Jan 1, 2019 @ 23:59:59.999';
