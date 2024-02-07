@@ -303,7 +303,7 @@ export const changeTimeTo24 = (timeUnit) => {
     timeout: TIMEOUT_DELAY,
   })
     .trigger('mouseover')
-    .click();
+    .click({ force: true });
   cy.wait(delayTime);
   cy.get('[aria-label="Time unit"]', { timeout: TIMEOUT_DELAY }).select(
     timeUnit
@@ -343,6 +343,7 @@ export const uniqueId = Date.now();
 export const baseQuery = 'source = opensearch_dashboards_sample_data_flights';
 export const nameOne = `Cypress-${uniqueId}`;
 export const description = 'This is my application for cypress testing.';
+export const service_two = 'payment';
 export const trace_one = 'HTTP POST';
 export const trace_two = 'HTTP GET';
 export const trace_three = 'client_pay_order';
@@ -352,4 +353,5 @@ export const query_two =
   'where OriginCityName = "Seoul" | stats count() by span( timestamp , 6h )';
 export const visOneName = 'Flights to Venice';
 export const visTwoName = 'Flights from Seoul';
+export const composition = 'order, payment, HTTP POST, HTTP GET, client_pay_order'
 export const newName = `Monterey Cypress-${uniqueId}`;
