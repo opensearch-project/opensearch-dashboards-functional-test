@@ -4,13 +4,16 @@
  */
 
 import { BASE_PATH } from '../../../utils/constants';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Documents layer', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
       retryOnStatusCodeFailure: true,
       timeout: 60000,
     });
+    cy.wait(5000);
     cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
       timeout: 60000,
     })
@@ -22,9 +25,9 @@ describe('Documents layer', () => {
   const uniqueName = 'saved-map-' + Date.now().toString();
 
   it('Add new documents layer with configuration', () => {
-    cy.visit(`${BASE_PATH}/app/maps-dashboards`);
-    cy.wait(5000);
-    cy.contains('Create map', { timeout: 120000 }).click();
+    cy.wait(10000);
+    cy.visit(`${BASE_PATH}/app/maps-dashboards/create`);
+    cy.wait(10000);
     cy.get("button[data-test-subj='addLayerButton']", {
       timeout: 120000,
     }).click();
@@ -70,7 +73,9 @@ describe('Documents layer', () => {
   });
 
   it('Open saved map with documents layer', () => {
+    cy.wait(30000);
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
+    cy.wait(10000);
     cy.get('[data-test-subj="mapListingPage"]', { timeout: 120000 }).should(
       'contain',
       uniqueName
@@ -84,6 +89,7 @@ describe('Documents layer', () => {
 
   after(() => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
+    cy.wait(5000);
     cy.get('button[data-test-subj="removeSampleDataSetflights"]')
       .should('be.visible')
       .click();
