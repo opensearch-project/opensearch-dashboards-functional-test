@@ -46,12 +46,17 @@ describe('discover tab', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
     cy.waitForSearch();
   });
 
   after(() => {});
 
   describe('field data', function () {
+    before(() => {
+      cy.switchDiscoverTable('new');
+    });
+
     it('search php should show the correct hit count', function () {
       const expectedHitCount = '445';
       cy.setTopNavQuery('php');
@@ -65,12 +70,18 @@ describe('discover tab', () => {
     });
 
     it('search type:apache should show the correct hit count', () => {
+      // add this line to address flakiness in Cypress:
+      // ensures stable switching to the new Discover table format.
+      cy.switchDiscoverTable('new');
       const expectedHitCount = '11,156';
       cy.setTopNavQuery('type:apache');
       cy.verifyHitCount(expectedHitCount);
     });
 
     it('doc view should show Time and _source columns', function () {
+      // add this line to address flakiness in Cypress:
+      // ensures stable switching to the new Discover table format.
+      cy.switchDiscoverTable('new');
       cy.getElementByTestId('dataGridHeaderCell-@timestamp').should(
         'be.visible'
       );
