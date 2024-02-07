@@ -7,6 +7,7 @@ import {
   TestFixtureHandler,
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -21,6 +22,7 @@ const indexSet = [
 
 describe('discover histogram', { scrollBehavior: false }, () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.log('load opensearch-dashboards index with default index pattern');
 
     // import long window logstash index pattern

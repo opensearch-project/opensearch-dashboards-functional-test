@@ -7,6 +7,7 @@ import {
   TestFixtureHandler,
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -16,6 +17,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('index pattern without field spec', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
@@ -31,6 +33,7 @@ describe('index pattern without field spec', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
   });
 
   after(() => {
@@ -47,6 +50,7 @@ describe('index pattern without field spec', () => {
 
   it('should display a timepicker after switching to an index pattern with timefield', () => {
     const indexName = 'with-timefield';
+    cy.switchDiscoverTable('new');
     cy.getElementByTestId('comboBoxToggleListButton')
       .should('be.visible')
       .click();
