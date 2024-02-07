@@ -138,9 +138,21 @@ const validatePendingFieldMappingsPanel = (mappings) => {
   });
 };
 
-const fillDetailsForm = (detectorName, dataSource) => {
+const fillDetailsForm = (
+  detectorName,
+  dataSource,
+  isCustomDataSource = false
+) => {
   getNameField().type(detectorName);
-  getDataSourceField().sa_selectComboboxItem(dataSource);
+
+  if (isCustomDataSource) {
+    getDataSourceField()
+      .focus()
+      .type(dataSource + '{enter}');
+  } else {
+    getDataSourceField().sa_selectComboboxItem(dataSource);
+  }
+
   getDataSourceField().focus().blur();
   getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
   getLogTypeField().focus().blur();
@@ -149,7 +161,7 @@ const fillDetailsForm = (detectorName, dataSource) => {
 const createDetector = (detectorName, dataSource, expectFailure) => {
   getCreateDetectorButton().click({ force: true });
 
-  fillDetailsForm(detectorName, dataSource);
+  fillDetailsForm(detectorName, dataSource, expectFailure);
 
   cy.sa_getElementByText(
     '.euiAccordion .euiTitle',
