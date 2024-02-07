@@ -353,5 +353,6 @@ export const query_two =
   'where OriginCityName = "Seoul" | stats count() by span( timestamp , 6h )';
 export const visOneName = 'Flights to Venice';
 export const visTwoName = 'Flights from Seoul';
-export const composition = 'order, payment, HTTP POST, HTTP GET, client_pay_order'
+export const composition =
+  'order, payment, HTTP POST, HTTP GET, client_pay_order';
 export const newName = `Monterey Cypress-${uniqueId}`;
