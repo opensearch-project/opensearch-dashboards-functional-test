@@ -10,13 +10,7 @@ export function getLogTypeLabel(name) {
   return !name ? '-' : logTypeLabels[name.toLowerCase()] || startCase(name);
 }
 
-export function setupIntercept(
-  cy,
-  url,
-  interceptName,
-  method = 'POST',
-  options = {}
-) {
+export function setupIntercept(cy, url, interceptName, method = 'POST') {
   const urlRegex = new RegExp(`.*${url}.*`);
-  cy.intercept(method, urlRegex, options).as(interceptName);
+  cy.intercept(method, urlRegex).as(interceptName);
 }
