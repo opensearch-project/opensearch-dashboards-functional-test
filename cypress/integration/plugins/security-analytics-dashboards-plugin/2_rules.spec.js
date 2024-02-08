@@ -628,9 +628,7 @@ describe('Rules', () => {
     });
 
     it('...can be deleted', () => {
-      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules', 'POST', {
-        delay: 5000,
-      });
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules', 'POST');
 
       cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(
         SAMPLE_RULE.name
