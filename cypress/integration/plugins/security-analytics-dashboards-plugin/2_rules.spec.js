@@ -377,13 +377,20 @@ describe('Rules', () => {
     it('...should validate selection map key field', () => {
       getSelectionPanelByIndex(0).within(() => {
         getMapKeyField().should('be.empty');
-        getMapKeyField().focus().blur();
+        getMapKeyField()
+          .focus()
+          .blur()
+          .parents('.euiFormRow__fieldWrapper')
+          .find('.euiFormErrorText')
+          .should('not.exist');
+
+        getMapKeyField().type('hello@');
         getMapKeyField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
           .contains('Invalid key name');
 
-        getMapKeyField().type('FieldKey');
+        getMapKeyField().focus().type('{selectall}').type('FieldKey');
         getMapKeyField()
           .focus()
           .blur()
