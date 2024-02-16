@@ -516,7 +516,7 @@ describe('Rules', () => {
       );
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('FieldValue')
+        getMapValueField().type('FieldValue', { force: true })
       );
 
       // selection map list field
@@ -527,7 +527,7 @@ describe('Rules', () => {
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
-        getMapListField().type('FieldValue');
+        getMapListField().type('FieldValue', { force: true });
       });
 
       // tags field
