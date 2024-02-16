@@ -189,7 +189,7 @@ describe('Test and verify SQL downloads', () => {
     it(title, () => {
       cy.request({
         method: 'POST',
-        form: false,
+        form: true,
         url: url,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
