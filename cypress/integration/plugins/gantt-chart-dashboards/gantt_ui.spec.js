@@ -61,7 +61,7 @@ describe('Save a gantt chart', () => {
   });
 
   it('Creates and saves a gantt chart', () => {
-    cy.contains('Create visualization').click({ force: true });
+    cy.contains('Create ').click({ force: true });
     cy.wait(delay);
     cy.get('[data-test-subj="visTypeTitle"]')
       .contains('Gantt Chart')
