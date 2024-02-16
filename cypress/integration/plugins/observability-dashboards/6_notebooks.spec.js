@@ -115,9 +115,7 @@ describe('Test reporting integration if plugin installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
-    cy.get('body').should.contains(
-      'Please continue report generation in the new tab'
-    );
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create in-context PNG report from notebook', () => {
@@ -125,9 +123,7 @@ describe('Test reporting integration if plugin installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
-    cy.get('body').should.contains(
-      'Please continue report generation in the new tab'
-    );
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create on-demand report definition from context menu', () => {
