@@ -4,7 +4,10 @@
  */
 
 import _ from 'lodash';
-import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import {
+  ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleDocumentLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_document_level_monitor.json';
 import { BASE_PATH } from '../../../utils/base_constants';
 
@@ -117,7 +120,7 @@ describe('DocumentLevelMonitor', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-    cy.contains('Create monitor', { timeout: 20000 });
+    cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   describe('can be created', () => {
@@ -163,7 +166,7 @@ describe('DocumentLevelMonitor', () => {
               force: true,
               parseSpecialCharSequences: false,
               delay: 5,
-              timeout: 20000,
+              timeout: ALERTING_PLUGIN_TIMEOUT,
             }
           )
           .trigger('blur', { force: true });
@@ -191,7 +194,7 @@ describe('DocumentLevelMonitor', () => {
               force: true,
               parseSpecialCharSequences: false,
               delay: 5,
-              timeout: 20000,
+              timeout: ALERTING_PLUGIN_TIMEOUT,
             }
           )
           .trigger('blur', { force: true });
@@ -421,7 +424,7 @@ describe('DocumentLevelMonitor', () => {
                   force: true,
                   parseSpecialCharSequences: false,
                   delay: 5,
-                  timeout: 20000,
+                  timeout: ALERTING_PLUGIN_TIMEOUT,
                 }
               )
               .trigger('blur', { force: true });
@@ -539,7 +542,9 @@ describe('DocumentLevelMonitor', () => {
         cy.contains('Edit').click({ force: true });
 
         // Remove the trigger from the monitor as it's not needed for this test case
-        cy.contains('Remove trigger', { timeout: 20000 }).click({
+        cy.contains('Remove trigger', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        }).click({
           force: true,
         });
 
@@ -561,14 +566,14 @@ describe('DocumentLevelMonitor', () => {
           TESTING_INDEX_A
         );
         cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, {
-          timeout: 20000,
+          timeout: ALERTING_PLUGIN_TIMEOUT,
         });
 
         // Click the update button
         cy.get('button').contains('Update').last().click({ force: true });
 
         // Confirm we're on the Monitor Details page by searching for the History element
-        cy.contains('History', { timeout: 20000 });
+        cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });
       });
     });
   });

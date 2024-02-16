@@ -6,6 +6,7 @@
 import {
   ALERTING_API,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleCompositeJson from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_composite_level_monitor.json';
 import * as _ from 'lodash';
@@ -55,7 +56,7 @@ describe('CompositeLevelMonitor', () => {
       cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
       // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-      cy.contains('Create monitor', { timeout: 20000 });
+      cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
 
       // Go to create monitor page
       cy.contains('Create monitor').click({ force: true });
@@ -156,7 +157,7 @@ describe('CompositeLevelMonitor', () => {
 
     it('by visual editor', () => {
       // Verify edit page
-      cy.contains('Edit monitor', { timeout: 20000 });
+      cy.contains('Edit monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
       cy.get('input[name="name"]').type('_edited');
 
       cy.get('label').contains('Visual editor').click({ force: true });
@@ -186,7 +187,9 @@ describe('CompositeLevelMonitor', () => {
       // Wait for monitor to be created
       cy.wait('@updateMonitorRequest').then(() => {
         cy.wait(5000);
-        cy.contains(`${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`);
+        cy.contains(`${SAMPLE_VISUAL_EDITOR_MONITOR}_edited`, {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
       });
     });
   });
