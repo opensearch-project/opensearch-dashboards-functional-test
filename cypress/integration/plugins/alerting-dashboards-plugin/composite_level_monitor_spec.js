@@ -55,6 +55,20 @@ describe('CompositeLevelMonitor', () => {
       // Visit Alerting OpenSearch Dashboards
       cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
+      // Confirm sample delegate monitors are present
+      cy.contains(
+        sampleCompositeJson.sample_composite_associated_monitor_1.name,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      );
+      cy.contains(
+        sampleCompositeJson.sample_composite_associated_monitor_2.name,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      );
+      cy.contains(
+        sampleCompositeJson.sample_composite_associated_monitor_3.name,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      );
+
       // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
       cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
 
@@ -77,17 +91,15 @@ describe('CompositeLevelMonitor', () => {
       });
 
       // Select associated monitors
-      cy.get('[id="associatedMonitorsList_0"]').type('monitorOne', {
-        delay: 50,
-        force: true,
-      });
-      cy.get('[title="monitorOne"]').click({ force: true });
+      cy.get('[id="associatedMonitorsList_0"]').type(
+        'monitorOne{downArrow}{enter}',
+        { delay: 200 }
+      );
 
-      cy.get('[id="associatedMonitorsList_1"]').type('monitorTwo', {
-        delay: 50,
-        force: true,
-      });
-      cy.get('[title="monitorTwo"]').click({ force: true });
+      cy.get('[id="associatedMonitorsList_1"]').type(
+        'monitorTwo{downArrow}{enter}',
+        { delay: 200 }
+      );
 
       cy.get('button').contains('Add trigger').click({ force: true });
 
@@ -162,13 +174,12 @@ describe('CompositeLevelMonitor', () => {
 
       cy.get('label').contains('Visual editor').click({ force: true });
 
-      cy.get('button').contains('Add another monitor').click({ force: true });
+      cy.contains('Add another monitor').click();
 
-      cy.get('[id="associatedMonitorsList_2"]').type('monitorThree', {
-        delay: 50,
-        force: true,
-      });
-      cy.get('[title="monitorThree"]').click({ force: true });
+      cy.get('[id="associatedMonitorsList_2"]').type(
+        'monitorThree{downArrow}{enter}',
+        { delay: 200 }
+      );
 
       cy.get('button').contains('Composite trigger').click({ force: true });
 
