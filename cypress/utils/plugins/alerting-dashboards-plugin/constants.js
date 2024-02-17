@@ -17,3 +17,5 @@ export const ALERTING_API = {
 };
 
 export const ALERTING_PLUGIN_NAME = 'alerting';
+
+export const ALERTING_PLUGIN_TIMEOUT = 60000;
