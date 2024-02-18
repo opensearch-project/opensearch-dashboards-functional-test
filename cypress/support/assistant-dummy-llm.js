@@ -10,7 +10,7 @@ const suggestionJson = require('../fixtures/plugins/dashboards-assistant/suggest
 const MATCH_AGENT_FRAMEWORK_PROMPT =
   'Assistant is designed to be able to assist with a wide range of tasks';
 const MATCH_SUGGESTION_PROMPT = 'You are an AI that only speaks JSON';
-const TOOL_RESPONSE = 'TOOL RESPONSE:';
+const TOOL_RESPONSE = 'TOOL RESPONSE of ';
 
 const server = http.createServer((req, res) => {
   // Set the content type to JSON
