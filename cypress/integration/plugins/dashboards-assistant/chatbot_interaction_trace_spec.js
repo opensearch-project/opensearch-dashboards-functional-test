@@ -74,7 +74,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('@tracePage')
           .find('.euiAccordion')
           // tool name
-          .contains('Step 1 - CatIndexTool')
+          .contains('Step 2 - CatIndexTool')
           .click({ force: true });
 
         // tool output
