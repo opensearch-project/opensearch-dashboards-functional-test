@@ -78,7 +78,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           .click({ force: true });
 
         // tool output
-        cy.contains('Output: health	status	index');
+        cy.contains('row,health,status,index');
       });
 
       it('trace page display correctly in fullscreen mode', () => {
