@@ -258,6 +258,8 @@ export const bootstrapDashboard = (
   );
 
   miscUtils.visitPage('app/dashboards#/create');
+  cy.wait(5000);
+  cy.waitForLoader();
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {
