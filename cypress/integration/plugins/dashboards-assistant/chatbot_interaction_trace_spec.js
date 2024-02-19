@@ -69,7 +69,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       it('tools invocation displayed in trace steps', () => {
         // trace
         cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
-        cy.get('@tracePage').find('.euiAccordion').should('have.length', 1);
+        cy.get('@tracePage').find('.euiAccordion').should('have.length', 3);
 
         cy.get('@tracePage')
           .find('.euiAccordion')
