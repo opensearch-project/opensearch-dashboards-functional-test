@@ -69,16 +69,16 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       it('tools invocation displayed in trace steps', () => {
         // trace
         cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
-        cy.get('@tracePage').find('.euiAccordion').should('have.length', 1);
+        cy.get('@tracePage').find('.euiAccordion').should('have.length', 3);
 
         cy.get('@tracePage')
           .find('.euiAccordion')
           // tool name
-          .contains('Step 1 - CatIndexTool')
+          .contains('Step 2 - CatIndexTool')
           .click({ force: true });
 
         // tool output
-        cy.contains('Output: health	status	index');
+        cy.contains('row,health,status,index');
       });
 
       it('trace page display correctly in fullscreen mode', () => {
