@@ -99,7 +99,10 @@ PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 # User can send custom browser path through env variable
 if [ -z "$BROWSER_PATH" ]
 then
-  BROWSER_PATH="chromium"
+    # Lock chrome version using @puppeteer/browsers so it is independent of Operating Systems
+    # chromium@1108766 is version 112 with revision r1108766
+    # Please keep this version until cypress upgrade or test will freeze: https://github.com/opensearch-project/opensearch-build/issues/4241
+    BROWSER_PATH=`echo y | npx @puppeteer/browsers@2.0.1 install chromium@1108766 | cut -d ' ' -f2`
 fi
 
 . ./test_finder.sh
