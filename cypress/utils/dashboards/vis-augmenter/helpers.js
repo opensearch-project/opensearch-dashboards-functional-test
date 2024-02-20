@@ -178,7 +178,6 @@ const addMetric = (metric, index) => {
           force: true,
         }
       );
-      cy.contains(`${metric.aggregation}`).click({ force: true });
     });
 
   // non-count aggregations will have an additional field value to set
@@ -257,8 +256,9 @@ export const bootstrapDashboard = (
     sampleDataFilepath
   );
 
+  cy.intercept('/api/saved_objects/*').as('savedObjectsApis');
   miscUtils.visitPage('app/dashboards#/create');
-  cy.wait(60000);
+  cy.wait(['@savedObjectsApis'], { timeout: 120000 });
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {
