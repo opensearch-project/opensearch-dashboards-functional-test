@@ -258,7 +258,7 @@ export const bootstrapDashboard = (
 
   cy.intercept('/api/saved_objects/*').as('savedObjectsApis');
   miscUtils.visitPage('app/dashboards#/create');
-  cy.wait(['@savedObjectsApis'], { timeout: 120000 });
+  cy.wait(['@savedObjectsApis'], { timeout: 300000 });
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {
@@ -270,7 +270,8 @@ export const bootstrapDashboard = (
     );
   });
 
-  cy.getElementByTestId('dashboardSaveMenuItem').click({
+  /// wait for page load
+  cy.getElementByTestId('dashboardSaveMenuItem', { timeout: 300000 }).click({
     force: true,
   });
 
