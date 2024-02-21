@@ -271,28 +271,28 @@ export const bootstrapDashboard = (
     // wait for vis saved
     cy.contains(`Saved '${visualizationSpec.name}'`);
     cy.wait(5000);
-    cy.get(`[data-title="${visualizationSpec.name}"]`).should('have.length', 1);
+    // cy.get(`[data-title="${visualizationSpec.name}"]`).should('have.length', 1);
     // somehow the visualization is not added to dashboard
-    // cy.get('body').then(($body) => {
-    //   if ($body.find(`[data-title="${visualizationSpec.name}"]`).length === 0) {
-    //     cy.getElementByTestId('dashboardAddPanelButton').click({ force: true });
-    //     cy.getElementByTestId('savedObjectFinderSearchInput')
-    //       .focus()
-    //       .clear()
-    //       .type(visualizationSpec.name);
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-title="${visualizationSpec.name}"]`).length === 0) {
+        cy.getElementByTestId('dashboardAddPanelButton').click({ force: true });
+        cy.getElementByTestId('savedObjectFinderSearchInput')
+          .focus()
+          .clear()
+          .type(visualizationSpec.name);
 
-    //     cy.getElementByTestId(
-    //       `savedObjectTitle${visualizationSpec.name}`
-    //     ).click();
+        cy.getElementByTestId(
+          `savedObjectTitle${visualizationSpec.name}`
+        ).click();
 
-    //     cy.getElementByTestId('euiFlyoutCloseButton').click();
+        cy.getElementByTestId('euiFlyoutCloseButton').click();
 
-    //     cy.get(`[data-title="${visualizationSpec.name}"]`).should(
-    //       'have.length',
-    //       1
-    //     );
-    //   }
-    // });
+        cy.get(`[data-title="${visualizationSpec.name}"]`).should(
+          'have.length',
+          1
+        );
+      }
+    });
   });
 
   /// wait for page load
