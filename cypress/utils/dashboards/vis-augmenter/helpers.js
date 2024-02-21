@@ -268,6 +268,31 @@ export const bootstrapDashboard = (
       visualizationSpec.name,
       visualizationSpec.metrics
     );
+    // wait for vis saved
+    cy.contains(`Saved '${visualizationSpec.name}'`);
+    cy.wait(5000);
+    cy.get(`[data-title="${visualizationSpec.name}"]`).should('have.length', 1);
+    // somehow the visualization is not added to dashboard
+    // cy.get('body').then(($body) => {
+    //   if ($body.find(`[data-title="${visualizationSpec.name}"]`).length === 0) {
+    //     cy.getElementByTestId('dashboardAddPanelButton').click({ force: true });
+    //     cy.getElementByTestId('savedObjectFinderSearchInput')
+    //       .focus()
+    //       .clear()
+    //       .type(visualizationSpec.name);
+
+    //     cy.getElementByTestId(
+    //       `savedObjectTitle${visualizationSpec.name}`
+    //     ).click();
+
+    //     cy.getElementByTestId('euiFlyoutCloseButton').click();
+
+    //     cy.get(`[data-title="${visualizationSpec.name}"]`).should(
+    //       'have.length',
+    //       1
+    //     );
+    //   }
+    // });
   });
 
   /// wait for page load
@@ -281,8 +306,7 @@ export const bootstrapDashboard = (
     force: true,
   });
 
-  // wait for dashbaord to be saved
-  cy.wait(5000);
+  cy.contains(`Dashboard '${dashboardName}' was saved`);
 
   // make newly created dashboards searchable
   devToolsRequest('.kibana*/_refresh', 'POST');
