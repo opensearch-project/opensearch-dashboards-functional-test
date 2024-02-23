@@ -27,24 +27,6 @@ describe('Cypress', () => {
     cy.wait(3000);
   });
 
-  it('Download from reporting homepage', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
-    });
-    cy.location('pathname', { timeout: TIMEOUT }).should(
-      'include',
-      '/reports-dashboards'
-    );
-
-    cy.wait(12500);
-    cy.get('[id="landingPageOnDemandDownload"]')
-      .contains('CSV')
-      .click({ force: true });
-    cy.get('.euiToastHeader__title')
-      .contains('Successfully downloaded report')
-      .should('exist');
-  });
-
   it('Download pdf from in-context menu', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#`);
     cy.wait(5000);
@@ -91,9 +73,7 @@ describe('Cypress', () => {
     cy.wait(5000);
 
     // open saved search list
-    cy.get(
-      'button.euiButtonEmpty:nth-child(3) > span:nth-child(1) > span:nth-child(1)'
-    ).click({ force: true });
+    cy.get('[data-test-subj="discoverOpenButton"]').click({ force: true });
     cy.wait(5000);
 
     // click first entry

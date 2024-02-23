@@ -6,6 +6,7 @@
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
@@ -44,8 +45,8 @@ describe('Alerts by trigger flyout', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Confirm test monitors were created successfully
-    cy.contains(BUCKET_MONITOR_NAME);
-    cy.contains(QUERY_MONITOR_NAME);
+    cy.contains(BUCKET_MONITOR_NAME, { timeout: ALERTING_PLUGIN_TIMEOUT });
+    cy.contains(QUERY_MONITOR_NAME, { timeout: ALERTING_PLUGIN_TIMEOUT });
 
     // Wait 1 minutes for the test monitors to trigger alerts,
     // then go to the 'Alerts by trigger' dashboard page to view alerts
@@ -57,8 +58,8 @@ describe('Alerts by trigger flyout', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Confirm dashboard is displaying rows for the test monitors.
-    cy.contains(BUCKET_MONITOR_NAME);
-    cy.contains(QUERY_MONITOR_NAME);
+    cy.contains(BUCKET_MONITOR_NAME, { timeout: ALERTING_PLUGIN_TIMEOUT });
+    cy.contains(QUERY_MONITOR_NAME, { timeout: ALERTING_PLUGIN_TIMEOUT });
 
     // Waiting 5 seconds for alerts to finish loading.
     // This short wait period alleviates flakiness observed during these tests.
@@ -67,91 +68,144 @@ describe('Alerts by trigger flyout', () => {
 
   it('Bucket-level monitor flyout test', () => {
     // Click the link for the flyout.
-    cy.get(`[data-test-subj="euiLink_${BUCKET_TRIGGER}"]`).click();
+    cy.get(`[data-test-subj="euiLink_${BUCKET_TRIGGER}"]`, {
+      timeout: ALERTING_PLUGIN_TIMEOUT,
+    }).click();
 
     // Perform the test checks within the flyout component.
-    cy.get(`[data-test-subj="alertsDashboardFlyout_${BUCKET_TRIGGER}"]`).within(
-      () => {
-        // Confirm flyout header contains expected text.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_header_${BUCKET_TRIGGER}"]`
-        ).contains(`Alerts by ${BUCKET_TRIGGER}`);
+    cy.get(`[data-test-subj="alertsDashboardFlyout_${BUCKET_TRIGGER}"]`, {
+      timeout: ALERTING_PLUGIN_TIMEOUT,
+    }).within(() => {
+      // Confirm flyout header contains expected text.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_header_${BUCKET_TRIGGER}"]`,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      ).contains(`Alerts by ${BUCKET_TRIGGER}`, {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm 'Trigger name' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_triggerName_${BUCKET_TRIGGER}"]`
-        ).as('triggerName');
-        cy.get('@triggerName').contains('Trigger name');
-        cy.get('@triggerName').contains(BUCKET_TRIGGER);
+      // Confirm 'Trigger name' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_triggerName_${BUCKET_TRIGGER}"]`,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      ).as('triggerName');
+      cy.get('@triggerName').contains('Trigger name', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
+      cy.get('@triggerName').contains(BUCKET_TRIGGER, {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm 'Severity' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_severity_${BUCKET_TRIGGER}"]`
-        ).as('severity');
-        cy.get('@severity').contains('Severity');
-        cy.get('@severity').contains('4 (Low)');
+      // Confirm 'Severity' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_severity_${BUCKET_TRIGGER}"]`,
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      ).as('severity');
+      cy.get('@severity', { timeout: ALERTING_PLUGIN_TIMEOUT }).contains(
+        'Severity',
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      );
+      cy.get('@severity', { timeout: ALERTING_PLUGIN_TIMEOUT }).contains(
+        '4 (Low)',
+        { timeout: ALERTING_PLUGIN_TIMEOUT }
+      );
 
-        // Confirm 'Monitor' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_monitor_${BUCKET_TRIGGER}"]`
-        ).as('monitor');
-        cy.get('@monitor').contains('Monitor');
-        cy.get('@monitor').contains(BUCKET_MONITOR_NAME);
+      // Confirm 'Monitor' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_monitor_${BUCKET_TRIGGER}"]`
+      ).as('monitor');
+      cy.get('@monitor').contains('Monitor', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
+      cy.get('@monitor').contains(BUCKET_MONITOR_NAME, {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm 'Conditions' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_conditions_${BUCKET_TRIGGER}"]`
-        ).as('conditions');
-        cy.get('@conditions').contains('Conditions');
+      // Confirm 'Conditions' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_conditions_${BUCKET_TRIGGER}"]`
+      ).as('conditions');
+      cy.get('@conditions').contains('Conditions', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm the 'Conditions' sections renders with all of the expected conditions.
-        [
-          'params._count < 10000',
-          'OR',
-          'params.avg_products_price == 10',
-        ].forEach((entry) => cy.get('@conditions').contains(entry));
+      // Confirm the 'Conditions' sections renders with all of the expected conditions.
+      [
+        'params._count < 10000',
+        'OR',
+        'params.avg_products_price == 10',
+      ].forEach((entry) =>
+        cy
+          .get('@conditions')
+          .contains(entry, { timeout: ALERTING_PLUGIN_TIMEOUT })
+      );
 
-        // Confirm 'Time range for the last' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_timeRange_${BUCKET_TRIGGER}"]`
-        ).as('timeRange');
-        cy.get('@timeRange').contains('Time range for the last');
-        cy.get('@timeRange').contains('10 day(s)');
+      // Confirm 'Time range for the last' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_timeRange_${BUCKET_TRIGGER}"]`
+      ).as('timeRange');
+      cy.get('@timeRange').contains('Time range for the last', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
+      cy.get('@timeRange').contains('10 day(s)', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm 'Filters' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_filters_${BUCKET_TRIGGER}"]`
-        ).as('filters');
-        cy.get('@filters').contains('Filters');
-        cy.get('@filters').contains('All fields are included');
+      // Confirm 'Filters' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_filters_${BUCKET_TRIGGER}"]`
+      ).as('filters');
+      cy.get('@filters').contains('Filters', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
+      cy.get('@filters').contains('All fields are included', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Confirm 'Group by' sections renders as expected.
-        cy.get(
-          `[data-test-subj="alertsDashboardFlyout_groupBy_${BUCKET_TRIGGER}"]`
-        ).as('groupBy');
-        cy.get('@groupBy').contains('Group by');
-        cy.get('@groupBy').contains('customer_gender, user');
+      // Confirm 'Group by' sections renders as expected.
+      cy.get(
+        `[data-test-subj="alertsDashboardFlyout_groupBy_${BUCKET_TRIGGER}"]`
+      ).as('groupBy');
+      cy.get('@groupBy').contains('Group by', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
+      cy.get('@groupBy').contains('customer_gender, user', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      });
 
-        // Set the 'severity' filter to only display ACTIVE alerts.
-        cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
+      // Set the 'severity' filter to only display ACTIVE alerts.
+      cy.get('[data-test-subj="dashboardAlertStateFilter"]', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).select('Active');
 
-        // This monitor configuration consistently returns 46 alerts when testing locally.
-        // Confirm the flyout dashboard contains more than 1 ACTIVE alert.
-        cy.get('tbody > tr').should(($tr) =>
-          expect($tr).to.have.length.greaterThan(1)
-        );
+      // This monitor configuration consistently returns 46 alerts when testing locally.
+      // Confirm the flyout dashboard contains more than 1 ACTIVE alert.
+      cy.get('tbody > tr').should(($tr) =>
+        expect($tr).to.have.length.greaterThan(1)
+      );
 
-        // Select the first and last alerts in the table.
-        cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
-        cy.get('input[data-test-subj^="checkboxSelectRow-"]').last().click();
+      // Select the first and last alerts in the table.
+      cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      })
+        .first()
+        .click();
+      cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      })
+        .last()
+        .click();
 
-        // Press the flyout 'Acknowledge button, and wait for the AcknowledgeAlerts API call to complete.
-        cy.get('[data-test-subj="flyoutAcknowledgeAlertsButton"]').click();
-      }
-    );
+      // Press the flyout 'Acknowledge button, and wait for the AcknowledgeAlerts API call to complete.
+      cy.get('[data-test-subj="flyoutAcknowledgeAlertsButton"]', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).click();
+    });
 
     // Confirm acknowledge alerts toast displays expected text.
-    cy.contains('Successfully acknowledged 2 alerts.');
+    cy.contains('Successfully acknowledged 2 alerts.', {
+      timeout: ALERTING_PLUGIN_TIMEOUT,
+    });
 
     // Confirm alerts were acknowledged as expected.
     cy.get(`[data-test-subj="alertsDashboardFlyout_${BUCKET_TRIGGER}"]`).within(
@@ -185,58 +239,85 @@ describe('Alerts by trigger flyout', () => {
         // Confirm flyout header contains expected text.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_header_${QUERY_TRIGGER}"]`
-        ).contains(`Alerts by ${QUERY_TRIGGER}`);
+        ).contains(`Alerts by ${QUERY_TRIGGER}`, {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Confirm 'Trigger name' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_triggerName_${QUERY_TRIGGER}"]`
         ).as('triggerName');
-        cy.get('@triggerName').contains('Trigger name');
-        cy.get('@triggerName').contains(QUERY_TRIGGER);
+        cy.get('@triggerName').contains('Trigger name', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@triggerName').contains(QUERY_TRIGGER, {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Confirm 'Severity' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_severity_${QUERY_TRIGGER}"]`
         ).as('severity');
-        cy.get('@severity').contains('Severity');
-        cy.get('@severity').contains('2 (High)');
+        cy.get('@severity').contains('Severity', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@severity').contains('2 (High)', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Confirm 'Monitor' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_monitor_${QUERY_TRIGGER}"]`
         ).as('monitor');
-        cy.get('@monitor').contains('Monitor');
-        cy.get('@monitor').contains(QUERY_MONITOR_NAME);
+        cy.get('@monitor').contains('Monitor', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@monitor').contains(QUERY_MONITOR_NAME, {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Confirm 'Conditions' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_conditions_${QUERY_TRIGGER}"]`
         ).as('conditions');
-        cy.get('@conditions').contains('Condition');
+        cy.get('@conditions').contains('Condition', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
         cy.get('@conditions').contains(
-          `ctx.results[0].hits.total.value < 10000`
+          `ctx.results[0].hits.total.value < 10000`,
+          { timeout: ALERTING_PLUGIN_TIMEOUT }
         );
 
         // Confirm 'Time range for the last' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_timeRange_${QUERY_TRIGGER}"]`
         ).as('timeRange');
-        cy.get('@timeRange').contains('Time range for the last');
-        cy.get('@timeRange').contains('10 day(s)');
+        cy.get('@timeRange').contains('Time range for the last', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@timeRange').contains('10 day(s)', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Confirm 'Filters' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_filters_${QUERY_TRIGGER}"]`
         ).as('filters');
-        cy.get('@filters').contains('Filters');
-        cy.get('@filters').contains('-');
+        cy.get('@filters').contains('Filters', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@filters').contains('-', { timeout: ALERTING_PLUGIN_TIMEOUT });
 
         // Confirm 'Group by' sections renders as expected.
         cy.get(
           `[data-test-subj="alertsDashboardFlyout_groupBy_${QUERY_TRIGGER}"]`
         ).as('groupBy');
-        cy.get('@groupBy').contains('Group by');
-        cy.get('@groupBy').contains('user');
+        cy.get('@groupBy').contains('Group by', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
+        cy.get('@groupBy').contains('user', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        });
 
         // Set the 'severity' filter to only display ACTIVE alerts.
         cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');

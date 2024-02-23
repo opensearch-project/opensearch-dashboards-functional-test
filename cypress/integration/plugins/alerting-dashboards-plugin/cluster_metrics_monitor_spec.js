@@ -8,6 +8,7 @@ import sampleClusterMetricsMonitor from '../../../fixtures/plugins/alerting-dash
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
 
@@ -28,7 +29,9 @@ const addClusterMetricsTrigger = (
   source
 ) => {
   // Click 'Add trigger' button
-  cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+  cy.contains('Add trigger', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
+    force: true,
+  });
 
   if (isEdit === true) {
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
@@ -52,7 +55,7 @@ const addClusterMetricsTrigger = (
         force: true,
         parseSpecialCharSequences: false,
         delay: 5,
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       })
       .trigger('blur', { force: true });
   });
@@ -91,7 +94,7 @@ describe('ClusterMetricsMonitor', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-    cy.contains('Create monitor', { timeout: 20000 });
+    cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   describe('can be created', () => {
@@ -105,7 +108,9 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
+      cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT }).click(
+        { force: true }
+      );
 
       // Select ClusterMetrics radio card
       cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
@@ -237,7 +242,9 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor', { timeout: 20000 }).click({ force: true });
+      cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT }).click(
+        { force: true }
+      );
 
       // Select ClusterMetrics radio card
       cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
@@ -406,7 +413,7 @@ describe('ClusterMetricsMonitor', () => {
         );
 
         // Confirm there are 0 triggers defined
-        cy.contains('Triggers (0)', { timeout: 20000 });
+        cy.contains('Triggers (0)', { timeout: ALERTING_PLUGIN_TIMEOUT });
       });
     });
   });

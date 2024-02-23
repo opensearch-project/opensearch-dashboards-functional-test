@@ -6,6 +6,7 @@
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
@@ -15,8 +16,6 @@ const BUCKET_MONITOR = 'sample_alerts_flyout_bucket_level_monitor';
 const BUCKET_TRIGGER = 'sample_alerts_flyout_bucket_level_trigger';
 const QUERY_MONITOR = 'sample_alerts_flyout_query_level_monitor';
 const QUERY_TRIGGER = 'sample_alerts_flyout_query_level_trigger';
-
-const TWENTY_SECONDS = 20000;
 
 describe('AcknowledgeAlertsModal', () => {
   before(() => {
@@ -34,8 +33,8 @@ describe('AcknowledgeAlertsModal', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Confirm test monitors were created successfully
-    cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
-    cy.contains(QUERY_MONITOR, { timeout: TWENTY_SECONDS });
+    cy.contains(BUCKET_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
+    cy.contains(QUERY_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
 
     // Wait 1 minute for the test monitors to trigger alerts, then go to the 'Alerts by trigger' dashboard page to view alerts
     cy.wait(60000);
@@ -46,8 +45,8 @@ describe('AcknowledgeAlertsModal', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Confirm dashboard is displaying rows for the test monitors.
-    cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
-    cy.contains(QUERY_MONITOR, { timeout: TWENTY_SECONDS });
+    cy.contains(BUCKET_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
+    cy.contains(QUERY_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   it('Acknowledge button disabled when more than 1 trigger selected', () => {
@@ -55,7 +54,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
 
     // Confirm the 'Alerts by trigger' dashboard contains more than 1 row.
-    cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+    cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(($tr) =>
       expect($tr).to.have.length.greaterThan(1)
     );
 
@@ -72,7 +71,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.get(`input[type="search"]`).focus().type(BUCKET_TRIGGER);
 
     // Confirm the dashboard is displaying only 1 row.
-    cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+    cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(($tr) =>
       expect($tr).to.have.length(1)
     );
 
@@ -95,18 +94,18 @@ describe('AcknowledgeAlertsModal', () => {
 
         // This monitor configuration consistently returns 46 alerts when testing locally.
         // Confirm the modal dashboard contains more than 1 ACTIVE alert.
-        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-          expect($tr).to.have.length.greaterThan(1)
+        cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(
+          ($tr) => expect($tr).to.have.length.greaterThan(1)
         );
 
         // Select the first and last alerts in the table.
         cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
-          timeout: TWENTY_SECONDS,
+          timeout: ALERTING_PLUGIN_TIMEOUT,
         })
           .first()
           .click();
         cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
-          timeout: TWENTY_SECONDS,
+          timeout: ALERTING_PLUGIN_TIMEOUT,
         })
           .last()
           .click();
@@ -130,8 +129,8 @@ describe('AcknowledgeAlertsModal', () => {
         );
 
         // Confirm the table displays 2 acknowledged alerts.
-        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-          expect($tr).to.have.length(2)
+        cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(
+          ($tr) => expect($tr).to.have.length(2)
         );
       }
     );
@@ -150,7 +149,7 @@ describe('AcknowledgeAlertsModal', () => {
     cy.get(`input[type="search"]`).focus().type(QUERY_TRIGGER);
 
     // Confirm the dashboard is displaying only 1 row.
-    cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
+    cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(($tr) =>
       expect($tr).to.have.length(1)
     );
 
@@ -172,8 +171,8 @@ describe('AcknowledgeAlertsModal', () => {
         cy.get('[data-test-subj="dashboardAlertStateFilter"]').select('Active');
 
         // Confirm the modal dashboard contains 1 alert.
-        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-          expect($tr).to.have.length(1)
+        cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(
+          ($tr) => expect($tr).to.have.length(1)
         );
 
         // Select the alert.
@@ -198,8 +197,8 @@ describe('AcknowledgeAlertsModal', () => {
         );
 
         // Confirm the table displays 1 acknowledged alert.
-        cy.get('tbody > tr', { timeout: TWENTY_SECONDS }).should(($tr) =>
-          expect($tr).to.have.length(1)
+        cy.get('tbody > tr', { timeout: ALERTING_PLUGIN_TIMEOUT }).should(
+          ($tr) => expect($tr).to.have.length(1)
         );
       }
     );

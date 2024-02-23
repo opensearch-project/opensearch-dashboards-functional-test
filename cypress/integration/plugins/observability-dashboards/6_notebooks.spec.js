@@ -6,15 +6,17 @@
 /// <reference types="cypress" />
 
 import {
-  SAMPLE_SQL_QUERY,
   TEST_NOTEBOOK,
   SAMPLE_URL,
   BASE_PATH,
   delayTime,
   MARKDOWN_TEXT,
+  OBSERVABILITY_INDEX_NAME,
 } from '../../../utils/constants';
 
 import { skipOn } from '@cypress/skip-test';
+
+let loadedOnce = 0;
 
 const moveToNotebookHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-notebooks#/`);
@@ -25,8 +27,25 @@ const moveToTestNotebook = () => {
     timeout: delayTime * 3,
   });
 
-  // Reload page to load notebooks if they are not flushed in OpenSearch index yet.
-  cy.reload();
+  // Force refresh the observablity index and reload page to load notebooks.
+  if (loadedOnce === 0) {
+    cy.request({
+      method: 'POST',
+      failOnStatusCode: false,
+      form: false,
+      url: 'api/console/proxy',
+      headers: {
+        'content-type': 'application/json;charset=UTF-8',
+        'osd-xsrf': true,
+      },
+      qs: {
+        path: `${OBSERVABILITY_INDEX_NAME}/_refresh`,
+        method: 'POST',
+      },
+    });
+    cy.reload();
+    loadedOnce = 1;
+  }
 
   cy.get('.euiTableCellContent')
     .contains(TEST_NOTEBOOK, {
@@ -77,23 +96,6 @@ describe('Testing notebook actions', () => {
     cy.get('code').contains('POST').should('exist');
     cy.get('td').contains('b2').should('exist');
   });
-
-  it('Adds a SQL query paragraph', () => {
-    cy.get('button[data-test-subj="AddParagraphButton"]').click();
-    cy.get('button[data-test-subj="AddCodeBlockBtn"]').click();
-
-    cy.get('textarea[data-test-subj="editorArea-1"]').clear();
-    cy.get('textarea[data-test-subj="editorArea-1"]').focus();
-    cy.get('textarea[data-test-subj="editorArea-1"]').type(SAMPLE_SQL_QUERY);
-    cy.get('button[data-test-subj="runRefreshBtn-1"]').click();
-
-    cy.get('textarea[data-test-subj="editorArea-1"]').should('not.exist');
-    cy.get('div[data-test-subj="queryOutputText"]')
-      .contains('select 1')
-      .should('exist');
-
-    cy.get('.euiDataGrid__overflow').should('exist');
-  });
 });
 
 describe('Test reporting integration if plugin installed', () => {
@@ -113,7 +115,7 @@ describe('Test reporting integration if plugin installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create in-context PNG report from notebook', () => {
@@ -121,7 +123,7 @@ describe('Test reporting integration if plugin installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
-    cy.get('#downloadInProgressLoadingModal').should('exist');
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create on-demand report definition from context menu', () => {

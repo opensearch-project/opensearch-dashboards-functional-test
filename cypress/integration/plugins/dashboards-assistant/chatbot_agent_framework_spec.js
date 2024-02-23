@@ -27,7 +27,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     describe('Interact with Agent framework', () => {
       it('toggle Chatbot and enable to interact', () => {
         // The header may render multiple times, wait for UI to be stable
-        cy.wait(10000);
+        cy.wait(5000);
 
         // enable to toggle and show Chatbot
         cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
@@ -42,6 +42,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
         // should have a suggestion section
         cy.get(`[aria-label="chat suggestions"]`).should('be.length', 1);
+        cy.contains('suggestion1');
 
         // Click regenerate button
         cy.get(`button[title="regenerate message"]`).click();
@@ -59,6 +60,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
         // should have a suggestion section
         cy.get(`[aria-label="chat suggestions"]`).should('be.length', 1);
+        cy.contains('suggestion2');
       });
     });
   });

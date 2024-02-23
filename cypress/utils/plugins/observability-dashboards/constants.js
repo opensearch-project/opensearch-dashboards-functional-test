@@ -4,6 +4,7 @@
  */
 import { BASE_PATH } from '../../base_constants';
 
+export const OBSERVABILITY_INDEX_NAME = '.opensearch-observability';
 export const delayTime = 1500;
 
 //Datasources API Constants

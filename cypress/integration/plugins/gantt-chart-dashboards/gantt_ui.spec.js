@@ -11,7 +11,7 @@ import { BASE_PATH } from '../../../utils/constants';
 
 dayjs.extend(customParseFormat);
 
-const delay = 100;
+const delay = 5000;
 const GANTT_VIS_NAME =
   'A test gantt chart ' + Math.random().toString(36).substring(2);
 const Y_LABEL = 'A unique label for Y-axis';
@@ -57,6 +57,7 @@ describe('Dump test data', () => {
 describe('Save a gantt chart', () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
+    cy.wait(delay);
   });
 
   it('Creates and saves a gantt chart', () => {
@@ -83,8 +84,10 @@ describe('Save a gantt chart', () => {
 
 describe('Render and configure a gantt chart', () => {
   beforeEach(() => {
+    cy.wait(delay);
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
+    cy.wait(delay);
   });
 
   it('Renders no data message', () => {
@@ -114,7 +117,7 @@ describe('Render and configure a gantt chart', () => {
     cy.wait(delay);
 
     cy.get('.traces').should('have.length', DEFAULT_SIZE);
-
+    cy.wait(delay);
     cy.get('.euiButton__text').contains('Save').click({ force: true });
     cy.wait(delay);
     cy.get('button[data-test-subj="confirmSaveSavedObjectButton"]').click({
@@ -128,6 +131,7 @@ describe('Configure panel settings', () => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
     cy.contains('Panel settings').click({ force: true });
+    cy.wait(delay);
   });
 
   it('Changes y-axis label', () => {
@@ -244,7 +248,7 @@ describe('Configure panel settings', () => {
 describe('Add gantt chart to dashboard', () => {
   it('Adds gantt chart to dashboard', () => {
     cy.visit(`${BASE_PATH}/app/dashboards#/create`);
-
+    cy.wait(delay);
     cy.contains('Add an existing').click({ force: true });
     cy.wait(delay);
     cy.get('input[data-test-subj="savedObjectFinderSearchInput"]')
