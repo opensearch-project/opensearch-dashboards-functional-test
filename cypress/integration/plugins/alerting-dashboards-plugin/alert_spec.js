@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { ALERTING_PLUGIN_NAME } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
+import {
+  ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
+} from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
 import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
 import { BASE_PATH } from '../../../utils/base_constants';
@@ -19,7 +22,7 @@ describe('Alerts', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
     // Common text to wait for to confirm page loaded, give up to 30 seconds for initial load
-    cy.contains('Acknowledge', { timeout: 30000 });
+    cy.contains('Acknowledge', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   describe("can be in 'Active' state", () => {

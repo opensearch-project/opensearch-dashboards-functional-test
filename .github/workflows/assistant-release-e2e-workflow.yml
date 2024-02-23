@@ -14,6 +14,7 @@ jobs:
           filters: |
             tests:
               - 'cypress/**/dashboards-assistant/**'
+              - 'cypress/support/assistant-dummy-llm.js'
 
   tests-with-security:
     needs: changes
