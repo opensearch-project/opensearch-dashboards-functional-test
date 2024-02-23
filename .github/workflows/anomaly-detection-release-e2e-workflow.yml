@@ -21,4 +21,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Anomaly Detection
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*' --env NO_COMMAND_LOG=1
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/anomaly-detection-dashboards-plugin/*'
