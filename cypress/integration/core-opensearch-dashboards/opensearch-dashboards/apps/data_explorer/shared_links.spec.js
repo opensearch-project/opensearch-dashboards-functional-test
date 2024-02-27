@@ -77,9 +77,8 @@ describe('shared links', () => {
     });
 
     it('should allow for copying the saved object URL', function () {
-      const url = decodeURI(
-        'http://localhost:5601/app/data-explorer/discover/#/view/ab12e3c0-f231-11e6-9486-733b1ac9221a?_g=%28filters%3A%21%28%29%2CrefreshInterval%3A%28pause%3A%21t%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272015-09-19T13%3A31%3A44.000Z%27%2Cto%3A%272015-09-24T01%3A31%3A44.000Z%27%29%29'
-      );
+      const url =
+        'http://localhost:5601/app/data-explorer/discover/#/view/ab12e3c0-f231-11e6-9486-733b1ac9221a?_g=%28filters%3A%21%28%29%2CrefreshInterval%3A%28pause%3A%21t%2Cvalue%3A0%29%2Ctime%3A%28from%3A%272015-09-19T13%3A31%3A44.000Z%27%2Cto%3A%272015-09-24T01%3A31%3A44.000Z%27%29%29';
 
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('exportAsSavedObject')
