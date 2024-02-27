@@ -4,7 +4,15 @@
  */
 import { BASE_PATH } from '../../base_constants';
 
+export const OBSERVABILITY_INDEX_NAME = '.opensearch-observability';
 export const delayTime = 1500;
+
+//Datasources API Constants
+export const DATASOURCES_API_PREFIX = '/app/datasources';
+export const DATASOURCES_PATH = {
+  DATASOURCES_CREATION_BASE: `${DATASOURCES_API_PREFIX}#/new`,
+  DATASOURCES_CONFIG_BASE: `${DATASOURCES_API_PREFIX}#/configure`,
+};
 
 // trace analytics
 export const TRACE_ID = '8832ed6abbb2a83516461960c89af49d';
@@ -104,6 +112,10 @@ POST _plugins/_sql/_explain
 | a3 | b3 | c3 | d3 |
 `;
 
+export const SAMPLE_SQL_QUERY = `%sql
+select 1
+`;
+
 export const SQL_QUERY_TEXT = `%sql
 select * from opensearch_dashboards_sample_data_flights limit 20
 `;
@@ -191,9 +203,8 @@ export const landOnPanels = () => {
  * Panel Constants
  */
 
-export const PANEL_DELAY = 100;
-
 export const TEST_PANEL = 'Test Panel';
+export const TEST_PANEL_COPY = 'Test Panel (copy)';
 export const SAMPLE_PANEL = '[Logs] Web traffic Panel';
 
 export const SAMPLE_VISUALIZATIONS_NAMES = [
@@ -230,6 +241,7 @@ export const PPL_FILTER =
 
 export const TYPING_DELAY = 1500;
 export const TIMEOUT_DELAY = Cypress.env('SECURITY_ENABLED') ? 60000 : 30000;
+export const PANELS_TIMEOUT = 120000;
 
 export const moveToHomePage = () => {
   cy.visit(`${BASE_PATH}/app/observability-applications#`);

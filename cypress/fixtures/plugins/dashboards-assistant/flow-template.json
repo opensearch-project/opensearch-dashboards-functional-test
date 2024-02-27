@@ -1,0 +1,157 @@
+{
+  "name": "Cypress-register-agent",
+  "description": "Cypress Flow template",
+  "use_case": "REGISTER_AGENT",
+  "version": {
+    "template": "1.0.0",
+    "compatibility": ["2.12.0", "3.0.0"]
+  },
+  "workflows": {
+    "provision": {
+      "user_params": {},
+      "nodes": [
+        {
+          "id": "create_connector_1",
+          "type": "create_connector",
+          "previous_node_inputs": {},
+          "user_inputs": {
+            "version": "1",
+            "name": "Claude instant runtime Connector",
+            "protocol": "aws_sigv4",
+            "description": "The connector to BedRock service for claude model",
+            "actions": [
+              {
+                "headers": {
+                  "x-amz-content-sha256": "required",
+                  "content-type": "application/json"
+                },
+                "method": "GET",
+                "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
+                "action_type": "predict",
+                "url": "http://127.0.0.1:3000"
+              }
+            ],
+            "credential": {
+              "access_key": "<key>",
+              "secret_key": "<value>"
+            },
+            "parameters": {
+              "endpoint": "bedrock-runtime.us-west-2.amazonaws.com",
+              "content_type": "application/json",
+              "auth": "Sig_V4",
+              "max_tokens_to_sample": "8000",
+              "service_name": "bedrock",
+              "temperature": "0.0001",
+              "response_filter": "$.completion",
+              "region": "us-west-2",
+              "anthropic_version": "bedrock-2023-05-31"
+            }
+          }
+        },
+        {
+          "id": "register_model_2",
+          "type": "register_remote_model",
+          "previous_node_inputs": {
+            "create_connector_1": "connector_id"
+          },
+          "user_inputs": {
+            "description": "test model",
+            "deploy": true,
+            "name": "claude-instant"
+          }
+        },
+        {
+          "id": "cat_index_tool",
+          "type": "create_tool",
+          "previous_node_inputs": {},
+          "user_inputs": {
+            "type": "CatIndexTool",
+            "name": "CatIndexTool",
+            "description": "Use this tool to get OpenSearch index information: (health, status, index, uuid, primary count, replica count, docs.count, docs.deleted, store.size, primary.store.size).",
+            "parameters": {
+              "index": ".kibana"
+            }
+          }
+        },
+        {
+          "id": "sub_agent",
+          "type": "register_agent",
+          "previous_node_inputs": {
+            "cat_index_tool": "tools",
+            "register_model_2": "model_id"
+          },
+          "user_inputs": {
+            "parameters": {},
+            "app_type": "chatbot",
+            "name": "Cypress test sub Agent",
+            "description": "this is a test agent",
+            "llm.parameters": {
+              "max_iteration": "5",
+              "stop_when_no_tool_found": "true",
+              "response_filter": "$.completion"
+            },
+            "memory": {
+              "type": "conversation_index"
+            },
+            "type": "conversational"
+          }
+        },
+        {
+          "id": "agent_tool",
+          "type": "create_tool",
+          "previous_node_inputs": {
+            "sub_agent": "agent_id"
+          },
+          "user_inputs": {
+            "description": "Agent Tool",
+            "include_output_in_agent_response": true,
+            "type": "AgentTool",
+            "parameters": {
+              "max_iteration": "5"
+            },
+            "name": "AgentTool"
+          }
+        },
+        {
+          "id": "ml_model_tool",
+          "type": "create_tool",
+          "previous_node_inputs": {
+            "register_model_2": "model_id"
+          },
+          "user_inputs": {
+            "parameters": {
+              "prompt": "\n\nHuman:\" turn\" You are an AI that only speaks JSON. Do not write normal text. Output should follow example JSON format: \n\n {\"response\": [\"question1\", \"question2\"]}\n\n. \n\nHuman:\" turn\":You will be given a chat history between OpenSearch Assistant and a Human.\nUse the context provided to generate follow up questions the Human would ask to the Assistant.\nThe Assistant can answer general questions about logs, traces and metrics.\nAssistant can access a set of tools listed below to answer questions given by the Human:\nQuestion suggestions generator tool\nHere's the chat history between the human and the Assistant.\n${parameters.AgentTool.output}\nUse the following steps to generate follow up questions Human may ask after the response of the Assistant:\nStep 1. Use the chat history to understand what human is trying to search and explore.\nStep 2. Understand what capabilities the assistant has with the set of tools it has access to.\nStep 3. Use the above context and generate follow up questions.Step4:You are an AI that only speaks JSON. Do not write normal text. Output should follow example JSON format: \n\n {\"response\": [\"question1\", \"question2\"]} \n \n----------------\n\nAssistant:"
+            },
+            "description": "A general tool to answer any question.",
+            "alias": "language_model_tool",
+            "include_output_in_agent_response": true,
+            "name": "QuestionSuggestor",
+            "type": "MLModelTool"
+          }
+        },
+        {
+          "id": "root_agent",
+          "type": "register_agent",
+          "previous_node_inputs": {
+            "agent_tool": "tools",
+            "register_model_2": "model_id",
+            "ml_model_tool": "tools"
+          },
+          "user_inputs": {
+            "parameters": {
+              "prompt": "Answer the question as best you can."
+            },
+            "app_type": "chatbot",
+            "name": "Cypress test agent",
+            "description": "this is the root agent",
+            "tools_order": ["agent_tool", "ml_model_tool"],
+            "memory": {
+              "type": "conversation_index"
+            },
+            "type": "flow"
+          }
+        }
+      ]
+    }
+  }
+}

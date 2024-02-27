@@ -6,6 +6,7 @@
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleAlertsFlyoutBucketMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_bucket_level_monitor.json';
 import sampleAlertsFlyoutQueryMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_alerts_flyout_query_level_monitor.json';
@@ -38,7 +39,7 @@ const clusterHealthMonitor = {
         severity: '1',
         condition: {
           script: {
-            source: 'ctx.results[0].status != "green"',
+            source: 'ctx.results[0].status != "blue"',
             lang: 'painless',
           },
         },
@@ -103,40 +104,51 @@ describe('Monitors dashboard page', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-    cy.contains('Create monitor', { timeout: 20000 });
+    cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   it('Displays expected number of alerts', () => {
+    // Wait for table to finish loading
+    cy.get('tbody > tr').should(($tr) =>
+      expect($tr).to.have.length.greaterThan(1)
+    );
+
     // Ensure the 'Monitor name' column is sorted in ascending order by sorting another column first
-    cy.contains('Last updated by').click({ force: true });
+    cy.contains('Last notification time').click({ force: true });
     cy.contains('Monitor name').click({ force: true });
 
     testMonitors.forEach((entry) => {
       cy.get('tbody > tr')
-        .filter(`:contains(${entry.monitor.name})`, { timeout: 20000 })
+        .filter(`:contains(${entry.monitor.name})`, {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        })
         .within(() => {
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(Latest alert)', { timeout: 20000 })
+            .filter(':contains(Latest alert)', {
+              timeout: ALERTING_PLUGIN_TIMEOUT,
+            })
             .should('contain', entry.triggerName);
 
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(State)', { timeout: 20000 })
+            .filter(':contains(State)', { timeout: ALERTING_PLUGIN_TIMEOUT })
             .should('contain', 'Disabled');
 
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(Active)', { timeout: 20000 })
+            .filter(':contains(Active)', { timeout: ALERTING_PLUGIN_TIMEOUT })
             .should('contain', entry.expectedAlertsCount);
 
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(Acknowledged)', { timeout: 20000 })
+            .filter(':contains(Acknowledged)', {
+              timeout: ALERTING_PLUGIN_TIMEOUT,
+            })
             .should('contain', 0);
 
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(Errors)', { timeout: 20000 })
+            .filter(':contains(Errors)', { timeout: ALERTING_PLUGIN_TIMEOUT })
             .should('contain', 0);
 
           cy.get('[class="euiTableRowCell"]')
-            .filter(':contains(Ignored)', { timeout: 20000 })
+            .filter(':contains(Ignored)', { timeout: ALERTING_PLUGIN_TIMEOUT })
             .should('contain', 0);
         });
     });

@@ -11,6 +11,7 @@ import {
   DE_DEFAULT_END_TIME,
   DE_DEFAULT_START_TIME,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -25,6 +26,18 @@ const indexSet = [
 
 describe('discover app', { scrollBehavior: false }, () => {
   before(() => {
+    if (Cypress.env('SECURITY_ENABLED')) {
+      /**
+       * Security plugin is using private tenant as default.
+       * So here we'd need to set global tenant as default manually.
+       */
+      cy.changeDefaultTenant({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'global',
+      });
+    }
+    CURRENT_TENANT.newTenant = 'global';
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
@@ -49,6 +62,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
     cy.waitForSearch();
   });
 
@@ -57,6 +71,9 @@ describe('discover app', { scrollBehavior: false }, () => {
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
 
     it('should show correct time range string by timepicker', function () {
       cy.verifyTimeConfig(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
@@ -133,6 +150,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       const toTime = 'Jun 12, 1999 @ 11:21:04.000';
 
       before(() => {
+        cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
       });
 
@@ -146,7 +164,8 @@ describe('discover app', { scrollBehavior: false }, () => {
     }
   );
 
-  describe('nested query', () => {
+  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5495
+  describe.skip('nested query', () => {
     before(() => {
       cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForSearch();
@@ -158,7 +177,8 @@ describe('discover app', { scrollBehavior: false }, () => {
     });
   });
 
-  describe('data-shared-item', function () {
+  // https://github.com/opensearch-project/OpenSearch-Dashboards/issues/5495
+  describe.skip('data-shared-item', function () {
     it('should have correct data-shared-item title and description', () => {
       const expected = {
         title: 'A Saved Search',
@@ -244,6 +264,10 @@ describe('discover app', { scrollBehavior: false }, () => {
   });
 
   describe('refresh interval', function () {
+    beforeEach(() => {
+      cy.switchDiscoverTable('new');
+    });
+
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')
@@ -261,12 +285,15 @@ describe('discover app', { scrollBehavior: false }, () => {
             .should('be.visible')
             .clear()
             .type('2');
+
+          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Let auto refresh run
           cy.wait(100);
 
           // Close the auto refresh
+          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Check the timestamp of the last request, it should be different than the first timestamp

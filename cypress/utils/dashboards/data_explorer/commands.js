@@ -133,3 +133,46 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
   });
   cy.getElementByTestId('confirmModalConfirmButton').click();
 });
+
+Cypress.Commands.add('switchDiscoverTable', (name) => {
+  cy.getElementByTestId('datagridTableButton')
+    .then(($button) => {
+      const buttonText = $button.text();
+
+      if (name === 'new' && buttonText.includes('Try new Discover')) {
+        cy.wrap($button).click();
+      }
+      if (name === 'legacy' && buttonText.includes('Use legacy Discover')) {
+        cy.wrap($button).click();
+      }
+      cy.waitForLoader();
+    })
+    .then(() => {
+      checkForElementVisibility();
+    });
+});
+
+Cypress.Commands.add('makeDatePickerMenuOpen', () => {
+  cy.get(
+    '[class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"]'
+  ).then(($popover) => {
+    // Check if the popover does not have the 'euiPopover-isOpen' class
+    if (!$popover.hasClass('euiPopover-isOpen')) {
+      // If not open, click the button to open the quick menu
+      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
+    }
+  });
+});
+
+function checkForElementVisibility() {
+  cy.getElementsByTestIds('queryInput')
+    .should('be.visible')
+    .then(($element) => {
+      if ($element.is(':visible')) {
+        return;
+      } else {
+        cy.wait(500); // Wait for half a second before checking again
+        checkForElementVisibility(); // Recursive call
+      }
+    });
+}

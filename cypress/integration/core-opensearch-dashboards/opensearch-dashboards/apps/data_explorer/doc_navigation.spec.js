@@ -7,6 +7,7 @@ import {
   MiscUtils,
   TestFixtureHandler,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -21,6 +22,7 @@ const indexSet = [
 
 describe('doc link in discover', () => {
   beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
@@ -44,6 +46,7 @@ describe('doc link in discover', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
     cy.waitForSearch();
   });
 
@@ -88,6 +91,8 @@ describe('doc link in discover', () => {
     cy.waitForLoader();
 
     cy.waitForSearch();
+
+    cy.wait(500);
 
     cy.getElementByTestId(`docTableExpandToggleColumn-0`)
       .should('be.visible')
