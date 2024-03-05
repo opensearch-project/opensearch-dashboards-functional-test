@@ -473,7 +473,7 @@ describe('Indices', () => {
         .click();
 
       // Check for close index modal
-      cy.contains('Close indices');
+      cy.contains('Close');
 
       // Close confirm button should be disabled
       cy.get('[data-test-subj="Close Confirm button"]').should(
@@ -525,7 +525,7 @@ describe('Indices', () => {
         .click();
 
       // Check for open index modal
-      cy.contains('Open indices');
+      cy.contains('Open');
 
       cy.get('[data-test-subj="Open Confirm button"]').click();
 

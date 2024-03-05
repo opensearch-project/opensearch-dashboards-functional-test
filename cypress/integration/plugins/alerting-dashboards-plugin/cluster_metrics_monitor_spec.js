@@ -8,6 +8,7 @@ import sampleClusterMetricsMonitor from '../../../fixtures/plugins/alerting-dash
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
 
@@ -28,7 +29,9 @@ const addClusterMetricsTrigger = (
   source
 ) => {
   // Click 'Add trigger' button
-  cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+  cy.contains('Add trigger', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
+    force: true,
+  });
 
   if (isEdit === true) {
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
@@ -52,7 +55,7 @@ const addClusterMetricsTrigger = (
         force: true,
         parseSpecialCharSequences: false,
         delay: 5,
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       })
       .trigger('blur', { force: true });
   });
@@ -91,7 +94,7 @@ describe('ClusterMetricsMonitor', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-    cy.contains('Create monitor', { timeout: 20000 });
+    cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   describe('can be created', () => {
@@ -105,21 +108,26 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT }).click(
+        { force: true }
+      );
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
       // Wait for the API types to load and then type in the Cluster Health API
+      cy.wait(5000);
       cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
         'cluster health{enter}'
       );
 
       // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Query parameters - optional');
+      cy.contains('Path parameters - optional');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
@@ -144,7 +152,7 @@ describe('ClusterMetricsMonitor', () => {
       //   .type('{downarrow}{enter}');
 
       // Click the create button
-      cy.get('button').contains('Create').click();
+      cy.get('button').contains('Create').click({ force: true });
 
       // Confirm we can see only one row in the trigger list by checking <caption> element
       cy.contains('This table contains 1 row');
@@ -153,7 +161,7 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains(SAMPLE_TRIGGER);
 
       // Go back to the Monitors list
-      cy.get('a').contains('Monitors').click();
+      cy.get('a').contains('Monitors').click({ force: true });
 
       // Confirm we can see the created monitor in the list
       cy.contains(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
@@ -223,7 +231,7 @@ describe('ClusterMetricsMonitor', () => {
     });
   });
 
-  describe('displays Query parameters field appropriately', () => {
+  describe('displays Path parameters field appropriately', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
@@ -234,10 +242,14 @@ describe('ClusterMetricsMonitor', () => {
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT }).click(
+        { force: true }
+      );
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(
@@ -249,9 +261,9 @@ describe('ClusterMetricsMonitor', () => {
         'list snapshots{enter}'
       );
 
-      // Confirm the Query parameters field is present and is not described as "optional"
-      cy.contains('Query parameters - optional').should('not.exist');
-      cy.contains('Query parameters');
+      // Confirm the Path parameters field is present and is not described as "optional"
+      cy.contains('Path parameters - optional').should('not.exist');
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
     });
   });
@@ -401,7 +413,7 @@ describe('ClusterMetricsMonitor', () => {
         );
 
         // Confirm there are 0 triggers defined
-        cy.contains('Triggers (0)', { timeout: 20000 });
+        cy.contains('Triggers (0)', { timeout: ALERTING_PLUGIN_TIMEOUT });
       });
     });
   });

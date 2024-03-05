@@ -1,26 +1,6 @@
 {
   "properties": {
-    "windows-hostname": {
-      "type": "alias",
-      "path": "HostName"
-    },
-    "windows-message": {
-      "type": "alias",
-      "path": "Message"
-    },
-    "windows-provider-name": {
-      "type": "alias",
-      "path": "Provider_Name"
-    },
-    "windows-servicename": {
-      "type": "alias",
-      "path": "ServiceName"
-    },
-    "windows-event_data-CommandLine": {
-      "path": "CommandLine",
-      "type": "alias"
-    },
-    "event_uid": {
+    "winlog.event_id": {
       "path": "EventID",
       "type": "alias"
     }

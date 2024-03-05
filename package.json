@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "cypress:open": "cypress open",
     "cypress:run-without-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=false",
-    "cypress:run-with-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200",
-    "cypress:run-with-security-and-aggregation-view": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true",
+    "cypress:run-with-security": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,WAIT_FOR_LOADER_BUFFER_MS=500",
+    "cypress:run-with-security-and-aggregation-view": "env TZ=America/Los_Angeles NO_COLOR=1 cypress run --headless --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=500",
     "cypress:run-plugin-tests-without-security": "yarn cypress:run-without-security --spec 'cypress/integration/plugins/*/*.js'",
     "cypress:run-plugin-tests-with-security": "yarn cypress:run-with-security --spec 'cypress/integration/plugins/*/*.js'",
     "cypress:release-chrome": "yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js,cypress/integration/plugins/*/*'",
@@ -24,7 +24,17 @@
     "lint": "eslint . --ext .js",
     "pkg-version": "./scripts/getpkgversion.sh",
     "generate:test-data": "node ./scripts/generate_data/index.js",
-    "postinstall": "husky install"
+    "postinstall": "husky install",
+    "osd:ciGroup1": "echo \"apps/vis_builder/*.js\"",
+    "osd:ciGroup2": "echo \"apps/vis_type_table/*.js\"",
+    "osd:ciGroup3": "echo \"apps/vis-augmenter/*.js\"",
+    "osd:ciGroup4": "echo \"dashboard_sample_data_with_datasource_spec.js,dashboard_sanity_test_spec.js\"",
+    "osd:ciGroup5": "echo \"datasource-management-plugin/*.js\"",
+    "osd:ciGroup6": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/data_source_selector.spec.js,apps/data_explorer/date_nanos_mixed.spec.js,apps/data_explorer/date_nanos.spec.js,apps/data_explorer/discover_histogram.spec.js,apps/data_explorer/discover.spec.js,apps/data_explorer/zzz_after.spec.js\"",
+    "osd:ciGroup7": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/doc_navigation.spec.js,apps/data_explorer/doc_table.spec.js,apps/data_explorer/errors.spec.js,apps/data_explorer/field_data.spec.js,apps/data_explorer/zzz_after.spec.js\"",
+    "osd:ciGroup8": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/field_visualize.spec.js,apps/data_explorer/filter_editor.spec.js,apps/data_explorer/index_pattern_with_encoded_id.spec.js,apps/data_explorer/index_pattern_without_field.spec.js,apps/data_explorer/zzz_after.spec.js\"",
+    "osd:ciGroup9": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/inspector.spec.js,apps/data_explorer/large_string.spec.js,apps/data_explorer/saved_queries.spec.js,apps/data_explorer/shared_links.spec.js,apps/data_explorer/sidebar.spec.js,apps/data_explorer/source_filter.spec.js,apps/data_explorer/zzz_after.spec.js\"",
+    "start-dummy-llm-server": "node ./cypress/support/assistant-dummy-llm.js"
   },
   "repository": {
     "type": "git",
@@ -38,7 +48,7 @@
   "homepage": "https://github.com/opensearch-project/opensearch-dashboards-functional-test",
   "dependencies": {
     "@cypress/skip-test": "^2.6.1",
-    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.4.tar.gz",
+    "@opensearch-dashboards-test/opensearch-dashboards-test-library": "https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.6.tar.gz",
     "brace": "^0.11.1",
     "prettier": "^2.5.1"
   },

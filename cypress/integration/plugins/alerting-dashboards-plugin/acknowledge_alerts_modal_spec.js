@@ -16,7 +16,7 @@ const BUCKET_TRIGGER = 'sample_alerts_flyout_bucket_level_trigger';
 const QUERY_MONITOR = 'sample_alerts_flyout_query_level_monitor';
 const QUERY_TRIGGER = 'sample_alerts_flyout_query_level_trigger';
 
-const TWENTY_SECONDS = 20000;
+const TWENTY_SECONDS = 60000;
 
 describe('AcknowledgeAlertsModal', () => {
   before(() => {

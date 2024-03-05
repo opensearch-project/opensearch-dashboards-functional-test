@@ -1,0 +1,36 @@
+name: Trigger Remote Cypress Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'Name of the repository in {owner}/{repository} format'
+        required: true
+      workflow_name:
+        description: 'Name of the Github workflow yml file in the component repository'
+        required: true
+      os_url:
+        description: 'Release artifact of OpenSearch'
+        required: true
+      osd_url:
+        description: 'Release artifact of OpenSearch Dashboards'
+        required: true
+      branch_ref:
+        description: 'Test branch name or commit reference id'
+        required: true
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  trigger-cypress:
+    runs-on: ubuntu-latest
+    name: Remote Cypress Tests
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run Remote Cypress Orchestrator Script
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "Executing remoteCypress script for workflow_dispatch event"
+          ./remoteCypress.sh -r "${{ github.event.inputs.repo }}" -w "${{ github.event.inputs.workflow_name }}" -o "${{ github.event.inputs.os_url }}" -d "${{ github.event.inputs.osd_url }}" -b "${{ github.event.inputs.branch_ref }}"

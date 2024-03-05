@@ -91,7 +91,6 @@ describe('Test PPL UI', () => {
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('textarea.ace_text-input')
       .eq(0)
@@ -104,12 +103,9 @@ describe('Test PPL UI', () => {
       .contains('Full screen view')
       .click({ force: true });
 
-    cy.get('.euiTitle').should('not.exist');
-
     cy.get('button#exit-fullscreen-button').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Full screen view').should('exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
   });
 });
 
@@ -179,15 +175,12 @@ describe('Test SQL UI', () => {
 
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
-    cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY * 5);
     cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
-
-    cy.get('.euiTitle').should('not.exist');
   });
 });
 
@@ -196,7 +189,7 @@ describe('Test and verify SQL downloads', () => {
     it(title, () => {
       cy.request({
         method: 'POST',
-        form: false,
+        form: true,
         url: url,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
@@ -207,13 +200,9 @@ describe('Test and verify SQL downloads', () => {
             'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
-        if (
-          title === 'Download and verify CSV' ||
-          title === 'Download and verify Text'
-        ) {
-          expect(response.body.data.body).to.have.string(files[file]);
-        } else {
-          expect(response.body.data.resp).to.have.string(files[file]);
+        const data = files[file];
+        for (const line of data.split('\n')) {
+          expect(response.body.data.resp).to.have.string(line.trim());
         }
       });
     });

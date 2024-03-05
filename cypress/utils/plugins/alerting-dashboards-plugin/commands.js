@@ -36,7 +36,7 @@ Cypress.Commands.add('createMonitor', (monitorJSON) => {
     'POST',
     `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}`,
     monitorJSON
-  );
+  ).then(({ body }) => body);
 });
 
 Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
@@ -50,8 +50,41 @@ Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
       `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
         response.body._id
       }/_execute`
-    );
+    ).then(({ body }) => body);
   });
+});
+
+Cypress.Commands.add('executeMonitor', (monitorID) => {
+  cy.request(
+    'POST',
+    `${Cypress.env('openSearchUrl')}${
+      ALERTING_API.MONITOR_BASE
+    }/${monitorID}/_execute`
+  ).then(({ body }) => body);
+});
+
+Cypress.Commands.add('executeCompositeMonitor', (monitorID) => {
+  cy.request(
+    'POST',
+    `${Cypress.env('openSearchUrl')}${
+      ALERTING_API.WORKFLOW_BASE
+    }/${monitorID}/_execute`
+  ).then(({ body }) => body);
+});
+
+Cypress.Commands.add('deleteAllAlerts', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/.opendistro-alerting-alert*/_delete_by_query`,
+    body: {
+      query: {
+        match_all: {},
+      },
+    },
+    failOnStatusCode: false,
+  }).then(({ body }) => body);
 });
 
 Cypress.Commands.add('deleteMonitorByName', (monitorName) => {
@@ -75,7 +108,7 @@ Cypress.Commands.add('deleteMonitorByName', (monitorName) => {
       `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
         response.body.hits.hits[0]._id
       }`
-    );
+    ).then(({ body }) => body);
   });
 });
 
@@ -83,9 +116,7 @@ Cypress.Commands.add('deleteAllMonitors', () => {
   const body = {
     size: 200,
     query: {
-      exists: {
-        field: 'monitor',
-      },
+      match_all: {},
     },
   };
   cy.request({
@@ -95,13 +126,21 @@ Cypress.Commands.add('deleteAllMonitors', () => {
     body,
   }).then((response) => {
     if (response.status === 200) {
-      for (let i = 0; i < response.body.hits.total.value; i++) {
-        cy.request(
-          'DELETE',
-          `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
-            response.body.hits.hits[i]._id
-          }`
-        );
+      const monitors = response.body.hits.hits.sort((monitor) =>
+        monitor._source.type === 'workflow' ? -1 : 1
+      );
+      for (let i = 0; i < monitors.length; i++) {
+        if (monitors[i]._id) {
+          cy.request({
+            method: 'DELETE',
+            url: `${Cypress.env('openSearchUrl')}${
+              monitors[i]._source.type === 'workflow'
+                ? ALERTING_API.WORKFLOW_BASE
+                : ALERTING_API.MONITOR_BASE
+            }/${monitors[i]._id}`,
+            failOnStatusCode: false,
+          }).then(({ body }) => body);
+        }
       }
     } else {
       cy.log('Failed to get all monitors.', response);
@@ -110,11 +149,17 @@ Cypress.Commands.add('deleteAllMonitors', () => {
 });
 
 Cypress.Commands.add('createIndexByName', (indexName) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${indexName}`);
+  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${indexName}`).then(
+    ({ body }) => body
+  );
 });
 
 Cypress.Commands.add('deleteIndexByName', (indexName) => {
-  cy.request('DELETE', `${Cypress.env('openSearchUrl')}/${indexName}`);
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('openSearchUrl')}/${indexName}`,
+    failOnStatusCode: false,
+  }).then(({ body }) => body);
 });
 
 Cypress.Commands.add(
@@ -124,7 +169,7 @@ Cypress.Commands.add(
       'POST',
       `${Cypress.env('openSearchUrl')}/${indexName}/_doc/${documentId}`,
       documentBody
-    );
+    ).then(({ body }) => body);
   }
 );
 
@@ -133,5 +178,5 @@ Cypress.Commands.add('loadSampleEcommerceData', () => {
     method: 'POST',
     headers: { 'osd-xsrf': 'opensearch-dashboards' },
     url: `${BASE_PATH}/api/sample_data/ecommerce`,
-  });
+  }).then(({ body }) => body);
 });
