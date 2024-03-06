@@ -14,12 +14,13 @@
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
     "username": "admin",
-    "password": "admin",
+    "password": "myStrongPassword123!",
     "ENDPOINT_WITH_PROXY": false,
     "MANAGED_SERVICE_ENDPOINT": false,
     "VISBUILDER_ENABLED": true,
     "DATASOURCE_MANAGEMENT_ENABLED": false,
     "ML_COMMONS_DASHBOARDS_ENABLED": true,
-    "WAIT_FOR_LOADER_BUFFER_MS": 0
+    "WAIT_FOR_LOADER_BUFFER_MS": 0,
+    "DASHBOARDS_ASSISTANT_ENABLED": false
   }
 }

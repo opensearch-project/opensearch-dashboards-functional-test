@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# Accessing the secret as an environment variable using GitHub actions while invoking this script
-GITHUB_TOKEN=$GITHUB_SECRET_TOKEN
+set -e
+
 REPO="$1"
 UNIQUE_WORKFLOW_ID="$2"
 API_URL="$3"
+exitcode=2
 
 # Function to check the status of the remote github workflow by constantly polling the workflow-run
 check_remote_workflow_status() {
@@ -52,11 +53,12 @@ check_remote_workflow_status() {
                             -H "Accept: application/vnd.github.v3+json" \
                             -H "X-GitHub-Api-Version: 2022-11-28" \
                             "https://api.github.com/repos/$REPO/actions/runs/$run_id")
-            echo "Workflow run details: $run_details" 
-
+            
             # Extract status and conclusion from the run details
             status=$(echo "$run_details" | jq -r ".status")
             conclusion=$(echo "$run_details" | jq -r ".conclusion")
+
+            echo "Workflow run status: $status" 
 
             # Check if the status indicates that the workflow is complete
             if [[ "$status" == "completed" ]]; then
@@ -65,7 +67,8 @@ check_remote_workflow_status() {
                 # Check if it was successful
                 if [[ $conclusion == "success" ]]; then
                     echo "Remote workflow completed successfully."
-                    return 0  # Success
+                    exitcode=0  # Success
+                    break;
                 elif [[ $conclusion == "failure" ]]; then
                     echo "Remote workflow completed with errors. Conclusion: $conclusion"
 
@@ -75,13 +78,15 @@ check_remote_workflow_status() {
                             "$jobs_url")
 
                     # Parse the workflow to find any failures in the test
-                    failures=$(echo "$run_details" | jq -r '.jobs[] | select(.conclusion == "failure") | .name')
+                    failures=$(echo "$job_details" | jq -r '.jobs[] | select(.conclusion == "failure") | .name')
                     echo "Test failures: $failures"
 
-                    return 1  # Failure
+                    exitcode=1  # Failure
+                    break;
                 else
                     echo "Remote workflow completed with unexpected conclusion. Conclusion: $conclusion"
-                    return 1  # Failure
+                    exitcode=1  # Failure
+                    break;
                 fi
             else
                 echo "Remote workflow is still running. Waiting..."
@@ -91,13 +96,12 @@ check_remote_workflow_status() {
         done
     else
         echo "No matching workflow run object found even after retries. Exiting..."
-        return 1  # Failure
+        exitcode=1 # Failure  
     fi
 
-    echo "Remote workflow didn't complete within the specified time."
-    return 1  # Failure
+    if [ "$exitcode" -eq 2 ]; then
+        echo "Remote workflow didn't complete within the specified time."
+    fi
 }
 
 check_remote_workflow_status
-
-exit 0
