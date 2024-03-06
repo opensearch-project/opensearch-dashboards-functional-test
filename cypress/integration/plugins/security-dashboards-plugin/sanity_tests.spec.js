@@ -99,8 +99,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         retryOnStatusCodeFailure: true,
       });
 
-      createSampleFlightDataIfDoesntExist();
-
+      cy.loadSampleData('flights');
       // Navigate to Security/Roles section
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/roles/create`);
 
@@ -158,8 +157,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
         retryOnStatusCodeFailure: true,
       });
-
-      createSampleFlightDataIfDoesntExist();
+      cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
       cy.get('button[aria-label="Closes this modal window"]').click();
@@ -182,18 +180,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.get('option[value="timestamp"]');
       cy.get('button[data-test-subj="createIndexPatternButton"]').click();
+      cy.visit(
+        `${BASE_PATH}/app/management/opensearch-dashboards/indexPatterns/patterns`
+      );
+      cy.contains(indexPattern);
     });
-  });
-}
-
-function createSampleFlightDataIfDoesntExist() {
-  cy.get('body').then(($body) => {
-    if ($body.find('[data-test-subj="addSampleDataSetflights"]').length > 0) {
-      // If the element exists, click on it
-      cy.get('[data-test-subj="addSampleDataSetflights"]').click();
-    } else {
-      // The element does not exist, you can log a message or take other actions
-      cy.get('[data-test-subj="launchSampleDataSetflights"]').click();
-    }
   });
 }
