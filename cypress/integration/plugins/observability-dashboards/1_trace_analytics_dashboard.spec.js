@@ -29,12 +29,13 @@ describe('Testing dashboard table', () => {
       },
     });
     setTimeFilter();
-    cy.get(
-      '[data-test-subj="trace-groups-service-operation-accordian"]'
-    ).click();
   });
 
   it('Adds the percentile filters', () => {
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
+
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
     cy.contains(' >= 95 percentile').click({ force: true });
@@ -60,6 +61,9 @@ describe('Testing dashboard table', () => {
 
   it('Opens latency trend popover', () => {
     setTimeFilter(true);
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
     cy.get('.euiButtonIcon[aria-label="Open popover"]').first().click();
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should(
       'exist'
@@ -67,6 +71,9 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
     cy.get('[data-test-subj="dashboard-table-traces-button"]')
       .contains('13')
       .click();

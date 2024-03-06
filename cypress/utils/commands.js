@@ -426,6 +426,11 @@ Cypress.Commands.add('setAdvancedSetting', (changes) => {
     .request({
       method: 'POST',
       url,
+      qs: Cypress.env('SECURITY_ENABLED')
+        ? {
+            security_tenant: CURRENT_TENANT.defaultTenant,
+          }
+        : {},
       headers: {
         'content-type': 'application/json;charset=UTF-8',
         'osd-xsrf': true,

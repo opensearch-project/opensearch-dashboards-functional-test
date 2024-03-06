@@ -7,6 +7,7 @@ import {
   TestFixtureHandler,
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -16,6 +17,7 @@ const testFixtureHandler = new TestFixtureHandler(
 
 describe('test large strings', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/empty_opensearch_dashboards/mappings.json.txt'
     );
@@ -42,6 +44,7 @@ describe('test large strings', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
 
     const ExpectedDoc = 'Project Gutenberg EBook of Hamlet';
 
@@ -54,8 +57,17 @@ describe('test large strings', () => {
   });
 
   describe('test large data', function () {
-    it('search Newsletter should show the correct hit count', function () {
+    it('search Newsletter should show the correct hit count in legacy table', function () {
       cy.log('test Newsletter keyword is searched');
+      const expectedHitCount = '1';
+      const query = 'Newsletter';
+      cy.setTopNavQuery(query);
+      cy.verifyHitCount(expectedHitCount);
+    });
+
+    it('search Newsletter should show the correct hit count in datagrid table', function () {
+      cy.log('test Newsletter keyword is searched');
+      cy.switchDiscoverTable('new');
       const expectedHitCount = '1';
       const query = 'Newsletter';
       cy.setTopNavQuery(query);

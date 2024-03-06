@@ -53,61 +53,55 @@ while getopts ":h:r:w:o:d:b:i:" opt; do
   esac
 done
 
+log_directory="/tmp/logfiles/${REPO}" 
+mkdir -p "$log_directory"
+log_file="$log_directory/logfile.txt"
+
 # Check if required arguments are provided
-if [[ -z "$REPO" || -z "$WORKFLOW_NAME" || -z "$OS_URL" || -z "$OSD_URL" || -z "$BRANCH_REF" ]]; then
+if [[ -n "$REPO" && -n "$WORKFLOW_NAME" && -n "$OS_URL" && -n "$OSD_URL" && -n "$BRANCH_REF" ]]; then
+  # This is to uniquely identify each execution workflow. This ID has to be appended to the workflow_run 
+  # name in the component repository yaml file for polling purpose. 
+  UNIQUE_WORKFLOW_ID=$(uuidgen)
+  echo "Unique Execution ID: $UNIQUE_WORKFLOW_ID"
+  # For now we are using Github action API to trigger github workflows in plugins component
+  # ToDo: We can explore other test runners such as Jenkins to integrate with.
+  API_URL="https://api.github.com/repos/$REPO/actions/workflows/$WORKFLOW_NAME"
+  PAYLOAD="{\"ref\": \"$BRANCH_REF\",\"inputs\":{\"build_id\":\"$BUILD_ID\", \"OS_URL\":\"$OS_URL\", \"OSD_URL\":\"$OSD_URL\", \"UNIQUE_ID\":\"$UNIQUE_WORKFLOW_ID\"}}" 
+
+  # Trigger the remote GitHub workflow using curl and the PAT token
+  trigger_remote_workflow() {
+      curl -L -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
+          -H "Accept: application/vnd.github.v3+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          -w "%{http_code}" \
+          "$API_URL/dispatches" -d "$PAYLOAD"
+  }
+
+  echo "Triggering the remote GitHub workflow for Cypress tests in the repository: $REPO"
+
+  status_code=$(trigger_remote_workflow)
+  echo "status_code: $status_code"
+
+  if [[ $status_code -ge 200 && $status_code -lt 300 ]]; then
+      echo "Remote workflow triggered successfully."
+    
+      source poll_remote_workflow.sh "$REPO" "$UNIQUE_WORKFLOW_ID" "$API_URL" > "$log_file" 2>&1
+      echo "Return code: $exitcode"
+
+      if [ "$exitcode" -eq 0 ]; then
+        echo "Remote workflow for the repo $REPO completed successfully. EXIT CODE 0 " >> "$log_file"
+      elif [ "$exitcode" -eq 1 ]; then
+        echo "Remote workflow for the repo $REPO completed with errors. EXIT CODE 1 " >> "$log_file"
+      else
+        echo "Remote workflow for the repo $REPO did not complete within the specified time. EXIT CODE 2 " >> "$log_file"
+      fi
+
+  else
+      echo "Failed to trigger the remote workflow. Exiting."
+      echo "Failed to trigger the remote workflow for repo $REPO : EXIT CODE 1 " >> "$log_file"
+  fi
+else 
     echo "Error: Missing required arguments. See usage below."
     usage
-    exit 1
+    echo "Remote workflow for the repo $REPO did not start due to missing arguments. EXIT CODE 1 " >> "$log_file"
 fi
-
-# Accessing the secret as an environment variable using Github actions while invoking this script
-GITHUB_TOKEN=$GITHUB_SECRET_TOKEN
-# This is to uniquely identify each execution workflow. This ID has to be appended to the workflow_run 
-# name in the component repository yaml file for polling purpose. 
-UNIQUE_WORKFLOW_ID=$(uuidgen)
-echo "Unique Execution ID: $UNIQUE_WORKFLOW_ID"
-# For now we are using Github action API to trigger github workflows in plugins component
-# ToDo: We can explore other test runners such as Jenkins to integrate with.
-API_URL="https://api.github.com/repos/$REPO/actions/workflows/$WORKFLOW_NAME"
-PAYLOAD="{\"ref\": \"$BRANCH_REF\",\"inputs\":{\"build_id\":\"$BUILD_ID\", \"OS_URL\":\"$OS_URL\", \"OSD_URL\":\"$OSD_URL\", \"UNIQUE_ID\":\"$UNIQUE_WORKFLOW_ID\"}}" 
-
-# Maximum number of retries for triggering the remote runner
-MAX_RETRIES=3
-
-# Trigger the remote GitHub workflow using curl and the PAT token
-trigger_remote_workflow() {
-    curl -L -X POST -H "Authorization: Bearer $GITHUB_TOKEN" \
-        -H "Accept: application/vnd.github.v3+json" \
-        -H "X-GitHub-Api-Version: 2022-11-28" \
-        -w "%{http_code}" \
-        "$API_URL/dispatches" -d "$PAYLOAD"
-}
-
-echo "Triggering the remote GitHub workflow for Cypress tests in the repository: $REPO"
-
-# Attempt to trigger the remote workflow with retries
-for ((i = 1; i <= MAX_RETRIES; i++)); do
-    echo "Attempting to trigger the remote workflow (Attempt $i)"
-    status_code=$(trigger_remote_workflow)
-    echo "status_code: $status_code"
-
-    if [[ $status_code -ge 200 && $status_code -lt 300 ]]; then
-        echo "Remote workflow triggered successfully."
-        break
-    else
-        echo "Failed to trigger the remote workflow. Retrying..."
-        sleep 10  # Adds a delay between retries
-    fi
-
-    if [ $i -eq $MAX_RETRIES ]; then
-        echo "Maximum number of retries reached. Exiting."
-        exit 1
-    fi
-done
-
-
-# Check the status of the remote workflow
-source ./poll_remote_workflow.sh "$REPO" "$UNIQUE_WORKFLOW_ID" "$API_URL"
-echo "Return code: $?"
-
-exit 0

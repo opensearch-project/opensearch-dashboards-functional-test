@@ -6,7 +6,7 @@
 import {
   SEC_API_CONFIG_PATH,
   SEC_API_ROLES_PATH,
-  SEC_API_INTERNAL_USERS_PATH,
+  SEC_API_INTERNAL_ACCOUNTS_PATH,
   SEC_API_ACTIONGROUPS_PATH,
   SEC_API_TENANTS_PATH,
   SEC_API_AUDIT_PATH,
@@ -48,7 +48,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockInternalUsersAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+    cy.intercept(SEC_API_INTERNAL_ACCOUNTS_PATH, {
       fixture: fixtureFileName,
     }).as('getInternalUsersDetails');
 

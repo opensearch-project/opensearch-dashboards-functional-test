@@ -7,6 +7,7 @@ import {
   MiscUtils,
   TestFixtureHandler,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -21,6 +22,7 @@ const indexSet = [
 
 describe('discover sidebar', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );

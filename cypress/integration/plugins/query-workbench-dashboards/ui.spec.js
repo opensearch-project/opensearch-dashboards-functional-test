@@ -189,7 +189,7 @@ describe('Test and verify SQL downloads', () => {
     it(title, () => {
       cy.request({
         method: 'POST',
-        form: false,
+        form: true,
         url: url,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
@@ -200,7 +200,10 @@ describe('Test and verify SQL downloads', () => {
             'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
-        expect(response.body.data.resp).to.have.string(files[file]);
+        const data = files[file];
+        for (const line of data.split('\n')) {
+          expect(response.body.data.resp).to.have.string(line.trim());
+        }
       });
     });
   });

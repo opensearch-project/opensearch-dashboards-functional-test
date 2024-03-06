@@ -48,6 +48,13 @@ describe('table visualization in embedded mode', () => {
     '115',
   ];
 
+  const suppressResizeObserverIssue = () => {
+    // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
+    cy.on('uncaught:exception', (err) => {
+      if (err.message.includes('ResizeObserver loop')) return false;
+    });
+  };
+
   before(() => {
     cy.deleteIndex(TABLE_INDEX_ID);
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
@@ -153,6 +160,7 @@ describe('table visualization in embedded mode', () => {
       expect(data).to.deep.eq(expectedData);
     });
     cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
+    suppressResizeObserverIssue();
     cy.tbClickFilterFromExpand('filter out');
     cy.reload();
     cy.tbGetTableDataFromVisualization().then((data) => {
