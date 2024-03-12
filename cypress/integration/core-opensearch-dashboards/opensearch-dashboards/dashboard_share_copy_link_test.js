@@ -28,8 +28,9 @@ if (Cypress.env('SECURITY_ENABLED')) {
             // Assert that the clipboard has data
             expect(clipboardData).to.have.length.greaterThan(0);
 
-            cy.visit(clipboardData);
-            cy.waitForLoader();
+            // TODO: tries to re-route with a different origin
+            // cy.visit(clipboardData);
+            // cy.waitForLoader();
 
             // Now on copied URL page
           });
