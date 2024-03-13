@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH } from '../../../utils/constants';
+import { BASE_PATH } from '../../../../utils/constants';
 
-if (Cypress.env('DASHBOARDS_WORKSPACE_ENABLED')) {
+if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Workspace CRUD APIs', () => {
     describe('Create a workspace', () => {
       it('should successfully create a worksapce', () => {
