@@ -22,6 +22,7 @@ jobs:
     with:
       test-name: dashboards workspace
       test-command: env CYPRESS_DASHBOARDS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-workspace/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled: true
   tests-without-security:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
@@ -29,4 +30,5 @@ jobs:
     with:
       test-name: dashboards workspace
       test-command: env CYPRESS_DASHBOARDS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-workspace/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled: true
       security-enabled: false
