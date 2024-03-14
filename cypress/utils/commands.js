@@ -368,21 +368,6 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
     Cypress.config().baseUrl
   }/api/saved_objects/index-pattern/${id}`;
 
-  console.log(JSON.stringify(url));
-  console.log(
-    JSON.stringify({
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-      ...header,
-    })
-  );
-  console.log(
-    JSON.stringify({
-      attributes,
-      references: [],
-    })
-  );
-
   cy.request({
     method: 'POST',
     url,
