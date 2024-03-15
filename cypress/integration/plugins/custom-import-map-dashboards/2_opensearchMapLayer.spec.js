@@ -4,22 +4,28 @@
  */
 
 import { BASE_PATH } from '../../../utils/constants';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Default OpenSearch base map layer', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
       retryOnStatusCodeFailure: true,
       timeout: 60000,
     });
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]', { timeout: 60000 })
+    cy.wait(5000);
+    cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
+      timeout: 60000,
+    })
       .contains(/(Add|View) data/)
       .click();
     cy.wait(60000);
   });
 
   it('check if default OpenSearch map layer can be open', () => {
-    cy.visit(`${BASE_PATH}/app/maps-dashboards`);
-    cy.contains('Create map').click();
+    cy.wait(10000);
+    cy.visit(`${BASE_PATH}/app/maps-dashboards/create`);
+    cy.wait(10000);
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',
       'Default map'
@@ -44,6 +50,7 @@ describe('Default OpenSearch base map layer', () => {
 
   after(() => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
+    cy.wait(5000);
     cy.get('button[data-test-subj="removeSampleDataSetflights"]')
       .should('be.visible')
       .click();
