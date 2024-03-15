@@ -417,6 +417,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'app/management/opensearch-dashboards/dataSources'
         );
       });
+
+      it('creates a datasources to a real opensearch instance', () => {
+        CreateDataSourceNoAuth();
+      });
     });
   });
 }
