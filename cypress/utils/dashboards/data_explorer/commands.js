@@ -135,15 +135,18 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
 });
 
 Cypress.Commands.add('switchDiscoverTable', (name) => {
-  cy.getElementByTestId('datagridTableButton')
-    .then(($button) => {
-      const buttonText = $button.text();
+  cy.getElementByTestId('discoverOptionsButton')
+    .then(async ($button) => {
+      await cy.wrap($button).click();
 
-      if (name === 'new' && buttonText.includes('Try new Discover')) {
-        cy.wrap($button).click();
+      const switchButton = await cy.getElementByTestId('discoverOptionsLegacySwitch');
+      const isLegacyChecked = (await cy.wrap(switchButton).getAttribute('aria-checked')) === 'true';
+
+      if (name === 'new' && isLegacyChecked) {
+        cy.wrap(switchButton).click();
       }
-      if (name === 'legacy' && buttonText.includes('Use legacy Discover')) {
-        cy.wrap($button).click();
+      if (name === 'legacy' && !isLegacyChecked) {
+        cy.wrap(switchButton).click();
       }
       cy.waitForLoader();
     })
