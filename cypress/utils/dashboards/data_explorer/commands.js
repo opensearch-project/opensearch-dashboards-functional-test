@@ -142,10 +142,10 @@ Cypress.Commands.add('switchDiscoverTable', (name) => {
       cy.getElementByTestId('discoverOptionsLegacySwitch').then(
         ($switchButton) => {
           const isLegacyChecked = $switchButton.checked;
-          if (name === 'new' && isLegacyChecked) {
+          if (name === 'new' && !isLegacyChecked) {
             cy.wrap($switchButton).click();
           }
-          if (name === 'legacy' && !isLegacyChecked) {
+          if (name === 'legacy' && isLegacyChecked) {
             cy.wrap($switchButton).click();
           }
           cy.waitForLoader();
