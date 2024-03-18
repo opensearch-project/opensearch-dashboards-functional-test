@@ -136,19 +136,21 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
 
 Cypress.Commands.add('switchDiscoverTable', (name) => {
   cy.getElementByTestId('discoverOptionsButton')
-    .then(async ($button) => {
-      await cy.wrap($button).click();
+    .then(($button) => {
+      cy.wrap($button).click();
 
-      const switchButton = await cy.getElementByTestId('discoverOptionsLegacySwitch');
-      const isLegacyChecked = (await cy.wrap(switchButton).getAttribute('aria-checked')) === 'true';
-
-      if (name === 'new' && isLegacyChecked) {
-        cy.wrap(switchButton).click();
-      }
-      if (name === 'legacy' && !isLegacyChecked) {
-        cy.wrap(switchButton).click();
-      }
-      cy.waitForLoader();
+      cy.getElementByTestId('discoverOptionsLegacySwitch').then(
+        ($switchButton) => {
+          const isLegacyChecked = $switchButton.checked;
+          if (name === 'new' && isLegacyChecked) {
+            cy.wrap($switchButton).click();
+          }
+          if (name === 'legacy' && !isLegacyChecked) {
+            cy.wrap($switchButton).click();
+          }
+          cy.waitForLoader();
+        }
+      );
     })
     .then(() => {
       checkForElementVisibility();
