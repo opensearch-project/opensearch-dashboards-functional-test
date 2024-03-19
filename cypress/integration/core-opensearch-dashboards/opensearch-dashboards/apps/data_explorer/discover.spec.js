@@ -62,8 +62,8 @@ describe('discover app', { scrollBehavior: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
-    cy.switchDiscoverTable('new');
     cy.waitForSearch();
+    cy.switchDiscoverTable('new');
   });
 
   after(() => {});
@@ -71,9 +71,6 @@ describe('discover app', { scrollBehavior: false }, () => {
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
-    beforeEach(() => {
-      cy.switchDiscoverTable('new');
-    });
 
     it('should show correct time range string by timepicker', function () {
       cy.verifyTimeConfig(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
