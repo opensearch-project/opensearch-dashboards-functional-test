@@ -30,7 +30,7 @@ Cypress.Commands.add('cyclingCheckTask', ({ taskId, rejectOnError = true }) =>
   )
 );
 
-Cypress.Commands.add('uploadModelByUrl', (body) =>
+Cypress.Commands.add('registerModel', (body) =>
   cy
     .request({
       method: 'POST',

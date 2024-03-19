@@ -22,7 +22,7 @@ export const MLC_API_BASE = `${BACKEND_BASE_PATH}/_plugins/_ml`;
 
 export const MLC_API = {
   MODEL_BASE: `${MLC_API_BASE}/models`,
-  MODEL_UPLOAD: `${MLC_API_BASE}/models/_upload`,
+  MODEL_UPLOAD: `${MLC_API_BASE}/models/_register`,
   MODEL_GROUP_REGISTER: `${MLC_API_BASE}/model_groups/_register`,
   TASK_BASE: `${MLC_API_BASE}/tasks`,
   CONNECTOR_BASE: `${MLC_API_BASE}/connectors`,
