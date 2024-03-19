@@ -34,10 +34,10 @@ describe('date_nanos', () => {
     });
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
 
     cy.setTopNavDate(fromTime, toTime);
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   after(() => {

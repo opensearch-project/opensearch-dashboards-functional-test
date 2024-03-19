@@ -33,6 +33,7 @@ describe('index pattern without field spec', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
+    cy.switchDiscoverTable('new');
   });
 
   after(() => {
@@ -49,6 +50,7 @@ describe('index pattern without field spec', () => {
 
   it('should display a timepicker after switching to an index pattern with timefield', () => {
     const indexName = 'with-timefield';
+    cy.switchDiscoverTable('new');
     cy.getElementByTestId('comboBoxToggleListButton')
       .should('be.visible')
       .click();
