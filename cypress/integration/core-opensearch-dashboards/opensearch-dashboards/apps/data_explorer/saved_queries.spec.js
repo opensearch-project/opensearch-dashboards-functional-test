@@ -51,10 +51,10 @@ describe.skip('saved queries saved objects', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
-    cy.switchDiscoverTable('new');
 
     // Set time filter
     cy.setTopNavDate(fromTime, toTime);
+    cy.switchDiscoverTable('new');
 
     // Set up query and filter
     cy.setTopNavQuery('response:200');
