@@ -157,17 +157,19 @@ describe('Findings', () => {
     cy.reload();
 
     // Wait for page to load
-    cy.waitForPageLoad('findings', {
+    cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
     });
 
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
-    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
-      cy.get($el).click({ force: true });
-    });
+    cy.sa_getTableFirstRow('[data-test-subj="view-details-icon"]').then(
+      ($el) => {
+        cy.get($el).click({ force: true });
+      }
+    );
 
     // Flyout should show 'Document not found' warning
     cy.contains('Document not found');
