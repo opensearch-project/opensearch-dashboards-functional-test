@@ -136,35 +136,42 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
       let registeredRemoteModelId;
       let remoteModelName;
       before(() => {
-        remoteModelName = `remote sagemaker model-${new Date().getTime()}`;
+        remoteModelName = `remote OpenAI model-${new Date().getTime()}`;
         cy.registerModel({
           name: remoteModelName,
           function_name: 'remote',
           version: '1.0.0',
           description: 'test model',
           connector: {
-            name: 'sagemaker: embedding',
-            description: 'Test connector for Sagemaker embedding model',
+            name: 'OpenAI embedding Connector',
+            description:
+              'The connector to public OpenAI model service for GPT 3.5',
             version: 1,
-            protocol: 'aws_sigv4',
-            credential: {
-              access_key: '...',
-              secret_key: '...',
-              session_token: '...',
-            },
+            protocol: 'http',
             parameters: {
-              region: 'us-west-2',
-              service_name: 'sagemaker',
+              endpoint: 'api.openai.com',
+              auth: 'API_Key',
+              content_type: 'application/json',
+              max_tokens: 7,
+              temperature: 0,
+              model: 'text-embedding-ada-002',
+            },
+            credential: {
+              openAI_key: 'xxx',
             },
             actions: [
               {
                 action_type: 'predict',
                 method: 'POST',
+                url: 'https://${parameters.endpoint}/v1/embeddings',
+                pre_process_function: 'connector.pre_process.openai.embedding',
+                post_process_function:
+                  'connector.post_process.openai.embedding',
                 headers: {
-                  'content-type': 'application/json',
+                  Authorization: 'xxxx',
                 },
-                url: 'https://runtime.sagemaker.us-west-2.amazonaws.com/endpoints/lmi-model-2023-06-24-01-35-32-275/invocations',
-                request_body: '["${parameters.inputs}"]',
+                request_body:
+                  '{ "model": "${parameters.model}", "input": ${parameters.input}}',
               },
             ],
           },
@@ -216,9 +223,9 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
           .click();
         cy.get('div[role="dialog"]').contains('External');
         cy.get('div[role="dialog"]').contains('Connector details');
-        cy.get('div[role="dialog"]').contains('sagemaker: embedding');
+        cy.get('div[role="dialog"]').contains('OpenAI embedding Connector');
         cy.get('div[role="dialog"]').contains(
-          'Test connector for Sagemaker embedding model'
+          'The connector to public OpenAI model service for GPT 3.5'
         );
       });
     });
