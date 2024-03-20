@@ -37,10 +37,11 @@ describe('Findings', () => {
   beforeEach(() => {
     // Visit Alerts table page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
-    cy.wait(15000);
 
     // Wait for page to load
-    cy.contains('Findings');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Findings').should('be.visible');
+    });
   });
 
   it('displays findings based on recently ingested data', () => {

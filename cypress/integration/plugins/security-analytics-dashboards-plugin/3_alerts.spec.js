@@ -98,10 +98,11 @@ describe('Alerts', () => {
   beforeEach(() => {
     // Visit Alerts table page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
-    cy.wait(15000);
 
     // Wait for page to load
-    cy.contains('Security alerts');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Security alerts').should('be.visible');
+    });
 
     // Filter table to only show alerts for the test detector
     cy.get(`input[type="search"]`)
