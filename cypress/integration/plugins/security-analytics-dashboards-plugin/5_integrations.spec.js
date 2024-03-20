@@ -17,6 +17,7 @@ import dns_detector_data_mappings from '../../../fixtures/plugins/security-analy
 import dns_detector_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_dns_detector_data.json';
 import add_windows_index_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/add_windows_index_data.json';
 import add_dns_index_data from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/index/add_dns_index_data.json';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 describe('Integration tests', () => {
   const indexName = 'cypress-index-windows';
@@ -73,10 +74,12 @@ describe('Integration tests', () => {
   });
 
   it('...can navigate to findings page', () => {
-    cy.intercept({
-      method: 'GET',
-      pathname: '/_dashboards/_plugins/_security_analytics/findings/_search',
-    }).as('getFindings');
+    setupIntercept(
+      cy,
+      '/_plugins/_security_analytics/findings/_search',
+      'getFindings',
+      'GET'
+    );
 
     // Cypress USB Detector
     cy.contains('Cypress USB Detector')
@@ -110,10 +113,12 @@ describe('Integration tests', () => {
       });
   });
   it('...can navigate to alerts page', () => {
-    cy.intercept({
-      method: 'GET',
-      pathname: '/_dashboards/_plugins/_security_analytics/alerts',
-    }).as('getAlerts');
+    setupIntercept(
+      cy,
+      '/_plugins/_security_analytics/alerts',
+      'getAlerts',
+      'GET'
+    );
 
     // Cypress USB Detector
     cy.contains('Cypress USB Detector')
