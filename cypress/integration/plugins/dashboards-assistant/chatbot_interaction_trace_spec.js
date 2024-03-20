@@ -82,9 +82,11 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       });
 
       it('trace page display correctly in fullscreen mode', () => {
-        cy.get(`.llm-chat-flyout-header`)
-          .find(`button[aria-label="fullScreen"]`)
-          .click({ force: true });
+        // switch to takeover mode for fullscreen
+        cy.get('[id="sidecarModeIcon"]').click();
+        cy.get(
+          '[data-test-subj="sidecar-mode-icon-menu-item-takeover"]'
+        ).click();
 
         // show close button
         cy.get(`.llm-chat-flyout .llm-chat-flyout-body`).as('tracePage');
