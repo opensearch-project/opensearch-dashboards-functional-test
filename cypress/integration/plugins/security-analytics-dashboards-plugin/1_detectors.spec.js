@@ -43,9 +43,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .realType(dataSource);
 
-  setupIntercept(cy, NODE_API.RULES_SEARCH, 'getSigmaRules', {
-    prePackaged: 'true',
-  });
+  setupIntercept(cy, NODE_API.RULES_SEARCH, 'getSigmaRules');
 
   // Select threat detector type (Windows logs)
   cy.get(`input[id="dns"]`).click({ force: true });
@@ -391,7 +389,7 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    setupIntercept(cy, NODE_API.MAPPINGS_VIEW, 'getMappingsView');
+    setupIntercept(cy, NODE_API.MAPPINGS_VIEW, 'getMappingsView', 'GET');
 
     cy.get('table th').within(() => {
       cy.get('button').first().click({ force: true });

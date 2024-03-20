@@ -3,19 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-export function setupIntercept(
-  cy,
-  url,
-  alias,
-  query = undefined,
-  options = {}
-) {
+export function setupIntercept(cy, url, interceptName, method = 'POST') {
   const urlRegex = new RegExp(`.*${url}.*`);
-  const routeMatcher = {
-    url: urlRegex,
-  };
-  if (query) {
-    routeMatcher['query'] = query;
-  }
-  cy.intercept(routeMatcher, options).as(alias);
+  cy.intercept(method, urlRegex).as(interceptName);
 }

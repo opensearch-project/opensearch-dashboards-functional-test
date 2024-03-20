@@ -231,9 +231,6 @@ describe('Rules', () => {
       cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
     );
 
-    // cy.intercept({
-    //   url: `/_dashboards/${NODE_API.RULES_BASE}`,
-    // }).as('getRules');
     setupIntercept(cy, NODE_API.RULES_BASE, 'getRules');
 
     // Click "create" button
@@ -309,35 +306,7 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    // cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=true`, {
-    //   delay: 5000,
-    // }).as('getPrePackagedRules');
-    setupIntercept(
-      cy,
-      NODE_API.RULES_SEARCH,
-      'getPrePackagedRules',
-      {
-        prePackaged: true,
-      },
-      {
-        delay: 5000,
-      }
-    );
-
-    // cy.intercept(`/_dashboards/${NODE_API.RULES_SEARCH}?prePackaged=false`, {
-    //   delay: 5000,
-    // }).as('getCustomRules');
-    setupIntercept(
-      cy,
-      NODE_API.RULES_SEARCH,
-      'getCustomRules',
-      {
-        prePackaged: false,
-      },
-      {
-        delay: 5000,
-      }
-    );
+    setupIntercept(cy, NODE_API.RULES_SEARCH, 'getRules');
 
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
@@ -363,8 +332,8 @@ describe('Rules', () => {
               .click({ force: true })
           );
 
-        cy.wait('@getCustomRules');
-        cy.wait('@getPrePackagedRules');
+        cy.wait(5000);
+        cy.wait('@getRules');
 
         // Search for sample_detector, presumably deleted
         cy.wait(3000);
