@@ -14,7 +14,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     });
 
     beforeEach(() => {
-      // Visit ISM OSD
+      // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
 
       // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
