@@ -160,12 +160,16 @@ const checkRulesFlyout = () => {
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
   beforeEach(() => {
+    setupIntercept(cy, NODE_API.RULES_SEARCH, 'rulesSearch');
+
     // Visit Rules page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-    cy.wait(10000);
+    cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
-    cy.contains('Rules');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Rules').should('be.visible');
+    });
   });
 
   it('...can be created', () => {
