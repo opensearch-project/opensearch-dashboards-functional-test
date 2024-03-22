@@ -18,18 +18,22 @@ const ACCESS_KEY = 'accessKey';
 const SECRET_KEY = 'secretKey';
 
 export const CreateDataSourceNoAuth = () => {
-  cy.visit(
-    'http://localhost:5601/app/management/opensearch-dashboards/dataSources/create'
-  );
-  cy.get('[data-test-subj="createDataSourceFormTitleField"]').type('9201');
-  cy.get('[data-test-subj="createDataSourceFormEndpointField"]').type(
-    'http://localhost:9201'
-  );
-  cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').click();
-  cy.get('#no_auth').click();
-  cy.get('[data-test-subj="createDataSourceTestConnectionButton"]').click();
-  cy.get('.euiToastHeader__title').should('contain', 'successful');
-  cy.get('[data-test-subj="createDataSourceButton"]').click();
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: `9201`,
+        endpoint: `http://localhost:9201`,
+        auth: {
+          type: 'no_auth',
+        },
+      },
+    },
+  });
 };
 
 // TODO: create datasource with basic auth and sigv4
