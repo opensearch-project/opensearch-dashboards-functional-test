@@ -137,12 +137,10 @@ describe('Testing notebook actions', () => {
 describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
-    cy.get('h1[data-test-subj="notebookTitle"]')
-      .contains(notebookName)
-      .should('exist');
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
+    makePopulatedParagraph();
     cy.wrap({ name: notebookName }).as('notebook');
   });
 
@@ -152,7 +150,6 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create in-context PDF report from notebook', () => {
-    makePopulatedParagraph();
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
@@ -161,7 +158,6 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create in-context PNG report from notebook', () => {
-    makePopulatedParagraph();
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
@@ -170,7 +166,6 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create on-demand report definition from context menu', () => {
-    makePopulatedParagraph();
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
@@ -184,7 +179,6 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('View reports homepage from context menu', () => {
-    makePopulatedParagraph();
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
