@@ -20,7 +20,7 @@ const SAMPLE_RULE = {
   detectionLine: [
     'condition: Selection_1',
     'Selection_1:',
-    'FieldKey|contains:',
+    'FieldKey|all:',
     '- FieldValue',
   ],
   severity: 'Critical',
@@ -269,17 +269,16 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const longDescriptionText =
-        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
+      const invalidDescriptionText = 'This is a invalid % description.';
 
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(longDescriptionText).focus().blur();
+      getDescriptionField().type(invalidDescriptionText).focus().blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
         .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
+          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 65,535 characters.'
         );
 
       getDescriptionField()
@@ -308,13 +307,11 @@ describe('Rules', () => {
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
       getAuthorField().sa_containsError('Author name is required');
-      getAuthorField().type('text').focus().blur();
-      getAuthorField().sa_containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('tex&')
+        .type('tex%')
         .focus()
         .blur();
       getAuthorField().sa_containsError('Invalid author.');
