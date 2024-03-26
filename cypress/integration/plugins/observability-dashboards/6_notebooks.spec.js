@@ -111,9 +111,10 @@ describe('Testing notebook actions', () => {
     cy.wrap({ name: notebookName }).as('notebook');
   });
 
-  afterEach(function () {
-    //      ^^^^^^^^ Cannot use arrow callback to access beforeEach wrapper state
-    deleteNotebook(this.notebook.name);
+  afterEach(() => {
+    cy.get('@notebook').then((notebook) => {
+      deleteNotebook(notebook.name);
+    });
   });
 
   it('Creates a code paragraph', () => {
@@ -144,9 +145,10 @@ describe('Test reporting integration if plugin installed', () => {
     cy.wrap({ name: notebookName }).as('notebook');
   });
 
-  afterEach(function () {
-    //      ^^^^^^^^ Cannot use arrow callback to access beforeEach wrapper state
-    deleteNotebook(this.notebook.name);
+  afterEach(() => {
+    cy.get('@notebook').then((notebook) => {
+      deleteNotebook(notebook.name);
+    });
   });
 
   it('Create in-context PDF report from notebook', () => {
