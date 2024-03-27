@@ -4,10 +4,12 @@ on:
     branches: [ '**' ]
     paths:
       - 'cypress/**/core-opensearch-dashboards/**'
+      - 'cypress/utils/dashboards/**'
   push:
     branches: [ '**' ]
     paths:
       - 'cypress/**/core-opensearch-dashboards/**'
+      - 'cypress/utils/dashboards/**'
 
 jobs:
   tests-with-security:
