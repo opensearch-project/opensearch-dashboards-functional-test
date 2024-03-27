@@ -549,6 +549,48 @@ describe('Detectors', () => {
       validateFieldMappingsTable('rules are changed');
     });
 
+    it('...can be stopped and started back from detectors list action menu', () => {
+      cy.wait(1000);
+      cy.get('tbody > tr')
+        .first()
+        .within(() => {
+          cy.get('[class="euiCheckbox__input"]').click({ force: true });
+        });
+
+      // Waiting for Actions menu button to be enabled
+      cy.wait(1000);
+
+      setupIntercept(
+        cy,
+        `${NODE_API.DETECTORS_BASE}/_search`,
+        'detectorsSearch'
+      );
+
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
+      cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
+
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      // Need this extra wait time for the Actions button to become enabled again
+      cy.wait(2000);
+
+      setupIntercept(
+        cy,
+        `${NODE_API.DETECTORS_BASE}/_search`,
+        'detectorsSearch'
+      );
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
+      cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
+
+      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      // Need this extra wait time for the Actions button to become enabled again
+      cy.wait(2000);
+
+      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
+      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
+    });
+
     it('...can be deleted', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getSigmaRules');
       openDetectorDetails(detectorName);

@@ -155,6 +155,9 @@ const checkRulesFlyout = () => {
 };
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
+const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
+const getImportRuleFilePicker = () =>
+  cy.get('[data-test-subj="import_rule_file_picker"]');
 const getNameField = () => cy.sa_getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
@@ -629,6 +632,15 @@ describe('Rules', () => {
       cy.wait('@getRules');
 
       checkRulesFlyout();
+    });
+
+    it('...can be imported with log type', () => {
+      getImportButton().click({ force: true });
+      getImportRuleFilePicker().selectFile(
+        './cypress/fixtures/plugins/security-analytics-dashboards-plugin/sample_aws_s3_rule_to_import.yml'
+      );
+      // Check that AWS S3 log type is set.
+      cy.contains('AWS S3');
     });
 
     it('...can be deleted', () => {
