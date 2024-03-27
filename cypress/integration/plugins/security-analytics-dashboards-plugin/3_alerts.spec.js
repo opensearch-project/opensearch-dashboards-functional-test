@@ -100,10 +100,16 @@ describe('Alerts', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
 
     // Wait for page to load
-    cy.contains('Security alerts');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.wait(5000);
+      cy.contains('Security alerts').should('be.visible');
+    });
 
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    cy.get(`input[type="search"]`)
+      .focus()
+      .type(`${testDetector.name}`)
+      .type('{enter}');
 
     // Adjust the date range picker to display alerts from today
     cy.get(
