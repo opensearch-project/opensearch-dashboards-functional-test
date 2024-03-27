@@ -101,6 +101,7 @@ describe('Alerts', () => {
 
     // Wait for page to load
     cy.url({ timeout: 60000 }).then(() => {
+      cy.wait(5000);
       cy.contains('Security alerts').should('be.visible');
     });
 
