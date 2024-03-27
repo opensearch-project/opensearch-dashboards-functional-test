@@ -4,12 +4,10 @@
  */
 import { MLC_URL, MLC_DASHBOARD_API } from '../../../utils/constants';
 
+const UPLOAD_MODEL_NAME = 'huggingface/sentence-transformers/all-MiniLM-L6-v2';
+
 if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
   describe('MLC Overview page', () => {
-    before(() => {
-      // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
-      cy.disableOnlyRunOnMLNode();
-    });
     it('should return to monitoring page when visit root', () => {
       cy.visit(MLC_URL.ROOT);
       cy.url().should('include', MLC_URL.OVERVIEW);
@@ -18,34 +16,21 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
     describe('custom upload model', () => {
       let uploadedModelId;
       let uploadedModelLoadedError;
-      const uploadModelName = `traced_small_model-${new Date()
-        .getTime()
-        .toString(34)}`;
       before(() => {
+        // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
+        cy.disableOnlyRunOnMLNode();
         cy.disableNativeMemoryCircuitBreaker();
-        cy.enableRegisterModelViaURL();
         cy.wait(1000);
 
         cy.registerModelGroup({
-          name: 'model-group',
+          name: `model-group-${new Date().getTime().toString(34)}`,
         })
           .then(({ model_group_id }) =>
-            cy.uploadModelByUrl({
-              name: uploadModelName,
-              version: '1.0.0',
-              model_format: 'TORCH_SCRIPT',
-              model_task_type: 'text_embedding',
+            cy.registerModel({
+              name: UPLOAD_MODEL_NAME,
+              version: '1.0.1',
               model_group_id,
-              model_content_hash_value:
-                'e13b74006290a9d0f58c1376f9629d4ebc05a0f9385f40db837452b167ae9021',
-              model_config: {
-                model_type: 'bert',
-                embedding_dimension: 768,
-                framework_type: 'sentence_transformers',
-                all_config:
-                  '{"architectures":["BertModel"],"max_position_embeddings":512,"model_type":"bert","num_attention_heads":12,"num_hidden_layers":6}',
-              },
-              url: 'https://github.com/opensearch-project/ml-commons/blob/2.x/ml-algorithms/src/test/resources/org/opensearch/ml/engine/algorithms/text_embedding/traced_small_model.zip?raw=true',
+              model_format: 'TORCH_SCRIPT',
             })
           )
           .then(({ task_id: taskId }) =>
@@ -87,7 +72,7 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
           uploadedModelId
         );
 
-        cy.contains(uploadModelName)
+        cy.contains(UPLOAD_MODEL_NAME)
           .closest('tr')
           .contains(uploadedModelLoadedError ? 'Not responding' : 'Responding')
           .closest('tr')
@@ -101,12 +86,12 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
           uploadedModelId
         );
 
-        cy.contains(uploadModelName)
+        cy.contains(UPLOAD_MODEL_NAME)
           .closest('tr')
           .find('[aria-label="view detail"]')
           .click();
 
-        cy.get('div[role="dialog"]').contains(uploadModelName);
+        cy.get('div[role="dialog"]').contains(UPLOAD_MODEL_NAME);
         cy.get('div[role="dialog"]').contains(uploadedModelId);
         cy.get('div[role="dialog"]').contains('Local');
         cy.get('div[role="dialog"]').contains('Status by node');
@@ -132,7 +117,7 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
           uploadedModelId
         );
 
-        cy.contains(uploadModelName)
+        cy.contains(UPLOAD_MODEL_NAME)
           .closest('tr')
           .find('[aria-label="view detail"]')
           .click();
@@ -151,35 +136,42 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
       let registeredRemoteModelId;
       let remoteModelName;
       before(() => {
-        remoteModelName = `remote sagemaker model-${new Date().getTime()}`;
+        remoteModelName = `remote OpenAI model-${new Date().getTime()}`;
         cy.registerModel({
           name: remoteModelName,
           function_name: 'remote',
           version: '1.0.0',
           description: 'test model',
           connector: {
-            name: 'sagemaker: embedding',
-            description: 'Test connector for Sagemaker embedding model',
+            name: 'OpenAI embedding Connector',
+            description:
+              'The connector to public OpenAI model service for GPT 3.5',
             version: 1,
-            protocol: 'aws_sigv4',
-            credential: {
-              access_key: '...',
-              secret_key: '...',
-              session_token: '...',
-            },
+            protocol: 'http',
             parameters: {
-              region: 'us-west-2',
-              service_name: 'sagemaker',
+              endpoint: 'api.openai.com',
+              auth: 'API_Key',
+              content_type: 'application/json',
+              max_tokens: 7,
+              temperature: 0,
+              model: 'text-embedding-ada-002',
+            },
+            credential: {
+              openAI_key: 'xxx',
             },
             actions: [
               {
                 action_type: 'predict',
                 method: 'POST',
+                url: 'https://${parameters.endpoint}/v1/embeddings',
+                pre_process_function: 'connector.pre_process.openai.embedding',
+                post_process_function:
+                  'connector.post_process.openai.embedding',
                 headers: {
-                  'content-type': 'application/json',
+                  Authorization: 'xxxx',
                 },
-                url: 'https://runtime.sagemaker.us-west-2.amazonaws.com/endpoints/lmi-model-2023-06-24-01-35-32-275/invocations',
-                request_body: '["${parameters.inputs}"]',
+                request_body:
+                  '{ "model": "${parameters.model}", "input": ${parameters.input}}',
               },
             ],
           },
@@ -231,9 +223,9 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
           .click();
         cy.get('div[role="dialog"]').contains('External');
         cy.get('div[role="dialog"]').contains('Connector details');
-        cy.get('div[role="dialog"]').contains('sagemaker: embedding');
+        cy.get('div[role="dialog"]').contains('OpenAI embedding Connector');
         cy.get('div[role="dialog"]').contains(
-          'Test connector for Sagemaker embedding model'
+          'The connector to public OpenAI model service for GPT 3.5'
         );
       });
     });
