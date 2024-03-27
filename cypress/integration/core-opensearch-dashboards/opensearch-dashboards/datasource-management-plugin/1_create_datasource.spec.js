@@ -17,6 +17,27 @@ const REGION = 'us-east-1';
 const ACCESS_KEY = 'accessKey';
 const SECRET_KEY = 'secretKey';
 
+export const CreateDataSourceNoAuth = () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: `9201`,
+        endpoint: `http://localhost:9201`,
+        auth: {
+          type: 'no_auth',
+        },
+      },
+    },
+  });
+};
+
+// TODO: create datasource with basic auth and sigv4
+
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Create datasources', () => {
     before(() => {
@@ -399,6 +420,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'include',
           'app/management/opensearch-dashboards/dataSources'
         );
+      });
+
+      it('creates a datasources to a real opensearch instance', () => {
+        CreateDataSourceNoAuth();
       });
     });
   });
