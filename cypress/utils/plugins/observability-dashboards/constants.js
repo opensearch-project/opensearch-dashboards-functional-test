@@ -62,9 +62,10 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
   cy.get('.euiTab__content').contains('Absolute').click();
   cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
     timeout: TIMEOUT_DELAY,
-  })
-    .focus()
-    .type('{selectall}' + startTime, { force: true });
+  }).focus();
+  cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
+    timeout: TIMEOUT_DELAY,
+  }).type('{selectall}' + startTime, { force: true });
   if (setEndTime) {
     cy.wait(delayTime);
     cy.get(
@@ -74,16 +75,16 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
     cy.get('.euiTab__content').contains('Absolute').click();
     cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
       timeout: TIMEOUT_DELAY,
-    })
-      .focus()
-      .type('{selectall}' + endTime, { force: true });
+    }).focus();
+    cy.get('input[data-test-subj="superDatePickerAbsoluteDateInput"]', {
+      timeout: TIMEOUT_DELAY,
+    }).type('{selectall}' + endTime, { force: true });
   }
   if (refresh) cy.get('.euiButton__text').contains('Refresh').click();
   cy.wait(delayTime);
 };
 
 // notebooks
-export const TEST_NOTEBOOK = 'Test Notebook';
 export const SAMPLE_URL =
   'https://github.com/opensearch-project/sql/tree/main/sql-jdbc';
 export const MARKDOWN_TEXT = `%md
@@ -301,9 +302,10 @@ export const moveToEditPage = () => {
 export const changeTimeTo24 = (timeUnit) => {
   cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]', {
     timeout: TIMEOUT_DELAY,
-  })
-    .trigger('mouseover')
-    .click();
+  }).trigger('mouseover');
+  cy.get('[data-test-subj="superDatePickerToggleQuickMenuButton"]', {
+    timeout: TIMEOUT_DELAY,
+  }).click();
   cy.wait(delayTime);
   cy.get('[aria-label="Time unit"]', { timeout: TIMEOUT_DELAY }).select(
     timeUnit
