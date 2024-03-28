@@ -57,7 +57,7 @@ describe('Dump test data', () => {
 
 describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
-    CURRENT_TENANT.newTenant = 'private';
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
   });
 
@@ -82,7 +82,7 @@ describe(
   { defaultCommandTimeout: 20000 },
   () => {
     beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'private';
+      CURRENT_TENANT.newTenant = 'global';
       cy.visit(`${BASE_PATH}/app/visualize#`);
       cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
       cy.contains(GANTT_VIS_NAME).click({ force: true });
@@ -122,7 +122,7 @@ describe(
 
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
-    CURRENT_TENANT.newTenant = 'private';
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
