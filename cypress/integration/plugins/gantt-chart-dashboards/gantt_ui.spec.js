@@ -59,26 +59,19 @@ describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'private';
     cy.visit(`${BASE_PATH}/app/visualize#`);
-    // cy.wait(delay);
   });
 
   it('Creates and saves a gantt chart', () => {
     cy.get('.euiButton__text').contains('Create ').click({ force: true });
-    // cy.wait(delay);
     cy.get('[data-test-subj="visTypeTitle"]')
       .contains('Gantt Chart')
       .click({ force: true });
-    // cy.wait(delay);
     cy.contains(/^jaeger$/).click({ force: true });
-    // cy.wait(delay);
     cy.contains('Save').click({ force: true });
-    // cy.wait(delay);
     cy.get('input[data-test-subj="savedObjectTitle"]').type(GANTT_VIS_NAME);
-    // cy.wait(delay);
     cy.get('button[data-test-subj="confirmSaveSavedObjectButton"]').click({
       force: true,
     });
-    // cy.wait(delay);
 
     cy.contains('Saved').should('exist');
   });
