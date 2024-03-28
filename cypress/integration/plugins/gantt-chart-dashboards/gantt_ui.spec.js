@@ -56,8 +56,10 @@ describe('Dump test data', () => {
 });
 
 describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
-  beforeEach(() => {
+  before(() => {
     CURRENT_TENANT.newTenant = 'global';
+  });
+  beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
   });
 
@@ -81,8 +83,10 @@ describe(
   'Render and configure a gantt chart',
   { defaultCommandTimeout: 20000 },
   () => {
-    beforeEach(() => {
+    before(() => {
       CURRENT_TENANT.newTenant = 'global';
+    });
+    beforeEach(() => {
       cy.visit(`${BASE_PATH}/app/visualize#`);
       cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
       cy.contains(GANTT_VIS_NAME).click({ force: true });
@@ -121,8 +125,10 @@ describe(
 );
 
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
-  beforeEach(() => {
+  before(() => {
     CURRENT_TENANT.newTenant = 'global';
+  });
+  beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
@@ -245,6 +251,9 @@ describe(
   'Add gantt chart to dashboard',
   { defaultCommandTimeout: 20000 },
   () => {
+    before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+    });
     it('Adds gantt chart to dashboard', () => {
       cy.visit(`${BASE_PATH}/app/dashboards#/create`);
       cy.contains('Add an existing').click({ force: true });
