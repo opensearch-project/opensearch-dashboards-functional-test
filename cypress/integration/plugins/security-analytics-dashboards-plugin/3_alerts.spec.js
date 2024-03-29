@@ -84,15 +84,15 @@ describe('Alerts', () => {
         cy.get('tbody > tr').should(($tr) => {
           expect($tr, 'detector name').to.contain(testDetector.name);
         });
+
+        // Ingest documents to the test index
+        for (let i = 0; i < docCount; i++) {
+          cy.insertDocumentToIndex(testIndex, '', sample_document);
+        }
+
+        // Wait for the detector to execute
+        cy.wait(DETECTOR_TRIGGER_TIMEOUT);
       });
-
-    // Ingest documents to the test index
-    for (let i = 0; i < docCount; i++) {
-      cy.insertDocumentToIndex(testIndex, '', sample_document);
-    }
-
-    // Wait for the detector to execute
-    cy.wait(DETECTOR_TRIGGER_TIMEOUT);
   });
 
   beforeEach(() => {
