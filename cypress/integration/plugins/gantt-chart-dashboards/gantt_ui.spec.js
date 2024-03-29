@@ -126,7 +126,9 @@ describe(
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
+    cy.intercept('**').as('searchRequest');
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
+    cy.wait('@searchRequest');
     cy.contains(GANTT_VIS_NAME).should('exist').click({ force: true });
     cy.contains('Panel settings').click({ force: true });
   });
