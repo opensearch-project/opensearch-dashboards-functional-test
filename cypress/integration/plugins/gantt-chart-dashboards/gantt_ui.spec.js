@@ -83,7 +83,10 @@ describe(
     beforeEach(() => {
       CURRENT_TENANT.newTenant = 'private';
       cy.visit(`${BASE_PATH}/app/visualize#`);
+      cy.intercept('**').as('searchRequest');
       cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
+      cy.wait('@searchRequest');
+      cy.wait(5000);
       cy.get('[data-test-subj="itemsInMemTable"]')
         .contains(GANTT_VIS_NAME)
         .click({
