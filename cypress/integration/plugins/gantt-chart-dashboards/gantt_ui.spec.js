@@ -9,6 +9,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
 import { CURRENT_TENANT } from '../../../utils/commands';
+import { devToolsRequest } from '../../../utils/helpers';
 
 dayjs.extend(customParseFormat);
 
@@ -21,10 +22,7 @@ const DEFAULT_SIZE = 10;
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
     if (Cypress.env('SECURITY_ENABLED')) {
-      /**
-       * Security plugin is using private tenant as default.
-       * So here we'd need to set global tenant as default manually.
-       */
+      // Set default tenant to private to avoid tenant popup
       cy.changeDefaultTenant({
         multitenancy_enabled: true,
         private_tenant_enabled: true,
@@ -32,6 +30,7 @@ describe('Dump test data', () => {
       });
     }
     CURRENT_TENANT.newTenant = 'private';
+    cy.intercept('**').as('dumpDataRequest');
     const dumpDataSet = (ndjson, index) =>
       cy.request({
         method: 'POST',
@@ -63,6 +62,8 @@ describe('Dump test data', () => {
       },
       body: JSON.stringify({ attributes: { title: 'jaeger' } }),
     });
+    devToolsRequest('.kibana*/_refresh', 'POST');
+    // cy.wait('@dumpDataRequest');
   });
 });
 
