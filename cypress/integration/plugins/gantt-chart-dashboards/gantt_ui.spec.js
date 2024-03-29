@@ -57,18 +57,6 @@ describe('Dump test data', () => {
 
 describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
-    if (Cypress.env('SECURITY_ENABLED')) {
-      /**
-       * Security plugin is using private tenant as default.
-       * So here we'd need to set global tenant as default manually.
-       */
-      cy.changeDefaultTenant({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'private',
-      });
-    }
-    CURRENT_TENANT.newTenant = 'private';
     cy.visit(`${BASE_PATH}/app/visualize#`);
   });
 
@@ -93,17 +81,6 @@ describe(
   { defaultCommandTimeout: 20000 },
   () => {
     beforeEach(() => {
-      if (Cypress.env('SECURITY_ENABLED')) {
-        /**
-         * Security plugin is using private tenant as default.
-         * So here we'd need to set global tenant as default manually.
-         */
-        cy.changeDefaultTenant({
-          multitenancy_enabled: true,
-          private_tenant_enabled: true,
-          default_tenant: 'private',
-        });
-      }
       CURRENT_TENANT.newTenant = 'private';
       cy.visit(`${BASE_PATH}/app/visualize#`);
       cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
@@ -144,18 +121,6 @@ describe(
 
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
-    if (Cypress.env('SECURITY_ENABLED')) {
-      /**
-       * Security plugin is using private tenant as default.
-       * So here we'd need to set global tenant as default manually.
-       */
-      cy.changeDefaultTenant({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'private',
-      });
-    }
-    CURRENT_TENANT.newTenant = 'private';
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
     cy.contains(GANTT_VIS_NAME).click({ force: true });
