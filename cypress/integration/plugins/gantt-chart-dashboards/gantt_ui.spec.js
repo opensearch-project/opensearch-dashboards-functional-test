@@ -63,7 +63,7 @@ describe('Dump test data', () => {
       body: JSON.stringify({ attributes: { title: 'jaeger' } }),
     });
     devToolsRequest('.kibana*/_refresh', 'POST');
-    // cy.wait('@dumpDataRequest');
+    cy.wait('@dumpDataRequest');
   });
 });
 
