@@ -30,7 +30,6 @@ describe('Dump test data', () => {
       });
     }
     CURRENT_TENANT.newTenant = 'private';
-    cy.intercept('**').as('dumpDataRequest');
     const dumpDataSet = (ndjson, index) =>
       cy.request({
         method: 'POST',
@@ -63,7 +62,6 @@ describe('Dump test data', () => {
       body: JSON.stringify({ attributes: { title: 'jaeger' } }),
     });
     devToolsRequest('.kibana*/_refresh', 'POST');
-    cy.wait('@dumpDataRequest');
   });
 });
 
