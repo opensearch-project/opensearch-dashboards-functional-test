@@ -129,6 +129,7 @@ describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
     cy.intercept('**').as('searchRequest');
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
     cy.wait('@searchRequest');
+    cy.wait(5000);
     cy.contains(GANTT_VIS_NAME).should('exist').click();
     cy.contains('Panel settings').click({ force: true });
   });
