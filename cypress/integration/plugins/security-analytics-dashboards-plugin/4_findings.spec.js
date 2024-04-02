@@ -39,7 +39,9 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.contains('Findings');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Findings').should('be.visible');
+    });
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -60,6 +62,7 @@ describe('Findings', () => {
     cy.triggerSearchField('Search findings', 'sample_detector');
 
     // Click View details icon
+    cy.wait(1000);
     cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
       cy.get($el).click({ force: true });
     });
@@ -77,6 +80,9 @@ describe('Findings', () => {
   it('displays finding details flyout when user clicks on Finding ID', () => {
     // filter table to show only sample_detector findings
     cy.triggerSearchField('Search findings', 'sample_detector');
+
+    // wait for search to finish
+    cy.wait(1000);
 
     // Click findingId to trigger Finding details flyout
     cy.getTableFirstRow(
@@ -98,6 +104,9 @@ describe('Findings', () => {
   it('allows user to view details about rules that were triggered', () => {
     // filter table to show only sample_detector findings
     cy.triggerSearchField('Search findings', 'sample_detector');
+
+    // wait for search to finish
+    cy.wait(1000);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
     cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
@@ -127,6 +136,9 @@ describe('Findings', () => {
     // filter table to show only sample_detector findings
     cy.triggerSearchField('Search findings', 'sample_detector');
 
+    // wait for search to finish
+    cy.wait(1000);
+
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
     cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
       cy.get($el).click({ force: true });
@@ -148,6 +160,7 @@ describe('Findings', () => {
   it('...can delete detector', () => {
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+    cy.wait(15000);
     cy.contains('Threat detectors');
 
     // filter table to show only sample_detector findings

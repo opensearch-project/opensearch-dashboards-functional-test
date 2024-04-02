@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+const { BACKEND_BASE_PATH } = require('../../base_constants');
 const { NODE_API, OPENSEARCH_DASHBOARDS } = require('./constants');
 
 Cypress.Commands.add('cleanUpTests', () => {
@@ -22,14 +23,6 @@ Cypress.Commands.add('triggerSearchField', (placeholder, text) => {
     .focus()
     .type(`{selectall}${text}{enter}`)
     .trigger('search');
-});
-
-Cypress.Commands.add('deleteAllDetectors', () => {
-  cy.request({
-    method: 'DELETE',
-    url: `${OPENSEARCH_DASHBOARDS}/.opensearch-sap-detectors-config`,
-    failOnStatusCode: false,
-  });
 });
 
 Cypress.Commands.add('createDetector', (detectorJSON) => {
@@ -161,7 +154,7 @@ Cypress.Commands.add('deleteRule', (ruleName) => {
 Cypress.Commands.add('deleteAllCustomRules', () => {
   cy.request({
     method: 'DELETE',
-    url: `${OPENSEARCH_DASHBOARDS}/.opensearch-sap-custom-rules-config`,
+    url: `${BACKEND_BASE_PATH}/.opensearch-sap-custom-rules-config`,
     failOnStatusCode: false,
     body: { query: { match_all: {} } },
   });
@@ -178,7 +171,7 @@ Cypress.Commands.add('updateDetector', (detectorId, detectorJSON) => {
 Cypress.Commands.add('deleteAllDetectors', () => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('opensearch')}/.opensearch-sap-detectors-config`,
+    url: `${BACKEND_BASE_PATH}/.opensearch-sap-detectors-config`,
     failOnStatusCode: false,
   }).as('deleteAllDetectors');
 });

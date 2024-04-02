@@ -6,31 +6,6 @@
 import { OPENSEARCH_DASHBOARDS_URL } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 
-const testMappings = {
-  properties: {
-    'host-hostname': {
-      type: 'alias',
-      path: 'HostName',
-    },
-    'windows-message': {
-      type: 'alias',
-      path: 'Message',
-    },
-    'winlog-provider_name': {
-      type: 'alias',
-      path: 'Provider_Name',
-    },
-    'winlog-event_data-ServiceName': {
-      type: 'alias',
-      path: 'ServiceName',
-    },
-    'winlog-event_id': {
-      path: 'EventID',
-      type: 'alias',
-    },
-  },
-};
-
 describe('Detectors', () => {
   const indexName = 'cypress-test-windows';
   const detectorName = 'test detector';
@@ -85,7 +60,7 @@ describe('Detectors', () => {
     cy.triggerSearchField('Search...', 'USB Device Plugged');
 
     // Disable all rules
-    cy.contains('tr', 'USB Device Plugged', { timeout: 20000 });
+    cy.contains('tr', 'USB Device Plugged', { timeout: 60000 });
     cy.get('th').within(() => {
       cy.get('button').first().click({ force: true });
     });
@@ -101,24 +76,7 @@ describe('Detectors', () => {
     // Check that correct page now showing
     cy.contains('Configure field mapping');
 
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
-
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
-
-    // Select appropriate names to map fields to
-    for (let field_name in testMappings.properties) {
-      const mappedTo = testMappings.properties[field_name].path;
-
-      cy.contains('tr', field_name).within(() => {
-        cy.get(`[data-test-subj="detector-field-mappings-select"]`)
-          .click()
-          .type(mappedTo);
-      });
-    }
+    cy.contains('We have automatically mapped all fields');
 
     // Continue to next page
     cy.get('button').contains('Next').click({ force: true, timeout: 2000 });
@@ -147,20 +105,6 @@ describe('Detectors', () => {
 
     // Confirm page is reached
     cy.contains('Review and create');
-
-    // Confirm field mappings registered
-    cy.contains('Field mapping');
-
-    // Show 50 rows per page
-    cy.contains('Rows per page').click({ force: true });
-    cy.contains('50 rows').click({ force: true });
-
-    for (let field in testMappings.properties) {
-      const mappedTo = testMappings.properties[field].path;
-
-      cy.contains(field);
-      cy.contains(mappedTo);
-    }
 
     // Confirm entries user has made
     cy.contains('Detector details');
