@@ -7,15 +7,21 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 import {
   OSD_TEST_DOMAIN_ENDPOINT_URL,
   OSD_INVALID_ENDPOINT_URL,
+  DATASOURCE_DELAY,
+  REGION,
+  ACCESS_KEY,
+  SECRET_KEY,
+  AUTH_TYPE_BASIC_AUTH,
+  AUTH_TYPE_NO_AUTH,
+  AUTH_TYPE_SIGV4,
+  SERVICE_TYPE_OPENSEARCH,
+  SERVICE_TYPE_OPENSEARCH_SERVERLESS,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 
 const miscUtils = new MiscUtils(cy);
 // Get environment variables
 const username = Cypress.env('username');
 const password = Cypress.env('password');
-const REGION = 'us-east-1';
-const ACCESS_KEY = 'accessKey';
-const SECRET_KEY = 'secretKey';
 
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Create datasources', () => {
@@ -48,22 +54,18 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
     describe('Datasource can be created successfully', () => {
       it('with no auth and all required inputs', () => {
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
         cy.get('[name="dataSourceTitle"]').type('test_noauth');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'no_auth'
-        );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.enabled'
-        );
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_NO_AUTH}]`).click();
+
+        cy.getElementByTestId('createDataSourceButton').should('be.enabled');
         cy.get('[name="dataSourceDescription"]').type(
           'cypress test no auth data source'
         );
 
-        cy.get('[data-test-subj="createDataSourceButton"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
         cy.wait('@createDataSourceRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
         });
@@ -74,27 +76,24 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('with basic auth and all required inputs', () => {
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
         cy.get('[name="dataSourceTitle"]').type('test_auth');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'username_password'
-        );
-        cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_BASIC_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormUsernameField').type(
           username
         );
-        cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type(
+        cy.getElementByTestId('createDataSourceFormPasswordField').type(
           password
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.enabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.enabled');
         cy.get('[name="dataSourceDescription"]').type(
           'cypress test basic auth data source'
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
         cy.wait('@createDataSourceRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
         });
@@ -105,34 +104,30 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('with sigV4 and all required inputs to connect to OpenSearch Service', () => {
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
         cy.get('[name="dataSourceTitle"]').type('test_sigv4_es');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get('[data-test-subj="createDataSourceFormRegionField"]').type(
-          REGION
-        );
-        cy.get(
-          '[data-test-subj="createDataSourceFormSigV4ServiceTypeSelect"]'
-        ).select('es');
-        cy.get('[data-test-subj="createDataSourceFormAccessKeyField"]').type(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormRegionField').type(REGION);
+        cy.getElementByTestId(
+          'createDataSourceFormSigV4ServiceTypeSelect'
+        ).click();
+        cy.get(`button[id=${SERVICE_TYPE_OPENSEARCH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormAccessKeyField').type(
           ACCESS_KEY
         );
-        cy.get('[data-test-subj="createDataSourceFormSecretKeyField"]').type(
+        cy.getElementByTestId('createDataSourceFormSecretKeyField').type(
           SECRET_KEY
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.enabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.enabled');
         cy.get('[name="dataSourceDescription"]').type(
           'cypress test sigV4 data source'
         );
 
-        cy.get('[data-test-subj="createDataSourceButton"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
         cy.wait('@createDataSourceRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
         });
@@ -144,34 +139,29 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('with sigV4 and all required inputs to connect to OpenSearch Serverless Service', () => {
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
         cy.get('[name="dataSourceTitle"]').type('test_sigv4_aoss');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get('[data-test-subj="createDataSourceFormRegionField"]').type(
-          REGION
-        );
-        cy.get(
-          '[data-test-subj="createDataSourceFormSigV4ServiceTypeSelect"]'
-        ).select('aoss');
-        cy.get('[data-test-subj="createDataSourceFormAccessKeyField"]').type(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormRegionField').type(REGION);
+        cy.getElementByTestId('createDataSourceFormSigV4ServiceTypeSelect')
+          .click()
+          .get(`button[id=${SERVICE_TYPE_OPENSEARCH_SERVERLESS}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormAccessKeyField').type(
           ACCESS_KEY
         );
-        cy.get('[data-test-subj="createDataSourceFormSecretKeyField"]').type(
+        cy.getElementByTestId('createDataSourceFormSecretKeyField').type(
           SECRET_KEY
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.enabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.enabled');
         cy.get('[name="dataSourceDescription"]').type(
           'cypress test sigV4 data source (Serverless)'
         );
 
-        cy.get('[data-test-subj="createDataSourceButton"]').click();
+        cy.getElementByTestId('createDataSourceButton').click();
         cy.wait('@createDataSourceRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
         });
@@ -246,19 +236,21 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
     describe('Username validation', () => {
       it('validate that username field does not show when auth type is no auth', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'no_auth'
-        );
-        cy.get('[data-test-subj="createDataSourceFormUsernameField"]').should(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_NO_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormUsernameField').should(
           'not.exist'
         );
       });
 
       it('validate that username is a required field when auth type is username & password', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'username_password'
-        );
-        cy.get('[data-test-subj="createDataSourceFormUsernameField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_BASIC_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormUsernameField')
           .focus()
           .blur();
         cy.get(
@@ -267,10 +259,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('validate that username field does not show any error when auth type is username & password and field is not empty', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'username_password'
-        );
-        cy.get('[data-test-subj="createDataSourceFormUsernameField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_BASIC_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormUsernameField')
           .type(username)
           .blur();
         cy.get(
@@ -281,19 +274,19 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
     describe('Password validation', () => {
       it('validate that password field does not show when auth type is no auth', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'no_auth'
-        );
-        cy.get('[data-test-subj="createDataSourceFormPasswordField"]').should(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_NO_AUTH}]`).click();
+        cy.getElementByTestId('createDataSourceFormPasswordField').should(
           'not.exist'
         );
       });
 
       it('validate that password is a required field when auth type is username & password', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'username_password'
-        );
-        cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_BASIC_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormPasswordField')
           .focus()
           .blur();
         cy.get(
@@ -302,10 +295,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('validate that password field does not show any error when auth type is username & password and field is not empty', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'username_password'
-        );
-        cy.get('[data-test-subj="createDataSourceFormPasswordField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_BASIC_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormPasswordField')
           .type(password)
           .blur();
         cy.get(
@@ -316,22 +310,18 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
     describe('SigV4 AuthType: fields validation', () => {
       it('validate that region is a required field', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get('[data-test-subj="createDataSourceFormRegionField"]')
-          .focus()
-          .blur();
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormRegionField').focus().blur();
         cy.get(
           'input[data-test-subj="createDataSourceFormRegionField"]:invalid'
         ).should('have.length', 1);
       });
 
       it('validate that accessKey is a required field', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get('[data-test-subj="createDataSourceFormAccessKeyField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormAccessKeyField')
           .focus()
           .blur();
         cy.get(
@@ -340,10 +330,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('validate that secretKey is a required field', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get('[data-test-subj="createDataSourceFormSecretKeyField"]')
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceFormSecretKeyField')
           .focus()
           .blur();
         cy.get(
@@ -352,12 +341,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('validate that serviceName is a required field, and with default option rendered', () => {
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'sigv4'
-        );
-        cy.get(
-          '[data-test-subj="createDataSourceFormSigV4ServiceTypeSelect"]'
-        ).should('have.value', 'es');
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_SIGV4}]`).click().wait(DATASOURCE_DELAY);
+        cy.getElementByTestId(
+          'createDataSourceFormSigV4ServiceTypeSelect'
+        ).contains('Amazon OpenSearch Service');
       });
     });
 
@@ -366,9 +354,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         miscUtils.visitPage(
           'app/management/opensearch-dashboards/dataSources/create'
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
       });
 
       it('validate if create data source button is disabled when there is any field error', () => {
@@ -377,24 +363,23 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'have.length',
           1
         );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
-          'be.disabled'
-        );
+        cy.getElementByTestId('createDataSourceButton').should('be.disabled');
       });
 
       it('validate if create data source button is not disabled only if there is no any field error', () => {
         cy.get('[name="dataSourceTitle"]').type('test_create_button');
         cy.get('[name="endpoint"]').type(OSD_TEST_DOMAIN_ENDPOINT_URL);
-        cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
-          'no_auth'
-        );
-        cy.get('[data-test-subj="createDataSourceButton"]').should(
+        cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+        cy.get(`button[id=${AUTH_TYPE_NO_AUTH}]`)
+          .click()
+          .wait(DATASOURCE_DELAY);
+        cy.getElementByTestId('createDataSourceButton').should(
           'not.be.disabled'
         );
       });
 
       it('cancel button should redirect to datasource listing page', () => {
-        cy.get('[data-test-subj="cancelCreateDataSourceButton"]').click();
+        cy.getElementByTestId('cancelCreateDataSourceButton').click();
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
           'app/management/opensearch-dashboards/dataSources'
