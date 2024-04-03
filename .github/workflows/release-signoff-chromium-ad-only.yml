@@ -43,6 +43,7 @@ jobs:
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
+          admin-password: admin
           port: 9202
       - name: Get OpenSearch-Dashboards
         run: |

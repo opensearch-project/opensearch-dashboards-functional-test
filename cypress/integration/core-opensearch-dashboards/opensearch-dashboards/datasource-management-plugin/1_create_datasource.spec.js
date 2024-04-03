@@ -448,6 +448,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('creates a datasources to a real opensearch instance', () => {
         CreateDataSourceNoAuth();
+        CreateDataSourceBasicAuth();
       });
     });
   });
