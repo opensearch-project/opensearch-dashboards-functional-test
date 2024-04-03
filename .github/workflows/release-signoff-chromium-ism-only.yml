@@ -39,6 +39,12 @@ jobs:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
+      - uses: derek-ho/start-opensearch@v3
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: true
+          admin-password: admin
+          port: 9202
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz

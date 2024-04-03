@@ -36,6 +36,30 @@ export const CreateDataSourceNoAuth = () => {
   });
 };
 
+export const CreateDataSourceBasicAuth = () => {
+  miscUtils.visitPage(
+    'app/management/opensearch-dashboards/dataSources/create'
+  );
+
+  cy.get('[data-test-subj="createDataSourceButton"]').should('be.disabled');
+  cy.get('[name="dataSourceTitle"]').type('9201');
+  cy.get('[name="endpoint"]').type('https://localhost:9202');
+  cy.get('[data-test-subj="createDataSourceFormAuthTypeSelect"]').select(
+    'username_password'
+  );
+  cy.get('[data-test-subj="createDataSourceFormUsernameField"]').type('admin');
+  cy.get('[data-test-subj="createDataSourceFormPasswordField"]').type('admin');
+  cy.get('[data-test-subj="createDataSourceButton"]').should('be.enabled');
+  cy.get('[name="dataSourceDescription"]').type(
+    'cypress test basic auth data source'
+  );
+  cy.get('[data-test-subj="createDataSourceButton"]').click();
+  cy.location('pathname', { timeout: 6000 }).should(
+    'include',
+    'app/management/opensearch-dashboards/dataSources'
+  );
+};
+
 // TODO: create datasource with basic auth and sigv4
 
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
