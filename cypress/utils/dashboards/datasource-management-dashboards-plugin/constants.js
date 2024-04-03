@@ -14,6 +14,17 @@ export const DS_API = {
 
 export const TIMEOUT_OPTS = { timeout: 60000 };
 export const FORCE_CLICK_OPTS = { force: true };
+export const DATASOURCE_DELAY = 1000;
+// test data
+export const REGION = 'us-east-1';
+export const ACCESS_KEY = 'accessKey';
+export const SECRET_KEY = 'secretKey';
+
+export const AUTH_TYPE_SIGV4 = 'sigv4';
+export const AUTH_TYPE_NO_AUTH = 'no_auth';
+export const AUTH_TYPE_BASIC_AUTH = 'username_password';
+export const SERVICE_TYPE_OPENSEARCH = 'es';
+export const SERVICE_TYPE_OPENSEARCH_SERVERLESS = 'aoss';
 
 /* Mocks */
 
@@ -23,7 +34,7 @@ export const DS_JSON = {
     description: 'test ds_description_update',
     endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
     auth: {
-      type: 'no_auth',
+      type: AUTH_TYPE_NO_AUTH,
     },
   },
 };
@@ -34,7 +45,7 @@ export const DS_JSON_2 = {
     description: 'test ds_description_update',
     endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
     auth: {
-      type: 'no_auth',
+      type: AUTH_TYPE_NO_AUTH,
     },
   },
 };
@@ -45,14 +56,14 @@ export const DS_JSON_UNIQUE_VALUES = {
     description: '',
     endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
     auth: {
-      type: 'no_auth',
+      type: AUTH_TYPE_NO_AUTH,
       credentials: {
         username: 'a',
         password: 'a',
-        region: 'us-east-1',
+        region: REGION,
         accessKey: 'a',
         secretKey: 'a',
-        service: 'aoss',
+        service: SERVICE_TYPE_OPENSEARCH_SERVERLESS,
       },
     },
   },
