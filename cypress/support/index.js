@@ -31,6 +31,7 @@ import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
+import '../utils/dashboards/console/commands';
 
 import 'cypress-real-events';
 
