@@ -44,7 +44,7 @@ Cypress.Commands.add('vbEditAgg', (fields = []) => {
   });
 
   fields.forEach(({ testSubj, type, value }) => {
-    // TODO: Impliment controls for other input types
+    // TODO: Implment controls for other input types
     switch (type) {
       case 'input':
         cy.getElementByTestId(testSubj)
