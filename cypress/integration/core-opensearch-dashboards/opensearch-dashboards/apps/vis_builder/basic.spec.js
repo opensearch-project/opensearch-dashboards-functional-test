@@ -17,10 +17,12 @@ import {
   VB_PATH_SO_DATA,
   VB_SO_TYPE,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Base Tests', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
       cy.importSavedObjects(VB_PATH_SO_DATA);
