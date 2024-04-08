@@ -17,7 +17,6 @@ import {
   SERVICE_TYPE_OPENSEARCH,
   SERVICE_TYPE_OPENSEARCH_SERVERLESS,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
-import { CURRENT_TENANT } from '../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 // Get environment variables
@@ -27,7 +26,6 @@ const password = Cypress.env('password');
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Create datasources', () => {
     before(() => {
-      CURRENT_TENANT.newTenant = 'global';
       // Clean up before creating new data sources for testing
       cy.deleteAllDataSources();
     });

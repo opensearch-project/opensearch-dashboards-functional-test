@@ -7,7 +7,6 @@ import {
   TIMEOUT_OPTS,
   OSD_TEST_DOMAIN_ENDPOINT_URL,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
-import { CURRENT_TENANT } from '../../../../utils/commands';
 
 const searchFieldIdentifier = 'input[type="search"]';
 const tableHeadIdentifier = 'thead > tr > th';
@@ -15,7 +14,6 @@ const tableHeadIdentifier = 'thead > tr > th';
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Table', () => {
     before(() => {
-      CURRENT_TENANT.newTenant = 'global';
       // Visit Data Sources OSD
       cy.visitDataSourcesListingPage();
     });
