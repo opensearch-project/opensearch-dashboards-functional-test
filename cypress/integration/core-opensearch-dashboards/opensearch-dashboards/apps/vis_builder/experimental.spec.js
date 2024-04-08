@@ -11,10 +11,12 @@ import {
   VB_METRIC_VIS_TITLE,
   VB_PATH_SO_DATA,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Experimental settings', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
       cy.importSavedObjects(VB_PATH_SO_DATA);
     });
 
