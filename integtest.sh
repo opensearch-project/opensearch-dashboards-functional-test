@@ -120,9 +120,8 @@ echo "BROWSER_PATH: $BROWSER_PATH"
 # We need to ensure the cypress tests are the last execute process to
 # the error code gets passed to the CI.
 
-if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
-    echo "Disable video recording in Windows due to ffmpeg missing libs in Windows Docker Container"
-    echo "TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/1068"
+if [ "$DISABLE_VIDEO" = "true" ]; then
+    echo "Disable video recording when running tests in Cypress"
     jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
     mv -v cypress_new.json cypress.json
 fi
