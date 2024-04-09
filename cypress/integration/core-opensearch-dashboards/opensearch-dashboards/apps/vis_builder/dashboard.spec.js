@@ -18,10 +18,12 @@ import {
   VB_METRIC_VIS_TITLE,
   VB_BAR_VIS_TITLE,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
 
