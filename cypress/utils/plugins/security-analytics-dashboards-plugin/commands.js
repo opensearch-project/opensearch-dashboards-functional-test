@@ -5,7 +5,6 @@
 
 const {
   OPENSEARCH_DASHBOARDS_URL,
-  OPENSEARCH_DASHBOARDS,
 } = require('./constants');
 const { NODE_API } = require('./constants');
 const { BACKEND_BASE_PATH } = require('../../base_constants');
@@ -385,7 +384,7 @@ Cypress.Commands.add('sa_deleteAllIndices', () => {
 Cypress.Commands.add('sa_createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
-    url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
+    url: `${BACKEND_BASE_PATH}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
     headers: {
       'osd-xsrf': true,

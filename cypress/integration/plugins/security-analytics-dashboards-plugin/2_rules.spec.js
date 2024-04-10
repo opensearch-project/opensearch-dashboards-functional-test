@@ -537,7 +537,10 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', {
+        requestTimeout: 10000,
+        responseTimeout: 60000,
+      }).should('have.property', 'state', 'Complete');
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {

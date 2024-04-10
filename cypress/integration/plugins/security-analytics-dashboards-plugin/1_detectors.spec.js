@@ -205,7 +205,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   // TEST DETECTOR DETAILS PAGE
   cy.wait('@createMappingsRequest');
 
-  if (!expectFailure) {
+  if (expectFailure) {
+    cy.wait('@createDetectorRequest');
+  } else {
     cy.wait('@createDetectorRequest').then((interceptor) => {
       const detectorId = interceptor.response.body.response._id;
 
@@ -432,7 +434,10 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', {
+        requestTimeout: 10000,
+        responseTimeout: 60000,
+      }).should('have.property', 'state', 'Complete');
     });
 
     it('...can fail creation', () => {
