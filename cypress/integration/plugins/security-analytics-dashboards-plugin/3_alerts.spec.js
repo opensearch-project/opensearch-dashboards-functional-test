@@ -75,6 +75,9 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({
       force: true,
     });
+
+    // wait for the table entries to be ready, needed for slower systems
+    cy.wait(3000);
   });
 
   it('are generated', () => {

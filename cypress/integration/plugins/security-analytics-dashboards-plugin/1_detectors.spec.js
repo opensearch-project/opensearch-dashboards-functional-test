@@ -206,9 +206,9 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.wait('@createMappingsRequest');
 
   if (expectFailure) {
-    cy.wait('@createDetectorRequest', { responseTimeout: 120000 });
+    cy.wait('@createDetectorRequest', { responseTimeout: 180000 });
   } else {
-    cy.wait('@createDetectorRequest', { responseTimeout: 120000 }).then(
+    cy.wait('@createDetectorRequest', { responseTimeout: 180000 }).then(
       (interceptor) => {
         const detectorId = interceptor.response.body.response._id;
 

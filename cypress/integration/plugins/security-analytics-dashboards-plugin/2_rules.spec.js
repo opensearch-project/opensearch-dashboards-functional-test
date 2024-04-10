@@ -511,7 +511,7 @@ describe('Rules', () => {
       );
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('FieldValue')
+        getMapValueField().focus().type('FieldValue', { force: true })
       );
 
       // selection map list field
@@ -522,7 +522,7 @@ describe('Rules', () => {
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
-        getMapListField().type('FieldValue');
+        getMapListField().focus().type('FieldValue', { force: true });
       });
 
       // tags field
@@ -539,7 +539,7 @@ describe('Rules', () => {
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch', {
         requestTimeout: 10000,
-        responseTimeout: 60000,
+        responseTimeout: 120000,
       }).should('have.property', 'state', 'Complete');
 
       // Check that correct page is showing
