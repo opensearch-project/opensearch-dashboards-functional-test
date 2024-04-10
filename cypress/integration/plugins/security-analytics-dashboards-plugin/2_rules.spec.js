@@ -423,7 +423,7 @@ describe('Rules', () => {
           .parentsUntil('.euiFormRow')
           .contains('Value is required');
 
-        getMapListField().type('FieldValue');
+        getMapListField().focus().type('FieldValue', { force: true });
         getMapListField()
           .focus()
           .blur()

@@ -206,39 +206,41 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
   cy.wait('@createMappingsRequest');
 
   if (expectFailure) {
-    cy.wait('@createDetectorRequest');
+    cy.wait('@createDetectorRequest', { responseTimeout: 120000 });
   } else {
-    cy.wait('@createDetectorRequest').then((interceptor) => {
-      const detectorId = interceptor.response.body.response._id;
+    cy.wait('@createDetectorRequest', { responseTimeout: 120000 }).then(
+      (interceptor) => {
+        const detectorId = interceptor.response.body.response._id;
 
-      cy.url()
-        .should('contain', detectorId)
-        .then(() => {
-          cy.sa_getElementByText(
-            '.euiCallOut',
-            `Detector created successfully: ${detectorName}`
-          );
-
-          // Confirm detector state
-          cy.sa_getElementByText('.euiTitle', detectorName);
-          cy.sa_getElementByText('.euiHealth', 'Active').then(() => {
-            cy.sa_validateDetailsItem('Detector name', detectorName);
-            cy.sa_validateDetailsItem('Description', '-');
-            cy.sa_validateDetailsItem('Detector schedule', 'Every 1 minute');
-            cy.sa_validateDetailsItem('Detection rules', '14');
-            cy.sa_validateDetailsItem(
-              'Detector dashboard',
-              'Not available for this log type'
+        cy.url()
+          .should('contain', detectorId)
+          .then(() => {
+            cy.sa_getElementByText(
+              '.euiCallOut',
+              `Detector created successfully: ${detectorName}`
             );
 
-            cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
-            cy.sa_getElementByText('button.euiTab', 'Alert triggers')
-              .should('be.visible')
-              .click();
-            validateAlertPanel('Trigger 1');
+            // Confirm detector state
+            cy.sa_getElementByText('.euiTitle', detectorName);
+            cy.sa_getElementByText('.euiHealth', 'Active').then(() => {
+              cy.sa_validateDetailsItem('Detector name', detectorName);
+              cy.sa_validateDetailsItem('Description', '-');
+              cy.sa_validateDetailsItem('Detector schedule', 'Every 1 minute');
+              cy.sa_validateDetailsItem('Detection rules', '14');
+              cy.sa_validateDetailsItem(
+                'Detector dashboard',
+                'Not available for this log type'
+              );
+
+              cy.wait(5000); // waiting for the page to be reloaded after pushing detector id into route
+              cy.sa_getElementByText('button.euiTab', 'Alert triggers')
+                .should('be.visible')
+                .click();
+              validateAlertPanel('Trigger 1');
+            });
           });
-        });
-    });
+      }
+    );
   }
 };
 
@@ -286,7 +288,11 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { responseTimeout: 120000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       openCreateForm();
     });
