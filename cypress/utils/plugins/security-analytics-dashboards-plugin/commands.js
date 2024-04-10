@@ -382,7 +382,7 @@ Cypress.Commands.add('sa_deleteAllIndices', () => {
 Cypress.Commands.add('sa_createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
-    url: `${BACKEND_BASE_PATH}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
+    url: `${OPENSEARCH_DASHBOARDS_URL}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
     body: JSON.stringify(ruleJSON),
     headers: {
       'osd-xsrf': true,
