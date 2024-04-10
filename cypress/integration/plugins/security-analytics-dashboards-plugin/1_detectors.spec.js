@@ -10,6 +10,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const testMappings = {
   properties: {
@@ -42,12 +43,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
     .focus()
     .realType(dataSource);
 
-  cy.intercept({
-    pathname: NODE_API.RULES_SEARCH,
-    query: {
-      prePackaged: 'true',
-    },
-  }).as('getSigmaRules');
+  setupIntercept(cy, NODE_API.RULES_SEARCH, 'getSigmaRules');
 
   // Select threat detector type (Windows logs)
   cy.get(`input[id="dns"]`).click({ force: true });
@@ -187,7 +183,7 @@ describe('Detectors', () => {
   });
 
   beforeEach(() => {
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
+    setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
@@ -220,6 +216,10 @@ describe('Detectors', () => {
       .focus()
       .realType(cypressIndexWindows)
       .realPress('Enter');
+    cy.get(`[data-test-subj="define-detector-select-data-source"]`)
+      .find('input')
+      .blur();
+    cy.wait(1000);
 
     cy.get('.euiCallOut')
       .should('be.visible')
@@ -268,6 +268,17 @@ describe('Detectors', () => {
     cy.get(`[data-test-subj="define-detector-select-data-source"]`)
       .realType(cypressIndexWindows)
       .realPress('Enter');
+
+    // Select appropriate names to map fields to
+    for (let field_name in testMappings.properties) {
+      const mappedTo = testMappings.properties[field_name].path;
+
+      cy.contains('tr', field_name).within(() => {
+        cy.get(`[data-test-subj="detector-field-mappings-select"]`)
+          .click()
+          .type(mappedTo);
+      });
+    }
 
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`)
@@ -389,7 +400,7 @@ describe('Detectors', () => {
 
     cy.get('.reviewFieldMappings').should('not.exist');
 
-    cy.intercept(NODE_API.MAPPINGS_VIEW).as('getMappingsView');
+    setupIntercept(cy, NODE_API.MAPPINGS_VIEW, 'getMappingsView', 'GET');
 
     cy.get('table th').within(() => {
       cy.get('button').first().click({ force: true });

@@ -7,6 +7,7 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -159,18 +160,16 @@ const checkRulesFlyout = () => {
 describe('Rules', () => {
   before(() => cy.cleanUpTests());
   beforeEach(() => {
-    cy.intercept({
-      pathname: NODE_API.RULES_SEARCH,
-      query: {
-        prePackaged: 'true',
-      },
-    }).as('rulesSearch');
+    setupIntercept(cy, NODE_API.RULES_SEARCH, 'rulesSearch');
+
     // Visit Rules page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
     cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
     // Check that correct page is showing
-    cy.contains('Rules');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Rules').should('be.visible');
+    });
   });
 
   it('...can be created', () => {
@@ -236,9 +235,7 @@ describe('Rules', () => {
       cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
     );
 
-    cy.intercept({
-      url: NODE_API.RULES_BASE,
-    }).as('getRules');
+    setupIntercept(cy, NODE_API.RULES_BASE, 'getRules');
 
     // Click "create" button
     cy.get('[data-test-subj="submit_rule_form_button"]').click({
@@ -313,14 +310,6 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`, {
-      delay: 5000,
-    }).as('getPrePackagedRules');
-
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`, {
-      delay: 5000,
-    }).as('getCustomRules');
-
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
@@ -345,13 +334,16 @@ describe('Rules', () => {
               .click({ force: true })
           );
 
-        cy.wait('@getCustomRules');
-        cy.wait('@getPrePackagedRules');
+        cy.wait(2000);
 
-        // Search for sample_detector, presumably deleted
+        setupIntercept(cy, NODE_API.RULES_SEARCH, 'getRules');
+        cy.reload();
+
+        // Search for the custom rule, presumably deleted
+        cy.wait('@getRules');
         cy.wait(3000);
         cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
-        // Click the rule link to open the details flyout
+        // The rule link should not exist
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
       });
   });

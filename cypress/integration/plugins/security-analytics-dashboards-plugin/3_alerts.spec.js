@@ -5,13 +5,14 @@
 
 import {
   DETECTOR_TRIGGER_TIMEOUT,
-  NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
+  NODE_API,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import sample_index_settings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_index_settings.json';
 import sample_alias_mappings from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_alias_mappings.json';
 import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_detector.json';
 import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const testIndex = 'sample_alerts_spec_cypress_test_index';
 const testDetectorName = 'alerts_spec_cypress_test_detector';
@@ -79,7 +80,10 @@ describe('Alerts', () => {
         cy.contains('Threat detectors');
 
         // Filter table to only show the test detector
-        cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+        cy.get(`input[type="search"]`)
+          .focus()
+          .type(`${testDetector.name}`)
+          .type(`{enter}`);
 
         // Confirm detector was created
         cy.get('tbody > tr').should(($tr) => {
@@ -98,16 +102,19 @@ describe('Alerts', () => {
 
   beforeEach(() => {
     // Visit Alerts table page
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('detectorsSearch');
+    setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
+
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
     cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
 
     // Wait for page to load
-    cy.contains('Security alerts');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Security alerts').should('be.visible');
+    });
 
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetector.name}{enter}`);
+    cy.get(`input[type="search"]`).focus().type(`${testDetector.name}{enter}`);
 
     // Adjust the date range picker to display alerts from today
     cy.get(

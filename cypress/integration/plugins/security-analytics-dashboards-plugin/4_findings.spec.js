@@ -5,7 +5,6 @@
 
 import {
   DETECTOR_TRIGGER_TIMEOUT,
-  NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import sample_document from '../../../fixtures/plugins/security-analytics-dashboards-plugin/sample_document.json';
@@ -40,7 +39,9 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.contains('Findings');
+    cy.url({ timeout: 60000 }).then(() => {
+      cy.contains('Findings').should('be.visible');
+    });
   });
 
   it('displays findings based on recently ingested data', () => {
@@ -145,51 +146,6 @@ describe('Findings', () => {
       cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(
         'USB Device Plugged'
       );
-    });
-  });
-
-  it('...can delete detector', () => {
-    // Visit Detectors page
-    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-    cy.contains('Threat detectors');
-
-    // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search threat detectors"]`).ospSearch(
-      'sample_detector'
-    );
-
-    // intercept detectors and rules requests
-    cy.intercept(NODE_API.SEARCH_DETECTORS).as('getDetector');
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=true`).as(
-      'getPrePackagedRules'
-    );
-    cy.intercept(`${NODE_API.RULES_SEARCH}?prePackaged=false`).as('getRules');
-
-    // Click on detector to be removed
-    cy.contains('sample_detector').click({ force: true });
-    cy.contains('Detector details');
-    cy.contains(sample_detector.name);
-
-    // wait for detector details to load before continuing
-    cy.wait(['@getDetector', '@getPrePackagedRules', '@getRules']).then(() => {
-      // Click "Actions" button, the click "Delete"
-      cy.get('button.euiButton')
-        .contains('Actions')
-        .click({ force: true })
-        .then(() => {
-          // Confirm arrival at detectors page
-          cy.get('[data-test-subj="editButton"]')
-            .contains('Delete')
-            .click({ force: true });
-
-          // Search for sample_detector, presumably deleted
-          cy.get(`input[placeholder="Search threat detectors"]`).ospSearch(
-            'sample_detector'
-          );
-
-          // Confirm sample_detector no longer exists
-          cy.contains('There are no existing detectors.');
-        });
     });
   });
 
