@@ -3,9 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const {
-  OPENSEARCH_DASHBOARDS_URL,
-} = require('./constants');
+const { OPENSEARCH_DASHBOARDS_URL } = require('./constants');
 const { NODE_API } = require('./constants');
 const { BACKEND_BASE_PATH } = require('../../base_constants');
 
