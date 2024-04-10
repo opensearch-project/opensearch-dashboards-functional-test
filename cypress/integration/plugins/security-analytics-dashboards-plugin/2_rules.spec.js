@@ -310,8 +310,6 @@ describe('Rules', () => {
   });
 
   it('...can be deleted', () => {
-    setupIntercept(cy, NODE_API.RULES_SEARCH, 'getRules');
-
     cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
     // Click the rule link to open the details flyout
@@ -336,13 +334,16 @@ describe('Rules', () => {
               .click({ force: true })
           );
 
-        cy.wait(5000);
-        cy.wait('@getRules');
+        cy.wait(2000);
 
-        // Search for sample_detector, presumably deleted
+        setupIntercept(cy, NODE_API.RULES_SEARCH, 'getRules');
+        cy.reload();
+
+        // Search for the custom rule, presumably deleted
+        cy.wait('@getRules');
         cy.wait(3000);
         cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
-        // Click the rule link to open the details flyout
+        // The rule link should not exist
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
       });
   });

@@ -269,6 +269,17 @@ describe('Detectors', () => {
       .realType(cypressIndexWindows)
       .realPress('Enter');
 
+    // Select appropriate names to map fields to
+    for (let field_name in testMappings.properties) {
+      const mappedTo = testMappings.properties[field_name].path;
+
+      cy.contains('tr', field_name).within(() => {
+        cy.get(`[data-test-subj="detector-field-mappings-select"]`)
+          .click()
+          .type(mappedTo);
+      });
+    }
+
     // Change detector scheduling
     cy.get(`[data-test-subj="detector-schedule-number-select"]`)
       .ospClear()
