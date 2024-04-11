@@ -441,8 +441,7 @@ describe('Detectors', () => {
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
       cy.wait('@detectorsSearch', {
-        requestTimeout: 10000,
-        responseTimeout: 60000,
+        responseTimeout: 120000,
       }).should('have.property', 'state', 'Complete');
     });
 

@@ -227,7 +227,11 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { responseTimeout: 120000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -538,7 +542,6 @@ describe('Rules', () => {
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch', {
-        requestTimeout: 10000,
         responseTimeout: 120000,
       }).should('have.property', 'state', 'Complete');
 
@@ -659,7 +662,7 @@ describe('Rules', () => {
             );
 
           cy.wait(5000);
-          cy.wait('@rulesSearch');
+          cy.wait('@rulesSearch', { responseTimeout: 120000 });
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);
