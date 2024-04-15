@@ -7,6 +7,7 @@ import {
   CommonUI,
   MiscUtils,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { CURRENT_TENANT } from '../../utils/commands';
 
 /**
  * dashboard_sample_data test suite description:
@@ -22,7 +23,9 @@ export function dashboardSanityTests() {
   const path = baseURL.pathname.replace(/\/$/, '');
 
   describe('dashboard sample data validation', () => {
-    before(() => {});
+    before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+    });
 
     after(() => {});
 
