@@ -9,6 +9,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
 import { CURRENT_TENANT } from '../../../utils/commands';
+import { devToolsRequest } from '../../../utils/helpers';
 
 dayjs.extend(customParseFormat);
 
@@ -20,7 +21,15 @@ const DEFAULT_SIZE = 10;
 
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
-    CURRENT_TENANT.newTenant = 'global';
+    if (Cypress.env('SECURITY_ENABLED')) {
+      // Set default tenant to private to avoid tenant popup
+      cy.changeDefaultTenant({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'private',
+      });
+    }
+    CURRENT_TENANT.newTenant = 'private';
     const dumpDataSet = (ndjson, index) =>
       cy.request({
         method: 'POST',
@@ -52,13 +61,11 @@ describe('Dump test data', () => {
       },
       body: JSON.stringify({ attributes: { title: 'jaeger' } }),
     });
+    devToolsRequest('.kibana*/_refresh', 'POST');
   });
 });
 
 describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
-  before(() => {
-    CURRENT_TENANT.newTenant = 'global';
-  });
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
   });
@@ -83,13 +90,18 @@ describe(
   'Render and configure a gantt chart',
   { defaultCommandTimeout: 20000 },
   () => {
-    before(() => {
-      CURRENT_TENANT.newTenant = 'global';
-    });
     beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'private';
       cy.visit(`${BASE_PATH}/app/visualize#`);
+      cy.intercept('**').as('searchRequest');
       cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
-      cy.contains(GANTT_VIS_NAME).click({ force: true });
+      cy.wait('@searchRequest');
+      cy.wait(5000);
+      cy.get('[data-test-subj="itemsInMemTable"]')
+        .contains(GANTT_VIS_NAME)
+        .click({
+          force: true,
+        });
     });
 
     it('Renders no data message', () => {
@@ -125,13 +137,13 @@ describe(
 );
 
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
-  before(() => {
-    CURRENT_TENANT.newTenant = 'global';
-  });
   beforeEach(() => {
     cy.visit(`${BASE_PATH}/app/visualize#`);
+    cy.intercept('**').as('searchRequest');
     cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
-    cy.contains(GANTT_VIS_NAME).click({ force: true });
+    cy.wait('@searchRequest');
+    cy.wait(5000);
+    cy.contains(GANTT_VIS_NAME).should('exist').click();
     cy.contains('Panel settings').click({ force: true });
   });
 
@@ -251,9 +263,6 @@ describe(
   'Add gantt chart to dashboard',
   { defaultCommandTimeout: 20000 },
   () => {
-    before(() => {
-      CURRENT_TENANT.newTenant = 'global';
-    });
     it('Adds gantt chart to dashboard', () => {
       cy.visit(`${BASE_PATH}/app/dashboards#/create`);
       cy.contains('Add an existing').click({ force: true });
