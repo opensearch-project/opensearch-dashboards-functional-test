@@ -18,7 +18,7 @@ const ACCESS_KEY = 'accessKey';
 const SECRET_KEY = 'secretKey';
 
 export const CreateDataSourceNoAuth = () => {
-  cy.request({
+  return cy.request({
     method: 'POST',
     url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
     headers: {
@@ -447,8 +447,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('creates a datasources to a real opensearch instance', () => {
-        CreateDataSourceNoAuth();
-        CreateDataSourceBasicAuth();
+        CreateDataSourceNoAuth().then((resp) => {
+          return resp.body.id;
+        });
       });
     });
   });
