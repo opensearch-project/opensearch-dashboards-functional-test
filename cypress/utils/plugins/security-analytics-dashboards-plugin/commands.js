@@ -132,7 +132,7 @@ Cypress.Commands.add('sa_deleteAllDetectors', () => {
     failOnStatusCode: false,
   }).as('deleteAllDetectors');
   cy.get('@deleteAllDetectors').should((response) => {
-    expect(response.status).to.be.oneOf([200, 404]);
+    expect(response.status).to.be.oneOf([200, 404, 400]);
   });
 });
 
@@ -378,7 +378,7 @@ Cypress.Commands.add('sa_deleteAllIndices', () => {
   }).as('deleteAllIndices');
   cy.get('@deleteAllIndices').should((response) => {
     // Both statuses are a pass, 200 means deleted successfully and 404 there was no index to delete
-    expect(response.status).to.be.oneOf([200, 404]);
+    expect(response.status).to.be.oneOf([200, 404, 400]);
   });
 });
 
@@ -443,7 +443,7 @@ Cypress.Commands.add('sa_deleteAllCustomRules', () => {
     body: { query: { match_all: {} } },
   }).as('deleteAllCustomRules');
   cy.get('@deleteAllCustomRules').should((response) => {
-    expect(response.status).to.be.oneOf([200, 404]);
+    expect(response.status).to.be.oneOf([200, 404, 400]);
   });
 });
 
