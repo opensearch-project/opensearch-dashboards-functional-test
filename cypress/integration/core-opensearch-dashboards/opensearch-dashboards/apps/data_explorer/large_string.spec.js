@@ -40,11 +40,16 @@ describe('test large strings', () => {
     });
   });
 
+  beforeEach(() => {
+    cy.window().then((win) =>
+      win.localStorage.setItem('discover:newExpereince', true)
+    );
+  });
+
   it('verify the large string book present', function () {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.waitForLoader();
-    cy.switchDiscoverTable('new');
 
     const ExpectedDoc = 'Project Gutenberg EBook of Hamlet';
 
@@ -67,7 +72,6 @@ describe('test large strings', () => {
 
     it('search Newsletter should show the correct hit count in datagrid table', function () {
       cy.log('test Newsletter keyword is searched');
-      cy.switchDiscoverTable('new');
       const expectedHitCount = '1';
       const query = 'Newsletter';
       cy.setTopNavQuery(query);

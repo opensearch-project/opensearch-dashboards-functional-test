@@ -14,6 +14,7 @@ This guide applies to all development within the OpenSearch Dashboards Functiona
   - [Experimental Features](#experimental-features)
 - [General](#general)
   - [Formatting](#formatting)
+- [Orchestrator Remote Test Workflow](#orchestrator-remote-test-workflow)
 
 ## Getting Started
 
@@ -187,3 +188,116 @@ $ yarn lint --fix
 ```
 
 `Husky` precommit hook is used to automatically run `yarn lint`, please fix the files according to lint result before commiting code changes (run `yarn lint --fix` for fixable errors, or manully fix code according to error messages). If you have any doubts on `ESLint` rules, feel free to [open an issue](issues).
+
+## Orchestrator Remote Test Workflow
+
+### Remote Cypress Test Runner - remoteCypress.sh
+
+`remoteCypress.sh` is a shell script that triggers GitHub workflow runners within a specified repository which runs Cypress integration tests on a remote OpenSearch/Dashboards cluster.
+
+#### Usage
+
+`./remoteCypress.sh -r REPO -w GITHUB_WORKFLOW_NAME -o OS_URL -d OSD_URL -b BRANCH_REF -i BUILD_ID`
+
+#### Arguments
+
+* -r REPO: Name of the repository in {owner}/{repository} format.
+* -w GITHUB_WORKFLOW_NAME: Name of the GitHub workflow file with .yml extension that contains the job that run Cypress tests in the component repository. For example, main.yaml.
+* -o OS_URL: Release artifact of the OpenSearch.
+* -d OSD_URL: Release artifact of the OpenSearch Dashboards.
+* -b BRANCH_REF: Test Branch name or commit reference id.
+* -i BUILD_ID: Release-specific build id for reference.
+
+#### How it works
+
+The script first parses the command-line arguments and checks if all required arguments are provided. If not, it prints a usage message and exits.
+
+If all required arguments are provided, it generates a unique workflow ID using uuidgen and constructs a payload for the GitHub API. It then triggers the remote GitHub workflow using curl and the Github auth token which has repo level access.
+
+The script then checks the status code of the API response. If the status code is between 200 and 300, it means the remote workflow was triggered successfully. It then sources the `poll_remote_workflow.sh` script to poll the status of the remote workflow and logs the return code and status message to a log file.
+
+If the status code is not between 200 and 300, it means the remote workflow failed to trigger. It logs an error message and exits.
+
+#### Log Files
+
+The script logs the status of the remote workflow to a log file located at `/tmp/logfiles/{REPO}/logfile.txt`. The log file contains the return code and status message of the remote workflow.
+
+#### Dependencies
+
+* curl: Used to make HTTP requests to the GitHub API.
+* uuidgen: Used to generate a unique workflow ID.
+
+### Remote Cypress Test Runner - remote_cypress_manifest.json
+
+`remote_cypress_manifest.json` is a configuration file used by the `remoteCypress.sh` script to run Cypress integration tests on a remote OpenSearch/Dashboards cluster.
+
+#### Structure
+
+The JSON file contains an array of objects, each representing a different repository and its associated configuration. Here's an example of what an object in the array might look like:
+```
+{
+  "repo": "opensearch-project/opensearch-dashboards",
+  "workflow-name": "main.yml",
+  "operating-system": "linux",
+  "arch": "x64",
+  "ref": "main"
+}
+```
+
+#### Fields
+
+* repo: Name of the repository in {owner}/{repository} format.
+* workflow-name: Name of the GitHub workflow file name with .yml extension that contain jobs that run Cypress tests in the component repository. For example, main.yaml.
+* operating-system: Operating system on which tests will be executed. Example: "linux".
+* arch: Architecture of the system. Example: "x64".
+* ref: Test Branch name or commit reference id.
+* build_id: Release-specific build id for reference.
+* integ-test: Integration test configuration for the component.
+  * test-configs: Configurations for different test scenarios. Example: ["with-security", "without-security"].
+  * additional-cluster-configs: Additional configurations specific to the test environment. Example: {"vis_builder.enabled": true, "data_source.enabled": true}.
+
+#### Usage
+
+The `remoteCypress.sh` script reads this JSON file to get the configuration for each repository. It then triggers the GitHub workflow runners for each repository with the specified configuration.
+
+### Integration Test Runner - integtest.sh with Remote Cypress Execution
+
+`integtest.sh` is a shell script that sets up the environment and runs integration tests for a specific component of the OpenSearch project. In addition to running integration tests, it can also execute Cypress tests remotely on a specified plugin/Dashboards component.
+
+#### Usage
+
+`./integtest.sh [args]`
+
+#### Arguments
+
+* -b BIND_ADDRESS: (Optional) Specifies the bind address for the remote OpenSearch/Dashboards cluster. Defaults to localhost or 127.0.0.1.
+* -p BIND_PORT: (Optional) Specifies the bind port for the remote OpenSearch/Dashboards cluster. Defaults to 9200 or 5601 depending on OpenSearch or Dashboards.
+* -s SECURITY_ENABLED: (Optional) Specifies whether security is enabled on the OpenSearch/Dashboards cluster. Can be set to true or false. Defaults to true.
+* -c CREDENTIAL: (Optional) Specifies the credentials for accessing the secured cluster. Format: username:password.
+* -t TEST_COMPONENTS: (Optional) Specifies the components to be tested. Separate multiple components with spaces. If not specified, tests all components.
+* -v VERSION: (Optional) Specifies the OpenSearch version to test.
+* -o OPTION: (Optional) Determines the test type value among default or manifest in test_finder.sh.
+* -r REMOTE_CYPRESS_ENABLED: (Optional) Specifies whether remote Cypress orchestrator runs are enabled. Defaults to true.
+
+#### How it works
+
+The script begins by parsing command-line arguments using the getopts function. These arguments allow users to customize various aspects of the testing environment, such as bind address, bind port, security settings, test components, OpenSearch version, and more.
+
+After parsing arguments, the script sets default values for certain parameters if they are not provided by the user. For example, it defaults to localhost for the bind address, 9200 or 5601 for the bind port, true for security enabled, and true for remote Cypress orchestrator runs.
+
+If remote Cypress orchestrator runs are enabled (`REMOTE_CYPRESS_ENABLED=true`), the script iterates over components specified in the manifest file (`remote_cypress_manifest.json`). For each component, it extracts relevant information such as repository, workflow name, operating system, and branch reference. Then, it triggers the remote GitHub workflow using the `remoteCypress.sh` script with the extracted parameters.
+
+The script runs `remoteCypress.sh` as a background process for each component, allowing multiple tests to be executed concurrently. It stores the process IDs (PIDs) in a PID file (process_ids.txt) to monitor their execution status. After triggering all remote workflows, the script waits for all background processes to finish using the wait command.
+
+Once all tests are completed, the script reads log files generated during the tests, outputs their content to the console, and then deletes the temporary log files and folder.
+
+Cypress Test Execution: Finally, the script executes Cypress tests based on the security settings (`SECURITY_ENABLED`). It determines whether to run security-enabled tests or security-disabled tests and executes them accordingly using the appropriate Cypress commands (`yarn cypress:run-with-security` or `yarn cypress:run-without-security`).
+
+#### Dependencies
+
+* curl: Used to download the OpenSearch bundle.
+* gradlew: Used to run the integration tests.
+* jq: Used to parse JSON files.
+* docker: Used to set up the testing environment.
+* remoteCypress.sh: Used to trigger the remote Cypress tests.
+

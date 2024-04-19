@@ -42,8 +42,14 @@ describe('AcknowledgeAlertsModal', () => {
   });
 
   beforeEach(() => {
+    const getMonitorsUrl = new RegExp('.*api/alerting/monitors/_search.*');
+    cy.intercept(getMonitorsUrl).as('searchMonitors');
+
     // Reloading the page to close any modals that were not closed by other tests that had failures.
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
+
+    // Wait for the monitor search call to finish before checking for the monitors below
+    cy.wait('@searchMonitors');
 
     // Confirm dashboard is displaying rows for the test monitors.
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });

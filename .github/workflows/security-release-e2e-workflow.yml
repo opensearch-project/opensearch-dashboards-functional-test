@@ -14,6 +14,7 @@ jobs:
         filters: |
           tests:
             - 'cypress/**/security/**'
+            - 'cypress/**/security-dashboards-plugin/**'
 
   tests:
     needs: changes
@@ -21,4 +22,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security/*,cypress/integration/plugins/security-dashboards-plugin/*'

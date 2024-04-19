@@ -58,7 +58,13 @@ describe('shared links', () => {
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
-        .should('eq', url)
+        // Even though `CURRENT_TENANT.newTenant` is set to global, that could change and hence this test will remove
+        // either of the tenants it sees.
+        .should(
+          'satisfy',
+          (copied) =>
+            copied.replace(/\?security_tenant=(global|private)/, '') === url
+        )
         .then((url) => {
           cy.log(url);
           cy.request(url).its('status').should('eq', 200);
