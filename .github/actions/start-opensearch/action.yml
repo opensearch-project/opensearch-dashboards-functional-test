@@ -117,6 +117,7 @@ runs:
       if: ${{ inputs.security-enabled == 'false' }}
       run: |
         echo "Remove OpenSearch Security"
+        chmod + x ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "plugins.security.disabled: true" >> ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
 
