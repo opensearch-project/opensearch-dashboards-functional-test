@@ -114,7 +114,7 @@ runs:
 
     # Disable security if it's disabled
     - name: Disable security
-      if: ${{ inputs.security-enbaled == 'false' }}
+      if: ${{ inputs.security-enabled == 'false' }}
       run: |
         echo "Remove OpenSearch Security"
         [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
