@@ -60,14 +60,14 @@ runs:
     - name: Extract downloaded tar
       if: ${{ runner.os == 'Linux' }}
       run: |
-        tar -xzf opensearch-*.tar.gz && mv opensearch-${{ inputs.opensearch-version }} opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}
+        tar -xzf opensearch-*.tar.gz.1 && mv opensearch-${{ inputs.opensearch-version }} opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}
         rm -f opensearch-*.tar.gz
       shell: bash
 
     - name: Extract downloaded zip
       if: ${{ runner.os == 'Windows' }}
       run: |
-        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip" -DestinationPath "temp"
+        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip.1" -DestinationPath "temp"
         Move-Item -Path "temp/*" -Destination "opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}"
         Remove-Item -Path "temp" -Recurse
         Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip"
