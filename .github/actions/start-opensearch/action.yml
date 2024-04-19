@@ -45,7 +45,6 @@ runs:
     - name: Change directory
       run: | 
         mkdir test
-        cd test
       shell: bash
 
     # Download OpenSearch
@@ -54,6 +53,7 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-windows-x64.zip
+        target: ./test/
 
 
     - name: Download OpenSearch for Linux
@@ -61,6 +61,7 @@ runs:
       if: ${{ runner.os == 'Linux' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-linux-x64.tar.gz
+        target: ./test/
 
     # Extract downloaded zip
     - name: Extract downloaded tar
@@ -69,6 +70,7 @@ runs:
         tar -xzf opensearch-*.tar.gz && mv opensearch-${{ inputs.opensearch-version }} opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}
         rm -f opensearch-*.tar.gz
       shell: bash
+      working-directory: test
 
     - name: Extract downloaded zip
       if: ${{ runner.os == 'Windows' }}
@@ -78,6 +80,7 @@ runs:
         Remove-Item -Path "temp" -Recurse
         Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip"
       shell: pwsh
+      working-directory: test
 
     # Setup security if it's enabled
     - name: Setup security demo configuration
@@ -98,6 +101,7 @@ runs:
         fi
         echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
+      working-directory: test
 
     - name: Setup security demo configuration for Windows
       if: ${{ runner.os == 'Windows' && inputs.security-enabled == 'true' }}
@@ -117,6 +121,7 @@ runs:
         fi
         echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
+      working-directory: test
 
     # Disable security if it's disabled
     - name: Disable security
@@ -125,6 +130,7 @@ runs:
         echo "Remove OpenSearch Security"
         echo "plugins.security.disabled: true" >> ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
+      working-directory: test
 
     - name: Use more space
       run: |
@@ -132,17 +138,20 @@ runs:
         echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "http.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
+      working-directory: test
 
     # Run OpenSearch
     - name: Run OpenSearch with plugin on Linux
       if: ${{ runner.os == 'Linux'}}
       run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/bin/opensearch &"
       shell: bash
+      working-directory: test
 
     - name: Run OpenSearch with plugin on Windows
       if: ${{ runner.os == 'Windows'}}
       run: start .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}\bin\opensearch.bat
       shell: pwsh
+      working-directory: test
 
     # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
     - name: Sleep while OpenSearch starts
@@ -160,6 +169,7 @@ runs:
           curl http://localhost:${{ inputs.port || 9200 }}/_cat/plugins -v
         fi
       shell: bash
+      working-directory: test
 
     - name: Check OpenSearch Running on Windows
       if: ${{ runner.os == 'Windows'}}
@@ -176,11 +186,14 @@ runs:
         }
         Invoke-WebRequest -SkipCertificateCheck -Uri $url -Headers $Headers;
       shell: pwsh
+      working-directory: test
 
     - if: always()
       run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch.log
       shell: bash
+      working-directory: test
 
     - if: always()
       run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
+      working-directory: test
