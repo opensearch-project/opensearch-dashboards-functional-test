@@ -125,6 +125,31 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
             /<YOUR_PLUGIN_NAME>
 ```
 
+### Tests for Multiple Datasources
+
+Tests surrounding the multiple datasources feature can use the start-opensearch action that lives in this repo. 
+
+Example usage: 
+```
+- uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: 3.0.0
+          security-enabled: false
+          port: 9201
+```
+This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within the same github runner. This OpenSearch can then be added as an datasource. 
+
+The DataSourceManagement Plugin exposes a helper function to create a helper function on this port:
+```
+import {CreateDataSourceNoAuth} from 'datasource-management-plugin'
+
+CreateDataSourceNoAuth('9201').then((resp) => {
+          console.log(resp.body.id);
+        });
+
+# Add tests that make calls to resp.body.id
+```
+
 ### Experimental Features
 
 When writing tests for experimental features, please follow these steps.

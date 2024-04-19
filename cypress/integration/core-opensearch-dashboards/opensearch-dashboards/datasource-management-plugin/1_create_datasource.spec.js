@@ -17,7 +17,7 @@ const REGION = 'us-east-1';
 const ACCESS_KEY = 'accessKey';
 const SECRET_KEY = 'secretKey';
 
-export const CreateDataSourceNoAuth = () => {
+export const CreateDataSourceNoAuth = (port) => {
   return cy.request({
     method: 'POST',
     url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
@@ -27,7 +27,7 @@ export const CreateDataSourceNoAuth = () => {
     body: {
       attributes: {
         title: `9201`,
-        endpoint: `http://localhost:9201`,
+        endpoint: `http://localhost:${port}`,
         auth: {
           type: 'no_auth',
         },
@@ -447,8 +447,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('creates a datasources to a real opensearch instance', () => {
-        CreateDataSourceNoAuth().then((resp) => {
-          return resp.body.id;
+        CreateDataSourceNoAuth('9201').then((resp) => {
+          console.log(resp.body.id);
         });
       });
     });

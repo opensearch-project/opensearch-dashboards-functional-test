@@ -1,5 +1,5 @@
-name: 'Launch OpenSearch with or without plugins'
-description: 'Downloads latest build of OpenSearch, optionally installs plugins, and then starts OpenSearch on localhost:9200'
+name: 'Launch OpenSearch'
+description: 'Downloads OpenSearch and runs it'
 
 inputs:
   opensearch-version:
@@ -25,6 +25,7 @@ inputs:
   port:
     description: 'Port to run OpenSearch. Leave empty to use the default config (9200)'
     required: false
+    default: '9200'
 
 runs:
   using: "composite"
@@ -46,58 +47,31 @@ runs:
       uses: peternied/download-file@v2
       if: ${{ runner.os == 'Windows' }}
       with:
-        url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ inputs.opensearch-version }}-SNAPSHOT/opensearch-min-${{ inputs.opensearch-version }}-SNAPSHOT-windows-x64-latest.zip
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-windows-x64.zip
 
 
     - name: Download OpenSearch for Linux
       uses: peternied/download-file@v2
       if: ${{ runner.os == 'Linux' }}
       with:
-        url: https://artifacts.opensearch.org/snapshots/core/opensearch/${{ inputs.opensearch-version }}-SNAPSHOT/opensearch-min-${{ inputs.opensearch-version }}-SNAPSHOT-linux-x64-latest.tar.gz
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-linux-x64.tar.gz
 
     # Extract downloaded zip
     - name: Extract downloaded tar
       if: ${{ runner.os == 'Linux' }}
       run: |
-        tar -xzf opensearch-*.tar.gz
+        tar -xzf opensearch-*.tar.gz && mv opensearch-${{ inputs.opensearch-version }} opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}
         rm -f opensearch-*.tar.gz
       shell: bash
 
     - name: Extract downloaded zip
       if: ${{ runner.os == 'Windows' }}
       run: |
-        tar -xzf opensearch-min-${{ inputs.opensearch-version }}-SNAPSHOT-windows-x64-latest.zip
-        del opensearch-min-${{ inputs.opensearch-version }}-SNAPSHOT-windows-x64-latest.zip
+        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip" -DestinationPath "temp"
+        Move-Item -Path "temp/*" -Destination "opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}"
+        Remove-Item -Path "temp" -Recurse
+        Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64-latest.zip"
       shell: pwsh
-
-    - name: Install plugin(s) into OpenSearch for Linux
-      if: ${{ runner.os == 'Linux'}}
-      run: |
-        chmod +x ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/bin/opensearch-plugin
-        plugins="${{ inputs.plugins }}"
-        if [ -n "$plugins" ]; then
-          echo "$plugins" | tr ',' '\n' | while read -r plugin; do
-            /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/bin/opensearch-plugin install ${plugin}"
-          done
-        fi
-      shell: bash
-
-    - name: Install plugin(s) into OpenSearch for Windows
-      if: ${{ runner.os == 'Windows' && inputs.plugins != '' }}
-      run: |
-        $pluginNames = "${{ inputs.plugins }}" -split ','
-        if ($pluginNames.Length -gt 0) {
-          foreach ($plugin in $pluginNames) {
-            'y' | .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT\bin\opensearch-plugin.bat install ${plugin}
-          }
-        }
-      shell: pwsh
-
-    - name: Replace security configuration file if applicable
-      if: ${{ inputs.security_config_file != '' }}
-      run: |
-          mv ${{ inputs.security_config_file }} ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch-security/config.yml
-      shell: bash
 
     # Setup security if it's enabled
     - name: Setup security demo configuration
@@ -105,9 +79,18 @@ runs:
       run: |
         echo "running linux security demo configuration setup"
         export OPENSEARCH_INITIAL_ADMIN_PASSWORD=${{ inputs.admin-password }}
-        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/plugins/opensearch-security/tools/install_demo_configuration.sh
-        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/plugins/opensearch-security/tools/install_demo_configuration.sh -t"
-        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh
+        opensearch_version="${{ inputs.opensearch-version }}"
+        opensearch_major_version=$(echo "$opensearch_version" | awk -F'.' '{print $1}')
+        opensearch_minor_version=$(echo "$opensearch_version" | awk -F'.' '{print $2}')
+        if [ "$opensearch_major_version" -lt 2 ] || ([ "$opensearch_major_version" -eq 2 ] && [ "$opensearch_minor_version" -lt 12 ]); then
+          echo "Running the command without -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh"
+        else
+          echo "Running the command with -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh -t"
+        fi
+        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
 
     - name: Setup security demo configuration for Windows
@@ -115,32 +98,49 @@ runs:
       run: |
         echo "running windows security demo configuration setup"
         export OPENSEARCH_INITIAL_ADMIN_PASSWORD=${{ inputs.admin-password }}
-        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/plugins/opensearch-security/tools/install_demo_configuration.bat
-        /bin/bash -c "yes | ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/plugins/opensearch-security/tools/install_demo_configuration.bat -t"
-        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat
+        opensearch_version="${{ inputs.opensearch-version }}"
+        opensearch_major_version=$(echo "$opensearch_version" | cut -d'.' -f1)
+        opensearch_minor_version=$(echo "$opensearch_version" | cut -d'.' -f2)
+        if [ "$opensearch_major_version" -lt 2 ] || ([ "$opensearch_major_version" -eq 2 ] && [ "$opensearch_minor_version" -lt 12 ]); then
+          echo "Running the command without -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat -y -i -s"
+        else
+          echo "Running the command with -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat -t -y -i -s"
+        fi
+        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+
+    # Disable security if it's disabled
+    - name: Disable security
+      if: ${{ inputs.security-enbaled == 'false' }}
+      run: |
+        echo "Remove OpenSearch Security"
+        [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
       shell: bash
 
     - name: Use more space
       run: |
-        echo '' >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
-        echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+        echo '' >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+        echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
 
-    - name: Replace opensearch.yml file if applicable
+    - name: Use port if applicable
       if: ${{ inputs.port != '' }}
       run: |
-          echo -e "\nhttp.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/config/opensearch.yml
+          echo -e "\nhttp.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
 
     # Run OpenSearch
     - name: Run OpenSearch with plugin on Linux
       if: ${{ runner.os == 'Linux'}}
-      run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/bin/opensearch &"
+      run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/bin/opensearch &"
       shell: bash
 
     - name: Run OpenSearch with plugin on Windows
       if: ${{ runner.os == 'Windows'}}
-      run: start .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT\bin\opensearch.bat
+      run: start .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}\bin\opensearch.bat
       shell: pwsh
 
     # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
@@ -177,5 +177,5 @@ runs:
       shell: pwsh
 
     - if: always()
-      run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT/logs/opensearch.log
+      run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch.log
       shell: bash
