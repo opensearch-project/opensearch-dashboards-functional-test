@@ -174,3 +174,7 @@ runs:
     - if: always()
       run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch.log
       shell: bash
+
+    - if: always()
+      run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
