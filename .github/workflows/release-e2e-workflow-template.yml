@@ -28,6 +28,8 @@ jobs:
       # 2.12 onwards security demo configuration require a custom admin password
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
