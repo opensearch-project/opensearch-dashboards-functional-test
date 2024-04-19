@@ -29,6 +29,29 @@ Cypress.Commands.add('deleteAllDataSources', () => {
   );
 });
 
+Cypress.Commands.add('createDataSourceNoAuth', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: `9201`,
+        endpoint: `http://localhost:9201`,
+        auth: {
+          type: 'no_auth',
+        },
+      },
+    },
+  }).then((resp) => {
+    if (resp && resp.body && resp.body.id) {
+      return resp.body.id;
+    }
+  });
+});
+
 Cypress.Commands.add('createDataSource', (dataSourceJSON) => {
   cy.request({
     method: 'POST',

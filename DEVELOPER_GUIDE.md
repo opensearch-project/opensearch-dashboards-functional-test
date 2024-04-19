@@ -142,11 +142,7 @@ This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within t
 
 The DataSourceManagement Plugin exposes a helper function to create a helper function on this port:
 ```
-import {CreateDataSourceNoAuth} from 'datasource-management-plugin'
-
-CreateDataSourceNoAuth('9201').then((resp) => {
-          console.log(resp.body.id);
-        });
+const id = cy.createDataSourceNoAuth();
 
 # Add tests that make calls to resp.body.id
 ```

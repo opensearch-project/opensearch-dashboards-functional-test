@@ -23,25 +23,6 @@ const miscUtils = new MiscUtils(cy);
 const username = Cypress.env('username');
 const password = Cypress.env('password');
 
-export const CreateDataSourceNoAuth = (port) => {
-  return cy.request({
-    method: 'POST',
-    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
-    headers: {
-      'osd-xsrf': true,
-    },
-    body: {
-      attributes: {
-        title: `9201`,
-        endpoint: `http://localhost:${port}`,
-        auth: {
-          type: 'no_auth',
-        },
-      },
-    },
-  });
-};
-
 export const CreateDataSourceBasicAuth = () => {
   miscUtils.visitPage(
     'app/management/opensearch-dashboards/dataSources/create'
@@ -432,9 +413,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('creates a datasources to a real opensearch instance', () => {
-        CreateDataSourceNoAuth('9201').then((resp) => {
-          console.log(resp.body.id);
-        });
+        cy.createDataSourceNoAuth();
       });
     });
   });
