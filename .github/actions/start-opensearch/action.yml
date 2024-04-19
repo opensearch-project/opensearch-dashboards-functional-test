@@ -77,7 +77,6 @@ runs:
         Remove-Item -Path "temp" -Recurse
         Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip.1"
       shell: pwsh
-      working-directory: test
 
     # Setup security if it's enabled
     - name: Setup security demo configuration
