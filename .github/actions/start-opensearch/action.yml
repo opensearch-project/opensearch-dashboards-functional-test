@@ -42,6 +42,12 @@ runs:
       with:
         java-version: 11
 
+    - name: Change directory
+      run: | 
+        mkdir test
+        cd test
+      shell: bash
+      
     # Download OpenSearch
     - name: Download OpenSearch for Windows
       uses: peternied/download-file@v2
