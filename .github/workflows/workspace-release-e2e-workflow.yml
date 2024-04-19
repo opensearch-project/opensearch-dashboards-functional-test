@@ -21,7 +21,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards workspace
-      test-command: env CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/*'
+      test-command: env CYPRESS_WORKSPACE_ENABLED=true CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/*'
       osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=true
   tests-without-security:
     needs: changes
