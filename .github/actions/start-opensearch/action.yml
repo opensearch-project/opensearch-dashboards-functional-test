@@ -117,7 +117,7 @@ runs:
       if: ${{ inputs.security-enbaled == 'false' }}
       run: |
         echo "Remove OpenSearch Security"
-        [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
+        [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
 
     - name: Use more space
