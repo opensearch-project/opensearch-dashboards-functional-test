@@ -152,6 +152,8 @@ This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within t
 ```
 This will spin up an OpenSearch backend with version 3.0.0 on port 9202 with basic auth and admin credentials of "admin:admin" within the same github runner. This OpenSearch can then be added as an datasource. 
 
+To test UI/API compatibility with different versions you may want to spin up a matrix of OpenSearch backends with different versions than the local cluster. The earliest windows distribution supported is 2.4. 
+
 
 The DataSourceManagement Plugin exposes a helper function to create a data source on this port:
 ```

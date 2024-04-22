@@ -72,7 +72,7 @@ runs:
     - name: Extract downloaded zip
       if: ${{ runner.os == 'Windows' }}
       run: |
-        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip.1" -DestinationPath "temp"
+        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip" -DestinationPath "temp"
         Move-Item -Path "temp/*" -Destination "${{ inputs.port }}/opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}"
         Remove-Item -Path "temp" -Recurse
         Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip.1"
