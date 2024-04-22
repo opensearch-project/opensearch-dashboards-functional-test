@@ -87,7 +87,7 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
         expected.features.forEach((feature) => {
           if (!features.includes(feature)) {
             throw new Error(
-              `workspace ${workspaceId} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
+              `workspace ${workspaceId} is not as expected because the feature ${feature} is missing, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
             );
           }
         });
@@ -100,14 +100,14 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
           Object.keys(permissions).length !== Object.keys(expected.permissions)
         ) {
           throw new Error(
-            `workspace ${workspaceId} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
+            `permissions for workspace ${workspaceId} is not as expected, expected permissions are: ${expectedPermissions}, but are: ${actualPermissions}`
           );
         }
 
         Object.entries(permissions).forEach(([key, value]) => {
           if (!expected.permissions[key]) {
             throw new Error(
-              `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+              `permissions for workspace ${workspaceId} is not as expected because the permission ${key} is missing, expected permissions are:  ${expectedPermissions}, but are ${actualPermissions}`
             );
           } else {
             if (
@@ -118,7 +118,7 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
               )
             ) {
               throw new Error(
-                `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+                `permissions for workspace ${workspaceId} is not as expected, expected permissions are:  ${expectedPermissions}, but are ${actualPermissions}`
               );
             }
 
@@ -130,7 +130,7 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
               )
             ) {
               throw new Error(
-                `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+                `permissions for workspace ${workspaceId} is not as expected, expected permissions are:  ${expectedPermissions}, but are ${actualPermissions}`
               );
             }
           }
