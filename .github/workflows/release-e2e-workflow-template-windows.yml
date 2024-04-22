@@ -25,6 +25,8 @@ jobs:
       # 2.12 onwards security demo configuration require a custom admin password
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -69,6 +71,17 @@ jobs:
           fi
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
         shell: bash
+      - uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: false
+          port: 9201
+      - uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: true
+          admin-password: admin
+          port: 9202
       - name: Get and run OpenSearch-Dashboards
         run: |
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/${{ env.PLATFORM }}/x64/zip/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-${{ env.PLATFORM }}-x64.zip

@@ -11,6 +11,10 @@
   "viewportHeight": 1320,
   "env": {
     "openSearchUrl": "http://localhost:9200",
+    "remoteDataSourceNoAuthUrl": "http://localhost:9201",
+    "remoteDataSourceBasicAuthUrl": "https://localhost:9202",
+    "remoteDataSourceBasicAuthUsername": "admin",
+    "remoteDataSourceBasicAuthPassword": "admin",
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
     "username": "admin",
