@@ -29,6 +29,56 @@ Cypress.Commands.add('deleteAllDataSources', () => {
   );
 });
 
+Cypress.Commands.add('createDataSourceNoAuth', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: 'RemoteDataSourceNoAuth',
+        endpoint: Cypress.env('remoteDataSourceNoAuthUrl'),
+        auth: {
+          type: 'no_auth',
+        },
+      },
+    },
+  }).then((resp) => {
+    if (resp && resp.body && resp.body.id) {
+      return [resp.body.id, 'RemoteDataSourceNoAuth'];
+    }
+  });
+});
+
+Cypress.Commands.add('createDataSourceBasicAuth', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes: {
+        title: 'RemoteDataSourceBasicAuth',
+        endpoint: Cypress.env('remoteDataSourceBasicAuthUrl'),
+        auth: {
+          type: 'username_password',
+          credentials: {
+            username: Cypress.env('remoteDataSourceBasicAuthUsername'),
+            password: Cypress.env('remoteDataSourceBasicAuthPassword'),
+          },
+        },
+      },
+    },
+  }).then((resp) => {
+    if (resp && resp.body && resp.body.id) {
+      return [resp.body.id, 'RemoteDataSourceBasicAuth'];
+    }
+  });
+});
+
 Cypress.Commands.add('createDataSource', (dataSourceJSON) => {
   cy.request({
     method: 'POST',
