@@ -6,7 +6,17 @@
 import { BASE_PATH } from '../../base_constants';
 import { WORKSPACE_API_PREFIX } from './constants';
 
-Cypress.Commands.add('deleteWorkspace', (workspaceName) => {
+Cypress.Commands.add('deleteWorkspaceById', (workspaceId) => {
+  cy.request({
+    method: 'DELETE',
+    url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/${workspaceId}`,
+    headers: {
+      'osd-xsrf': true,
+    },
+  });
+});
+
+Cypress.Commands.add('deleteWorkspaceByName', (workspaceName) => {
   cy.request({
     method: 'POST',
     url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/_list`,
@@ -31,7 +41,7 @@ Cypress.Commands.add('deleteWorkspace', (workspaceName) => {
   });
 });
 
-Cypress.Commands.add('createWorkspace', (workspace) => {
+Cypress.Commands.add('createWorkspace', (workspaceName) => {
   cy.request({
     method: 'POST',
     url: `${BASE_PATH}${WORKSPACE_API_PREFIX}`,
@@ -40,89 +50,107 @@ Cypress.Commands.add('createWorkspace', (workspace) => {
     },
     body: {
       attributes: {
-        name: workspace.name,
+        name: workspaceName,
         description: 'test_description',
       },
     },
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
-      workspace.id = resp.body.result.id;
+      return resp.body.result.id;
     } else {
-      throw new Error(`Create workspace ${workspace} failed!`);
+      throw new Error(`Create workspace ${workspaceName} failed!`);
     }
   });
 });
 
-Cypress.Commands.add('checkWorkspace', (workspaceName, expected) => {
+Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
   cy.request({
-    method: 'POST',
-    url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/_list`,
-    headers: {
-      'osd-xsrf': true,
-    },
-    body: {},
+    method: 'GET',
+    url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/${workspaceId}`,
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
-      let found = false;
-      resp.body.result.workspaces.map(
-        ({ name, description, features, permissions }) => {
-          if (workspaceName === name) {
-            if (description !== expected.description) {
-              throw new Error(
-                `workspace ${workspaceName} is not as expected, expected description is ${expected.description}, but is ${description}`
-              );
-            } else {
-              expected.features.forEach((feature) => {
-                if (!features.includes(feature)) {
-                  const expectedFeatures = JSON.stringify(expected.features);
-                  const actualFeatures = JSON.stringify(features);
-                  throw new Error(
-                    `workspace ${workspaceName} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
-                  );
-                }
-              });
-
-              if (permissions && expected.permissions) {
-                const expectedPermissions = JSON.stringify(
-                  expected.permissions
-                );
-                const actualPermissions = JSON.stringify(permissions);
-                Object.entries(permissions).forEach(([key, value]) => {
-                  if (!expected.permissions[key]) {
-                    throw new Error(
-                      `permissions for workspace ${workspaceName} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
-                    );
-                  } else {
-                    if (expected.permissions[key].users) {
-                      expected.permissions[key].users.forEach((principal) => {
-                        if (!value.users.includes(principal)) {
-                          throw new Error(
-                            `permissions for workspace ${workspaceName} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
-                          );
-                        }
-                      });
-                    }
-
-                    if (expected.permissions[key].groups) {
-                      expected.permissions[key].groups.forEach((principal) => {
-                        if (!value.groups.includes(principal)) {
-                          throw new Error(
-                            `permissions for workspace ${workspaceName} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
-                          );
-                        }
-                      });
-                    }
-                  }
-                });
-              }
-            }
-            found = true;
-          }
-        }
-      );
-      if (!found) {
-        throw new Error(`cannot find workspace ${workspaceName}`);
+      const { description, features, permissions } = resp.body.result;
+      if (description !== expected.description) {
+        throw new Error(
+          `workspace ${workspaceId} is not as expected, expected description is ${expected.description}, but is ${description}`
+        );
       }
+
+      if (features && expected.features) {
+        const expectedFeatures = JSON.stringify(expected.features);
+        const actualFeatures = JSON.stringify(features);
+        if (features.length !== expected.features.length) {
+          throw new Error(
+            `workspace ${workspaceId} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
+          );
+        }
+        expected.features.forEach((feature) => {
+          if (!features.includes(feature)) {
+            throw new Error(
+              `workspace ${workspaceId} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
+            );
+          }
+        });
+      }
+
+      if (permissions && expected.permissions) {
+        const expectedPermissions = JSON.stringify(expected.permissions);
+        const actualPermissions = JSON.stringify(permissions);
+        if (
+          Object.keys(permissions).length !== Object.keys(expected.permissions)
+        ) {
+          throw new Error(
+            `workspace ${workspaceId} is not as expected, expected features are: ${expectedFeatures}, but are: ${actualFeatures}`
+          );
+        }
+
+        Object.entries(permissions).forEach(([key, value]) => {
+          if (!expected.permissions[key]) {
+            throw new Error(
+              `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+            );
+          } else {
+            if (
+              expected.permissions[key].users &&
+              !checkPrincipalArrayEquals(
+                expected.permissions[key].users,
+                value.users
+              )
+            ) {
+              throw new Error(
+                `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+              );
+            }
+
+            if (
+              expected.permissions[key].groups &&
+              !checkPrincipalArrayEquals(
+                expected.permissions[key].groups,
+                value.groups
+              )
+            ) {
+              throw new Error(
+                `permissions for workspace ${workspaceId} is not as expected, expected are:  ${expectedPermissions}, but are ${actualPermissions}`
+              );
+            }
+          }
+        });
+      }
+    } else {
+      throw new Error(`cannot find workspace ${workspaceId}`);
     }
   });
 });
+
+function checkPrincipalArrayEquals(expectedPrincipals, actualPrincipals) {
+  if (expectedPrincipals.length !== actualPrincipals.length) {
+    return false;
+  }
+
+  expectedPrincipals.forEach((principal) => {
+    if (!actualPrincipals.includes(principal)) {
+      return false;
+    }
+  });
+  return true;
+}

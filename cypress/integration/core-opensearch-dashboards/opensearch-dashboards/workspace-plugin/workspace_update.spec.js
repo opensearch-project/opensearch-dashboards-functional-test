@@ -6,29 +6,26 @@
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_320sdfouAz';
-const workspace = {
-  name: workspaceName,
-  id: null,
-};
+let workspaceId;
+
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Update workspace', () => {
     before(() => {
-      cy.deleteWorkspace(workspaceName);
-      cy.createWorkspace(workspace);
+      cy.deleteWorkspaceByName(workspaceName);
+      cy.createWorkspace(workspaceName).then((value) => (workspaceId = value));
     });
 
     beforeEach(() => {
       // Visit workspace update page
-      miscUtils.visitPage(`w/${workspace.id}/app/workspace_update`);
+      miscUtils.visitPage(`w/${workspaceId}/app/workspace_update`);
 
-      cy.intercept(
-        'PUT',
-        `/w/${workspace.id}/api/workspaces/${workspace.id}`
-      ).as('updateWorkspaceRequest');
+      cy.intercept('PUT', `/w/${workspaceId}/api/workspaces/${workspaceId}`).as(
+        'updateWorkspaceRequest'
+      );
     });
 
     after(() => {
-      cy.deleteWorkspace(workspaceName);
+      cy.deleteWorkspaceByName(workspaceId);
     });
 
     it('should successfully load the page', () => {
@@ -133,7 +130,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             'workspace_overview',
           ],
         };
-        cy.checkWorkspace(workspaceName, expectedWorkspace);
+        cy.checkWorkspace(workspaceId, expectedWorkspace);
       });
     });
 
@@ -206,7 +203,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
               },
             },
           };
-          cy.checkWorkspace(workspaceName, expectedWorkspace);
+          cy.checkWorkspace(workspaceId, expectedWorkspace);
         });
       });
     }
