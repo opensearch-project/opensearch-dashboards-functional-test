@@ -125,6 +125,44 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
             /<YOUR_PLUGIN_NAME>
 ```
 
+### Tests for Multiple Datasources
+
+Tests surrounding the multiple datasources feature can use the start-opensearch action that lives in this repo. Note that to test these related features, the following OSD config needs to be set: `osd-serve-args: --data_source.enabled=true`. Additionally, if testing with a remote datasource with basic auth enabled using this repo, an additional OSD config needs to be set: `osd-serve-args: --data_source.ssl.verificationMode: none`, so that the self-signed demo certificates can be used. 
+
+Example usage: 
+```
+- uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: 3.0.0
+          security-enabled: false
+          port: 9201
+```
+
+
+This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within the same github runner. This OpenSearch can then be added as an datasource. 
+
+```
+- uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: 3.0.0
+          security-enabled: true
+          admin-password: admin
+          port: 9202
+```
+This will spin up an OpenSearch backend with version 3.0.0 on port 9202 with basic auth and admin credentials of "admin:admin" within the same github runner. This OpenSearch can then be added as an datasource. 
+
+To test UI/API compatibility with different versions you may want to spin up a matrix of OpenSearch backends with different versions than the local cluster. The earliest windows distribution supported is 2.4. 
+
+
+The DataSourceManagement Plugin exposes a helper function to create a data source on this port:
+```
+const [noAuthId, noAuthLabel] = cy.createDataSourceNoAuth();
+
+const [basicAuthId, basicAuthLabel] = cy.createDataSourceBasicAuth();
+
+# Add tests that make calls using noAuthId and basicAuthId, or test that remote datasource via the UI using the labels noAuthLabel and basicAuthLabel. 
+```
+
 ### Experimental Features
 
 When writing tests for experimental features, please follow these steps.
