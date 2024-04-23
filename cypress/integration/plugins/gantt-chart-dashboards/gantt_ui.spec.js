@@ -47,7 +47,7 @@ describe('Dump test data', () => {
 
     cy.request({
       method: 'POST',
-      failOnStatusCode: false,
+      form: false,
       url: 'api/saved_objects/index-pattern/jaeger',
       headers: {
         'content-type': 'application/json',
