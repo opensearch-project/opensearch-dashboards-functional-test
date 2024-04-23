@@ -23,6 +23,8 @@ const miscUtils = new MiscUtils(cy);
 const username = Cypress.env('username');
 const password = Cypress.env('password');
 
+// TODO: create datasource with basic auth and sigv4
+
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Create datasources', () => {
     before(() => {
@@ -384,6 +386,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'include',
           'app/management/opensearch-dashboards/dataSources'
         );
+      });
+
+      it('creates a datasources to a real opensearch instance', () => {
+        cy.createDataSourceNoAuth();
       });
     });
   });
