@@ -25,7 +25,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     after(() => {
-      cy.deleteWorkspaceByName(workspaceId);
+      cy.deleteWorkspaceById(workspaceId);
     });
 
     it('should successfully load the page', () => {
