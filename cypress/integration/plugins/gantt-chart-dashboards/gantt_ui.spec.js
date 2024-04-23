@@ -8,8 +8,8 @@
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
-import { CURRENT_TENANT } from '../../../utils/commands';
 import { devToolsRequest } from '../../../utils/helpers';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 dayjs.extend(customParseFormat);
 
@@ -20,16 +20,10 @@ const X_LABEL = 'A unique label for X-axis';
 const DEFAULT_SIZE = 10;
 
 describe('Dump test data', () => {
+  before(() => {
+    CURRENT_TENANT.newTenant = 'global';
+  });
   it('Indexes test data for gantt chart', () => {
-    if (Cypress.env('SECURITY_ENABLED')) {
-      // Set default tenant to private to avoid tenant popup
-      cy.changeDefaultTenant({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'private',
-      });
-    }
-    CURRENT_TENANT.newTenant = 'private';
     const dumpDataSet = (ndjson, index) =>
       cy.request({
         method: 'POST',
@@ -67,6 +61,7 @@ describe('Dump test data', () => {
 
 describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
   });
 
@@ -91,10 +86,11 @@ describe(
   { defaultCommandTimeout: 20000 },
   () => {
     beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'private';
+      CURRENT_TENANT.newTenant = 'global';
       cy.visit(`${BASE_PATH}/app/visualize#`);
       cy.intercept('**').as('searchRequest');
-      cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
+      cy.get('.euiFieldSearch').focus();
+      cy.get('.euiFieldSearch').type(GANTT_VIS_NAME);
       cy.wait('@searchRequest');
       cy.wait(5000);
       cy.get('[data-test-subj="itemsInMemTable"]')
@@ -138,9 +134,11 @@ describe(
 
 describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
     cy.intercept('**').as('searchRequest');
-    cy.get('.euiFieldSearch').focus().type(GANTT_VIS_NAME);
+    cy.get('.euiFieldSearch').focus();
+    cy.get('.euiFieldSearch').type(GANTT_VIS_NAME);
     cy.wait('@searchRequest');
     cy.wait(5000);
     cy.contains(GANTT_VIS_NAME).should('exist').click();
@@ -148,10 +146,8 @@ describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   });
 
   it('Changes y-axis label', () => {
-    cy.get('input.euiFieldText[placeholder="Label"]')
-      .eq(0)
-      .focus()
-      .type(Y_LABEL);
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(0).focus();
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(0).type(Y_LABEL);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
 
     cy.get('text.ytitle').contains(Y_LABEL).should('exist');
@@ -165,10 +161,8 @@ describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   });
 
   it('Changes x-axis label', () => {
-    cy.get('input.euiFieldText[placeholder="Label"]')
-      .eq(1)
-      .focus()
-      .type(X_LABEL);
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(1).focus();
+    cy.get('input.euiFieldText[placeholder="Label"]').eq(1).type(X_LABEL);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
 
     cy.get('text.xtitle').contains(X_LABEL).should('exist');
@@ -264,11 +258,13 @@ describe(
   { defaultCommandTimeout: 20000 },
   () => {
     it('Adds gantt chart to dashboard', () => {
+      CURRENT_TENANT.newTenant = 'global';
       cy.visit(`${BASE_PATH}/app/dashboards#/create`);
       cy.contains('Add an existing').click({ force: true });
-      cy.get('input[data-test-subj="savedObjectFinderSearchInput"]')
-        .focus()
-        .type(GANTT_VIS_NAME);
+      cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').focus();
+      cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').type(
+        GANTT_VIS_NAME
+      );
       cy.get(`.euiListGroupItem__label[title="${GANTT_VIS_NAME}"]`).click({
         force: true,
       });
