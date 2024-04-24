@@ -2,39 +2,65 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { MLC_API } from './constants';
+import { BACKEND_BASE_PATH } from '../../base_constants';
+import {
+  MLC_API,
+  MLC_REMOTE_NO_AUTH_API,
+  BACKEND_API_DATA_SOURCE,
+} from './constants';
 
-Cypress.Commands.add('cyclingCheckTask', ({ taskId, rejectOnError = true }) =>
-  cy.wrap(
-    new Cypress.Promise((resolve, reject) => {
-      const checkTask = () => {
-        cy.getMLCommonsTask(taskId).then((payload) => {
-          if (payload && payload.error) {
-            if (rejectOnError) {
-              reject(new Error(payload.error));
+const getAPIByDataSource = (dataSource) => {
+  switch (dataSource) {
+    case BACKEND_API_DATA_SOURCE.remoteNoAuth:
+      return MLC_REMOTE_NO_AUTH_API;
+    default:
+      return MLC_API;
+  }
+};
+
+const getOpenSearchAPIBase = (dataSource) => {
+  switch (dataSource) {
+    case BACKEND_API_DATA_SOURCE.remoteNoAuth:
+      return Cypress.env('remoteDataSourceNoAuthUrl');
+    default:
+      return BACKEND_BASE_PATH;
+  }
+};
+
+Cypress.Commands.add(
+  'cyclingCheckTask',
+  ({ taskId, rejectOnError = true, dataSource }) =>
+    cy.wrap(
+      new Cypress.Promise((resolve, reject) => {
+        const checkTask = () => {
+          cy.getMLCommonsTask(taskId, dataSource).then((payload) => {
+            if (payload && payload.error) {
+              if (rejectOnError) {
+                reject(new Error(payload.error));
+                return;
+              }
+              resolve(payload);
               return;
             }
-            resolve(payload);
-            return;
-          }
-          if (payload && payload.state === 'COMPLETED') {
-            resolve(payload);
-            return;
-          }
-          cy.wait(1000);
-          checkTask();
-        });
-      };
-      checkTask();
-    })
-  )
+            if (payload && payload.state === 'COMPLETED') {
+              resolve(payload);
+              return;
+            }
+            cy.wait(1000);
+            checkTask();
+          });
+        };
+        checkTask();
+      })
+    )
 );
 
-Cypress.Commands.add('uploadModelByUrl', (body) =>
+Cypress.Commands.add('registerModel', ({ body, dataSource, qs }) =>
   cy
     .request({
       method: 'POST',
-      url: MLC_API.MODEL_UPLOAD,
+      url: getAPIByDataSource(dataSource).MODEL_REGISTER,
+      qs,
       body,
     })
     .then(({ body }) => body)
@@ -51,57 +77,70 @@ Cypress.Commands.add('registerModelGroup', (body) =>
     .then(({ body }) => body)
 );
 
-Cypress.Commands.add('deleteMLCommonsModel', (modelId) =>
-  cy.request('DELETE', `${MLC_API.MODEL_BASE}/${modelId}`)
+Cypress.Commands.add('deleteMLCommonsModel', (modelId, dataSource) =>
+  cy.request(
+    'DELETE',
+    `${getAPIByDataSource(dataSource).MODEL_BASE}/${modelId}`
+  )
 );
 
-Cypress.Commands.add('loadMLCommonsModel', (modelId) =>
+Cypress.Commands.add('deployMLCommonsModel', (modelId, dataSource) =>
   cy
     .request({
       method: 'POST',
-      url: `${MLC_API.MODEL_BASE}/${modelId}/_load`,
+      url: `${getAPIByDataSource(dataSource).MODEL_BASE}/${modelId}/_deploy`,
     })
     .then(({ body }) => body)
 );
 
-Cypress.Commands.add('unloadMLCommonsModel', (modelId) =>
+Cypress.Commands.add('undeployMLCommonsModel', (modelId, dataSource) =>
   cy
     .request({
       method: 'POST',
-      url: `${MLC_API.MODEL_BASE}/${modelId}/_unload`,
+      url: `${getAPIByDataSource(dataSource).MODEL_BASE}/${modelId}/_undeploy`,
     })
     .then(({ body }) => body)
 );
 
-Cypress.Commands.add('getMLCommonsTask', (taskId) => {
+Cypress.Commands.add('getMLCommonsTask', (taskId, dataSource) => {
   return cy
     .request({
       method: 'GET',
-      url: `${MLC_API.TASK_BASE}/${taskId}`,
+      url: `${getAPIByDataSource(dataSource).TASK_BASE}/${taskId}`,
     })
     .then(({ body }) => body);
 });
 
-Cypress.Commands.add('disableOnlyRunOnMLNode', () => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
-    transient: {
-      'plugins.ml_commons.only_run_on_ml_node': false,
-    },
-  });
-});
-
-Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
-    transient: {
-      'plugins.ml_commons.native_memory_threshold': 100,
-    },
-  });
-});
-
-Cypress.Commands.add('enableRegisterModelViaURL', () => {
+Cypress.Commands.add('disableOnlyRunOnMLNode', (dataSource) => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${getOpenSearchAPIBase(dataSource)}/_cluster/settings`,
+    body: {
+      transient: {
+        'plugins.ml_commons.only_run_on_ml_node': false,
+      },
+    },
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('disableNativeMemoryCircuitBreaker', (dataSource) => {
+  cy.request({
+    method: 'PUT',
+    url: `${getOpenSearchAPIBase(dataSource)}/_cluster/settings`,
+    body: {
+      transient: {
+        'plugins.ml_commons.native_memory_threshold': 100,
+      },
+    },
+    failOnStatusCode: false,
+  });
+});
+
+Cypress.Commands.add('enableRegisterModelViaURL', (dataSource) => {
+  cy.request({
+    method: 'PUT',
+    url: `${getOpenSearchAPIBase(dataSource)}/_cluster/settings`,
     body: {
       transient: {
         'plugins.ml_commons.allow_registering_model_via_url': true,
@@ -141,16 +180,55 @@ Cypress.Commands.add('createModelConnector', (body) =>
     .then(({ body }) => body)
 );
 
-Cypress.Commands.add('registerModel', (body) =>
-  cy
-    .request({
-      method: 'POST',
-      url: MLC_API.MODEL_REGISTER,
-      body,
-    })
-    .then(({ body }) => body)
-);
-
 Cypress.Commands.add('deleteModelConnector', (connectorId) =>
   cy.request('DELETE', `${MLC_API.CONNECTOR_BASE}/${connectorId}`)
+);
+
+Cypress.Commands.add('deleteDataSource', (id) => {
+  cy.request({
+    method: 'DELETE',
+    headers: {
+      'osd-xsrf': true,
+    },
+    url: `/api/saved_objects/data-source/${id}`,
+  });
+});
+
+Cypress.Commands.add(
+  'selectTopRightNavigationDataSource',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectableContextMenuHeaderLink').click();
+    cy.getElementByTestId('dataSourceSelectable').find('input').clear();
+    cy.getElementByTestId('dataSourceSelectable')
+      .find('input')
+      .type(dataSourceTitle);
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiSelectableListItem')
+        .contains(dataSourceTitle)
+        .closest('.euiSelectableListItem');
+    }
+
+    if (dataSourceElement) {
+      dataSourceElement.then(($element) => {
+        if ($element.attr('aria-selected') === 'false') {
+          dataSourceElement.click();
+        } else {
+          // Close data source picker manually if data source already selected
+          cy.getElementByTestId(
+            'dataSourceSelectableContextMenuHeaderLink'
+          ).click();
+        }
+      });
+    }
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId(
+        'dataSourceSelectableContextMenuHeaderLink'
+      ).click();
+    }
+  }
 );
