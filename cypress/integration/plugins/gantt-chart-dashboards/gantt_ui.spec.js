@@ -20,9 +20,21 @@ const X_LABEL = 'A unique label for X-axis';
 const DEFAULT_SIZE = 10;
 
 describe('Dump test data', () => {
-  before(() => {
+  beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
+    if (Cypress.env('SECURITY_ENABLED')) {
+      /**
+       * Security plugin is using private tenant as default.
+       * So here we'd need to set global tenant as default manually.
+       */
+      cy.changeDefaultTenant({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'global',
+      });
+    }
   });
+
   it('Indexes test data for gantt chart', () => {
     const dumpDataSet = (ndjson, index) =>
       cy.request({
@@ -47,7 +59,7 @@ describe('Dump test data', () => {
 
     cy.request({
       method: 'POST',
-      form: false,
+      failOnStatusCode: false,
       url: 'api/saved_objects/index-pattern/jaeger',
       headers: {
         'content-type': 'application/json',
@@ -66,6 +78,7 @@ describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   });
 
   it('Creates and saves a gantt chart', () => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.get('.euiButton__text').contains('Create ').click({ force: true });
     cy.get('[data-test-subj="visTypeTitle"]')
       .contains('Gantt Chart')
