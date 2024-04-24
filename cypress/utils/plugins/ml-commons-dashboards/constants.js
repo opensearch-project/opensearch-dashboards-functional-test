@@ -19,14 +19,6 @@ export const MLC_URL = {
 };
 
 export const MLC_API_BASE = `${BACKEND_BASE_PATH}/_plugins/_ml`;
-export const MLC_REMOTE_NO_AUTH_API_BASE = `${Cypress.env(
-  'remoteDataSourceNoAuthUrl'
-)}/_plugins/_ml`;
-
-export const BACKEND_API_DATA_SOURCE = {
-  local: 'local',
-  remoteNoAuth: 'remoteNoAuth',
-};
 
 export const MLC_API = {
   MODEL_BASE: `${MLC_API_BASE}/models`,
@@ -35,12 +27,6 @@ export const MLC_API = {
   TASK_BASE: `${MLC_API_BASE}/tasks`,
   CONNECTOR_BASE: `${MLC_API_BASE}/connectors`,
   CONNECTOR_CREATE: `${MLC_API_BASE}/connectors/_create`,
-};
-
-export const MLC_REMOTE_NO_AUTH_API = {
-  MODEL_BASE: `${MLC_REMOTE_NO_AUTH_API_BASE}/models`,
-  MODEL_REGISTER: `${MLC_REMOTE_NO_AUTH_API_BASE}/models/_register`,
-  TASK_BASE: `${MLC_REMOTE_NO_AUTH_API_BASE}/tasks`,
 };
 
 const BASE_MLC_DASHBOARD_API = BASE_PATH + '/api/ml-commons';

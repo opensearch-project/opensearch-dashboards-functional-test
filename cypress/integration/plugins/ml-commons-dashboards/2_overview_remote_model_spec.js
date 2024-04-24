@@ -2,15 +2,12 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import {
-  MLC_URL,
-  MLC_DASHBOARD_API,
-  BACKEND_API_DATA_SOURCE,
-} from '../../../utils/constants';
+import { MLC_URL, MLC_DASHBOARD_API } from '../../../utils/constants';
+import { currentBackendEndpoint } from '../../../utils/commands';
 
 const dataSourceEnabled = !!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 
-const registerAndDeployRemoteModel = (dataSource) => {
+const registerAndDeployRemoteModel = () => {
   const modelName = `remote sagemaker model-${new Date().getTime()}`;
   return cy
     .registerModel({
@@ -46,21 +43,17 @@ const registerAndDeployRemoteModel = (dataSource) => {
           ],
         },
       },
-      dataSource,
     })
     .then(({ task_id: taskId }) =>
       cy.cyclingCheckTask({
         taskId,
-        dataSource,
       })
     )
-    .then(({ model_id: modelId }) =>
-      cy.deployMLCommonsModel(modelId, dataSource)
-    )
+    .then(({ model_id: modelId }) => cy.deployMLCommonsModel(modelId))
     .then(({ task_id: taskId }) =>
       cy.cyclingCheckTask({
         taskId,
-        dataSource,
+
         rejectOnError: false,
       })
     )
@@ -73,12 +66,12 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
       let registeredRemoteModelId;
       let remoteModelName;
       before(() => {
-        cy.disableNativeMemoryCircuitBreaker(BACKEND_API_DATA_SOURCE.local);
+        cy.disableNativeMemoryCircuitBreaker();
         // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
-        cy.disableOnlyRunOnMLNode(BACKEND_API_DATA_SOURCE.local);
+        cy.disableOnlyRunOnMLNode();
         cy.wait(1000);
 
-        registerAndDeployRemoteModel(BACKEND_API_DATA_SOURCE.local).then(
+        registerAndDeployRemoteModel().then(
           ([modelName, { model_id: modelId }]) => {
             remoteModelName = modelName;
             registeredRemoteModelId = modelId;
@@ -94,15 +87,9 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
       });
       after(() => {
         if (registeredRemoteModelId) {
-          cy.undeployMLCommonsModel(
-            registeredRemoteModelId,
-            BACKEND_API_DATA_SOURCE.local
-          );
+          cy.undeployMLCommonsModel(registeredRemoteModelId);
           cy.wait(1000);
-          cy.deleteMLCommonsModel(
-            registeredRemoteModelId,
-            BACKEND_API_DATA_SOURCE.local
-          );
+          cy.deleteMLCommonsModel(registeredRemoteModelId);
           cy.wait(1000);
         }
       });
@@ -139,20 +126,20 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
         let dataSourceTitle;
         let registeredRemoteModelId;
         let remoteModelName;
+        const originalBackendEndpoint = currentBackendEndpoint.get();
         before(() => {
-          cy.disableNativeMemoryCircuitBreaker(
-            BACKEND_API_DATA_SOURCE.remoteNoAuth
-          );
+          currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
+          cy.disableNativeMemoryCircuitBreaker();
           // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
-          cy.disableOnlyRunOnMLNode(BACKEND_API_DATA_SOURCE.remoteNoAuth);
+          cy.disableOnlyRunOnMLNode();
           cy.wait(1000);
 
-          registerAndDeployRemoteModel(
-            BACKEND_API_DATA_SOURCE.remoteNoAuth
-          ).then(([modelName, { model_id: modelId }]) => {
-            remoteModelName = modelName;
-            registeredRemoteModelId = modelId;
-          });
+          registerAndDeployRemoteModel().then(
+            ([modelName, { model_id: modelId }]) => {
+              remoteModelName = modelName;
+              registeredRemoteModelId = modelId;
+            }
+          );
 
           cy.createDataSourceNoAuth().then((result) => {
             dataSourceId = result[0];
@@ -167,17 +154,12 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
             cy.deleteDataSource(dataSourceId);
           }
           if (registeredRemoteModelId) {
-            cy.undeployMLCommonsModel(
-              registeredRemoteModelId,
-              BACKEND_API_DATA_SOURCE.remoteNoAuth
-            );
+            cy.undeployMLCommonsModel(registeredRemoteModelId);
             cy.wait(1000);
-            cy.deleteMLCommonsModel(
-              registeredRemoteModelId,
-              BACKEND_API_DATA_SOURCE.remoteNoAuth
-            );
+            cy.deleteMLCommonsModel(registeredRemoteModelId);
             cy.wait(1000);
           }
+          currentBackendEndpoint.set(originalBackendEndpoint, false);
         });
 
         it('should display consistent connectors options and models', () => {

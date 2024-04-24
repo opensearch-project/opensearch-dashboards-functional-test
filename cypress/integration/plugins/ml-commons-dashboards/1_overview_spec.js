@@ -2,16 +2,13 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import {
-  MLC_URL,
-  MLC_DASHBOARD_API,
-  BACKEND_API_DATA_SOURCE,
-} from '../../../utils/constants';
+import { currentBackendEndpoint } from '../../../utils/commands';
+import { MLC_URL, MLC_DASHBOARD_API } from '../../../utils/constants';
 
 const UPLOAD_MODEL_NAME = 'huggingface/sentence-transformers/all-MiniLM-L6-v2';
 const dataSourceEnabled = !!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 
-const registerAndDeployPreTrainModel = (dataSource) =>
+const registerAndDeployPreTrainModel = () =>
   cy
     .registerModel({
       body: {
@@ -19,22 +16,17 @@ const registerAndDeployPreTrainModel = (dataSource) =>
         version: '1.0.1',
         model_format: 'TORCH_SCRIPT',
       },
-      dataSource,
     })
     .then(({ task_id: taskId }) =>
       cy.cyclingCheckTask({
         taskId,
-        dataSource,
       })
     )
-    .then(({ model_id: modelId }) =>
-      cy.deployMLCommonsModel(modelId, dataSource)
-    )
+    .then(({ model_id: modelId }) => cy.deployMLCommonsModel(modelId))
     .then(({ task_id: taskId }) =>
       cy.cyclingCheckTask({
         taskId,
         rejectOnError: false,
-        dataSource,
       })
     );
 
@@ -49,12 +41,12 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
       let uploadedModelId;
       let modelRespondingState;
       before(() => {
-        cy.disableNativeMemoryCircuitBreaker(BACKEND_API_DATA_SOURCE.local);
+        cy.disableNativeMemoryCircuitBreaker();
         // Disable only_run_on_ml_node to avoid model upload error in case of cluster no ml nodes
-        cy.disableOnlyRunOnMLNode(BACKEND_API_DATA_SOURCE.local);
+        cy.disableOnlyRunOnMLNode();
         cy.wait(1000);
 
-        registerAndDeployPreTrainModel(BACKEND_API_DATA_SOURCE.local).then(
+        registerAndDeployPreTrainModel().then(
           ({ model_id: modelId, error }) => {
             uploadedModelId = modelId;
             modelRespondingState = error ? 'Not responding' : 'Responding';
@@ -72,14 +64,8 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
 
       after(() => {
         if (uploadedModelId) {
-          cy.undeployMLCommonsModel(
-            uploadedModelId,
-            BACKEND_API_DATA_SOURCE.local
-          );
-          cy.deleteMLCommonsModel(
-            uploadedModelId,
-            BACKEND_API_DATA_SOURCE.local
-          );
+          cy.undeployMLCommonsModel(uploadedModelId);
+          cy.deleteMLCommonsModel(uploadedModelId);
         }
       });
 
@@ -207,33 +193,28 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
         describe('uploaded models', () => {
           let remoteUploadedModelId;
           let remoteModelRespondingState;
+          const originalBackendEndpoint = currentBackendEndpoint.get();
           before(() => {
-            cy.disableNativeMemoryCircuitBreaker(
-              BACKEND_API_DATA_SOURCE.remoteNoAuth
-            );
-            cy.disableOnlyRunOnMLNode(BACKEND_API_DATA_SOURCE.remoteNoAuth);
+            currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
+            cy.disableNativeMemoryCircuitBreaker();
+            cy.disableOnlyRunOnMLNode();
             cy.wait(1000);
 
-            registerAndDeployPreTrainModel(
-              BACKEND_API_DATA_SOURCE.remoteNoAuth
-            ).then(({ model_id: modelId, error }) => {
-              remoteUploadedModelId = modelId;
-              remoteModelRespondingState = error
-                ? 'Not responding'
-                : 'Responding';
-            });
+            registerAndDeployPreTrainModel().then(
+              ({ model_id: modelId, error }) => {
+                remoteUploadedModelId = modelId;
+                remoteModelRespondingState = error
+                  ? 'Not responding'
+                  : 'Responding';
+              }
+            );
           });
           after(() => {
             if (remoteUploadedModelId) {
-              cy.undeployMLCommonsModel(
-                remoteUploadedModelId,
-                BACKEND_API_DATA_SOURCE.remoteNoAuth
-              );
-              cy.deleteMLCommonsModel(
-                remoteUploadedModelId,
-                BACKEND_API_DATA_SOURCE.remoteNoAuth
-              );
+              cy.undeployMLCommonsModel(remoteUploadedModelId);
+              cy.deleteMLCommonsModel(remoteUploadedModelId);
             }
+            currentBackendEndpoint.set(originalBackendEndpoint, false);
           });
 
           it('should call connectors and model search api with data source id', () => {
