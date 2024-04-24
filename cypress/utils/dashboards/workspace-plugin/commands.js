@@ -63,13 +63,22 @@ Cypress.Commands.add('createWorkspace', (workspaceName) => {
   });
 });
 
+/**
+ * Check whether the given workspace is equal to the expected workspace or not,
+ * the given workspace is as exepcted when the name, description, features, and permissions are as expected.
+ */
 Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
   cy.request({
     method: 'GET',
     url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/${workspaceId}`,
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
-      const { description, features, permissions } = resp.body.result;
+      const { name, description, features, permissions } = resp.body.result;
+      if (name !== expected.name) {
+        throw new Error(
+          `workspace ${workspaceId} is not as expected, expected name is ${expected.name}, but is ${name}`
+        );
+      }
       if (description !== expected.description) {
         throw new Error(
           `workspace ${workspaceId} is not as expected, expected description is ${expected.description}, but is ${description}`

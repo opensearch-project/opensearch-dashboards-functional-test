@@ -28,7 +28,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     describe('Create a workspace successfully', () => {
-      it('should successfully create a worksapce', () => {
+      it('should successfully create a workspace', () => {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-nameInputText'
         ).type(workspaceName);
@@ -122,7 +122,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.deleteWorkspaceByName(workspaceName);
         });
 
-        it('should successfully create a worksapce with permissions', () => {
+        it('should successfully create a workspace with permissions', () => {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-nameInputText'
           ).type(workspaceName);
