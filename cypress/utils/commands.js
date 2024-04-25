@@ -102,6 +102,7 @@ Cypress.Commands.add('login', () => {
   });
 });
 
+// This function does not delete all indices
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.log('Deleting all indices');
   cy.request(
@@ -246,6 +247,15 @@ Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
     url: `${Cypress.env('openSearchUrl')}/${indexName}`,
     failOnStatusCode: false,
     ...options,
+  });
+});
+
+Cypress.Commands.add('getIndices', (index = null, settings = {}) => {
+  cy.request({
+    method: 'GET',
+    url: `${Cypress.env('openSearchUrl')}/_cat/indices/${index ? index : ''}`,
+    failOnStatusCode: false,
+    ...settings,
   });
 });
 
@@ -416,6 +426,11 @@ Cypress.Commands.add('setAdvancedSetting', (changes) => {
     .request({
       method: 'POST',
       url,
+      qs: Cypress.env('SECURITY_ENABLED')
+        ? {
+            security_tenant: CURRENT_TENANT.defaultTenant,
+          }
+        : {},
       headers: {
         'content-type': 'application/json;charset=UTF-8',
         'osd-xsrf': true,
@@ -506,3 +521,12 @@ Cypress.Commands.add(
       });
   }
 );
+
+// type: logs, ecommerce, flights
+Cypress.Commands.add('loadSampleData', (type) => {
+  cy.request({
+    method: 'POST',
+    headers: { 'osd-xsrf': 'opensearch-dashboards' },
+    url: `${BASE_PATH}/api/sample_data/${type}`,
+  });
+});

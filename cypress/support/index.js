@@ -30,6 +30,8 @@ import '../utils/plugins/alerting-dashboards-plugin/commands';
 import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/notifications-dashboards/commands';
+import '../utils/plugins/dashboards-assistant/commands';
+import '../utils/dashboards/console/commands';
 
 import 'cypress-real-events';
 
@@ -54,5 +56,21 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
 
   beforeEach(() => {
     Cypress.Cookies.preserveOnce('security_authentication');
+  });
+}
+
+/**
+ * Make setup step in here so that all the test files in dashboards-assistant
+ * won't need to call these commands.
+ */
+if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+  before(() => {
+    cy.addAssistantRequiredSettings();
+    cy.readOrRegisterRootAgent();
+    cy.startDummyServer();
+  });
+  after(() => {
+    cy.cleanRootAgent();
+    cy.stopDummyServer();
   });
 }

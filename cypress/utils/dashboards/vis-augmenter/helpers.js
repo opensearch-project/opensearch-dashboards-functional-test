@@ -5,39 +5,7 @@
 
 import { isEmpty } from 'lodash';
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-
-const apiRequest = (url, method = 'POST', body = undefined, qs = undefined) =>
-  cy.request({
-    method: method,
-    failOnStatusCode: false,
-    url: url,
-    headers: {
-      'content-type': 'application/json',
-      'osd-xsrf': true,
-    },
-    body: body,
-    qs: qs,
-  });
-
-const devToolsRequest = (
-  url,
-  method = 'POST',
-  body = undefined,
-  qs = undefined
-) =>
-  cy.request({
-    method: 'POST',
-    form: false,
-    failOnStatusCode: false,
-    url: encodeURI(`api/console/proxy?path=${url}&method=${method}`),
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    body: body,
-    qs: qs,
-  });
-
+import { devToolsRequest, apiRequest } from '../../helpers';
 /**
  * Cleans up the index & all associated saved objects (index pattern, visualizations,
  * dashboards, etc.) created during the test run
@@ -146,7 +114,7 @@ const setXAxisDateHistogram = () => {
     .find('[data-test-subj="visEditorAdd_buckets"]')
     .click();
 
-  cy.getElementByTestId('visEditorAdd_buckets_X-axis').click();
+  cy.getElementByTestId('visEditorAdd_buckets_X-axis').click({ force: true });
 
   cy.get('.euiTitle')
     .contains('Buckets')
@@ -210,7 +178,6 @@ const addMetric = (metric, index) => {
           force: true,
         }
       );
-      cy.contains(`${metric.aggregation}`).click({ force: true });
     });
 
   // non-count aggregations will have an additional field value to set
@@ -289,7 +256,9 @@ export const bootstrapDashboard = (
     sampleDataFilepath
   );
 
+  cy.intercept('/api/saved_objects/*').as('savedObjectsApis');
   miscUtils.visitPage('app/dashboards#/create');
+  cy.wait(['@savedObjectsApis'], { timeout: 300000 });
 
   // Create several different visualizations
   visualizationSpecs.forEach((visualizationSpec) => {
@@ -299,9 +268,35 @@ export const bootstrapDashboard = (
       visualizationSpec.name,
       visualizationSpec.metrics
     );
+    // wait for vis saved
+    cy.contains(`Saved '${visualizationSpec.name}'`);
+    cy.wait(5000);
+    // cy.get(`[data-title="${visualizationSpec.name}"]`).should('have.length', 1);
+    // somehow the visualization is not added to dashboard
+    cy.get('body').then(($body) => {
+      if ($body.find(`[data-title="${visualizationSpec.name}"]`).length === 0) {
+        cy.getElementByTestId('dashboardAddPanelButton').click({ force: true });
+        cy.getElementByTestId('savedObjectFinderSearchInput')
+          .focus()
+          .clear()
+          .type(visualizationSpec.name);
+
+        cy.getElementByTestId(
+          `savedObjectTitle${visualizationSpec.name}`
+        ).click();
+
+        cy.getElementByTestId('euiFlyoutCloseButton').click();
+
+        cy.get(`[data-title="${visualizationSpec.name}"]`).should(
+          'have.length',
+          1
+        );
+      }
+    });
   });
 
-  cy.getElementByTestId('dashboardSaveMenuItem').click({
+  /// wait for page load
+  cy.getElementByTestId('dashboardSaveMenuItem', { timeout: 300000 }).click({
     force: true,
   });
 
@@ -310,6 +305,11 @@ export const bootstrapDashboard = (
   cy.getElementByTestId('confirmSaveSavedObjectButton').click({
     force: true,
   });
+
+  cy.contains(`Dashboard '${dashboardName}' was saved`);
+
+  // make newly created dashboards searchable
+  devToolsRequest('.kibana*/_refresh', 'POST');
 };
 
 export const filterByObjectType = (type) => {

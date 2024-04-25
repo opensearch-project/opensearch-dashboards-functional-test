@@ -13,6 +13,7 @@ import {
   TABLE_VIS_APP_PATH,
   TABLE_VIS_TYPE,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 /**
  * Basic test suite description:
@@ -25,6 +26,7 @@ import {
 
 describe('table visualization basic functions', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.deleteIndex(TABLE_INDEX_ID);
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
     cy.bulkUploadDocs(TABLE_PATH_INDEX_DATA);

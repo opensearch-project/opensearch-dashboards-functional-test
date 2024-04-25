@@ -80,13 +80,13 @@ export const createDetector = (
     ],
   };
 
-  cy.cleanUpTests()
+  cy.sa_cleanUpTests()
     // Create test index
     .then(() => cy.sa_createIndex(indexName, indexSettings))
 
     // Create field mappings
     .then(() =>
-      cy.createAliasMappings(
+      cy.sa_createAliasMappings(
         indexName,
         detectorConfig.detector_type,
         indexMappings,
@@ -95,14 +95,14 @@ export const createDetector = (
     )
     // Create rule
     .then(() => {
-      cy.createRule(ruleSettings)
+      cy.sa_createRule(ruleSettings)
         .then((response) => {
           detectorConfig.inputs[0].detector_input.custom_rules[0].id =
             response.body.response._id;
           detectorConfig.triggers[0].ids.push(response.body.response._id);
         })
         // create the detector
-        .then(() => cy.createDetector(detectorConfig));
+        .then(() => cy.sa_createDetector(detectorConfig));
     })
     .then(() => {
       // Go to the detectors table page
@@ -121,8 +121,26 @@ export const createDetector = (
   cy.wait(65000);
   // Ingest documents to the test index
   for (let i = 0; i < indexDocsCount; i++) {
-    cy.insertDocumentToIndex(indexName, '', indexDoc);
+    cy.sa_insertDocumentToIndex(indexName, '', indexDoc);
   }
 
   return detectorConfig;
+};
+
+export const logTypeLabels = {
+  cloudtrail: 'AWS Cloudtrail',
+  dns: 'DNS',
+  vpcflow: 'VPC Flow',
+  ad_ldap: 'AD/LDAP',
+  apache_access: 'Apache Access',
+  m365: 'Microsoft 365',
+  okta: 'Okta',
+  waf: 'WAF',
+  s3: 'AWS S3',
+  github: 'Github',
+  gworkspace: 'Google Workspace',
+  windows: 'Microsoft Windows',
+  network: 'Network',
+  linux: 'Linux System Logs',
+  azure: 'Microsoft Azure',
 };

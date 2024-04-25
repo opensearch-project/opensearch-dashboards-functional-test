@@ -1,0 +1,195 @@
+name: 'Launch OpenSearch'
+description: 'Downloads OpenSearch and runs it'
+
+inputs:
+  opensearch-version:
+    description: 'The version of OpenSearch that should be used, e.g "3.0.0"'
+    required: true
+
+  plugins:
+    description: 'A comma separated list of plugins to install. Leave empty to not install any. Each entry should be a full path prefixed with `file: `, for example: `file:$(pwd)/my-plugin.zip`'
+    required: false
+
+  security-enabled:
+    description: 'Whether security is enabled'
+    required: true
+
+  admin-password:
+    description: 'The admin password uses for the cluster'
+    required: false
+
+  security_config_file:
+    description: 'Path to a security config file to replace the default. Leave empty if security is not enabled or using the default config'
+    required: false
+
+  port:
+    description: 'Port to run OpenSearch. Leave empty to use the default config (9200)'
+    required: false
+    default: '9200'
+
+runs:
+  using: "composite"
+  steps:
+
+    # Configure longpath names if on Windows
+    - name: Enable Longpaths if on Windows
+      if: ${{ runner.os == 'Windows' }}
+      run: git config --system core.longpaths true
+      shell: pwsh
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+
+    - name: Create temporary directory
+      run: | 
+        mkdir ${{ inputs.port }}
+      shell: bash
+
+    # Download OpenSearch
+    - name: Download OpenSearch for Windows
+      uses: peternied/download-file@v2
+      if: ${{ runner.os == 'Windows' }}
+      with:
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-windows-x64.zip
+
+
+    - name: Download OpenSearch for Linux
+      uses: peternied/download-file@v2
+      if: ${{ runner.os == 'Linux' }}
+      with:
+        url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-linux-x64.tar.gz
+
+    # Extract downloaded zip
+    - name: Extract downloaded tar
+      if: ${{ runner.os == 'Linux' }}
+      run: |
+        tar -xzf opensearch-*.tar.gz -C ${{ inputs.port }} && mv ${{ inputs.port }}/opensearch-${{ inputs.opensearch-version }} ${{ inputs.port }}/opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}
+        rm -f opensearch-*.tar.gz
+      shell: bash
+
+    - name: Extract downloaded zip
+      if: ${{ runner.os == 'Windows' }}
+      run: |
+        Expand-Archive -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip" -DestinationPath "temp"
+        Move-Item -Path "temp/*" -Destination "${{ inputs.port }}/opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}"
+        Remove-Item -Path "temp" -Recurse
+        Remove-Item -Path "opensearch-${{ inputs.opensearch-version }}-windows-x64.zip.1"
+      shell: pwsh
+
+    # Setup security if it's enabled
+    - name: Setup security demo configuration
+      if: ${{ runner.os == 'Linux' && inputs.security-enabled == 'true' }}
+      run: |
+        echo "running linux security demo configuration setup"
+        export OPENSEARCH_INITIAL_ADMIN_PASSWORD=${{ inputs.admin-password }}
+        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh
+        opensearch_version="${{ inputs.opensearch-version }}"
+        opensearch_major_version=$(echo "$opensearch_version" | awk -F'.' '{print $1}')
+        opensearch_minor_version=$(echo "$opensearch_version" | awk -F'.' '{print $2}')
+        if [ "$opensearch_major_version" -lt 2 ] || ([ "$opensearch_major_version" -eq 2 ] && [ "$opensearch_minor_version" -lt 12 ]); then
+          echo "Running the command without -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh"
+        else
+          echo "Running the command with -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.sh -t"
+        fi
+        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    - name: Setup security demo configuration for Windows
+      if: ${{ runner.os == 'Windows' && inputs.security-enabled == 'true' }}
+      run: |
+        echo "running windows security demo configuration setup"
+        export OPENSEARCH_INITIAL_ADMIN_PASSWORD=${{ inputs.admin-password }}
+        chmod +x  ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat
+        opensearch_version="${{ inputs.opensearch-version }}"
+        opensearch_major_version=$(echo "$opensearch_version" | cut -d'.' -f1)
+        opensearch_minor_version=$(echo "$opensearch_version" | cut -d'.' -f2)
+        if [ "$opensearch_major_version" -lt 2 ] || ([ "$opensearch_major_version" -eq 2 ] && [ "$opensearch_minor_version" -lt 12 ]); then
+          echo "Running the command without -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat -y -i -s"
+        else
+          echo "Running the command with -t option (OpenSearch version is $opensearch_version)"
+          /bin/bash -c "yes | ./opensearch-${opensearch_version}-SNAPSHOT${{ inputs.port }}/plugins/opensearch-security/tools/install_demo_configuration.bat -t -y -i -s"
+        fi
+        echo "plugins.security.unsupported.restapi.allow_securityconfig_modification: true" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    # Disable security if it's disabled
+    - name: Disable security
+      if: ${{ inputs.security-enabled == 'false' }}
+      run: |
+        echo "Remove OpenSearch Security"
+        echo "plugins.security.disabled: true" >> ./opensearch-${{inputs.opensearch-version}}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    - name: Use more space
+      run: |
+        echo '' >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+        echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+        echo "http.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    # Run OpenSearch
+    - name: Run OpenSearch with plugin on Linux
+      if: ${{ runner.os == 'Linux'}}
+      run: /bin/bash -c "./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/bin/opensearch &"
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    - name: Run OpenSearch with plugin on Windows
+      if: ${{ runner.os == 'Windows'}}
+      run: start .\opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}\bin\opensearch.bat
+      shell: pwsh
+      working-directory: ${{ inputs.port }}
+
+    # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
+    - name: Sleep while OpenSearch starts
+      uses: peternied/action-sleep@v1
+      with:
+        seconds: 30
+
+     # Verify that the server is operational
+    - name: Check OpenSearch Running on Linux
+      if: ${{ runner.os != 'Windows'}}
+      run: |
+        if [ "${{ inputs.security-enabled }}" == "true" ]; then
+          curl https://localhost:${{ inputs.port || 9200 }}/_cat/plugins -u 'admin:${{ inputs.admin-password }}' -k -v --fail-with-body
+        else
+          curl http://localhost:${{ inputs.port || 9200 }}/_cat/plugins -v
+        fi
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    - name: Check OpenSearch Running on Windows
+      if: ${{ runner.os == 'Windows'}}
+      run: |
+        if ("${{ inputs.security-enabled }}" -eq "true") {
+          $credentialBytes = [Text.Encoding]::ASCII.GetBytes("admin:${{ inputs.admin-password }}")
+          $encodedCredentials = [Convert]::ToBase64String($credentialBytes)
+          $baseCredentials = "Basic $encodedCredentials"
+          $Headers = @{ Authorization = $baseCredentials }
+          $url = 'https://localhost:${{ inputs.port || 9200 }}/_cat/plugins'
+        } else {
+          $Headers = @{ }
+          $url = 'http://localhost:${{ inputs.port || 9200 }}/_cat/plugins'
+        }
+        Invoke-WebRequest -SkipCertificateCheck -Uri $url -Headers $Headers;
+      shell: pwsh
+      working-directory: ${{ inputs.port }}
+
+    - if: always()
+      run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/logs/opensearch.log
+      shell: bash
+      working-directory: ${{ inputs.port }}
+
+    - if: always()
+      run: cat ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+      shell: bash
+      working-directory: ${{ inputs.port }}

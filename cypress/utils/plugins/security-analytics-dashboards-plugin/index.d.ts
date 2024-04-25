@@ -11,198 +11,198 @@ declare namespace Cypress {
     /**
      * Returns element by its text
      * @example
-     * cy.getElementByText('.euiTitle', 'Some title')
+     * cy.sa_getElementByText('.euiTitle', 'Some title')
      */
-    getElementByText(locator: string, text: string): Chainable<any>;
+    sa_getElementByText(locator: string, text: string): Chainable<any>;
 
     /**
      * Returns button by its text
      * @example
-     * cy.getButtonByText('Button text')
+     * cy.sa_getButtonByText('Button text')
      */
-    getButtonByText(text: string): Chainable<any>;
+    sa_getButtonByText(text: string): Chainable<any>;
 
     /**
      * Returns input by its placeholder
      * @example
-     * cy.getInputByPlaceholder('Search rules...')
+     * cy.sa_getInputByPlaceholder('Search rules...')
      */
-    getInputByPlaceholder(placeholder: string): Chainable<any>;
+    sa_getInputByPlaceholder(placeholder: string): Chainable<any>;
 
     /**
      * Returns combobox input by its placeholder
      * @example
-     * cy.getComboboxByPlaceholder('Select data input...')
+     * cy.sa_getComboboxByPlaceholder('Select data input...')
      */
-    getComboboxByPlaceholder(placeholder: string): Chainable<any>;
+    sa_getComboboxByPlaceholder(placeholder: string): Chainable<any>;
 
     /**
      * Returns field input by label
      * @example
-     * cy.getFieldByLabel('Detector name')
+     * cy.sa_getFieldByLabel('Detector name')
      */
-    getFieldByLabel(label: string, type?: string): Chainable<any>;
+    sa_getFieldByLabel(label: string, type?: string): Chainable<any>;
 
     /**
      * Returns textarea by label
      * @example
-     * cy.getTextareaByLabel('Detector description')
+     * cy.sa_getTextareaByLabel('Detector description')
      */
-    getTextareaByLabel(label: string): Chainable<any>;
+    sa_getTextareaByLabel(label: string): Chainable<any>;
 
     /**
      * Returns element by data-test-subj attribute value
      * @example
-     * cy.getElementByTestSubject('alerts-input-element')
+     * cy.sa_getElementByTestSubject('alerts-input-element')
      */
-    getElementByTestSubject(subject: string): Chainable<any>;
+    sa_getElementByTestSubject(subject: string): Chainable<any>;
 
     /**
      * Returns radio by id
      * @example
-     * cy.getRadioButtonById('radioId')
+     * cy.sa_getRadioButtonById('radioId')
      */
-    getRadioButtonById(id: string): Chainable<any>;
+    sa_getRadioButtonById(id: string): Chainable<any>;
 
     /**
      * Selects combobox item(s)
      * @example
-     * cy.get('combo).selectComboboxItem('some item value')
+     * cy.get('combo).sa_selectComboboxItem('some item value')
      */
-    selectComboboxItem(items: string | string[]): Chainable<any>;
+    sa_selectComboboxItem(items: string | string[]): Chainable<any>;
 
     /**
      * Clears combobox value(s)
      * @example
-     * cy.get('combo).clearCombobox()
+     * cy.get('combo).sa_clearCombobox()
      */
-    clearCombobox(): Chainable<any>;
+    sa_clearCombobox(): Chainable<any>;
 
     /**
      * Triggers enter key event on the focused element
      * @example
-     * cy.pressEnterKey()
+     * cy.sa_pressEnterKey()
      */
-    pressEnterKey(): Chainable<any>;
+    sa_pressEnterKey(): Chainable<any>;
 
     /**
      * Triggers backspace key event on the focused element
      * @example
-     * cy.pressBackspaceKey()
+     * cy.sa_pressBackspaceKey()
      */
-    pressBackspaceKey(numberOfPresses?: number): Chainable<any>;
+    sa_pressBackspaceKey(numberOfPresses?: number): Chainable<any>;
 
     /**
      * Validates details panel item
      * @example
-     * cy.validateDetailsItem('Data source', '.index-name')
+     * cy.sa_validateDetailsItem('Data source', '.index-name')
      */
-    validateDetailsItem(label: string, value: string): Chainable<any>;
+    sa_validateDetailsItem(label: string, value: string): Chainable<any>;
 
     /**
      * Should clear a field value (use with text and textarea fields)
      * @example
-     * cy.getFieldByLabel('Rule name').clearValue()
+     * cy.sa_getFieldByLabel('Rule name').sa_clearValue()
      */
-    clearValue(): Chainable<any>;
+    sa_clearValue(): Chainable<any>;
 
     /**
      * Validates that field contains value
      * Should be used with combobox or other fields that don't print its value in inputs
      * @example
-     * cy.getFieldByLabel('Rule name').containsValue('Name')
+     * cy.sa_getFieldByLabel('Rule name').sa_containsValue('Name')
      */
-    containsValue(value: string): Chainable<any>;
+    sa_containsValue(value: string): Chainable<any>;
 
     /**
      * Validates that field has error text
      * @example
-     * cy.getFieldByLabel('Rule name').containsError('This fields is invalid')
+     * cy.sa_getFieldByLabel('Rule name').sa_containsError('This fields is invalid')
      */
-    containsError(errorText: string): Chainable<any>;
+    sa_containsError(errorText: string): Chainable<any>;
 
     /**
      * Validates that field has helper text
      * @example
-     * cy.getFieldByLabel('Rule name').containsHelperText('Use this field for...')
+     * cy.sa_getFieldByLabel('Rule name').sa_containsHelperText('Use this field for...')
      */
-    containsHelperText(helperText: string): Chainable<any>;
+    sa_containsHelperText(helperText: string): Chainable<any>;
 
     /**
      * Should not have error text
      * @example
-     * cy.getFieldByLabel('Rule name').shouldNotHaveError()
+     * cy.sa_getFieldByLabel('Rule name').sa_shouldNotHaveError()
      */
-    shouldNotHaveError(): Chainable<any>;
+    sa_shouldNotHaveError(): Chainable<any>;
 
     /**
      * Validates url path
      * @example
-     * cy.urlShouldContain('/detector-details')
+     * cy.sa_urlShouldContain('/detector-details')
      */
-    urlShouldContain(path: string): Chainable<any>;
+    sa_urlShouldContain(path: string): Chainable<any>;
 
     /**
      * Validates table items
      * @example
-     * cy.validateTable('/detector-details')
+     * cy.sa_validateTable('/detector-details')
      */
-    validateTable(data: { [key: string]: string }[]): Chainable<any>;
+    sa_validateTable(data: { [key: string]: string }[]): Chainable<any>;
 
     /**
      * Removes custom indices, detectors and rules
      * @example
-     * cy.cleanUpTests()
+     * cy.sa_cleanUpTests()
      */
-    cleanUpTests(): Chainable<any>;
+    sa_cleanUpTests(): Chainable<any>;
 
     /**
      * Returns table first row
      * Finds elements deeper in a row with selector
      * @param {string} selector
      * @example
-     * cy.getTableFirstRow()
-     * cy.getTableFirstRow('td')
+     * cy.sa_getTableFirstRow()
+     * cy.sa_getTableFirstRow('td')
      */
-    getTableFirstRow(selector: string): Chainable<any>;
+    sa_getTableFirstRow(selector: string): Chainable<any>;
 
     /**
      * Waits for page to be loaded
      * @param {string} pathname
      * @param {any} opts
      * @example
-     * cy.waitForPageLoad('detectors')
-     * cy.waitForPageLoad('detectors', {
+     * cy.sa_waitForPageLoad('detectors')
+     * cy.sa_waitForPageLoad('detectors', {
      *   timeout: 20000,
      *   contains: 'text to verify'
      * })
      */
-    waitForPageLoad(pathname: string, opts?: any): Chainable<any>;
+    sa_waitForPageLoad(pathname: string, opts?: any): Chainable<any>;
 
     /**
      * Returns table first row
      * Can find elements deeper in a row with selector
      * @param {string} text
      * @example
-     * cy.get('selector').ospSearch('Txt to write into input')
+     * cy.get('selector').sa_ospSearch('Txt to write into input')
      */
-    ospSearch(text: string): Chainable<any>;
+    sa_ospSearch(text: string): Chainable<any>;
 
     /**
      * Clears input text
      * @example
-     * cy.get('selector').ospClear()
+     * cy.get('selector').sa_ospClear()
      */
-    ospClear(): Chainable<any>;
+    sa_ospClear(): Chainable<any>;
 
     /**
      * Returns table first row
      * Can find elements deeper in a row with selector
      * @param {string} text
      * @example
-     * cy.get('selector').ospType('Txt to write into input')
+     * cy.get('selector').sa_ospType('Txt to write into input')
      */
-    ospType(text: string): Chainable<any>;
+    sa_ospType(text: string): Chainable<any>;
 
     /**
      * Creates index with optional settings
@@ -214,9 +214,9 @@ declare namespace Cypress {
     /**
      * Creates an index template.
      * @example
-     * cy.createIndexTemplate("some_index_template", { "index_patterns": "abc", "properties": { ... } })
+     * cy.sa_createIndexTemplate("some_index_template", { "index_patterns": "abc", "properties": { ... } })
      */
-    createIndexTemplate(name: string, template: object): Chainable<any>;
+    sa_createIndexTemplate(name: string, template: object): Chainable<any>;
 
     /**
     /**
@@ -229,30 +229,30 @@ declare namespace Cypress {
     /**
      * Deletes all custom rules in cluster
      * @example
-     * cy.deleteAllCustomRules()
+     * cy.sa_deleteAllCustomRules()
      */
-    deleteAllCustomRules(): Chainable<any>;
+    sa_deleteAllCustomRules(): Chainable<any>;
 
     /**
      * Deletes all detectors in cluster
      * @example
-     * cy.deleteAllDetectors()
+     * cy.sa_deleteAllDetectors()
      */
-    deleteAllDetectors(): Chainable<any>;
+    sa_deleteAllDetectors(): Chainable<any>;
 
     /**
      * Creates a detector
      * @example
-     * cy.createPolicy({ "detector_type": ... })
+     * cy.sa_createPolicy({ "detector_type": ... })
      */
-    createDetector(detectorJSON: object): Chainable<any>;
+    sa_createDetector(detectorJSON: object): Chainable<any>;
 
     /**
      * Creates a fields mapping aliases for detector
      * @example
-     * cy.createAliasMappings('indexName', 'windows', {...}, true)
+     * cy.sa_createAliasMappings('indexName', 'windows', {...}, true)
      */
-    createAliasMappings(
+    sa_createAliasMappings(
       indexName: string,
       ruleTopic: string,
       aliasMappingsBody: object,
@@ -262,22 +262,22 @@ declare namespace Cypress {
     /**
      * Creates a custom rule
      * @example
-     * cy.createRule({})
+     * cy.sa_createRule({})
      */
-    createRule(ruleJSON: object): Chainable<any>;
+    sa_createRule(ruleJSON: object): Chainable<any>;
 
     /**
      * Updates settings for index
      * @example
-     * cy.updateIndexSettings("some_index", settings)
+     * cy.sa_updateIndexSettings("some_index", settings)
      */
-    updateDetector(detectorId: string, detectorJSON: object): Chainable<any>;
+    sa_updateDetector(detectorId: string, detectorJSON: object): Chainable<any>;
 
     /**
      * Deletes detector by its name
      * @example
-     * cy.deleteDetector("Cypress detector name")
+     * cy.sa_deleteDetector("Cypress detector name")
      */
-    deleteDetector(name: string): Chainable<any>;
+    sa_deleteDetector(name: string): Chainable<any>;
   }
 }

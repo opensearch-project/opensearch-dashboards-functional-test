@@ -40,7 +40,7 @@ describe('Findings', () => {
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
 
     // Wait for page to load
-    cy.waitForPageLoad('findings', {
+    cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
     });
 
@@ -55,18 +55,20 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('windows');
+    cy.contains('System Activity: Microsoft Windows');
     cy.contains('High');
   });
 
   it('displays finding details flyout when user clicks on View details icon', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
 
     // Click View details icon
-    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
-      cy.get($el).click({ force: true });
-    });
+    cy.sa_getTableFirstRow('[data-test-subj="view-details-icon"]').then(
+      ($el) => {
+        cy.get($el).click({ force: true });
+      }
+    );
 
     // Confirm flyout contents
     cy.contains('Finding details');
@@ -80,10 +82,10 @@ describe('Findings', () => {
 
   it('displays finding details flyout when user clicks on Finding ID', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
 
     // Click findingId to trigger Finding details flyout
-    cy.getTableFirstRow(
+    cy.sa_getTableFirstRow(
       '[data-test-subj="finding-details-flyout-button"]'
     ).then(($el) => {
       cy.get($el).click({ force: true });
@@ -101,7 +103,7 @@ describe('Findings', () => {
 
   it('allows user to view details about rules that were triggered', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
     cy.get(`[data-test-subj="view-details-icon"]`).eq(0).click({ force: true });
@@ -128,12 +130,14 @@ describe('Findings', () => {
 
   it('opens rule details flyout when rule name inside accordion drop down is clicked', () => {
     // filter table to show only sample_detector findings
-    cy.get(`input[placeholder="Search findings"]`).ospSearch(indexName);
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
 
     // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
-    cy.getTableFirstRow('[data-test-subj="view-details-icon"]').then(($el) => {
-      cy.get($el).click({ force: true });
-    });
+    cy.sa_getTableFirstRow('[data-test-subj="view-details-icon"]').then(
+      ($el) => {
+        cy.get($el).click({ force: true });
+      }
+    );
 
     // Click rule link
     cy.get(
@@ -148,5 +152,28 @@ describe('Findings', () => {
     });
   });
 
-  after(() => cy.cleanUpTests());
+  it('shows document not found warning when the document is empty', () => {
+    cy.deleteIndex(indexName);
+    cy.reload();
+
+    // Wait for page to load
+    cy.sa_waitForPageLoad('findings', {
+      contains: 'Findings',
+    });
+
+    // filter table to show only sample_detector findings
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
+
+    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
+    cy.sa_getTableFirstRow('[data-test-subj="view-details-icon"]').then(
+      ($el) => {
+        cy.get($el).click({ force: true });
+      }
+    );
+
+    // Flyout should show 'Document not found' warning
+    cy.contains('Document not found');
+  });
+
+  after(() => cy.sa_cleanUpTests());
 });

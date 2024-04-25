@@ -32,8 +32,9 @@ Cypress.Commands.add('getMenuItems', { prevSubject: 'optional' }, (menu) =>
 );
 
 Cypress.Commands.add('visitDashboard', (dashboardName) => {
+  cy.intercept('/api/saved_objects/_find*').as('loadDashboards');
   cy.visit(`${BASE_PATH}/app/dashboards`);
-  cy.wait(2000);
+  cy.wait('@loadDashboards', { timeout: 300000 });
   cy.get('.euiFieldSearch').type(dashboardName);
   cy.wait(2000);
   cy.get('[data-test-subj="itemsInMemTable"]').contains(dashboardName).click({
