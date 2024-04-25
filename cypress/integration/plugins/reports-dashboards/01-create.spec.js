@@ -13,17 +13,23 @@ import {
 describe('Cypress', () => {
   // add sample data
   before(() => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardflights"]')
       .contains(/(Add|View) data/)
       .click();
     cy.wait(WAIT_TIME);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardecommerce"]')
       .contains(/(Add|View) data/)
       .click();
     cy.wait(WAIT_TIME);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardlogs"]')
       .contains(/(Add|View) data/)
       .click();
