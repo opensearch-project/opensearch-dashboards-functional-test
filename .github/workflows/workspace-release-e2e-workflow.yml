@@ -1,0 +1,34 @@
+name: Workspace Release tests workflow in Bundled OpenSearch Dashboards
+on:
+  pull_request:
+    branches: ['**']
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.filter.outputs.tests }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tests:
+              - 'cypress/**/workspace-plugin/**'
+  tests-with-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: dashboards workspace
+      test-command: env CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=true
+  tests-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: dashboards workspace
+      test-command: env CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=false
+      security-enabled: false
