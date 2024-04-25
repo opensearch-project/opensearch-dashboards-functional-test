@@ -44,12 +44,16 @@ export const currentBackendEndpoint = (() => {
       ) {
         throw new Error(`Invalid endpoint:${changedEndPoint}`);
       }
-      if (immediately) {
+      const updateEndpoint = () => {
         currentEndpoint = changedEndPoint;
+        cy.log(
+          `Current backend endpoint has been changed to: ${currentEndpoint}`
+        );
+      };
+      if (immediately) {
+        updateEndpoint();
       } else {
-        cy.wrap().then(() => {
-          currentEndpoint = changedEndPoint;
-        });
+        cy.wrap().then(updateEndpoint);
       }
     },
     get() {
