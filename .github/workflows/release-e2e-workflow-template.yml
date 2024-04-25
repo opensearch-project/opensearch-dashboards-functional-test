@@ -96,7 +96,6 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
-          ./bin/opensearch-dashboards-plugin remove notificationsDashboards
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove Dashboards Security"
               ./bin/opensearch-dashboards-plugin remove securityDashboards
