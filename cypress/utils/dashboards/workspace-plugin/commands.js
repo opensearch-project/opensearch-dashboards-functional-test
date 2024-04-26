@@ -106,7 +106,8 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
         const expectedPermissions = JSON.stringify(expected.permissions);
         const actualPermissions = JSON.stringify(permissions);
         if (
-          Object.keys(permissions).length !== Object.keys(expected.permissions)
+          Object.keys(permissions).length !==
+          Object.keys(expected.permissions).length
         ) {
           throw new Error(
             `permissions for workspace ${workspaceId} is not as expected, expected permissions are: ${expectedPermissions}, but are: ${actualPermissions}`

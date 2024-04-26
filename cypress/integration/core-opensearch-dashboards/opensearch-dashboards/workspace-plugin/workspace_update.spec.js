@@ -138,7 +138,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       Cypress.env('SECURITY_ENABLED')
     ) {
       describe('Update a workspace with permissions successfully', () => {
-        it('should successfully update a workspace with permissions', () => {
+        it.only('should successfully update a workspace with permissions', () => {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-nameInputText'
           ).clear({

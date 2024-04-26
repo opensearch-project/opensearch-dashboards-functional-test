@@ -148,37 +148,36 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.wait('@createWorkspaceRequest').then((interception) => {
             expect(interception.response.statusCode).to.equal(200);
             workspaceId = interception.response.body.result.id;
+            cy.location('pathname', { timeout: 6000 }).should(
+              'include',
+              'app/workspace_overview'
+            );
+            const expectedWorkspace = {
+              name: workspaceName,
+              description: 'test_workspace_description',
+              features: [
+                'dashboards',
+                'visualize',
+                'workspace_update',
+                'workspace_overview',
+              ],
+              permissions: {
+                read: {
+                  users: ['test_user_sfslja260'],
+                },
+                library_read: {
+                  users: ['test_user_sfslja260'],
+                },
+                write: {
+                  users: [`${Cypress.env('username')}`],
+                },
+                library_write: {
+                  users: [`${Cypress.env('username')}`],
+                },
+              },
+            };
+            cy.checkWorkspace(workspaceId, expectedWorkspace);
           });
-          cy.location('pathname', { timeout: 6000 }).should(
-            'include',
-            'app/workspace_overview'
-          );
-          const expectedWorkspace = {
-            name: workspaceName,
-            description: 'test_workspace_description',
-            features: [
-              'dashboards',
-              'visualize',
-              'workspace_update',
-              'workspace_overview',
-            ],
-            permissions: {
-              read: {
-                users: ['test_user_sfslja260'],
-              },
-              library_read: {
-                users: ['test_user_sfslja260'],
-              },
-              write: {
-                users: [`${Cypress.env('username')}`],
-              },
-              library_write: {
-                users: [`${Cypress.env('username')}`],
-              },
-            },
-          };
-          cy.checkWorkspace(workspaceId, expectedWorkspace);
-          cy.deleteWorkspaceById(workspaceId);
         });
       });
     }
