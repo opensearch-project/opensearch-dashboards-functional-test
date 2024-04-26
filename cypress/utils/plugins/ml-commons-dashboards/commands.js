@@ -170,7 +170,7 @@ Cypress.Commands.add('deleteDataSource', (id) => {
 Cypress.Commands.add(
   'selectTopRightNavigationDataSource',
   (dataSourceTitle, dataSourceId) => {
-    cy.getElementByTestId('dataSourceSelectableContextMenuHeaderLink').click();
+    cy.getElementByTestId('dataSourceSelectableButton').click();
     cy.getElementByTestId('dataSourceSelectable').find('input').clear();
     cy.getElementByTestId('dataSourceSelectable')
       .find('input')
@@ -191,17 +191,13 @@ Cypress.Commands.add(
           dataSourceElement.click();
         } else {
           // Close data source picker manually if data source already selected
-          cy.getElementByTestId(
-            'dataSourceSelectableContextMenuHeaderLink'
-          ).click();
+          cy.getElementByTestId('dataSourceSelectableButton').click();
         }
       });
     }
     // Close data source picker manually if no data source element need to be clicked
     if (!dataSourceElement) {
-      cy.getElementByTestId(
-        'dataSourceSelectableContextMenuHeaderLink'
-      ).click();
+      cy.getElementByTestId('dataSourceSelectableButton').click();
     }
   }
 );

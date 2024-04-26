@@ -171,12 +171,10 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
         });
 
         it('should display the data source picker and created data source', () => {
-          cy.getElementByTestId(
-            'dataSourceSelectableContextMenuHeaderLink'
-          ).should('be.visible');
-          cy.getElementByTestId(
-            'dataSourceSelectableContextMenuHeaderLink'
-          ).click();
+          cy.getElementByTestId('dataSourceSelectableButton').should(
+            'be.visible'
+          );
+          cy.getElementByTestId('dataSourceSelectableButton').click();
           cy.getElementByTestId('dataSourceSelectable').find('input').clear();
           cy.getElementByTestId('dataSourceSelectable')
             .find('input')
@@ -185,9 +183,7 @@ if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
             .contains(dataSourceTitle)
             .should('be.visible');
           cy.getElementByTestId('dataSourceSelectable').find('input').clear();
-          cy.getElementByTestId(
-            'dataSourceSelectableContextMenuHeaderLink'
-          ).click();
+          cy.getElementByTestId('dataSourceSelectableButton').click();
         });
 
         describe('uploaded models', () => {
