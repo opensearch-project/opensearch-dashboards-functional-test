@@ -32,6 +32,7 @@ import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
+import '../utils/dashboards/workspace-plugin/commands';
 
 import 'cypress-real-events';
 
