@@ -125,7 +125,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             'dashboards',
             'visualize',
             'discover',
-            'opensearchDashboardsOverview',
             'workspace_update',
             'workspace_overview',
           ],
@@ -184,7 +183,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             features: [
               'dashboards',
               'visualize',
-              'opensearchDashboardsOverview',
               'workspace_update',
               'workspace_overview',
             ],
