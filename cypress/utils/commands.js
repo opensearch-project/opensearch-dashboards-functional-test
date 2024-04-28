@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH, IM_API } from './constants';
+import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
 
 export const ADMIN_AUTH = {
   username: Cypress.env('username'),
@@ -22,6 +22,45 @@ export const CURRENT_TENANT = {
     this.defaultTenant = changedTenant;
   },
 };
+
+// Overwrite default backend endpoint to customized one, remember set to original value after tests complete.
+export const currentBackendEndpoint = (() => {
+  let currentEndpoint = BACKEND_BASE_PATH;
+  const DEFAULT_ENDPOINT = BACKEND_BASE_PATH;
+  const REMOTE_NO_AUTH_ENDPOINT = Cypress.env('remoteDataSourceNoAuthUrl');
+
+  return Object.freeze({
+    DEFAULT: DEFAULT_ENDPOINT,
+    REMOTE_NO_AUTH: REMOTE_NO_AUTH_ENDPOINT,
+    /**
+     * Change current backend endpoint
+     * @param {*} changedEndPoint
+     * @param {*} immediately set immediately false to change tenant after all pending promise be invoked,
+     * useful for reset backend endpoint after all tests run.
+     */
+    set(changedEndPoint, immediately = true) {
+      if (
+        ![DEFAULT_ENDPOINT, REMOTE_NO_AUTH_ENDPOINT].includes(changedEndPoint)
+      ) {
+        throw new Error(`Invalid endpoint:${changedEndPoint}`);
+      }
+      const updateEndpoint = () => {
+        currentEndpoint = changedEndPoint;
+        cy.log(
+          `Current backend endpoint has been changed to: ${currentEndpoint}`
+        );
+      };
+      if (immediately) {
+        updateEndpoint();
+      } else {
+        cy.wrap().then(updateEndpoint);
+      }
+    },
+    get() {
+      return currentEndpoint;
+    },
+  });
+})();
 
 export const supressNoRequestOccurred = () => {
   cy.on('fail', (err) => {
@@ -81,6 +120,24 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
     [options.method, options.url, options.body] = args;
   }
 
+  /**
+   *
+   * Overwrite opensearch backend endpoint to customized endpoint if data source management enabled and
+   * request url start with default backend base path. It's useful for prepare testing data for other
+   * data source.
+   *
+   */
+  if (
+    !!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
+    currentBackendEndpoint.get() !== currentBackendEndpoint.DEFAULT &&
+    options.url &&
+    options.url.startsWith(BACKEND_BASE_PATH)
+  ) {
+    options.url = options.url.replace(
+      new RegExp(`^${BACKEND_BASE_PATH}`),
+      currentBackendEndpoint.get()
+    );
+  }
   return originalFn(Object.assign({}, defaults, options));
 });
 
