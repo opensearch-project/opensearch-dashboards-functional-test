@@ -32,6 +32,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     beforeEach(() => {
       localStorage.setItem('home:newThemeModal:show', false);
+      localStorage.setItem('home:welcome:show', false);
     });
 
     it('should display a list of workspace along with workspace quick actions', () => {
