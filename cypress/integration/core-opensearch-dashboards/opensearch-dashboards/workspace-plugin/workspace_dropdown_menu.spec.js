@@ -101,6 +101,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.createWorkspace(workspaceName);
       }
 
+      cy.wait(1000);
+
       cy.getElementByTestId('toggleNavButton').click();
       cy.get('#workspaceDropdownMenu').click();
 
