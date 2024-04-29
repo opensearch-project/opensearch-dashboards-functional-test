@@ -41,7 +41,7 @@ Cypress.Commands.add('deleteWorkspaceByName', (workspaceName) => {
   });
 });
 
-Cypress.Commands.add('createWorkspace', (workspaceName) => {
+Cypress.Commands.add('createWorkspace', (workspace) => {
   cy.request({
     method: 'POST',
     url: `${BASE_PATH}${WORKSPACE_API_PREFIX}`,
@@ -50,15 +50,16 @@ Cypress.Commands.add('createWorkspace', (workspaceName) => {
     },
     body: {
       attributes: {
-        name: workspaceName,
-        description: 'test_description',
+        name: workspace.workspaceName,
+        description: workspace.description || 'test_description',
+        features: workspace.features,
       },
     },
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
       return resp.body.result.id;
     } else {
-      throw new Error(`Create workspace ${workspaceName} failed!`);
+      throw new Error(`Create workspace ${workspace.workspaceName} failed!`);
     }
   });
 });
