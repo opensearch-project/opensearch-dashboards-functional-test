@@ -91,6 +91,12 @@ const plugins = {
       ],
     },
   },
+  'ml-commons-dashboards': {
+    name: 'mlCommonsDashboards',
+    default: {
+      videos: ['1_overview_spec.js', '2_overview_remote_model_spec.js'],
+    },
+  },
   'notifications-dashboards': {
     name: 'notificationsDashboards',
     default: {
