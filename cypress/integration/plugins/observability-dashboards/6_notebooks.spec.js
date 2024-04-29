@@ -138,6 +138,7 @@ describe('Testing notebook actions', () => {
 describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
+    moveToTestNotebook(notebookName);
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
