@@ -47,13 +47,15 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     it('should successfully load the page', () => {
       // workspace name is correctly displayed
-      cy.contains(workspaceName, { timeout: 60000 });
+      cy.contains(workspaceName, { timeout: 60000 }).should('be.visible');
       // dashboars and visualization cards are visiable
       cy.get('div[data-test-subj="workspaceGetStartCards"')
         .as('getStartCards')
         .should('be.visible');
-      cy.get('@getStartCards').contains('with Dashboards');
-      cy.get('@getStartCards').contains('with Visualizations');
+      cy.get('@getStartCards').contains('with Dashboards').should('be.visible');
+      cy.get('@getStartCards')
+        .contains('with Visualizations')
+        .should('be.visible');
 
       // tabs
       cy.getElementByTestId('workspaceTabs')
@@ -64,13 +66,15 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     it('should collpase start working section when collpase button clicked', () => {
       // workspace name is correctly displayed
-      cy.contains(workspaceName, { timeout: 60000 });
+      cy.contains(workspaceName, { timeout: 60000 }).should('be.visible');
       // dashboars and visualization cards are visiable
       cy.getElementByTestId('workspaceGetStartCards')
         .as('getStartCards')
         .should('be.visible');
-      cy.get('@getStartCards').contains('with Dashboards');
-      cy.get('@getStartCards').contains('with Visualizations');
+      cy.get('@getStartCards').contains('with Dashboards').should('be.visible');
+      cy.get('@getStartCards')
+        .contains('with Visualizations')
+        .should('be.visible');
 
       // click Collpase
       cy.getElementByTestId('Collapse').click();
@@ -84,7 +88,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     it('should display workspace description correctly in overview tab', () => {
       // click on overview tab
       cy.get('div[data-test-subj="workspaceTabs"] #overview').click();
-      cy.contains(workspaceDescription);
+      cy.contains(workspaceDescription).should('be.visible');
     });
 
     it('should redirect to saved objects page when click on library tab', () => {
@@ -99,7 +103,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     it('should show wokrspace update when click on settings tab', () => {
       // click on settings tab
       cy.getElementByTestId('workspaceTabs').find('#settings').click();
-      cy.contains('Workspace Details');
+      cy.contains('Workspace Details').should('be.visible');
 
       cy.getElementByTestId('workspaceForm-workspaceDetails-nameInputText')
         .clear()
@@ -109,7 +113,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       // workspace update successfully and overview page refreshed
-      cy.contains('h1', `${workspaceDescription}-updated`);
+      cy.contains('h1', `${workspaceDescription}-updated`).should('be.visible');
     });
   });
 }
