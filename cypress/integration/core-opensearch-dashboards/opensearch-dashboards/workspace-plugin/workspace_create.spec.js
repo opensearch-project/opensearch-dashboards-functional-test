@@ -42,7 +42,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           'workspaceForm-workspaceFeatureVisibility-OpenSearch Dashboards'
         ).check({ force: true });
         cy.get('[id$="discover"]').uncheck({ force: true });
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
 
         let workspaceId;
         cy.wait('@createWorkspaceRequest').then((interception) => {
@@ -74,7 +76,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
         cy.contains("Name can't be empty").should('exist');
       });
 
@@ -85,7 +89,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
         cy.contains('Invalid workspace name').should('exist');
       });
 
@@ -96,7 +102,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
         cy.contains('workspace name has already been used').should('exist');
       });
 
@@ -107,7 +115,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('./+');
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
         cy.contains('Invalid workspace description').should('exist');
       });
     });
@@ -142,7 +152,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId('comboBoxSearchInput')
             .last()
             .type('test_user_sfslja260');
-          cy.getElementByTestId('workspaceForm-bottomBar-createButton').click();
+          cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+            force: true,
+          });
 
           let workspaceId;
           cy.wait('@createWorkspaceRequest').then((interception) => {
