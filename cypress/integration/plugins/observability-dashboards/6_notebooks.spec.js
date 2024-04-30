@@ -24,10 +24,14 @@ const moveToNotebookHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-notebooks#/`);
 };
 
-const moveToTestNotebook = (notebookName) => {
-  cy.visit(`${BASE_PATH}/app/observability-notebooks#/`, {
-    timeout: delayTime * 3,
-  });
+const makeTestNotebook = () => {
+  let notebookName = testNotebookName();
+
+  moveToNotebookHome();
+  cy.get('a[data-test-subj="createNotebookPrimaryBtn"]').click();
+  cy.get('input[data-test-subj="custom-input-modal-input"]').focus();
+  cy.get('input[data-test-subj="custom-input-modal-input"]').type(notebookName);
+  cy.get('button[data-test-subj="custom-input-modal-confirm-button"]').click();
 
   // Force refresh the observablity index and reload page to load notebooks.
   cy.request({
@@ -46,21 +50,6 @@ const moveToTestNotebook = (notebookName) => {
   });
   cy.reload();
 
-  cy.get('.euiTableCellContent')
-    .contains(notebookName, {
-      timeout: delayTime * 3,
-    })
-    .click();
-};
-
-const makeTestNotebook = () => {
-  let notebookName = testNotebookName();
-
-  moveToNotebookHome();
-  cy.get('a[data-test-subj="createNotebookPrimaryBtn"]').click();
-  cy.get('input[data-test-subj="custom-input-modal-input"]').focus();
-  cy.get('input[data-test-subj="custom-input-modal-input"]').type(notebookName);
-  cy.get('button[data-test-subj="custom-input-modal-confirm-button"]').click();
   cy.get('h1[data-test-subj="notebookTitle"]')
     .contains(notebookName)
     .should('exist');
@@ -107,7 +96,6 @@ const deleteNotebook = (notebookName) => {
 describe('Testing notebook actions', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
-    moveToTestNotebook(notebookName);
     cy.wrap({ name: notebookName }).as('notebook');
   });
 
