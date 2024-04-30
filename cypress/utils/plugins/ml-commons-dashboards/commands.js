@@ -104,6 +104,7 @@ Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
     body: {
       transient: {
         'plugins.ml_commons.native_memory_threshold': 100,
+        'plugins.ml_commons.jvm_heap_memory_threshold': 100,
       },
     },
     failOnStatusCode: false,
