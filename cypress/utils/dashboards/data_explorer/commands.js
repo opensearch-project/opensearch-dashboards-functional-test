@@ -137,16 +137,15 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
 Cypress.Commands.add('switchDiscoverTable', (name) => {
   cy.getElementByTestId('discoverOptionsButton')
     .then(($button) => {
-      cy.wrap($button).click();
+      cy.wrap($button).click({ force: true });
 
       cy.getElementByTestId('discoverOptionsLegacySwitch').then(
         ($switchButton) => {
-          const isLegacyChecked = $switchButton.checked;
-          if (name === 'new' && !isLegacyChecked) {
-            cy.wrap($switchButton).click();
+          if (name === 'new') {
+            cy.wrap($switchButton).click({ force: true });
           }
-          if (name === 'legacy' && isLegacyChecked) {
-            cy.wrap($switchButton).click();
+          if (name === 'legacy') {
+            cy.wrap($switchButton).click({ force: true });
           }
           cy.waitForLoader();
         }

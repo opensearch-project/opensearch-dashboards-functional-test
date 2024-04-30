@@ -1,0 +1,43 @@
+{
+    "type": "doc",
+    "value": {
+        "id": "0",
+        "index": "nestedindex",
+        "source": {
+            "products": [{
+                "base_price": 31.14,
+                "discount_percentage": 5,
+                "quantity": 1,
+                "manufacturer": "Virora"
+            }, {
+                "base_price": 35.69,
+                "discount_percentage": 10,
+                "quantity": 3,
+                "manufacturer": "Oceanavigations"
+            }],
+            "timestamp": "2015-09-21T06:09:20.045Z"
+        }
+    }
+}
+
+{
+    "type": "doc",
+    "value": {
+        "id": "1",
+        "index": "nestedindex",
+        "source": {
+            "products": [{
+                "base_price": 28.99,
+                "discount_percentage": 0,
+                "quantity": 1,
+                "manufacturer": "Tigress Enterprises"
+            }, {
+                "base_price": 32.99,
+                "discount_percentage": 0,
+                "quantity": 1,
+                "manufacturer": "Oceanavigations"
+            }],
+            "timestamp": "2015-09-21T21:13:02.070Z"
+        }
+    }
+}
