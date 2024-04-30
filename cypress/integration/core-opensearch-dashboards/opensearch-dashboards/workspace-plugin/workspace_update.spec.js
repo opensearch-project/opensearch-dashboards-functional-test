@@ -12,7 +12,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Update workspace', () => {
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
-      cy.createWorkspace({ workspaceName }).then(
+      cy.createWorkspace({ name: workspaceName }).then(
         (value) => (workspaceId = value)
       );
     });

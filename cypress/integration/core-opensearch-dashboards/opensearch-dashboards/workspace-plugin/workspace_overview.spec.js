@@ -16,7 +16,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Workspace overview', () => {
     before(() => {
       cy.createWorkspace({
-        workspaceName,
+        name: workspaceName,
         description: workspaceDescription,
         features: [
           'management',
@@ -33,7 +33,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     after(() => {
-      // cy.deleteWorkspaceById(workspaceId);
+      cy.deleteWorkspaceById(workspaceId);
     });
 
     beforeEach(() => {

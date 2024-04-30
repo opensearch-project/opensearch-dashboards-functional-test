@@ -50,9 +50,8 @@ Cypress.Commands.add('createWorkspace', (workspace) => {
     },
     body: {
       attributes: {
-        name: workspace.workspaceName,
+        ...workspace,
         description: workspace.description || 'test_description',
-        features: workspace.features,
       },
     },
   }).then((resp) => {
