@@ -22,6 +22,7 @@ describe('AcknowledgeAlertsModal', () => {
   before(() => {
     // Delete any existing monitors
     cy.deleteAllMonitors();
+    cy.deleteAllAlerts();
 
     // Load sample data
     cy.loadSampleEcommerceData();
@@ -222,6 +223,9 @@ describe('AcknowledgeAlertsModal', () => {
   after(() => {
     // Delete all monitors
     cy.deleteAllMonitors();
+
+    // Delete all alerts
+    cy.deleteAllAlerts();
 
     // Delete sample data
     cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
