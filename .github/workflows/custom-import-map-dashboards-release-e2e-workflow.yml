@@ -21,4 +21,13 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Maps Dashboards
-      test-command: yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+
+  tests-with-multi-data-source:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Maps Dashboards With Multi Data Source
+      test-command: env CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+      osd-serve-args: --data_source.enabled=true

@@ -41,7 +41,7 @@ describe('Documents layer', () => {
     cy.contains('Select data field', { timeout: 120000 }).click({
       force: true,
     });
-    cy.wait(5000).contains('DestLocation').click();
+    cy.wait(10000).contains('DestLocation').click();
     cy.get('[data-test-subj="indexPatternSelect"]').should(
       'contain',
       'opensearch_dashboards_sample_data_flights'
