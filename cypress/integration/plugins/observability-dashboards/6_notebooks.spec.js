@@ -33,22 +33,7 @@ const makeTestNotebook = () => {
   cy.get('input[data-test-subj="custom-input-modal-input"]').type(notebookName);
   cy.get('button[data-test-subj="custom-input-modal-confirm-button"]').click();
 
-  // Force refresh the observablity index and reload page to load notebooks.
-  cy.request({
-    method: 'POST',
-    failOnStatusCode: false,
-    form: false,
-    url: 'api/console/proxy',
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    qs: {
-      path: `${OBSERVABILITY_INDEX_NAME}/_refresh`,
-      method: 'POST',
-    },
-  });
-  cy.reload();
+  cy.contains(`Notebook "${notebookName}" successfully created`);
 
   cy.get('h1[data-test-subj="notebookTitle"]')
     .contains(notebookName)
