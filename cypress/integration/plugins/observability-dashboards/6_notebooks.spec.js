@@ -10,7 +10,6 @@ import {
   BASE_PATH,
   delayTime,
   MARKDOWN_TEXT,
-  OBSERVABILITY_INDEX_NAME,
 } from '../../../utils/constants';
 
 import { skipOn } from '@cypress/skip-test';
@@ -34,25 +33,6 @@ const makeTestNotebook = () => {
   cy.get('button[data-test-subj="custom-input-modal-confirm-button"]').click();
 
   cy.contains(`Notebook "${notebookName}" successfully created`);
-
-  // Force refresh/reload due to concurrency bug:
-  // https://github.com/opensearch-project/dashboards-observability/issues/1822
-  // TODO delete the refresh/reload when the issue is closed
-  cy.request({
-    method: 'POST',
-    failOnStatusCode: false,
-    form: false,
-    url: 'api/console/proxy',
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    qs: {
-      path: `${OBSERVABILITY_INDEX_NAME}/_refresh`,
-      method: 'POST',
-    },
-  });
-  cy.reload();
 
   cy.get('h1[data-test-subj="notebookTitle"]')
     .contains(notebookName)
