@@ -5,7 +5,10 @@
 
 import {
   TIMEOUT_OPTS,
-  OSD_TEST_DOMAIN_ENDPOINT_URL,
+  USERNAME,
+  PASSWORD,
+  OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
+  OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 
 const searchFieldIdentifier = 'input[type="search"]';
@@ -52,7 +55,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
             attributes: {
               title: `ds_${char}`,
               description: `test ds_description_${char}`,
-              endpoint: `${OSD_TEST_DOMAIN_ENDPOINT_URL}/${char}`,
+              endpoint:
+                i % 2
+                  ? OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH
+                  : OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
               auth: {
                 type: i % 2 ? 'username_password' : 'no_auth',
               },
@@ -60,8 +66,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           };
           if (dataSourceJSON.attributes.auth.type === 'username_password') {
             dataSourceJSON.attributes.auth.credentials = {
-              username: char,
-              password: char,
+              username: USERNAME,
+              password: PASSWORD,
             };
           }
           cy.createDataSource(dataSourceJSON);
