@@ -10,7 +10,6 @@ import {
   BASE_PATH,
   delayTime,
   MARKDOWN_TEXT,
-  OBSERVABILITY_INDEX_NAME,
 } from '../../../utils/constants';
 
 import { skipOn } from '@cypress/skip-test';
