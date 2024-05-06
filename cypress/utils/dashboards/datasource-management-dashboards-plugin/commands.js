@@ -32,7 +32,7 @@ Cypress.Commands.add('deleteAllDataSources', () => {
 Cypress.Commands.add('createDataSourceNoAuth', () => {
   cy.request({
     method: 'POST',
-    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    url: `${BASE_PATH}/api/saved_objects/data-source`,
     headers: {
       'osd-xsrf': true,
     },
@@ -55,7 +55,7 @@ Cypress.Commands.add('createDataSourceNoAuth', () => {
 Cypress.Commands.add('createDataSourceBasicAuth', () => {
   cy.request({
     method: 'POST',
-    url: `${Cypress.config('baseUrl')}/api/saved_objects/data-source`,
+    url: `${BASE_PATH}/api/saved_objects/data-source`,
     headers: {
       'osd-xsrf': true,
     },
