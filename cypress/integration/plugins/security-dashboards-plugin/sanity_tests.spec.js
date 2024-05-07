@@ -69,7 +69,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Navigate to Security/Internal User Database section
 
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
-      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
       }).as('listUserResponse');
