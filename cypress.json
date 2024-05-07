@@ -27,6 +27,9 @@
     "WAIT_FOR_LOADER_BUFFER_MS": 0,
     "DASHBOARDS_ASSISTANT_ENABLED": false,
     "WORKSPACE_ENABLED": false,
-    "SAVED_OBJECTS_PERMISSION_ENABLED": false
+    "SAVED_OBJECTS_PERMISSION_ENABLED": false,
+    "browserPermissions": {
+      "clipboard": "allow"
+    }
   }
 }
