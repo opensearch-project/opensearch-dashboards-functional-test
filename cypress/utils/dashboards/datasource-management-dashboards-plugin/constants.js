@@ -5,6 +5,15 @@
 
 export const DS_API_PREFIX = '/api/saved_objects';
 export const OSD_TEST_DOMAIN_ENDPOINT_URL = 'https://opensearch.org';
+export const OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH = Cypress.env(
+  'remoteDataSourceNoAuthUrl'
+);
+export const OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH = Cypress.env(
+  'remoteDataSourceBasicAuthUrl'
+);
+export const USERNAME = Cypress.env('remoteDataSourceBasicAuthUsername');
+export const PASSWORD = Cypress.env('remoteDataSourceBasicAuthPassword');
+
 export const OSD_INVALID_ENDPOINT_URL = 'test';
 export const DS_API = {
   DATA_SOURCES_LISTING: `${DS_API_PREFIX}/_find?fields=id&fields=description&fields=title&per_page=10000&type=data-source`,
@@ -32,7 +41,7 @@ export const DS_JSON = {
   attributes: {
     title: 'ds_for_update_test',
     description: 'test ds_description_update',
-    endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
+    endpoint: OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
     auth: {
       type: AUTH_TYPE_NO_AUTH,
     },
@@ -43,7 +52,7 @@ export const DS_JSON_2 = {
   attributes: {
     title: 'ds_dup_test',
     description: 'test ds_description_update',
-    endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
+    endpoint: OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
     auth: {
       type: AUTH_TYPE_NO_AUTH,
     },
@@ -54,7 +63,7 @@ export const DS_JSON_UNIQUE_VALUES = {
   attributes: {
     title: 'ds_unique_title',
     description: '',
-    endpoint: OSD_TEST_DOMAIN_ENDPOINT_URL,
+    endpoint: OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
     auth: {
       type: AUTH_TYPE_NO_AUTH,
       credentials: {
