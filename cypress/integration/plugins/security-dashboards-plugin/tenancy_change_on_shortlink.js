@@ -83,13 +83,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .should('be.visible')
         .click();
 
-      cy.getElementByTestId('savedObjectTitle').type(dashboardName);
-
       cy.intercept({
         method: 'POST',
         url: '/api/saved_objects/_bulk_get',
       }).as('waitForReloadingDashboard');
-      cy.getElementByTestId('confirmSaveSavedObjectButton').click();
       cy.wait('@waitForReloadingDashboard');
       cy.wait(2000);
 
@@ -113,17 +110,21 @@ if (Cypress.env('SECURITY_ENABLED')) {
           cy.log('Short url is ' + shortUrl);
           // Navigate away to avoid the non existing dashboard in the next tenant.
           switchTenantTo('global');
+          cy.waitForLoader();
+          cy.getElementByTestId('account-popover').click();
+          cy.get('#tenantName').should('contain.text', 'Global');
 
           // Since we can't reliably read the clipboard data, we have to append the tenant parameter manually
           cy.visit(shortUrl + '?security_tenant=private', {
-            excludeTenant: true, // We are passing the tenant as a query parameter. Mainly because of readability.
-            onBeforeLoad(window) {
-              // Here we are simulating the new tab scenario which isn't supported by Cypress
-              window.sessionStorage.clear();
-            },
-          });
+            waitForGetTenant: true, // We are passing the tenant as a query parameter. Mainly because of readability.
+            excludeTenant: true,
+            cache: 'clear',
+          }).reload();
 
-          cy.url({ timeout: 10000 }).should('contain', 'security_tenant=');
+          cy.waitForLoader();
+
+          cy.getElementByTestId('account-popover').should('be.visible').click();
+          cy.get('#tenantName').should('contain.text', 'Private');
           cy.getElementByTestId('breadcrumb last').should(
             'contain.text',
             dashboardName
@@ -131,18 +132,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         });
     });
     after(() => {
-      cy.deleteIndexPattern('index-pattern1', {
-        headers: {
-          securitytenant: ['global'],
-          'osd-xsrf': true,
-        },
-      });
-      cy.deleteIndexPattern('index-pattern2', {
-        headers: {
-          securitytenant: ['private'],
-          'osd-xsrf': true,
-        },
-      });
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
     });
   });
 }

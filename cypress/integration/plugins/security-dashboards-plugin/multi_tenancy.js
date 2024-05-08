@@ -25,7 +25,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         'index-pattern1',
         {
           title: 's*',
-          timeFieldName: 'timestamp',
+          timeFieldName: '@timestamp',
         },
         indexPatternGlobalTenantHeaderSetUp
       );
@@ -34,10 +34,14 @@ if (Cypress.env('SECURITY_ENABLED')) {
         'index-pattern2',
         {
           title: 'se*',
-          timeFieldName: 'timestamp',
+          timeFieldName: '@timestamp',
         },
         indexPatternPrivateTenantHeaderSetUp
       );
+    });
+    after(() => {
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
     });
     it('Test 1 Disable Multi Tenancy ', () => {
       CURRENT_TENANT.newTenant = 'private';
