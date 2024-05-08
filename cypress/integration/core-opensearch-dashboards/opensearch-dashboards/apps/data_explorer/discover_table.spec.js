@@ -97,6 +97,7 @@ describe('discover_table', () => {
   describe('expand multiple documents in legacy table', () => {
     before(() => {
       cy.switchDiscoverTable('legacy');
+      cy.wait(2000); // Intentional Wait to account for low performant env
     });
 
     it('checks if multiple documents can be expanded in legacy table', function () {
