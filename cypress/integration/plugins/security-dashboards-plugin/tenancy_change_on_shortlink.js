@@ -12,6 +12,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
       cy.server();
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
 
       cy.createIndexPattern(
         'index-pattern1',
