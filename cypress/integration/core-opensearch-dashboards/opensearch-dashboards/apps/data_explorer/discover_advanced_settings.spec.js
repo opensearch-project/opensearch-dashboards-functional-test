@@ -101,6 +101,7 @@ describe('discover_advanced_setting', () => {
       });
       cy.reload();
       cy.switchDiscoverTable('new');
+      cy.wait(2000); // Intentional Wait to account for low performant env
 
       cy.get('.euiDataGridRowCell--date')
         .eq(0)
@@ -123,6 +124,7 @@ describe('discover_advanced_setting', () => {
       });
       cy.reload();
       cy.switchDiscoverTable('new');
+      cy.wait(2000); // Intentional Wait to account for low performant env
 
       cy.get('.euiDataGridRowCell--date')
         .eq(0)
@@ -144,6 +146,7 @@ describe('discover_advanced_setting', () => {
         'discover:sort:defaultOrder': 'desc',
       });
       cy.reload();
+      cy.wait(2000); // Intentional Wait to account for low performant env
 
       cy.get('[data-test-subj="docTableField"]')
         .eq(0)
@@ -163,6 +166,7 @@ describe('discover_advanced_setting', () => {
         'discover:sort:defaultOrder': 'asc',
       });
       cy.reload();
+      cy.wait(2000); // Intentional Wait to account for low performant env
 
       cy.get('[data-test-subj="docTableField"]')
         .eq(0)
@@ -192,6 +196,7 @@ describe('discover_advanced_setting', () => {
       });
       cy.reload();
       cy.switchDiscoverTable('new');
+      cy.wait(2000); // Intentional Wait to account for low performant env
     });
 
     it('check new table respects Number of rows setting', function () {
@@ -203,6 +208,7 @@ describe('discover_advanced_setting', () => {
 
     it('check legacy table respects Number of rows setting', function () {
       cy.switchDiscoverTable('legacy');
+      cy.wait(2000); // Intentional Wait to account for low performant env
       cy.get('[aria-label="Next"]').should('have.length', 5);
     });
 
@@ -326,7 +332,8 @@ describe('discover_advanced_setting', () => {
         'doc_table:highlight': false,
       });
       cy.reload();
-      // cy.switchDiscoverTable("legacy");
+      cy.wait(2000); // Intentional Wait to account for low performant env
+
       cy.get('mark').should('not.exist');
 
       // reset the setting to default value
@@ -373,6 +380,8 @@ describe('discover_advanced_setting', () => {
         defaultColumns: ['host', 'agent'],
       });
       cy.reload();
+      cy.wait(2000); // Intentional Wait to account for low performant env
+
       cy.get('[data-test-subj="docTableHeader-agent"]').should('be.visible');
       cy.get('[data-test-subj="docTableHeader-host"]').should('be.visible');
     });
