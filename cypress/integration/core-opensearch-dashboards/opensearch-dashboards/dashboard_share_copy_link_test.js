@@ -4,7 +4,28 @@
  */
 import { STACK_MANAGEMENT_PATH } from '../../../utils/dashboards/constants';
 
+const isChromeBrowser = () => {
+  const userAgent = window.navigator.userAgent;
+
+  // Check if the user agent contains either 'Chrome' or 'Chromium'
+  const isChrome = userAgent.includes('Chrome');
+  const isChromium = userAgent.includes('Chromium');
+
+  return isChrome || isChromium;
+};
+
 if (Cypress.env('SECURITY_ENABLED')) {
+  if (isChromeBrowser()) {
+    cy.wrap(
+      Cypress.automation('remote:debugger:protocol', {
+        command: 'Browser.grantPermissions',
+        params: {
+          permissions: ['clipboardReadWrite', 'clipboardSanitizedWrite'],
+          origin: window.location.origin,
+        },
+      })
+    );
+  }
   describe('Copy Link functionality working', () => {
     it('Tests the link copys and can be routed to in Safari', () => {
       cy.visit(STACK_MANAGEMENT_PATH);
