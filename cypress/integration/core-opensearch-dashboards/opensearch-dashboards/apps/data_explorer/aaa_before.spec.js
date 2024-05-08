@@ -10,6 +10,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 describe('Before', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     cy.deleteAllIndices();
     cy.deleteSavedObjectByType('index-pattern');
   });
