@@ -81,6 +81,7 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
 
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       // Create a dashboard and add some visualizations
       bootstrapDashboard(
         INDEX_SETTINGS_FILEPATH_SIMPLE,
