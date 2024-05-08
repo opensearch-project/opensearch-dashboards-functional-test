@@ -24,6 +24,7 @@ const indexSet = [
 describe('discover_advanced_setting', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
