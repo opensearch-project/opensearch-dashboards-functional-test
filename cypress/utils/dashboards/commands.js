@@ -7,6 +7,8 @@ import './vis_builder/commands';
 import './vis_type_table/commands';
 import './vis-augmenter/commands';
 import './data_explorer/commands';
+import { BASE_PATH } from '../base_constants';
+import { CURRENT_TENANT } from '../commands';
 
 Cypress.Commands.add('waitForLoader', () => {
   const opts = { log: false };
@@ -116,4 +118,15 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
 
 Cypress.Commands.add('updateTopNav', (options) => {
   cy.getElementByTestId('querySubmitButton', options).click({ force: true });
+});
+
+Cypress.Commands.add('fleshTenantSettings', () => {
+  if (Cypress.env('SECURITY_ENABLED')) {
+    // Use xhr request is good enough to flesh tenant
+    cy.request({
+      url: `${BASE_PATH}/app/home?security_tenant=${CURRENT_TENANT.defaultTenant}`,
+      method: 'GET',
+      failOnStatusCode: false,
+    });
+  }
 });
