@@ -2,18 +2,17 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import { STACK_MANAGEMENT_PATH } from '../../../utils/dashboards/constants';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../utils/commands';
+
+const miscUtils = new MiscUtils(cy);
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Copy Link functionality working', () => {
     it('Tests the link copys and can be routed to in Safari', () => {
       CURRENT_TENANT.newTenant = 'global';
 
-      cy.visit(STACK_MANAGEMENT_PATH);
-      cy.waitForLoader();
-      cy.getElementByTestId('toggleNavButton').click();
-      cy.get('span[title="Discover"]').click();
+      miscUtils.visitPage('app/data-explorer/discover#/');
       cy.getElementByTestId('shareTopNavButton').click();
       cy.getElementByTestId('copyShareUrlButton').click();
 
