@@ -98,19 +98,24 @@ describe('ClusterMetricsMonitor', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
-    });
 
-    it('for the Cluster Health API', () => {
       // Confirm empty monitor list is loaded
       cy.contains('There are no existing monitors');
 
       // Go to create monitor page
-      cy.contains('Create monitor').click();
+      cy.contains('Create monitor').click({ force: true });
 
       // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
+      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click({
+        force: true,
+      });
 
-      // Wait for input to load and then type in the monitor name
+      // Wait for API types to load to reduce flakiness
+      cy.wait(5000);
+    });
+
+    it('for the Cluster Health API', () => {
+      // Type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
       // Wait for the API types to load and then type in the Cluster Health API
@@ -118,8 +123,8 @@ describe('ClusterMetricsMonitor', () => {
         'cluster health{enter}'
       );
 
-      // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Query parameters - optional');
+      // Confirm the Path parameters field is present and described as "optional"
+      cy.contains('Path parameters - optional');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
@@ -160,27 +165,18 @@ describe('ClusterMetricsMonitor', () => {
     });
 
     it('for the Nodes Stats API', () => {
-      // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
-
-      // Go to create monitor page
-      cy.contains('Create monitor').click();
-
-      // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
-
-      // Wait for input to load and then type in the monitor name
+      // Type in the monitor name
       cy.get('input[name="name"]').type(
         SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR
       );
 
-      // Wait for the API types to load and then type in the Cluster Health API
+      // Wait for the API types to load and then type in the Nodes Stats API
       cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
         'nodes stats{enter}'
       );
 
-      // Confirm the Query parameters field is not present
-      cy.contains('Query parameters').should('not.exist');
+      // Confirm the Path parameters field is not present
+      cy.contains('Path parameters').should('not.exist');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]').should(
         'not.exist'
       );
@@ -223,7 +219,7 @@ describe('ClusterMetricsMonitor', () => {
     });
   });
 
-  describe('displays Query parameters field appropriately', () => {
+  describe('displays Path parameters field appropriately', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
@@ -249,9 +245,9 @@ describe('ClusterMetricsMonitor', () => {
         'list snapshots{enter}'
       );
 
-      // Confirm the Query parameters field is present and is not described as "optional"
-      cy.contains('Query parameters - optional').should('not.exist');
-      cy.contains('Query parameters');
+      // Confirm the Path parameters field is present and is not described as "optional"
+      cy.contains('Path parameters - optional').should('not.exist');
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
     });
   });
