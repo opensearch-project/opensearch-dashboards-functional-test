@@ -587,14 +587,3 @@ Cypress.Commands.add('loadSampleData', (type) => {
     url: `${BASE_PATH}/api/sample_data/${type}`,
   });
 });
-
-Cypress.Commands.add('fleshTenantSettings', () => {
-  if (Cypress.env('SECURITY_ENABLED')) {
-    // Use xhr request is good enough to flesh tenant
-    cy.request({
-      url: `${BASE_PATH}/app/home?security_tenant=${CURRENT_TENANT.defaultTenant}`,
-      method: 'GET',
-      failOnStatusCode: false,
-    });
-  }
-});
