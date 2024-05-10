@@ -142,8 +142,15 @@ describe('discover app', { scrollBehavior: false }, () => {
       const toTime = 'Jun 12, 1999 @ 11:21:04.000';
 
       before(() => {
+        CURRENT_TENANT.newTenant = 'global';
+        cy.fleshTenantSettings();
         cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
+      });
+
+      beforeEach(() => {
+        CURRENT_TENANT.newTenant = 'global';
+        cy.fleshTenantSettings();
       });
 
       it('should show "no results"', () => {
