@@ -10,6 +10,7 @@ import {
   OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH,
   OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
+import { CURRENT_TENANT } from '../../../../utils/commands';
 
 const searchFieldIdentifier = 'input[type="search"]';
 const tableHeadIdentifier = 'thead > tr > th';
@@ -17,6 +18,7 @@ const tableHeadIdentifier = 'thead > tr > th';
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Table', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
       // Visit Data Sources OSD
       cy.visitDataSourcesListingPage();
     });
