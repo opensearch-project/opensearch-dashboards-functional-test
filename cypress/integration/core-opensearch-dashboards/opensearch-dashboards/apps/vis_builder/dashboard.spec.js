@@ -38,6 +38,11 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.setTopNavDate(VB_INDEX_START_TIME, VB_INDEX_END_TIME);
     });
 
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+    });
+
     it('Should have valid visualizations', () => {
       cy.getElementByTestId(
         `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
