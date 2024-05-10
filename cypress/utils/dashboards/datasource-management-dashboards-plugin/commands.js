@@ -80,6 +80,7 @@ Cypress.Commands.add('createDataSourceBasicAuth', () => {
 });
 
 Cypress.Commands.add('createDataSource', (dataSourceJSON) => {
+  cy.log('createDataSource');
   cy.request({
     method: 'POST',
     url: `${BASE_PATH}${DS_API.CREATE_DATA_SOURCE}`,
