@@ -19,8 +19,14 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Table', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       // Visit Data Sources OSD
       cy.visitDataSourcesListingPage();
+    });
+
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
     });
 
     after(() => {
