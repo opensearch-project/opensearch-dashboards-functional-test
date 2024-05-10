@@ -53,11 +53,12 @@ describe('shared links', () => {
     cy.waitForSearch();
   });
 
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+  });
+
   describe('shared links with state in query', () => {
-    beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.fleshTenantSettings();
-    });
     it('should allow for copying the snapshot URL', function () {
       const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
@@ -121,11 +122,6 @@ describe('shared links', () => {
       cy.waitForLoader();
       cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
       cy.waitForSearch();
-    });
-
-    beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.fleshTenantSettings();
     });
 
     after(() => {

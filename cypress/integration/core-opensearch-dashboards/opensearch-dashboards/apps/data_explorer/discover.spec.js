@@ -148,11 +148,6 @@ describe('discover app', { scrollBehavior: false }, () => {
         cy.setTopNavDate(fromTime, toTime);
       });
 
-      beforeEach(() => {
-        CURRENT_TENANT.newTenant = 'global';
-        cy.fleshTenantSettings();
-      });
-
       it('should show "no results"', () => {
         cy.getElementByTestId('discoverNoResults').should('be.exist');
       });
