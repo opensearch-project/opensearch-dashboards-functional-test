@@ -29,6 +29,11 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.importSavedObjects(VB_PATH_SO_DATA);
     });
 
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+    });
+
     it('Show existing visualizations in Visualize and navigate to it', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
       cy.get('input[type="search"]').type(`${VB_METRIC_VIS_TITLE}{enter}`);
