@@ -11,6 +11,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
   describe('Copy Link functionality working', () => {
     it('Tests the link copys and can be routed to in Safari', () => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
 
       miscUtils.visitPage('app/data-explorer/discover#/');
       cy.getElementByTestId('shareTopNavButton').click();
@@ -19,22 +20,20 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Capture the copied content
       cy.window().then((win) => {
         // Access the clipboard contents
-        cy.document().then(() => {
-          cy.wait(1000); // Wait for clipboard data to be available
-          cy.log('Trying to read clipboard data...');
+        cy.wait(1000); // Wait for clipboard data to be available
+        cy.log('Trying to read clipboard data...');
 
-          // Read the clipboard text
-          cy.wrap(win.navigator.clipboard.readText()).then((clipboardData) => {
-            cy.log('url copied:', clipboardData);
+        // Read the clipboard text
+        cy.wrap(win.navigator.clipboard.readText()).then((clipboardData) => {
+          cy.log('url copied:', clipboardData);
 
-            // Assert that the clipboard has data
-            expect(clipboardData).to.have.length.greaterThan(0);
+          // Assert that the clipboard has data
+          expect(clipboardData).to.have.length.greaterThan(0);
 
-            cy.visit(clipboardData);
-            cy.waitForLoader();
+          cy.visit(clipboardData);
+          cy.waitForLoader();
 
-            // Now on copied URL page
-          });
+          // Now on copied URL page
         });
       });
     });
