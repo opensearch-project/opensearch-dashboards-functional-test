@@ -13,7 +13,6 @@ import {
   AUTH_TYPE_NO_AUTH,
   AUTH_TYPE_SIGV4,
 } from '../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
-import { CURRENT_TENANT } from '../../../../utils/commands';
 
 const passwordFieldIdentifier =
   'input[type="password"][data-test-subj="updateDataSourceFormPasswordField"]';
@@ -41,10 +40,6 @@ const clickOnTableRowTitleColumnByValue = (value) => {
 
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Update', () => {
-    beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.fleshTenantSettings();
-    });
     before(() => {
       // Clean up before creating new data sources for testing
       cy.deleteAllDataSources();
