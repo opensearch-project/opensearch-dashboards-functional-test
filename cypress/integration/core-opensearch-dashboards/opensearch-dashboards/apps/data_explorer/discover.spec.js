@@ -27,17 +27,7 @@ const indexSet = [
 describe('discover app', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    if (Cypress.env('SECURITY_ENABLED')) {
-      /**
-       * Security plugin is using private tenant as default.
-       * So here we'd need to set global tenant as default manually.
-       */
-      cy.changeDefaultTenant({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'global',
-      });
-    }
+    cy.fleshTenentSettings();
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
@@ -64,6 +54,11 @@ describe('discover app', { scrollBehavior: false }, () => {
     cy.waitForLoader();
     cy.waitForSearch();
     cy.switchDiscoverTable('new');
+  });
+
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenentSettings();
   });
 
   after(() => {});
