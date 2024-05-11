@@ -70,6 +70,11 @@ describe('discover_advanced_setting', () => {
     cy.waitForSearch();
   });
 
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+  });
+
   describe('maxHeight advanced setting for legacy table', () => {
     it('checks if the table respects maxHeight setting of no truncation', function () {
       cy.setAdvancedSetting({
@@ -191,6 +196,8 @@ describe('discover_advanced_setting', () => {
 
   describe('Number of rows advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'discover:sampleSize': 5,
       });
@@ -222,6 +229,8 @@ describe('discover_advanced_setting', () => {
 
   describe('Number of terms advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'discover:aggs:terms:size': 5,
       });
@@ -250,6 +259,8 @@ describe('discover_advanced_setting', () => {
 
   describe('hideTimeColumn advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'doc_table:hideTimeColumn': true,
       });
@@ -299,6 +310,8 @@ describe('discover_advanced_setting', () => {
 
   describe('doc_table:highlight advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       // Selecting a field and adding a search filter for a value
       cy.get('[data-test-subj="fieldToggle-index"]')
         .click()
@@ -355,6 +368,8 @@ describe('discover_advanced_setting', () => {
 
   describe('defaultColumns advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.get('[data-test-subj="comboBoxSearchInput"]')
         .type('logstash')
         .then(() => {
@@ -400,6 +415,8 @@ describe('discover_advanced_setting', () => {
 
   describe('searchOnPageLoad advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'discover:searchOnPageLoad': false,
       });
@@ -420,6 +437,8 @@ describe('discover_advanced_setting', () => {
 
   describe('modifyColumnsOnSwitch advanced setting', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'discover:modifyColumnsOnSwitch': false,
       });
