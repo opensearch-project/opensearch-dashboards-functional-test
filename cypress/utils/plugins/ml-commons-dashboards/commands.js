@@ -30,11 +30,12 @@ Cypress.Commands.add('cyclingCheckTask', ({ taskId, rejectOnError = true }) =>
   )
 );
 
-Cypress.Commands.add('uploadModelByUrl', (body) =>
+Cypress.Commands.add('registerModel', ({ body, qs }) =>
   cy
     .request({
       method: 'POST',
-      url: MLC_API.MODEL_UPLOAD,
+      url: MLC_API.MODEL_REGISTER,
+      qs,
       body,
     })
     .then(({ body }) => body)
@@ -51,24 +52,28 @@ Cypress.Commands.add('registerModelGroup', (body) =>
     .then(({ body }) => body)
 );
 
+Cypress.Commands.add('deleteModelGroup', (modelGroupId) =>
+  cy.request('DELETE', `${MLC_API.MODEL_GROUP_BASE}/${modelGroupId}`)
+);
+
 Cypress.Commands.add('deleteMLCommonsModel', (modelId) =>
   cy.request('DELETE', `${MLC_API.MODEL_BASE}/${modelId}`)
 );
 
-Cypress.Commands.add('loadMLCommonsModel', (modelId) =>
+Cypress.Commands.add('deployMLCommonsModel', (modelId) =>
   cy
     .request({
       method: 'POST',
-      url: `${MLC_API.MODEL_BASE}/${modelId}/_load`,
+      url: `${MLC_API.MODEL_BASE}/${modelId}/_deploy`,
     })
     .then(({ body }) => body)
 );
 
-Cypress.Commands.add('unloadMLCommonsModel', (modelId) =>
+Cypress.Commands.add('undeployMLCommonsModel', (modelId) =>
   cy
     .request({
       method: 'POST',
-      url: `${MLC_API.MODEL_BASE}/${modelId}/_unload`,
+      url: `${MLC_API.MODEL_BASE}/${modelId}/_undeploy`,
     })
     .then(({ body }) => body)
 );
@@ -94,6 +99,7 @@ Cypress.Commands.add('disableNativeMemoryCircuitBreaker', () => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
     transient: {
       'plugins.ml_commons.native_memory_threshold': 100,
+      'plugins.ml_commons.jvm_heap_memory_threshold': 100,
     },
   });
 });
@@ -136,16 +142,6 @@ Cypress.Commands.add('createModelConnector', (body) =>
     .request({
       method: 'POST',
       url: MLC_API.CONNECTOR_CREATE,
-      body,
-    })
-    .then(({ body }) => body)
-);
-
-Cypress.Commands.add('registerModel', (body) =>
-  cy
-    .request({
-      method: 'POST',
-      url: MLC_API.MODEL_REGISTER,
       body,
     })
     .then(({ body }) => body)
