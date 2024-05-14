@@ -3,10 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { STACK_MANAGEMENT_PATH } from '../../../utils/dashboards/constants';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Copy Link functionality working', () => {
     it('Tests the link copys and can be routed to in Safari', () => {
+      CURRENT_TENANT.newTenant = 'global';
+
       cy.visit(STACK_MANAGEMENT_PATH);
       cy.waitForLoader();
       cy.getElementByTestId('toggleNavButton').click();
