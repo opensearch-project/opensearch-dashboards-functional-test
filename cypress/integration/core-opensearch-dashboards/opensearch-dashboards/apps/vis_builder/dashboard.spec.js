@@ -24,6 +24,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
 
@@ -35,6 +36,11 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.waitForLoader();
 
       cy.setTopNavDate(VB_INDEX_START_TIME, VB_INDEX_END_TIME);
+    });
+
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
     });
 
     it('Should have valid visualizations', () => {

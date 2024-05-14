@@ -155,6 +155,9 @@ const checkRulesFlyout = () => {
 };
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
+const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
+const getImportRuleFilePicker = () =>
+  cy.get('[data-test-subj="import_rule_file_picker"]');
 const getNameField = () => cy.sa_getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
@@ -239,22 +242,20 @@ describe('Rules', () => {
 
     it('...should validate rule name', () => {
       getNameField().sa_containsHelperText(
-        'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores'
+        'Rule name can be max 256 characters.'
       );
 
       getNameField().should('be.empty');
       getNameField().focus().blur();
       getNameField().sa_containsError('Rule name is required');
-      getNameField().type('text').focus().blur();
-      getNameField().sa_containsError('Invalid rule name.');
 
       getNameField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('tex&')
+        .type('*$&*#(#*($*($')
         .focus()
-        .blur();
-      getNameField().sa_containsError('Invalid rule name.');
+        .blur()
+        .sa_shouldNotHaveError();
 
       getNameField()
         .type('{selectall}')
@@ -266,17 +267,19 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const invalidDescriptionText = 'This is a invalid % description.';
-
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(invalidDescriptionText).focus().blur();
+
+      const invalidDescription = 'a'.repeat(65535);
+      getDescriptionField()
+        .focus()
+        .invoke('val', invalidDescription)
+        .type('b')
+        .blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 65,535 characters.'
-        );
+        .contains(`Description has max limit of 65,535 characters.`);
 
       getDescriptionField()
         .type('{selectall}')
@@ -303,20 +306,20 @@ describe('Rules', () => {
 
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
-      getAuthorField().sa_containsError('Author name is required');
 
-      getAuthorField()
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('tex%')
-        .focus()
-        .blur();
+      let invalidAuthor = '';
+
+      for (let i = 0; i < 256; i++) {
+        invalidAuthor += 'a';
+      }
+
+      getAuthorField().focus().invoke('val', invalidAuthor).type('b').blur();
       getAuthorField().sa_containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('Rule name')
+        .type('Rule author (@)')
         .focus()
         .blur()
         .sa_shouldNotHaveError();
@@ -330,7 +333,7 @@ describe('Rules', () => {
       getLogTypeField().sa_selectComboboxItem(
         getLogTypeLabel(SAMPLE_RULE.logType)
       );
-      getLogTypeField().focus().blur().sa_shouldNotHaveError();
+      getLogTypeField().focus().click().blur().sa_shouldNotHaveError();
     });
 
     it('...should validate rule level field', () => {
@@ -470,7 +473,6 @@ describe('Rules', () => {
 
       // author field
       getAuthorField().sa_clearValue();
-      toastShouldExist();
       getAuthorField().type('John Doe');
 
       // log field
@@ -512,8 +514,9 @@ describe('Rules', () => {
         getMapValueField().type('{selectall}').type('{backspace}')
       );
       toastShouldExist();
+
       getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('FieldValue')
+        getMapValueField().type('FieldValue', { force: true })
       );
 
       // selection map list field
@@ -524,7 +527,7 @@ describe('Rules', () => {
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
-        getMapListField().type('FieldValue');
+        getMapListField().type('FieldValue', { force: true });
       });
 
       // tags field
@@ -629,6 +632,15 @@ describe('Rules', () => {
       cy.wait('@getRules');
 
       checkRulesFlyout();
+    });
+
+    it('...can be imported with log type', () => {
+      getImportButton().click({ force: true });
+      getImportRuleFilePicker().selectFile(
+        './cypress/fixtures/plugins/security-analytics-dashboards-plugin/sample_aws_s3_rule_to_import.yml'
+      );
+      // Check that AWS S3 log type is set.
+      cy.contains('AWS S3');
     });
 
     it('...can be deleted', () => {

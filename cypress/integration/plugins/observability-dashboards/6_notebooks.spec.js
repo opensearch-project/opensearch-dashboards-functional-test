@@ -10,7 +10,6 @@ import {
   BASE_PATH,
   delayTime,
   MARKDOWN_TEXT,
-  OBSERVABILITY_INDEX_NAME,
 } from '../../../utils/constants';
 
 import { skipOn } from '@cypress/skip-test';
@@ -24,35 +23,6 @@ const moveToNotebookHome = () => {
   cy.visit(`${BASE_PATH}/app/observability-notebooks#/`);
 };
 
-const moveToTestNotebook = (notebookName) => {
-  cy.visit(`${BASE_PATH}/app/observability-notebooks#/`, {
-    timeout: delayTime * 3,
-  });
-
-  // Force refresh the observablity index and reload page to load notebooks.
-  cy.request({
-    method: 'POST',
-    failOnStatusCode: false,
-    form: false,
-    url: 'api/console/proxy',
-    headers: {
-      'content-type': 'application/json;charset=UTF-8',
-      'osd-xsrf': true,
-    },
-    qs: {
-      path: `${OBSERVABILITY_INDEX_NAME}/_refresh`,
-      method: 'POST',
-    },
-  });
-  cy.reload();
-
-  cy.get('.euiTableCellContent')
-    .contains(notebookName, {
-      timeout: delayTime * 3,
-    })
-    .click();
-};
-
 const makeTestNotebook = () => {
   let notebookName = testNotebookName();
 
@@ -61,6 +31,9 @@ const makeTestNotebook = () => {
   cy.get('input[data-test-subj="custom-input-modal-input"]').focus();
   cy.get('input[data-test-subj="custom-input-modal-input"]').type(notebookName);
   cy.get('button[data-test-subj="custom-input-modal-confirm-button"]').click();
+
+  cy.contains(`Notebook "${notebookName}" successfully created`);
+
   cy.get('h1[data-test-subj="notebookTitle"]')
     .contains(notebookName)
     .should('exist');
@@ -107,7 +80,6 @@ const deleteNotebook = (notebookName) => {
 describe('Testing notebook actions', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
-    moveToTestNotebook(notebookName);
     cy.wrap({ name: notebookName }).as('notebook');
   });
 

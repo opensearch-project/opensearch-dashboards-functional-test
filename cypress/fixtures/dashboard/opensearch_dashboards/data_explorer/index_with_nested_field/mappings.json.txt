@@ -1,0 +1,45 @@
+{
+  "type": "index",
+  "value": {
+    "index": "nestedindex",
+    "mappings": {
+      "properties": {
+        "products": {
+          "type": "nested",
+          "properties": {
+            "base_price": {
+              "type": "float"
+            },
+            "discount_percentage": {
+              "type": "long"
+            },
+            "manufacturer": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "quantity": {
+              "type": "long"
+            }
+          }
+        },
+        "timestamp": {
+          "type": "date"
+        }
+      }
+    },
+    "settings": {
+      "index": {
+        "replication": {
+          "type": "DOCUMENT"
+        },
+        "number_of_shards": "1",
+        "number_of_replicas": "1"
+      }
+    }
+  }
+}

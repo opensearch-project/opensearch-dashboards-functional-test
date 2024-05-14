@@ -10,17 +10,23 @@ import { WAIT_TIME, BASE_PATH, TIMEOUT } from '../../../utils/constants';
 describe('Cypress', () => {
   // remove sample data
   after(() => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardflights"]')
       .contains('Remove')
       .click();
     cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardecommerce"]')
       .contains('Remove')
       .click();
     cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardlogs"]')
       .contains('Remove')
       .click();
@@ -28,7 +34,9 @@ describe('Cypress', () => {
   });
 
   it('Download pdf from in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/dashboards#`);
+    cy.visit(`${BASE_PATH}/app/dashboards#`, {
+      waitForGetTenant: true,
+    });
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -50,7 +58,9 @@ describe('Cypress', () => {
   });
 
   it('Download png from in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/dashboards#`);
+    cy.visit(`${BASE_PATH}/app/dashboards#`, {
+      waitForGetTenant: true,
+    });
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -69,7 +79,9 @@ describe('Cypress', () => {
   });
 
   it('Download csv from saved search in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/discover#`);
+    cy.visit(`${BASE_PATH}/app/discover#`, {
+      waitForGetTenant: true,
+    });
     cy.wait(5000);
 
     // open saved search list
