@@ -4,7 +4,7 @@
  */
 
 import { BASE_PATH } from '../../base_constants';
-import { DS_API } from './constants';
+import { DS_API, DS_BASIC_AUTH_HEADER } from './constants';
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
@@ -107,3 +107,58 @@ Cypress.Commands.add('visitDataSourcesListingPage', () => {
     { timeout: 60000 }
   );
 });
+
+Cypress.Commands.add(
+  'bulkUploadDocsToDataSourceBasicAuth',
+  (fixturePath, index) => {
+    const sendBulkAPIRequest = (ndjson) => {
+      const url = index
+        ? `${Cypress.env('remoteDataSourceBasicAuthUrl')}/${index}/_bulk`
+        : `${Cypress.env('remoteDataSourceBasicAuthUrl')}/_bulk`;
+      cy.log('bulkUploadDocs')
+        .request({
+          method: 'POST',
+          url,
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+            Authorization: DS_BASIC_AUTH_HEADER,
+          },
+          body: ndjson,
+        })
+        .then((response) => {
+          if (response.body.errors) {
+            console.error(response.body.items);
+            throw new Error('Bulk upload failed');
+          }
+        });
+    };
+
+    cy.fixture(fixturePath, 'utf8').then((ndjson) => {
+      sendBulkAPIRequest(ndjson);
+    });
+
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('remoteDataSourceBasicAuthUrl')}/_all/_refresh`,
+      headers: {
+        Authorization: DS_BASIC_AUTH_HEADER,
+      },
+    });
+  }
+);
+
+Cypress.Commands.add(
+  'deleteDataSourceIndexBasicAuth',
+  (indexName, options = {}) => {
+    cy.request({
+      method: 'DELETE',
+      url: `${Cypress.env('remoteDataSourceBasicAuthUrl')}/${indexName}`,
+      headers: {
+        Authorization: DS_BASIC_AUTH_HEADER,
+      },
+      failOnStatusCode: false,
+      ...options,
+    });
+  }
+);

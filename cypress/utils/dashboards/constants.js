@@ -22,3 +22,4 @@ export * from './vis_builder/constants';
 export * from './vis_type_table/constants';
 export * from './vis-augmenter/constants';
 export * from './data_explorer/constants';
+export * from './vis_type_vega/constants';
