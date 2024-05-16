@@ -24,7 +24,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         }
       );
 
-      cy.contains('h3', 'Tenants');
+      cy.contains('h3', 'Dashboards tenants');
 
       // One of the many tenants
       cy.contains('.euiTableCellContent', 'Global');
