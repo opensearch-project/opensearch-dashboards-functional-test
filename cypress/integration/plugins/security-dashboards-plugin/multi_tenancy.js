@@ -25,7 +25,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         'index-pattern1',
         {
           title: 's*',
-          timeFieldName: '@timestamp',
+          timeFieldName: 'timestamp',
         },
         indexPatternGlobalTenantHeaderSetUp
       );
@@ -34,7 +34,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         'index-pattern2',
         {
           title: 'se*',
-          timeFieldName: '@timestamp',
+          timeFieldName: 'timestamp',
         },
         indexPatternPrivateTenantHeaderSetUp
       );
