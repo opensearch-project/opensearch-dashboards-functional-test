@@ -5,33 +5,11 @@
 
 import { CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
-import indexPatternGlobalTenantHeaderSetUp from '../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternGlobalTenantHeader.json';
-import indexPatternPrivateTenantHeaderSetUp from '../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternPrivateTenantHeader.json';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
       cy.server();
-      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
-      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
-
-      cy.createIndexPattern(
-        'index-pattern1',
-        {
-          title: 's*',
-          timeFieldName: 'timestamp',
-        },
-        indexPatternGlobalTenantHeaderSetUp
-      );
-
-      cy.createIndexPattern(
-        'index-pattern2',
-        {
-          title: 'se*',
-          timeFieldName: 'timestamp',
-        },
-        indexPatternPrivateTenantHeaderSetUp
-      );
     });
 
     it('Tests that when the short URL is copied and pasted, it will route correctly with the right tenant', function () {
@@ -45,7 +23,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
           title: dashboardName,
         },
         {
-          security_tenant: 'private',
+          securitytenant: 'private',
         }
       );
 
@@ -132,10 +110,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
             dashboardName
           );
         });
-    });
-    after(() => {
-      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
-      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
     });
   });
 }
