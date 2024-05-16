@@ -7,12 +7,12 @@ export function switchTenantTo(newTenant) {
   cy.getElementByTestId('account-popover').click();
   cy.intercept({
     method: 'GET',
-    url: '/api/v1/auth/dashboardsinfo',
+    url: '/api/v1/auth/dashboardsinfo*',
   }).as('waitForDashboardsInfo');
 
   cy.intercept({
     method: 'GET',
-    url: '/api/v1/configuration/account',
+    url: '/api/v1/configuration/account*',
   }).as('waitForAccountInfo');
 
   cy.getElementByTestId('switch-tenants').click();
@@ -37,7 +37,7 @@ export function switchTenantTo(newTenant) {
 
   cy.intercept({
     method: 'POST',
-    url: '/api/v1/multitenancy/tenant',
+    url: '/api/v1/multitenancy/tenant*',
   }).as('waitForUpdatingTenants');
   cy.getElementByTestId('tenant-switch-modal')
     .find('[data-test-subj="confirm"]')
