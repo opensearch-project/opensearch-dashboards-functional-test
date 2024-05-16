@@ -91,7 +91,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Submit the form to create the user
       cy.get('button').contains('Create').click();
 
-      cy.intercept(SEC_API_INTERNAL_ACCOUNTS_PATH, {
+      cy.intercept(`${SEC_API_INTERNAL_ACCOUNTS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH +
           '/internalusers_response_post_new_user_creation.json',
