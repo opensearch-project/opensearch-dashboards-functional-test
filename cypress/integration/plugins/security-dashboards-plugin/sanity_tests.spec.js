@@ -6,7 +6,6 @@
 import {
   BASE_PATH,
   SEC_UI_TENANTS_PATH,
-  SEC_TENANTS_FIXTURES_PATH,
   SEC_INTERNALUSERS_FIXTURES_PATH,
   SEC_API_INTERNAL_ACCOUNTS_PATH,
 } from '../../../utils/constants';
@@ -52,12 +51,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         tenantDescription
       );
 
-      cy.mockTenantsAction(
-        SEC_TENANTS_FIXTURES_PATH + '/tenants_post_creation_response.json',
-        () => {
-          cy.get('button[id="submit"]').first().click({ force: true });
-        }
-      );
+      cy.get('button[id="submit"]').first().click({ force: true });
 
       cy.url().should((url) => {
         expect(url).to.contain('/tenants');
@@ -166,7 +160,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
-      cy.get('a').contains('Manage').click(); // Adjust the selector as needed
+      cy.contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
       cy.get('[data-test-subj="indexPatterns"]').click();
