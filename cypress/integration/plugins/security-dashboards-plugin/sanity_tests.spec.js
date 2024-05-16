@@ -8,7 +8,7 @@ import {
   SEC_UI_TENANTS_PATH,
   SEC_TENANTS_FIXTURES_PATH,
   SEC_INTERNALUSERS_FIXTURES_PATH,
-  SEC_API_INTERNAL_USERS_PATH,
+  SEC_API_INTERNAL_ACCOUNTS_PATH,
 } from '../../../utils/constants';
 
 if (Cypress.env('SECURITY_ENABLED')) {
@@ -75,7 +75,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Navigate to Security/Internal User Database section
 
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
-      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
+      cy.intercept(`${SEC_API_INTERNAL_ACCOUNTS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
       }).as('listUserResponse');
@@ -91,7 +91,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Submit the form to create the user
       cy.get('button').contains('Create').click();
 
-      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+      cy.intercept(SEC_API_INTERNAL_ACCOUNTS_PATH, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH +
           '/internalusers_response_post_new_user_creation.json',
@@ -166,7 +166,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
-      cy.get('a[href="/app/management"]').click(); // Adjust the selector as needed
+      cy.get('a').contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
       cy.get('[data-test-subj="indexPatterns"]').click();
