@@ -87,7 +87,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
     }
     newOptions.qs = { security_tenant: CURRENT_TENANT.defaultTenant };
     if (waitForGetTenant) {
-      cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
+      cy.intercept('GET', '/api/v1/multitenancy/tenant*').as('getTenant');
       orig(url, newOptions);
       supressNoRequestOccurred();
       cy.wait('@getTenant');

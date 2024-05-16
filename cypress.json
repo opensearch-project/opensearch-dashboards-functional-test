@@ -17,6 +17,7 @@
     "remoteDataSourceBasicAuthPassword": "admin",
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
+    "MULTITENANCY_ENABLED": true,
     "username": "admin",
     "password": "myStrongPassword123!",
     "ENDPOINT_WITH_PROXY": false,
