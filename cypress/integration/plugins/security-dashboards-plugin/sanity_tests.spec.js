@@ -12,10 +12,6 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
-    before(() => {
-      localStorage.setItem('home:welcome:show', false);
-      localStorage.setItem('home:newThemeModal:show', false);
-    });
     const username = 'test';
     const password = 'ew4q56a4d6as51!*asSS';
     const roleName = 'newRole';
@@ -160,6 +156,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
+      cy.get('button[aria-label="Closes this modal window"]').click();
       cy.contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
