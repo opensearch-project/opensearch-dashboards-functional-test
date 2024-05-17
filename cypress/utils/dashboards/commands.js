@@ -8,6 +8,7 @@ import './vis_type_timeline/commands';
 import './vis_type_table/commands';
 import './vis_type_vega/commands';
 import './vis-augmenter/commands';
+import './vis_type_tsvb/commands';
 import './data_explorer/commands';
 
 Cypress.Commands.add('waitForLoader', () => {
