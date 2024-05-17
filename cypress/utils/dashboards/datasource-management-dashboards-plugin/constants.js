@@ -20,8 +20,7 @@ export const DS_API = {
   CREATE_DATA_SOURCE: `${DS_API_PREFIX}/data-source`,
   DELETE_DATA_SOURCE: `${DS_API_PREFIX}/data-source/`,
 };
-export const DS_BASIC_AUTH_HEADER = `Basic ${btoa(`${USERNAME}:${PASSWORD}`)}`;
-export const DS_BASIC_AUTH_LABEL = 'RemoteDataSourceBasicAuth';
+export const DS_NO_AUTH_LABEL = 'RemoteDataSourceNoAuth';
 
 export const TIMEOUT_OPTS = { timeout: 60000 };
 export const FORCE_CLICK_OPTS = { force: true };
