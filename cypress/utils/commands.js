@@ -602,7 +602,6 @@ Cypress.Commands.add('fleshTenantSettings', () => {
 Cypress.Commands.add(
   'selectFromDataSourceSelector',
   (dataSourceTitle, dataSourceId) => {
-    cy.getElementByTestId('dataSourceSelectorComboBox').last('button').click();
     cy.getElementByTestId('dataSourceSelectorComboBox')
       .find('input')
       .type('{backspace}')
@@ -636,7 +635,6 @@ Cypress.Commands.add('viewData', (sampleData) => {
 Cypress.Commands.add('addSampleDataToDataSource', (dataSourceTitle) => {
   cy.visit('app/home#/tutorial_directory');
   cy.selectFromDataSourceSelector(dataSourceTitle);
-  cy.wait(1000);
   cy.get('button[data-test-subj="addSampleDataSetecommerce"]')
     .should('be.visible')
     .click();
