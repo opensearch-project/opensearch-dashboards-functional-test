@@ -603,8 +603,15 @@ Cypress.Commands.add(
   'selectFromDataSourceSelector',
   (dataSourceTitle, dataSourceId) => {
     cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find(`button[data-test-subj="comboBoxClearButton"]`)
+      .then((clearButton) => {
+        if (clearButton.length > 0) {
+          clearButton.click();
+        }
+      });
+    cy.getElementByTestId('dataSourceSelectorComboBox')
       .find('input')
-      .type('{backspace}')
+      .clear('{backspace}')
       .type(dataSourceTitle);
     cy.wait(1000);
     let dataSourceElement;
