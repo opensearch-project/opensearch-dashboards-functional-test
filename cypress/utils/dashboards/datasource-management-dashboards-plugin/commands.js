@@ -107,3 +107,51 @@ Cypress.Commands.add('visitDataSourcesListingPage', () => {
     { timeout: 60000 }
   );
 });
+
+Cypress.Commands.add(
+  'bulkUploadDocsToDataSourceNoAuth',
+  (fixturePath, index) => {
+    const sendBulkAPIRequest = (ndjson) => {
+      const url = index
+        ? `${Cypress.env('remoteDataSourceNoAuthUrl')}/${index}/_bulk`
+        : `${Cypress.env('remoteDataSourceNoAuthUrl')}/_bulk`;
+      cy.log('bulkUploadDocs')
+        .request({
+          method: 'POST',
+          url,
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          body: ndjson,
+        })
+        .then((response) => {
+          if (response.body.errors) {
+            console.error(response.body.items);
+            throw new Error('Bulk upload failed');
+          }
+        });
+    };
+
+    cy.fixture(fixturePath, 'utf8').then((ndjson) => {
+      sendBulkAPIRequest(ndjson);
+    });
+
+    cy.request({
+      method: 'POST',
+      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_all/_refresh`,
+    });
+  }
+);
+
+Cypress.Commands.add(
+  'deleteDataSourceIndexNoAuth',
+  (indexName, options = {}) => {
+    cy.request({
+      method: 'DELETE',
+      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/${indexName}`,
+      failOnStatusCode: false,
+      ...options,
+    });
+  }
+);
