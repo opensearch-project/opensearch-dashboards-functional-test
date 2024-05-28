@@ -2,7 +2,7 @@
  * Copyright OpenSearch Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
-import _ from 'lodash';
+import { cloneDeep } from 'lodash';
 
 export const updateVegaSpec = ({
   dataSourceName,
@@ -10,7 +10,7 @@ export const updateVegaSpec = ({
   isDataFieldAnArray,
   spec,
 }) => {
-  const newSpec = _.cloneDeep(spec);
+  const newSpec = cloneDeep(spec);
   if (isDataFieldAnArray) {
     if (dataSourceName) {
       newSpec.data[0].url.data_source_name = dataSourceName;

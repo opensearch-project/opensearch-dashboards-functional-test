@@ -88,9 +88,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       cy.vegaSetVegaSpec(updatedVegaSpec);
       cy.vegaUpdateVisualization();
 
-      // Visualization should be drawn; correct visualizations do not have warning messages
-      cy.get('canvas.marks').should('exist');
-      cy.get('ul.vgaVis__messages').should('not.exist');
+      if (Cypress.env('DISABLE_LOCAL_CLUSTER')) {
+        // Visualization should not be drawn
+        cy.get('canvas.marks').should('not.exist');
+        cy.get('ul.vgaVis__messages').should('exist');
+      } else {
+        // Visualization should be drawn; correct visualizations do not have warning messages
+        cy.get('canvas.marks').should('exist');
+        cy.get('ul.vgaVis__messages').should('not.exist');
+      }
     });
 
     after(() => {
