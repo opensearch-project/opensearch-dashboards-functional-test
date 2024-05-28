@@ -32,3 +32,12 @@ jobs:
       test-command: env CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/*'
       osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=false
       security-enabled: false
+    tests-with-multiple-data-source-and-disabled-local-cluster:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: dashboards workspace
+      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/workspace-plugin/mds*.js'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --workspace.enabled=true --savedObjects.permission.enabled=true
+      security-enabled: true
