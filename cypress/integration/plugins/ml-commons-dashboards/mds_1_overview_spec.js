@@ -49,7 +49,7 @@ if (
     });
 
     it('should call connectors and model search api with data source id', () => {
-      cy.createDataSourceBasicAuth().then(
+      cy.createDataSourceNoAuth().then(
         ([newCreatedDataSourceId, newCreatedDataSourceTitle]) => {
           visitOverviewPage();
           cy.intercept(`${MLC_DASHBOARD_API.GET_INTERNAL_CONNECTORS}**`).as(
