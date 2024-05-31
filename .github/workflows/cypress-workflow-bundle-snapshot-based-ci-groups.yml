@@ -23,10 +23,10 @@ jobs:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: |
         IFS="," read -a SPEC_ARRAY <<< $(yarn --silent osd:ciGroup${{ matrix.group }})
-          FORMATTED_SPEC=''
-          for i in "${SPEC_ARRAY[@]}"; do
-            FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
-          done
+        FORMATTED_SPEC=''
+        for i in "${SPEC_ARRAY[@]}"; do
+          FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
+        done
         echo ${FORMATTED_SPEC}
         env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{FORMATTED_SPEC}}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
