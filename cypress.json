@@ -11,10 +11,10 @@
   "viewportHeight": 1320,
   "env": {
     "openSearchUrl": "http://localhost:9200",
-    "remoteDataSourceNoAuthUrl": "https://search-md-bug-bash-no-auth-7lvre4fioe3ikmdznjmhjrmsga.us-west-2.es.amazonaws.com",
-    "remoteDataSourceBasicAuthUrl": "https://search-sddd-nj2nc32tf7wspntbyvzjn5emwu.us-east-1.es.amazonaws.com",
-    "remoteDataSourceBasicAuthUsername": "Admin",
-    "remoteDataSourceBasicAuthPassword": "Admin_123",
+    "remoteDataSourceNoAuthUrl": "http://localhost:9201",
+    "remoteDataSourceBasicAuthUrl": "https://localhost:9202",
+    "remoteDataSourceBasicAuthUsername": "admin",
+    "remoteDataSourceBasicAuthPassword": "admin",
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
     "MULTITENANCY_ENABLED": true,
@@ -29,17 +29,10 @@
     "DASHBOARDS_ASSISTANT_ENABLED": false,
     "WORKSPACE_ENABLED": false,
     "SAVED_OBJECTS_PERMISSION_ENABLED": false,
+    "DISABLE_LOCAL_CLUSTER": false,
     "browserPermissions": {
       "clipboard": "allow"
     },
     "UIMETRIC_ENABLED": false
   }
 }
-
-
-
-
-
-
-
-
