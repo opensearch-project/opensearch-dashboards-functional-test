@@ -46,6 +46,7 @@ jobs:
             result+="${FORMATTED_SPEC}"
           done
 
+          echo ${result}
           echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
