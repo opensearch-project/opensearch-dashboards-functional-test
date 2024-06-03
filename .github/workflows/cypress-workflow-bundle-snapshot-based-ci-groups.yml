@@ -18,6 +18,8 @@ env:
 jobs:
   set_spec:
     runs-on: 'ubuntu-latest'
+    outputs:
+      spec_ciGroups: ${{ steps.get_spec.outputs.spec_ciGroups }}
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
