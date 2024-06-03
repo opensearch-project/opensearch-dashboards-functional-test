@@ -13,7 +13,7 @@ on:
       - 'cypress/utils/dashboards/**'
 
 env:
-  CI_GROUPS: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+  CI_GROUPS: (1 2 3 4 5 6 7 8 9)
 
 jobs:
   set-spec:
