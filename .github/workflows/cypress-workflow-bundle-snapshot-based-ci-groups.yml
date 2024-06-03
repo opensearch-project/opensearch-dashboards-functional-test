@@ -46,7 +46,7 @@ jobs:
         group: ${{ fromJSON(needs.set_groups.outputs.CI_GROUPS) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     env:
-      specs: ${{ env.spec_ciGroups${{ matrix.group }} }}
+      specs: ${{ needs.set_spec.output.spec_ciGroups${{ matrix.group }} }}
     with:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${specs}'
