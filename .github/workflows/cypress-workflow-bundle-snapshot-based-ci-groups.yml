@@ -33,7 +33,7 @@ jobs:
           result="["
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
-            IFS="," read -a SPEC_ARRAY <<< "npm run -s osd:ciGroup${group}"
+            IFS="," read -a SPEC_ARRAY <<< "$(npm run -s osd:ciGroup${group})"
             FORMATTED_SPEC="\\\""
             for i in "${SPEC_ARRAY[@]}"; do
               FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
