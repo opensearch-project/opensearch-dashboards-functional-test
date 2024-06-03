@@ -52,7 +52,7 @@ jobs:
 
           echo ${result}
           # echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
-          echo "spec_ciGroups=[1, 2]" >> "$GITHUB_OUTPUT"
+          echo "spec_ciGroups=[\"cypress/integration/core-opensearch-dashboards/opensearch-dashboards/apps/vis_builder/*.js,\"]" >> "$GITHUB_OUTPUT"
 
   debug:
     runs-on: 'ubuntu-latest'
