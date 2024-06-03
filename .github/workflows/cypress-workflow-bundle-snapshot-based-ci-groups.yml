@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ env.CI_GROUPS }}
+        group: ${{ fromJSON(env.CI_GROUPS) }}
     steps:
       - id: get_spec
         run: |
