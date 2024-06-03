@@ -27,7 +27,7 @@ jobs:
           repository: ${{github.repository}}
           path: spec-detect
       - id: get_spec
-        names: Get specs array
+        name: Get specs array
         run: |
           cd spec-detect
           result="["
