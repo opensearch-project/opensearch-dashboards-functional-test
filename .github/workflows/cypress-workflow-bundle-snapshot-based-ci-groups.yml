@@ -16,11 +16,14 @@ env:
   CI_GROUPS: '["1", "2", "3", "4", "5", "6", "7", "8", "9"]'
 
 jobs:
-  set-spec:
+  set_groups:
+    run: echo "CI_GROUPS=[1, 2, 3, 4, 5, 6, 7, 8, 9]" >> $GITHUB_OUTPUT
+  set_spec:
+    needs: set_groups
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(env.CI_GROUPS) }}
+        group: ${{ fromJSON(needs.set_groups.outputs.CI_GROUPS) }}
     steps:
       - id: get_spec
         run: |
