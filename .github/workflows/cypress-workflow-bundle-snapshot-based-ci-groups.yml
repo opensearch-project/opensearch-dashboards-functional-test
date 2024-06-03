@@ -34,11 +34,11 @@ jobs:
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
             IFS="," read -a SPEC_ARRAY <<< "$(jq '.scripts."osd:ciGroup${group}"' package.json)"
-            FORMATTED_SPEC="\""
+            FORMATTED_SPEC="\\\""
             for i in "${SPEC_ARRAY[@]}"; do
               FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
             done
-            FORMATTED_SPEC+="\""
+            FORMATTED_SPEC+="\\\""
             if [[ "${result}" != "[" ]];
             then
                 result+=","
