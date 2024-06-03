@@ -17,7 +17,8 @@ env:
 
 jobs:
   set_groups:
-    run: echo "CI_GROUPS=[1, 2, 3, 4, 5, 6, 7, 8, 9]" >> $GITHUB_OUTPUT
+    steps:
+      - run: echo "CI_GROUPS=[1, 2, 3, 4, 5, 6, 7, 8, 9]" >> $GITHUB_OUTPUT
   set_spec:
     needs: set_groups
     strategy:
