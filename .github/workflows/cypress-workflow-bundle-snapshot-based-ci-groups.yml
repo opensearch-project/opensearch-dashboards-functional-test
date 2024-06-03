@@ -39,11 +39,11 @@ jobs:
           echo "spec_ciGroups${{ matrix.group }}=${FORMATTED_SPEC}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
+    needs: ["set_spec", "set_groups"]
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ env.CI_GROUPS }}
-    needs: set-spec
+        group: ${{ fromJSON(needs.set_groups.outputs.CI_GROUPS) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     env:
       specs: ${{ env.spec_ciGroups${{ matrix.group }} }}
