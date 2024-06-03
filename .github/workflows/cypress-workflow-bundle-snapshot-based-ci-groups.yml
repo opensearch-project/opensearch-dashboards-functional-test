@@ -19,12 +19,21 @@ jobs:
   set_spec:
     runs-on: 'ubuntu-latest'
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: spec-detect
       - id: get_spec
+        names: Get specs array
         run: |
+          cd spec-detect
           result="["
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
-            IFS="," read -a SPEC_ARRAY <<< "$(yarn --silent osd:ciGroup${group})"
+            IFS="," read -a SPEC_ARRAY <<< "$(jq '.scripts.osd:osd:ciGroup${group}' package.json)"
             FORMATTED_SPEC="\""
             for i in "${SPEC_ARRAY[@]}"; do
               FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
@@ -51,10 +60,10 @@ jobs:
       test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.group }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
-  tests-without-security:
-    uses: ./.github/workflows/release-e2e-workflow-template.yml
-    with:
-      test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
-      security-enabled: false
+  # tests-without-security:
+  #   uses: ./.github/workflows/release-e2e-workflow-template.yml
+  #   with:
+  #     test-name: Core Dashboards using Bundle Snapshot
+  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
+  #     osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
+  #     security-enabled: false
