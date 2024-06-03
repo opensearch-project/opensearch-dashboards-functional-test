@@ -46,6 +46,8 @@ jobs:
             result+="${FORMATTED_SPEC}"
           done
 
+          result+=']';
+
           echo ${result}
           echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
 
