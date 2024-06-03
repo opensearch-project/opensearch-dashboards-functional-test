@@ -4,7 +4,7 @@
  */
 
 import { CURRENT_TENANT } from '../../../../../utils/commands';
-import { DS_BASIC_AUTH_LABEL } from '../../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
+import { DS_NO_AUTH_LABEL } from '../../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 import {
   TSVB_INDEX_ID,
   TSVB_PATH_INDEX_DATA,
@@ -44,15 +44,15 @@ describe('TSVB Visualization', () => {
 
   if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     before(() => {
-      cy.deleteDataSourceIndexBasicAuth(TSVB_INDEX_ID);
-      cy.createDataSourceBasicAuth();
-      cy.bulkUploadDocsToDataSourceBasicAuth(TSVB_PATH_INDEX_DATA);
+      cy.deleteDataSourceIndexNoAuth(TSVB_INDEX_ID);
+      cy.createDataSourceNoAuth();
+      cy.bulkUploadDocsToDataSourceNoAuth(TSVB_PATH_INDEX_DATA);
     });
 
     describe('When MDS is enabled', () => {
       [
         {
-          dataSourceName: DS_BASIC_AUTH_LABEL,
+          dataSourceName: DS_NO_AUTH_LABEL,
           canvasExists: 'exist',
         },
       ].forEach(({ dataSourceName, canvasExists }) => {
@@ -63,7 +63,7 @@ describe('TSVB Visualization', () => {
           cy.get('[data-test-subj="dataSourceSelectorComboBox"]').click();
 
           // Find the option you want to select by its text and click on it
-          cy.contains('[role="option"]', 'RemoteDataSourceBasicAuth').click();
+          cy.contains('[role="option"]', dataSourceName).click();
           cy.get('input[data-test-subj="metricsIndexPatternInput"]').type(
             TSVB_INDEX_ID
           );
@@ -92,7 +92,7 @@ describe('TSVB Visualization', () => {
     cy.deleteIndexPattern(TSVB_INDEX_PATTERN);
 
     if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
-      cy.deleteDataSourceIndexBasicAuth(TSVB_INDEX_ID);
+      cy.deleteDataSourceIndexNoAuth(TSVB_INDEX_ID);
       cy.deleteAllDataSources();
     }
   });
