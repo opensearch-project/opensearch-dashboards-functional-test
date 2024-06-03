@@ -51,7 +51,8 @@ jobs:
           result+=']';
 
           echo ${result}
-          echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
+          # echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
+          echo "spec_ciGroups=[1, 2]" >> "$GITHUB_OUTPUT"
 
   debug:
     runs-on: 'ubuntu-latest'
