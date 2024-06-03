@@ -53,6 +53,14 @@ jobs:
           echo ${result}
           echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
 
+  debug:
+    needs: ["set_spec"]
+    steps:
+      - name: get vars
+        env:
+          spec_ciGroups: ${{needs.set_spec.outputs.spec_ciGroups}}
+        run: echo ${spec_ciGroups}
+
   tests-with-security:
     needs: ["set_spec"]
     strategy:
