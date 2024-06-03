@@ -13,41 +13,42 @@ on:
       - 'cypress/utils/dashboards/**'
 
 env:
-  CI_GROUPS: '["1", "2", "3", "4", "5", "6", "7", "8", "9"]'
+  CI_GROUPS: "1,2,3,4,5,6,7,8,9"
 
 jobs:
-  set_groups:
-    runs-on: 'ubuntu-latest'
-    steps:
-      - run: echo "CI_GROUPS=[1, 2, 3, 4, 5, 6, 7, 8, 9]" >> $GITHUB_OUTPUT
   set_spec:
-    needs: set_groups
     runs-on: 'ubuntu-latest'
-    strategy:
-      fail-fast: false
-      matrix:
-        group: ${{ fromJSON(needs.set_groups.outputs.CI_GROUPS) }}
     steps:
       - id: get_spec
         run: |
-          IFS="," read -a SPEC_ARRAY <<< $(yarn --silent osd:ciGroup${{ matrix.group }})
-          FORMATTED_SPEC=''
-          for i in "${SPEC_ARRAY[@]}"; do
-            FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
+          result="["
+          IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
+          for group in "${groups[@]}"; do
+            IFS="," read -a SPEC_ARRAY <<< "$(yarn --silent osd:ciGroup${group})"
+            FORMATTED_SPEC="\""
+            for i in "${SPEC_ARRAY[@]}"; do
+              FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
+            done
+            FORMATTED_SPEC+="\""
+            if [[ "${result}" != "[" ]];
+            then
+                result+=","
+            fi
+            result+="${FORMATTED_SPEC}"
           done
 
-          echo "spec_ciGroups${{ matrix.group }}=${FORMATTED_SPEC}" >> "$GITHUB_OUTPUT"
+          echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
-    needs: ["set_spec", "set_groups"]
+    needs: ["set_spec"]
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(needs.set_groups.outputs.CI_GROUPS) }}
+        group: ${{ fromJSON(needs.set_spec.outputs.spec_ciGroups) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ needs.set_spec.output.spec_ciGroups${{ matrix.group }} }}'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.group }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
   tests-without-security:
