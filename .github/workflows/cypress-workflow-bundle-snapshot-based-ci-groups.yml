@@ -17,7 +17,7 @@ env:
   CI_GROUPS: "1,2,3,4,5,6,7,8,9"
 
 jobs:
-  set_spec:
+  get_spec:
     runs-on: 'ubuntu-latest'
     outputs:
       MATRIX_INCLUDES: ${{ steps.get_spec.outputs.MATRIX_INCLUDES }}
@@ -58,11 +58,11 @@ jobs:
           echo "MATRIX_INCLUDES=${result}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
-    needs: ["set_spec"]
+    needs: ["get_spec"]
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
+        include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
     name: osd:ciGroup${{ matrix.ciGroup }}(security)
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
@@ -71,11 +71,11 @@ jobs:
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
   tests-without-security:
-    needs: ["set_spec"]
+    needs: ["get_spec"]
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
+        include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
     name: osd:ciGroup${{ matrix.ciGroup }}(non-security)
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
