@@ -4,10 +4,19 @@
  */
 import { BASE_PATH } from '../../../utils/constants';
 import { testToggleChatbotInteraction } from '../../../utils/plugins/dashboards-assistant/shared/chatbot_agent_framework';
-
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
   describe('Assistant basic spec', () => {
     before(() => {
+      cy.deleteAllDataSources();
+      // create data source
+      cy.createDataSourceNoAuth().then((result) => {
+        const dataSourceId = result[0];
+        // set default data source
+        cy.setDefaultDataSource(dataSourceId);
+      });
       // Set welcome screen tracking to false
       localStorage.setItem('home:welcome:show', 'false');
       // Set new theme modal to false
@@ -23,6 +32,10 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         'be.length',
         1
       );
+    });
+
+    after(() => {
+      cy.deleteAllDataSources();
     });
 
     describe('Interact with Agent framework', () => {
