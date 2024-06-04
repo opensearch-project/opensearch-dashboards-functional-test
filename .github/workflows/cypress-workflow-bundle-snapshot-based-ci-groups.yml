@@ -3,7 +3,6 @@ on:
   pull_request:
     branches: ['**']
     paths:
-      - '**/*'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
   push:
@@ -19,7 +18,7 @@ jobs:
   set_spec:
     runs-on: 'ubuntu-latest'
     outputs:
-      spec_ciGroups: ${{ steps.get_spec.outputs.spec_ciGroups }}
+      SPEC_CI_GROUPS: ${{ steps.get_spec.outputs.SPEC_CI_GROUPS }}
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
@@ -52,14 +51,14 @@ jobs:
           result+=']';
 
           echo ${result}
-          echo "spec_ciGroups=${result}" >> "$GITHUB_OUTPUT"
+          echo "SPEC_CI_GROUPS=${result}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
     needs: ["set_spec"]
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(needs.set_spec.outputs.spec_ciGroups) }}
+        group: ${{ fromJSON(needs.set_spec.outputs.SPEC_CI_GROUPS) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
@@ -71,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(needs.set_spec.outputs.spec_ciGroups) }}
+        group: ${{ fromJSON(needs.set_spec.outputs.SPEC_CI_GROUPS) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
