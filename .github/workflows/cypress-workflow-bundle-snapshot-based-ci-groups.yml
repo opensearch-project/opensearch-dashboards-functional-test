@@ -1,4 +1,4 @@
-name: (ciGrouped)Bundle Snapshot based E2E Cypress tests workflow for core Dashboards
+name: (ciGroup) Cypress test for core Dashboards
 on:
   pull_request:
     branches: ['**']
@@ -20,7 +20,7 @@ jobs:
   set_spec:
     runs-on: 'ubuntu-latest'
     outputs:
-      SPEC_CI_GROUPS: ${{ steps.get_spec.outputs.SPEC_CI_GROUPS }}
+      MATRIX_INCLUDES: ${{ steps.get_spec.outputs.MATRIX_INCLUDES }}
     steps:
       - name: Checkout Branch
         uses: actions/checkout@v3
@@ -37,34 +37,36 @@ jobs:
           ## split CI_Groups into array
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
+            item="{\"ciGroup\": \"${group}\", \"specs\": "
             IFS="," read -a SPEC_ARRAY <<< "$(npm run -s osd:ciGroup${group})"
             FORMATTED_SPEC="\""
             for i in "${SPEC_ARRAY[@]}"; do
               FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
             done
-            FORMATTED_SPEC+="\""
+            FORMATTED_SPEC+="\" }"
             if [[ "${result}" != "[" ]];
             then
                 result+=","
             fi
-            result+="${FORMATTED_SPEC}"
+            item+="${FORMATTED_SPEC}"
+            result+="${item}"
           done
 
           result+=']';
 
           echo ${result}
-          echo "SPEC_CI_GROUPS=${result}" >> "$GITHUB_OUTPUT"
+          echo "MATRIX_INCLUDES=${result}" >> "$GITHUB_OUTPUT"
 
   tests-with-security:
     needs: ["set_spec"]
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(needs.set_spec.outputs.SPEC_CI_GROUPS) }}
+        include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
-      test-name: Core Dashboards using Bundle Snapshot
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.group }}'
+      test-name: "osd:ciGroup${{ matrix.ciGroup }}"
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
 
   tests-without-security:
@@ -72,7 +74,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: ${{ fromJSON(needs.set_spec.outputs.SPEC_CI_GROUPS) }}
+        include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
