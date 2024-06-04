@@ -3,11 +3,13 @@ on:
   pull_request:
     branches: ['**']
     paths:
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
   push:
     branches: ['**']
     paths:
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
 
