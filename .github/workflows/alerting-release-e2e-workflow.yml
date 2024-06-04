@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/alerting-release-e2e-workflow.yml'
             - 'cypress/**/alerting-dashboards-plugin/**'
 
   tests:

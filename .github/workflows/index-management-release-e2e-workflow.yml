@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/index-management-release-e2e-workflow.yml'
             - 'cypress/**/index-management-dashboards-plugin/**'
 
   tests:
