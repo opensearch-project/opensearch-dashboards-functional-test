@@ -1,4 +1,4 @@
-name: (ciGroup) Cypress test for core Dashboards
+name: Cypress test for core Dashboards
 on:
   pull_request:
     branches: ['**']
@@ -63,7 +63,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
-    name: osd:ciGroup${{ matrix.ciGroup }}
+    name: osd:ciGroup${{ matrix.ciGroup }}(security)
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
@@ -76,10 +76,10 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
-    name: osd:ciGroup${{ matrix.ciGroup }}
+    name: osd:ciGroup${{ matrix.ciGroup }}(non-security)
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
-      test-name: Core Dashboards using Bundle Snapshot
+      test-name: "osd:ciGroup${{ matrix.ciGroup }}"
       test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec '${{ matrix.specs }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
       security-enabled: false
