@@ -76,6 +76,7 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJSON(needs.set_spec.outputs.MATRIX_INCLUDES) }}
+    name: osd:ciGroup${{ matrix.ciGroup }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Core Dashboards using Bundle Snapshot
