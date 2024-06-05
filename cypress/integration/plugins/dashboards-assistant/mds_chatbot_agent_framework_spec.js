@@ -51,7 +51,7 @@ if (
 
         // should have a LLM Response
         cy.contains(
-          'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
+          'The indices in the cluster are the default OpenSearch and Kibana indices'
         );
 
         // should have a suggestion section
@@ -69,7 +69,7 @@ if (
 
         // The regenrate message should be there
         cy.contains(
-          'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
+          'The indices in the cluster are the default OpenSearch and Kibana indices'
         );
 
         // should have a suggestion section
