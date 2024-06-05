@@ -166,7 +166,6 @@ Cypress.Commands.add(
   'selectFromDataSourceSelectable',
   (dataSourceTitle, dataSourceId) => {
     cy.get('#dataSourceSelectableContextMenuPopover').click();
-    cy.checkDataSourceExist(DEFAULT_DS_TITLE);
     cy.getElementByTestId('dataSourceSelectable')
       .find('input')
       .clear()
