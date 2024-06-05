@@ -106,4 +106,5 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec '${{ matrix.specs }}'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec '${{ matrix.specs }}'
+      security-enabled: false
