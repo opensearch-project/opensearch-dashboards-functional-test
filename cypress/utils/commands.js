@@ -5,6 +5,8 @@
 
 import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
 
+export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
+
 export const ADMIN_AUTH = {
   username: Cypress.env('username'),
   password: Cypress.env('password'),
