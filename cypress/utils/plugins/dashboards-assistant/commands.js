@@ -39,12 +39,12 @@ Cypress.Commands.add('readOrRegisterRootAgent', (path = BACKEND_BASE_PATH) => {
       cy.log(`Already initialized agent: ${agentId}, skip the initialize step`);
     } else {
       cy.log(`Agent id not initialized yet, set up agent`);
-      return cy.registerRootAgent();
+      return cy.registerRootAgent(path);
     }
   });
 });
 
-Cypress.Commands.add('registerRootAgent', () => {
+Cypress.Commands.add('registerRootAgent', (path = BACKEND_BASE_PATH) => {
   /**
    * TODO use flow framework if the plugin get integrate in the future.
    */
@@ -74,14 +74,14 @@ Cypress.Commands.add('registerRootAgent', () => {
   });
   cy.request(
     'POST',
-    `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_CONNECTOR}`,
+    `${path}${ML_COMMONS_API.CREATE_CONNECTOR}`,
     nodesMap.create_connector[0].user_inputs
   )
     .then((resp) => {
       agentParameters.connectorId = resp.body.connector_id;
       return cy.request(
         'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_MODEL}?deploy=true`,
+        `${path}${ML_COMMONS_API.CREATE_MODEL}?deploy=true`,
         {
           ...nodesMap.register_remote_model[0].user_inputs,
           connector_id: agentParameters.connectorId,
@@ -91,45 +91,36 @@ Cypress.Commands.add('registerRootAgent', () => {
     })
     .then((resp) => {
       agentParameters.modelId = resp.body.model_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
-        {
-          ...nodesMap.register_agent[0].user_inputs,
-          llm: {
-            parameters:
-              nodesMap.register_agent[0].user_inputs['llm.parameters'],
-            model_id: agentParameters.modelId,
-          },
-          tools: [nodesMap.create_tool[0]].map((item) => item.user_inputs),
-        }
-      );
+      return cy.request('POST', `${path}${ML_COMMONS_API.CREATE_AGENT}`, {
+        ...nodesMap.register_agent[0].user_inputs,
+        llm: {
+          parameters: nodesMap.register_agent[0].user_inputs['llm.parameters'],
+          model_id: agentParameters.modelId,
+        },
+        tools: [nodesMap.create_tool[0]].map((item) => item.user_inputs),
+      });
     })
     .then((resp) => {
       agentParameters.conversationalAgentId = resp.body.agent_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
-        {
-          ...nodesMap.register_agent[1].user_inputs,
-          tools: [
-            {
-              ...nodesMap.create_tool[1].user_inputs,
-              parameters: {
-                ...nodesMap.create_tool[1].user_inputs.parameters,
-                agent_id: agentParameters.conversationalAgentId,
-              },
+      return cy.request('POST', `${path}${ML_COMMONS_API.CREATE_AGENT}`, {
+        ...nodesMap.register_agent[1].user_inputs,
+        tools: [
+          {
+            ...nodesMap.create_tool[1].user_inputs,
+            parameters: {
+              ...nodesMap.create_tool[1].user_inputs.parameters,
+              agent_id: agentParameters.conversationalAgentId,
             },
-            {
-              ...nodesMap.create_tool[2].user_inputs,
-              parameters: {
-                ...nodesMap.create_tool[2].user_inputs.parameters,
-                model_id: agentParameters.modelId,
-              },
+          },
+          {
+            ...nodesMap.create_tool[2].user_inputs,
+            parameters: {
+              ...nodesMap.create_tool[2].user_inputs.parameters,
+              model_id: agentParameters.modelId,
             },
-          ],
-        }
-      );
+          },
+        ],
+      });
     })
     .then((resp) => {
       agentParameters.rootAgentId = resp.body.agent_id;
