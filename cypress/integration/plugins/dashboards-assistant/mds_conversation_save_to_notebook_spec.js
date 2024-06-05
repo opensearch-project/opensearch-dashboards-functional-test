@@ -6,7 +6,8 @@ import { BASE_PATH } from '../../../utils/constants';
 import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
 
 const QUESTION = 'What are the indices in my cluster?';
-const FINAL_ANSWER = 'The indices in the cluster';
+const FINAL_ANSWER =
+  'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.';
 
 if (
   Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&

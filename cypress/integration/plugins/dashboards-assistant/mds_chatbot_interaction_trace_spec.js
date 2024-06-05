@@ -40,7 +40,7 @@ if (
 
       // should have a LLM Response
       cy.contains(
-        'The indices in the cluster are the default OpenSearch system indices'
+        'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
       );
     });
 
@@ -73,7 +73,7 @@ if (
 
         // result
         cy.get('@tracePage').contains(
-          'The indices in the cluster are the default OpenSearch system indices'
+          'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
         );
       });
 
@@ -113,6 +113,8 @@ if (
         cy.get(`[aria-label="How was this generated?"]`).click();
         // trace page opend
         cy.contains('h1', 'How was this generated');
+        // chat page opened
+        cy.contains('suggestion1');
       });
     });
   });
