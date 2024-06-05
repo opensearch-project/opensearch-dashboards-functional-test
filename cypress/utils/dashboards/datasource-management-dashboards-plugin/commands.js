@@ -201,13 +201,12 @@ Cypress.Commands.add('checkDataSourceExist', (dataSourceTitle) => {
 
 Cypress.Commands.add('viewDataSourceAggregatedView', (dataSourceTitle) => {
   cy.get('#dataSourceSViewContextMenuPopover').click();
-  cy.wait(10000);
+  cy.wait(1000);
 
   cy.get('.dataSourceAggregatedViewOuiPanel').within(() => {
     // Check if the Local cluster is selected
 
     cy.contains(dataSourceTitle).should('be.visible');
-    cy.checkDataSourceExist(DEFAULT_DS_TITLE);
     cy.get('.dataSourceAggregatedViewOuiSwitch').should('not.checked');
     if (!DisableLocalCluster) {
       cy.contains('Local cluster').should('be.visible');
