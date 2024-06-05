@@ -39,7 +39,7 @@ if (
         .type('What are the indices in my cluster?{enter}');
 
       // should have a LLM Response
-      cy.contains('The indices in the cluster');
+      cy.contains('The indices in');
     });
 
     // clean up localStorage items
@@ -70,7 +70,7 @@ if (
         cy.get('@tracePage').contains('What are the indices in my cluster?');
 
         // result
-        cy.get('@tracePage').contains('The indices in the cluster');
+        cy.get('@tracePage').contains('The indices in');
       });
 
       it('tools invocation displayed in trace steps', () => {

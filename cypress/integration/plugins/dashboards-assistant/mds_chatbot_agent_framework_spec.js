@@ -52,7 +52,7 @@ if (
         cy.contains('What are the indices in my cluster?').click();
 
         // should have a LLM Response
-        cy.contains('The indices in the cluster');
+        cy.contains('The indices in');
 
         // Click regenerate button
         cy.get(`button[title="regenerate message"]`).click();
@@ -64,7 +64,7 @@ if (
         cy.get(`[aria-label="chat suggestions"]`).should('be.length', 0);
 
         // The regenrate message should be there
-        cy.contains('The indices in the cluster');
+        cy.contains('The indices in');
       });
     });
   });

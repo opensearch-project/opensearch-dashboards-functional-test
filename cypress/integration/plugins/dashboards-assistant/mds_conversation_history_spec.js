@@ -118,16 +118,13 @@ if (
 
       before(() => {
         // Create conversations data
-        cy.sendAssistantMessageByDataSourceId(
-          {
-            input: {
-              type: 'input',
-              content: 'What are the indices in my cluster?',
-              contentType: 'text',
-            },
+        cy.sendAssistantMessage({
+          input: {
+            type: 'input',
+            content: 'What are the indices in my cluster?',
+            contentType: 'text',
           },
-          dataSourceId
-        ).then((result) => {
+        }).then((result) => {
           if (result.status !== 200) {
             throw result.body;
           }
