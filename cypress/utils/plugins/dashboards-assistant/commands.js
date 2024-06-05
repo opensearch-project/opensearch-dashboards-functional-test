@@ -14,9 +14,12 @@ import {
   certPublicKeyContent,
 } from '../../../fixtures/plugins/dashboards-assistant/security-cert';
 
-Cypress.Commands.add('addAssistantRequiredSettings', () => {
-  cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
-});
+Cypress.Commands.add(
+  'addAssistantRequiredSettings',
+  (path = BACKEND_BASE_PATH) => {
+    cy.request('PUT', `${path}/_cluster/settings`, clusterSettings);
+  }
+);
 
 const agentParameters = {
   connectorId: '',
@@ -25,9 +28,9 @@ const agentParameters = {
   rootAgentId: '',
 };
 
-Cypress.Commands.add('readOrRegisterRootAgent', () => {
+Cypress.Commands.add('readOrRegisterRootAgent', (path = BACKEND_BASE_PATH) => {
   cy.request({
-    url: `${BACKEND_BASE_PATH}${ML_COMMONS_API.AGENT_CONFIG}`,
+    url: `${path}${ML_COMMONS_API.AGENT_CONFIG}`,
     method: 'GET',
     failOnStatusCode: false,
   }).then((resp) => {

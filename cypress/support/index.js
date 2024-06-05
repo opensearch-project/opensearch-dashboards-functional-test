@@ -64,7 +64,10 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
  * Make setup step in here so that all the test files in dashboards-assistant
  * won't need to call these commands.
  */
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
   before(() => {
     cy.addAssistantRequiredSettings();
     cy.readOrRegisterRootAgent();
@@ -80,13 +83,14 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
  * Make setup step in here so that all the test files in dashboards-assistant
  * won't need to call these commands.
  */
+const REMOTE_NO_AUTH_ENDPOINT = Cypress.env('remoteDataSourceNoAuthUrl');
 if (
   Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
   Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   before(() => {
-    cy.addAssistantRequiredSettings();
-    cy.readOrRegisterRootAgent();
+    cy.addAssistantRequiredSettings(REMOTE_NO_AUTH_ENDPOINT);
+    cy.readOrRegisterRootAgent(REMOTE_NO_AUTH_ENDPOINT);
     cy.startDummyServer();
   });
   after(() => {
