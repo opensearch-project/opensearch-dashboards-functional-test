@@ -75,3 +75,22 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     cy.stopDummyServer();
   });
 }
+
+/**
+ * Make setup step in here so that all the test files in dashboards-assistant
+ * won't need to call these commands.
+ */
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
+  before(() => {
+    cy.addAssistantRequiredSettings();
+    cy.readOrRegisterRootAgent();
+    cy.startDummyServer();
+  });
+  after(() => {
+    cy.cleanRootAgent();
+    cy.stopDummyServer();
+  });
+}

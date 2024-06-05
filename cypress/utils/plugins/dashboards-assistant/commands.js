@@ -197,6 +197,16 @@ Cypress.Commands.add('sendAssistantMessage', (body) =>
   apiRequest(`${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}`, 'POST', body)
 );
 
+Cypress.Commands.add(
+  'sendAssistantMessageByDataSourceId',
+  (body, dataSourceId) =>
+    apiRequest(
+      `${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}?dataSourceId=${dataSourceId}`,
+      'POST',
+      body
+    )
+);
+
 Cypress.Commands.add('deleteConversation', (conversationId) =>
   apiRequest(
     `${BASE_PATH}${ASSISTANT_API.CONVERSATION}/${conversationId}`,
