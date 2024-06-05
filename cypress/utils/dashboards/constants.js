@@ -23,8 +23,5 @@ export * from './vis_type_table/constants';
 export * from './vis_type_timeline/constants';
 export * from './vis-augmenter/constants';
 export * from './data_explorer/constants';
-<<<<<<< HEAD
 export * from './vis_type_vega/constants';
-=======
 export * from './vis_type_tsvb/constants';
->>>>>>> Add FT for TSVB support with MDS

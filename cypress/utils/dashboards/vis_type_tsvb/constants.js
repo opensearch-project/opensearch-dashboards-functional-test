@@ -13,7 +13,7 @@ export const TSVB_PATH_INDEX_DATA = TSVB_PATH_FIXTURE + TSVB_INDEX_DATA;
 // Update the constants
 export const TSVB_INDEX_START_TIME = 'May 16, 2010 @ 00:00:00.000';
 export const TSVB_INDEX_END_TIME = 'May 16, 2024 @ 00:00:00.000';
-export const TSVB_INDEX_ID = 'metrics';
+export const TSVB_INDEX_ID = 'vis-metrics';
 export const TSVB_INDEX_PATTERN = 'index-pattern-vis-metrics';
 
 export const TSVB_VIS_TYPE = 'visualization';
