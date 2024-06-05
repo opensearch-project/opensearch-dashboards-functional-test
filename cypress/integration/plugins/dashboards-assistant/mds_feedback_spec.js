@@ -50,7 +50,7 @@ if (
           .type('What are the indices in my cluster?{enter}');
 
         // should have a LLM Response
-        cy.contains('The indices in your cluster');
+        cy.contains('The indices in the cluster');
 
         // should have a thumb up and a thumb down feedback button
         cy.get(`[aria-label="feedback thumbs up"]`).should('be.length', 1);

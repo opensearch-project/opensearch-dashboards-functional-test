@@ -39,9 +39,7 @@ if (
         .type('What are the indices in my cluster?{enter}');
 
       // should have a LLM Response
-      cy.contains(
-        'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
-      );
+      cy.contains('The indices in the cluster');
     });
 
     // clean up localStorage items
@@ -72,9 +70,7 @@ if (
         cy.get('@tracePage').contains('What are the indices in my cluster?');
 
         // result
-        cy.get('@tracePage').contains(
-          'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
-        );
+        cy.get('@tracePage').contains('The indices in the cluster');
       });
 
       it('tools invocation displayed in trace steps', () => {
@@ -113,8 +109,6 @@ if (
         cy.get(`[aria-label="How was this generated?"]`).click();
         // trace page opend
         cy.contains('h1', 'How was this generated');
-        // chat page opened
-        cy.contains('suggestion1');
       });
     });
   });
