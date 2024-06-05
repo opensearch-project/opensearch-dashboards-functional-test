@@ -19,7 +19,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import '../utils/commands';
+import { currentBackendEndpoint } from '../utils/commands';
 import '../utils/dashboards/commands';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
@@ -83,17 +83,19 @@ if (
  * Make setup step in here so that all the test files in dashboards-assistant
  * won't need to call these commands.
  */
-const REMOTE_NO_AUTH_ENDPOINT = Cypress.env('remoteDataSourceNoAuthUrl');
 if (
   Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
   Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
+  const originalBackendEndpoint = currentBackendEndpoint.get();
   before(() => {
-    cy.addAssistantRequiredSettings(REMOTE_NO_AUTH_ENDPOINT);
-    cy.readOrRegisterRootAgent(REMOTE_NO_AUTH_ENDPOINT);
+    currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
+    cy.addAssistantRequiredSettings();
+    cy.readOrRegisterRootAgent();
     cy.startDummyServer();
   });
   after(() => {
+    currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.cleanRootAgent();
     cy.stopDummyServer();
   });
