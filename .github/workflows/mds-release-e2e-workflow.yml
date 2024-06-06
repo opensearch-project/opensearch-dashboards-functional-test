@@ -3,12 +3,10 @@ on:
   pull_request:
     branches: ['**']
     paths:
-      - '.github/workflows/mds-release-e2e-workflow.yml'
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
   push:
     branches: ['**']
     paths:
-      - '.github/workflows/mds-release-e2e-workflow.yml'
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
 
 jobs:
