@@ -21,6 +21,8 @@ export const DS_API = {
   DELETE_DATA_SOURCE: `${DS_API_PREFIX}/data-source/`,
 };
 
+export const DS_NO_AUTH_LABEL = 'RemoteDataSourceNoAuth';
+
 export const TIMEOUT_OPTS = { timeout: 60000 };
 export const FORCE_CLICK_OPTS = { force: true };
 export const DATASOURCE_DELAY = 1000;

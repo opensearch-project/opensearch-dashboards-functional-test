@@ -107,3 +107,111 @@ Cypress.Commands.add('visitDataSourcesListingPage', () => {
     { timeout: 60000 }
   );
 });
+
+Cypress.Commands.add('multiDeleteDataSourceByTitle', (dataSourceTitles) => {
+  cy.visitDataSourcesListingPage();
+  cy.wait(1000);
+
+  dataSourceTitles.forEach((dataSourceTitle) => {
+    cy.contains('a', dataSourceTitle)
+      .should('exist') // Ensure the anchor tag exists
+      .invoke('attr', 'href') // Get the href attribute
+      .then((href) => {
+        // Extract the unique identifier part from the href
+        const uniqueId = href.split('/').pop(); // Assumes the unique ID is the last part of the URL
+        if (isValidUUID(uniqueId)) {
+          const testId = `checkboxSelectRow-${uniqueId}`;
+          cy.getElementByTestId(testId)
+            .check({ force: true })
+            .should('be.checked');
+        }
+      });
+  });
+
+  // Wait for the selections to be checked
+  cy.wait(1000);
+
+  cy.getElementByTestId('deleteDataSourceConnections')
+    .should('exist')
+    .should('be.enabled')
+    .click({ force: true });
+
+  // Wait for the delete confirmation modal
+  cy.wait(1000);
+
+  cy.get('button[data-test-subj="confirmModalConfirmButton"]')
+    .should('exist') // Ensure the button exists
+    .should('be.visible') // Ensure the button is visible
+    .click({ force: true });
+
+  // Wait for the delete action to complete
+  cy.wait(1000);
+  cy.visitDataSourcesListingPage();
+});
+
+Cypress.Commands.add('singleDeleteDataSourceByTitle', (dataSourceTitle) => {
+  cy.visitDataSourcesListingPage();
+  cy.wait(1000);
+  cy.contains('a', dataSourceTitle)
+    .should('exist') // Ensure the anchor tag exists
+    .invoke('attr', 'href') // Get the href attribute
+    .then((href) => {
+      // Extract the unique identifier part from the href
+      const uniqueId = href.split('/').pop(); // Assumes the unique ID is the last part of the URL
+      miscUtils.visitPage(
+        `app/management/opensearch-dashboards/dataSources/${uniqueId}`
+      );
+      cy.wait(1000);
+      cy.getElementByTestId('editDatasourceDeleteIcon').click({ force: true });
+    });
+  cy.wait(1000);
+  cy.get('button[data-test-subj="confirmModalConfirmButton"]')
+    .should('exist') // Ensure the button exists
+    .should('be.visible') // Ensure the button is visible
+    .click({ force: true }); // Click the button
+  cy.wait(1000);
+  cy.visitDataSourcesListingPage();
+});
+
+Cypress.Commands.add('deleteAllDataSourcesOnUI', () => {
+  cy.visitDataSourcesListingPage();
+  cy.wait(1000);
+
+  // Clean all data sources
+  // check if checkboxSelectAll input exist
+  // if exist, check it and delete all
+  // for test purpose, no need to consider pagination
+  // we can use both deleteAll on UI and request part
+  cy.ifElementExists('[data-test-subj="checkboxSelectAll"]', () => {
+    // Your logic when the element exists
+    cy.getElementByTestId('checkboxSelectAll')
+      .should('exist')
+      .check({ force: true });
+    // Add any additional actions you want to perform
+    cy.getElementByTestId('deleteDataSourceConnections')
+      .should('exist')
+      .should('be.enabled')
+      .click({ force: true });
+    cy.getElementByTestId('confirmModalConfirmButton')
+      .should('exist') // Ensure the button exists
+      .should('be.visible') // Ensure the button is visible
+      .click({ force: true });
+  });
+  // after delete all data sources, the selectAll input should not exist
+  cy.getElementByTestId('checkboxSelectAll').should('not.exist');
+});
+
+const isValidUUID = (str) => {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(str);
+};
+
+Cypress.Commands.add('ifElementExists', (selector, callback) => {
+  cy.get('body').then(($body) => {
+    if ($body.find(selector).length) {
+      // Element exists, call the callback
+      callback();
+    }
+  });
+});
