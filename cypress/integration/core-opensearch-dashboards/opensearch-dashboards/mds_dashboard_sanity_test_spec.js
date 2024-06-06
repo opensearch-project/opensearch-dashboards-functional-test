@@ -19,8 +19,9 @@ const disableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER');
 
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('dashboard data source sample data validation', () => {
-    before(() => {
+    beforeEach(() => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
     });
 
     describe('checking home page', () => {
