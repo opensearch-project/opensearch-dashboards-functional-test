@@ -11,18 +11,22 @@ Cypress.Commands.add('selectDataSourceForImport', (dataSourceTitle) => {
 });
 
 Cypress.Commands.add('deleteAllSavedObjects', () => {
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('dashboard');
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('index-pattern');
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('search');
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('visualization');
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('metrics');
-  cy.wait(1000);
-  cy.deleteSavedObjectByType('vega');
+  const types = [
+    'index-pattern',
+    'visualization',
+    'dashboard',
+    'search',
+    'query',
+    'url',
+    'augment-vis',
+    'homepage',
+    'data-source',
+    'visualization-visbuilder',
+    'config',
+  ];
+  types.forEach((type) => {
+    cy.deleteSavedObjectByType(type);
+  });
 });
 
 Cypress.Commands.add(
