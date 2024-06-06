@@ -20,6 +20,7 @@ export const DS_API = {
   CREATE_DATA_SOURCE: `${DS_API_PREFIX}/data-source`,
   DELETE_DATA_SOURCE: `${DS_API_PREFIX}/data-source/`,
 };
+export const DS_NO_AUTH_LABEL = 'RemoteDataSourceNoAuth';
 
 export const DS_NO_AUTH_LABEL = 'RemoteDataSourceNoAuth';
 
