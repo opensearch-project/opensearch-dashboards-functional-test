@@ -38,10 +38,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
         ).type('#000000');
-        cy.getElementByTestId(
-          'workspaceForm-workspaceFeatureVisibility-OpenSearch Dashboards'
-        ).check({ force: true });
-        cy.get('[id$="discover"]').uncheck({ force: true });
+        cy.getElementByTestId('workspaceUseCase-observability').check({
+          force: true,
+        });
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
@@ -60,10 +59,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             name: workspaceName,
             description: 'test_workspace_description',
             features: [
-              'dashboards',
-              'visualize',
               'workspace_update',
               'workspace_overview',
+              'use-case-observability',
             ],
           };
           cy.checkWorkspace(workspaceId, expectedWorkspace);
@@ -102,10 +100,23 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
+        cy.getElementByTestId('workspaceUseCase-observability').check({
+          force: true,
+        });
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
         cy.contains('workspace name has already been used').should('exist');
+      });
+
+      it('workspace use case is required', () => {
+        cy.getElementByTestId(
+          'workspaceForm-workspaceDetails-nameInputText'
+        ).type(workspaceName);
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
+        cy.contains('Use case is required. Select a use case.').should('exist');
       });
     });
 
@@ -128,10 +139,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
           ).type('#000000');
-          cy.getElementByTestId(
-            'workspaceForm-workspaceFeatureVisibility-OpenSearch Dashboards'
-          ).check({ force: true });
-          cy.get('[id$="discover"]').uncheck({ force: true });
+          cy.getElementByTestId('workspaceUseCase-observability').check({
+            force: true,
+          });
           cy.get('button').contains('Users & Permissions').click();
           cy.getElementByTestId(
             'workspaceForm-permissionSettingPanel-user-addNew'
@@ -155,10 +165,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
               name: workspaceName,
               description: 'test_workspace_description',
               features: [
-                'dashboards',
-                'visualize',
                 'workspace_update',
                 'workspace_overview',
+                'use-case-observability',
               ],
               permissions: {
                 read: {
