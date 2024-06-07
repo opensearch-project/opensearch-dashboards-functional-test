@@ -100,7 +100,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     it('should show wokrspace update when click on settings tab', () => {
       // click on settings tab
       cy.getElementByTestId('workspaceTabs').find('#settings').click();
-      cy.contains('Workspace Details').should('be.visible');
+      cy.contains('Enter Details').should('be.visible');
 
       cy.getElementByTestId('workspaceForm-workspaceDetails-nameInputText')
         .clear()
