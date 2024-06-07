@@ -24,7 +24,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     it('should successfully load the page', () => {
-      cy.contains('Create Workspace', { timeout: 60000 });
+      cy.contains('Create a workspace', { timeout: 60000 });
     });
 
     describe('Create a workspace successfully', () => {
