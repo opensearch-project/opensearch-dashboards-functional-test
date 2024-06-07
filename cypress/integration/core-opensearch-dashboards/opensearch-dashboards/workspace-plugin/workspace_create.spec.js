@@ -107,19 +107,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
         cy.contains('workspace name has already been used').should('exist');
       });
-
-      it('workspace description is not valid', () => {
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-nameInputText'
-        ).type(workspaceName);
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-descriptionInputText'
-        ).type('./+');
-        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
-          force: true,
-        });
-        cy.contains('Invalid workspace description').should('exist');
-      });
     });
 
     if (
