@@ -16,11 +16,12 @@ const testFixtureHandler = new TestFixtureHandler(
 describe('After', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    //cy.deleteAllIndices();
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
     );
     cy.deleteSavedObjectByType('index-pattern');
+    cy.deleteAllIndices();
+    cy.clearCache();
   });
 
   it('clean up complete', () => {});
