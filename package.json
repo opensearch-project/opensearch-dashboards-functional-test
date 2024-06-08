@@ -25,7 +25,7 @@
     "pkg-version": "./scripts/getpkgversion.sh",
     "generate:test-data": "node ./scripts/generate_data/index.js",
     "postinstall": "husky install",
-    "osd:ciGroup1": "echo \"apps/vis_builder/*.js\"",
+    "osd:ciGroup1": "echo \"apps/data_explorer/*.js,apps/vis_builder/*.js\"",
     "osd:ciGroup2": "echo \"apps/vis_type_table/*.js\"",
     "osd:ciGroup3": "echo \"apps/vis-augmenter/*.js\"",
     "osd:ciGroup4": "echo \"dashboard_sample_data_with_datasource_spec.js,dashboard_sanity_test_spec.js\"",
