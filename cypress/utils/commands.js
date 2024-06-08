@@ -5,6 +5,8 @@
 
 import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
 
+export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
+
 export const ADMIN_AUTH = {
   username: Cypress.env('username'),
   password: Cypress.env('password'),
@@ -574,4 +576,82 @@ Cypress.Commands.add('fleshTenantSettings', () => {
       failOnStatusCode: false,
     });
   }
+});
+
+Cypress.Commands.add(
+  'selectFromDataSourceSelector',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find(`button[data-test-subj="comboBoxClearButton"]`)
+      .then((clearButton) => {
+        if (clearButton.length > 0) {
+          clearButton.click();
+        }
+      });
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find('input')
+      .clear('{backspace}')
+      .type(dataSourceTitle);
+    cy.wait(1000);
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiFilterSelectItem')
+        .contains(dataSourceTitle)
+        .closest('.euiFilterSelectItem');
+    }
+    dataSourceElement.click();
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId('dataSourceSelectorComboBox')
+        .last('button')
+        .click();
+    }
+  }
+);
+
+Cypress.Commands.add('viewData', (sampleData) => {
+  cy.get(`button[data-test-subj="launchSampleDataSet${sampleData}"]`)
+    .should('be.visible')
+    .click();
+});
+
+Cypress.Commands.add('addSampleDataToDataSource', (dataSourceTitle) => {
+  cy.visit('app/home#/tutorial_directory');
+  cy.selectFromDataSourceSelector(dataSourceTitle);
+  cy.get('button[data-test-subj="addSampleDataSetecommerce"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardecommerce"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+  cy.get('button[data-test-subj="addSampleDataSetflights"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardflights"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+  cy.get('button[data-test-subj="addSampleDataSetlogs"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardlogs"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+});
+
+Cypress.Commands.add('removeSampleDataFromDataSource', (dataSourceTitle) => {
+  cy.visit('app/home#/tutorial_directory');
+  cy.selectFromDataSourceSelector(dataSourceTitle);
+  cy.get('button[data-test-subj="removeSampleDataSetecommerce"]')
+    .should('be.visible')
+    .click();
+  cy.get('button[data-test-subj="removeSampleDataSetflights"]')
+    .should('be.visible')
+    .click();
+
+  cy.get('button[data-test-subj="removeSampleDataSetlogs"]')
+    .should('be.visible')
+    .click();
 });

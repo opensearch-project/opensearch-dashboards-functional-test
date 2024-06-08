@@ -1,0 +1,39 @@
+{
+	"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+	"data": {
+		"url": {
+			"index": "your_index_name",
+			"body": {
+				"size": 0,
+				"aggs": {
+					"age_groups": {
+						"terms": {
+							"field": "age"
+						},
+						"aggs": {
+							"avg_salary": {
+								"avg": {
+									"field": "salary"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"format": {
+			"property": "aggregations.age_groups.buckets"
+		}
+	},
+	"mark": "bar",
+	"encoding": {
+		"x": {
+			"field": "key",
+			"type": "ordinal"
+		},
+		"y": {
+			"field": "avg_salary.value",
+			"type": "quantitative"
+		}
+	}
+}
