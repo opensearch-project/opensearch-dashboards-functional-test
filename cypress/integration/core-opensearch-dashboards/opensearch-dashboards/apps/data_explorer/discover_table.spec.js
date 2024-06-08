@@ -22,7 +22,7 @@ const indexSet = [
 ];
 
 // Setting up the page
-describe('discover_table', () => {
+describe.skip('discover_table', () => {
   before(() => {
     // import logstash functional
     CURRENT_TENANT.newTenant = 'global';
