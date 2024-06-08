@@ -24,7 +24,6 @@ const indexSet = [
 // Setting up the page
 describe('discover_table', () => {
   before(() => {
-    cy.deleteAllIndices();
     // import logstash functional
     CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONDocIfNeeded(
