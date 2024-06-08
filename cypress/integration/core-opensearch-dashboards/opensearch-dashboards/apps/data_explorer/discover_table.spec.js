@@ -500,6 +500,7 @@ describe('discover_table', () => {
     cy.reload();
     cy.deleteIndexPattern('nestedindex');
     cy.deleteIndex('nestedindex');
+    cy.clearCache();
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );

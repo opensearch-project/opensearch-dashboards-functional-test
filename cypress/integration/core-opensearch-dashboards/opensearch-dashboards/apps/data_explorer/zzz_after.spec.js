@@ -22,6 +22,7 @@ describe('After', () => {
     cy.deleteSavedObjectByType('index-pattern');
     cy.deleteIndex('long-window-logstash-0');
     cy.deleteIndex('logstash-*');
+    cy.deleteIndex('.kibana*');
     cy.clearCache();
   });
 
