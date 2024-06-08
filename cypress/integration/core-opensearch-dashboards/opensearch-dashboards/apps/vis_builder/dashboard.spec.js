@@ -23,6 +23,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
+      cy.forceMerge('.kibana*');
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
@@ -105,6 +106,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Wait for page to load
       cy.waitForLoader();
+      cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
       // Check to see if the new vis is present in the dashboard
       cy.getElementByTestId(
         `embeddablePanelHeading-${toTestId(visTitle, '')}`
