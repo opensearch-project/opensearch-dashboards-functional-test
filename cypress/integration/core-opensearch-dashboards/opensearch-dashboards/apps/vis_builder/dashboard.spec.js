@@ -23,13 +23,15 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
-      cy.forceMerge('.kibana*');
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
 
       cy.importSavedObjects(VB_PATH_SO_DATA);
+
+      cy.forceMerge('.kibana*');
+      cy.forceMerge(VB_INDEX_ID);
 
       cy.visit(`${BASE_PATH}/app/dashboards#/view/${VB_DASHBOARD_ID}`);
 
