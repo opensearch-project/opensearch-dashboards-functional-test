@@ -24,6 +24,7 @@ const indexSet = [
 // Setting up the page
 describe('discover_table', () => {
   before(() => {
+    cy.deleteAllIndices();
     // import logstash functional
     CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONDocIfNeeded(
@@ -51,8 +52,6 @@ describe('discover_table', () => {
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
-    cy.forceMerge('.kibana*');
-    cy.forceMerge('logstash-*');
 
     // Go to the Discover page
     miscUtils.visitPage(
