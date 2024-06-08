@@ -658,5 +658,5 @@ Cypress.Commands.add('removeSampleDataFromDataSource', (dataSourceTitle) => {
 });
 
 Cypress.Commands.add('forceMerge', (indexes) => {
-  devToolsRequest(`/${indexes}/_forcemerge`, 'POST');
+  devToolsRequest(`/${indexes}/_forcemerge?max_num_segments=1`, 'POST');
 });
