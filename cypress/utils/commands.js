@@ -659,4 +659,7 @@ Cypress.Commands.add('removeSampleDataFromDataSource', (dataSourceTitle) => {
 
 Cypress.Commands.add('clearCache', () => {
   devToolsRequest(`/_cache/clear?query=true&request=true`, 'POST');
+  devToolsRequest(`/_flush`, 'POST');
+  devToolsRequest(`/_forcemerge`, 'POST');
+  cy.wait(5000);
 });
