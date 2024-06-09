@@ -34,8 +34,8 @@
     "osd:ciGroup7": "echo \"apps/data_explorer/field_visualize.spec.js,apps/data_explorer/filter_editor.spec.js,apps/vis_builder/*.js\"",
     "osd:ciGroup8": "echo \"apps/data_explorer/index_pattern_with_encoded_id.spec.js,apps/data_explorer/index_pattern_without_field.spec.js,apps/vis_builder/*.js\"",
     "osd:ciGroup9": "echo \"apps/data_explorer/inspector.spec.js,apps/data_explorer/large_string.spec.js,apps/vis_builder/*.js\"",
-    "osd:ciGroup10": "echo \"apps/data_explorer/saved_queries.spec.js,apps/data_explorer/shared_links.spec.js,apps/vis_builder/*.js\"",
-    "osd:ciGroup11": "echo \"apps/data_explorer/sidebar.spec.js,apps/data_explorer/source_filter.spec.js,apps/data_explorer/zzz_after.spec.js,apps/vis_builder/*.js\"",
+    "osd:ciGroup10": "echo \"apps/data_explorer/saved_queries.spec.js,apps/vis_builder/*.js\"",
+    "osd:ciGroup11": "echo \"apps/data_explorer/shared_links.spec.js,apps/vis_builder/*.js\"",
     "start-dummy-llm-server": "node ./cypress/support/assistant-dummy-llm.js"
   },
   "repository": {
