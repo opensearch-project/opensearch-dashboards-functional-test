@@ -115,8 +115,10 @@ describe('shared links', () => {
     });
   });
 
-  describe.skip('shared links with state in sessionStorage', () => {
+  describe('shared links with state in sessionStorage', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'state:storeInSessionStorage': true,
       });
@@ -128,6 +130,8 @@ describe('shared links', () => {
     });
 
     after(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'state:storeStateInSessionStorage': false,
       });
