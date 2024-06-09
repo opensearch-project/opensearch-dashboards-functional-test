@@ -119,9 +119,9 @@ describe('shared links', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
-      // cy.setAdvancedSetting({
-      //   'state:storeInSessionStorage': true,
-      // });
+      cy.setAdvancedSetting({
+        'state:storeInSessionStorage': true,
+      });
 
       miscUtils.visitPage('app/data-explorer/discover#/');
       cy.waitForLoader();
@@ -130,9 +130,9 @@ describe('shared links', () => {
     });
 
     after(() => {
-      // cy.setAdvancedSetting({
-      //   'state:storeStateInSessionStorage': false,
-      // });
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+      cy.deleteSavedObjectByType('config');
     });
 
     it('do nothing', () => {});
