@@ -20,10 +20,6 @@ describe('After', () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
     );
     cy.deleteSavedObjectByType('index-pattern');
-    cy.deleteIndex('long-window-logstash-0');
-    cy.deleteIndex('logstash-*');
-    cy.deleteIndex('.kibana*');
-    cy.clearCache();
   });
 
   it('clean up complete', () => {});
