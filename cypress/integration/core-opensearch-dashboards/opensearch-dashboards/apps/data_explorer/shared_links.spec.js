@@ -135,10 +135,6 @@ describe('shared links', () => {
       cy.deleteSavedObjectByType('config');
     });
 
-    it('do nothing', () => {});
-
-    return ;
-
     it('should allow for copying the snapshot URL', function () {
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
