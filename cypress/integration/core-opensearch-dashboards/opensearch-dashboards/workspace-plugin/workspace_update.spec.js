@@ -130,7 +130,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         );
         const expectedWorkspace = {
           name: workspaceName,
-          description: 'test_workspace_description',
+          description: 'test_workspace_description.+~!',
           features: [
             'workspace_update',
             'workspace_overview',
