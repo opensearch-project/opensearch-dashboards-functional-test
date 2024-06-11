@@ -169,7 +169,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId('workspaceUseCase-observability').check({
             force: true,
           });
-          cy.get('button').contains('Users & Permissions').click();
           cy.getElementByTestId(
             'workspaceForm-permissionSettingPanel-user-addNew'
           ).click();
