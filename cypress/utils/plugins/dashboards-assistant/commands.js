@@ -218,7 +218,6 @@ Cypress.Commands.add('setDefaultDataSourceForAssistant', () => {
       const dataSourceId = result[0];
       // set default data source
       cy.setDefaultDataSource(dataSourceId);
-      return dataSourceId;
     });
   }
 });
