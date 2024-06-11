@@ -31,6 +31,7 @@
     "DISABLE_LOCAL_CLUSTER": false,
     "browserPermissions": {
       "clipboard": "allow"
-    }
+    },
+    "UIMETRIC_ENABLED": false
   }
 }
