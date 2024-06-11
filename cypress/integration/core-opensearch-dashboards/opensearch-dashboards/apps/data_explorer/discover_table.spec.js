@@ -408,7 +408,7 @@ describe('discover_table', () => {
   describe('AutoSize table', () => {
     describe('Legacy Table', () => {
       it('check table Auto Size with change in time range', function () {
-        cy.get('[aria-label="Next"]')
+        cy.get('[aria-label="Toggle row details"]')
           .its('length')
           .then((noEntries) => {
             cy.setTopNavDate(
@@ -416,14 +416,14 @@ describe('discover_table', () => {
               'Sep 22, 2015 @ 18:00:00.000'
             );
             cy.waitForLoader();
-            cy.get('[aria-label="Next"]')
+            cy.get('[aria-label="Toggle row details"]')
               .its('length')
               .should('be.lessThan', noEntries);
           });
       });
 
       it('check table Auto Size with filter', function () {
-        cy.get('[aria-label="Next"]')
+        cy.get('[aria-label="Toggle row details"]')
           .its('length')
           .then((noEntries) => {
             cy.get('[data-test-subj="field-extension-showDetails"]')
@@ -433,7 +433,7 @@ describe('discover_table', () => {
                   .click()
                   .then(() => {
                     cy.wait(2000);
-                    cy.get('[aria-label="Next"]')
+                    cy.get('[aria-label="Toggle row details"]')
                       .its('length')
                       .should('be.lessThan', noEntries);
                   });
