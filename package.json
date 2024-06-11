@@ -28,7 +28,7 @@
     "osd:ciGroup1": "echo \"apps/vis_builder/*.js\"",
     "osd:ciGroup2": "echo \"apps/vis_type_table/*.js\"",
     "osd:ciGroup3": "echo \"apps/vis-augmenter/*.js\"",
-    "osd:ciGroup4": "echo \"dashboard_sample_data_with_datasource_spec.js,dashboard_sanity_test_spec.js\"",
+    "osd:ciGroup4": "echo \"dashboard_sample_data_with_datasource_spec.js,dashboard_sanity_test_spec.js,apps/telemetry/*.js\"",
     "osd:ciGroup5": "echo \"datasource-management-plugin/*.js\"",
     "osd:ciGroup6": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/data_source_selector.spec.js,apps/data_explorer/date_nanos_mixed.spec.js,apps/data_explorer/date_nanos.spec.js,apps/data_explorer/discover_histogram.spec.js,apps/data_explorer/discover.spec.js,apps/data_explorer/zzz_after.spec.js\"",
     "osd:ciGroup7": "echo \"apps/data_explorer/aaa_before.spec.js,apps/data_explorer/doc_navigation.spec.js,apps/data_explorer/doc_table.spec.js,apps/data_explorer/errors.spec.js,apps/data_explorer/field_data.spec.js,apps/data_explorer/zzz_after.spec.js\"",
