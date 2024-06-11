@@ -111,7 +111,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         ).type(workspaceName);
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
-        ).type('test_workspace_description');
+        ).type('test_workspace_description.+~!');
         cy.getElementByTestId(
           'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
         ).type('#D36086');
