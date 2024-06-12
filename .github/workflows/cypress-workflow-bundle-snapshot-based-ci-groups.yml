@@ -6,12 +6,15 @@ on:
       - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - '.github/actions/start-opensearch/action.yml'
+
   push:
     branches: ['**']
     paths:
       - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - '.github/actions/start-opensearch/action.yml'
 
 env:
   CI_GROUPS: "1,2,3,4,5,6,7,8,9"
