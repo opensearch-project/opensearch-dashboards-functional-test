@@ -302,8 +302,12 @@ Cypress.Commands.add('singleDeleteDataSourceByTitle', (dataSourceTitle) => {
     .should('exist') // Ensure the button exists
     .should('be.visible') // Ensure the button is visible
     .click({ force: true }); // Click the button
-  cy.wait(1000);
-  cy.visitDataSourcesListingPage();
+
+  // After delete, it will go back to list page automatically
+  cy.contains(
+    'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
+    { timeout: 60000 }
+  );
 });
 
 Cypress.Commands.add('deleteAllDataSourcesOnUI', () => {
