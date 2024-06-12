@@ -37,7 +37,7 @@ Cypress.Commands.add('deleteAllDataSources', () => {
 
 Cypress.Commands.add(
   'createDataSourceNoAuth',
-  ({ title = 'RemoteDataSourceNoAuth' }) => {
+  ({ title = 'RemoteDataSourceNoAuth' } = {}) => {
     cy.request({
       method: 'POST',
       url: `${BASE_PATH}/api/saved_objects/data-source`,
