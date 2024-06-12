@@ -33,6 +33,7 @@ import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
+import { currentBackendEndpoint } from '../utils/commands';
 
 import 'cypress-real-events';
 
@@ -64,7 +65,10 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
  * Make setup step in here so that all the test files in dashboards-assistant
  * won't need to call these commands.
  */
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
   before(() => {
     cy.addAssistantRequiredSettings();
     cy.readOrRegisterRootAgent();
@@ -72,6 +76,31 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   });
   after(() => {
     cy.cleanRootAgent();
+    cy.stopDummyServer();
+  });
+}
+
+/**
+ * Make setup step in here so that all the test with MDS files in dashboards-assistant
+ * won't need to call these commands.
+ */
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
+  before(() => {
+    const originalBackendEndpoint = currentBackendEndpoint.get();
+    currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
+    cy.addAssistantRequiredSettings();
+    cy.readOrRegisterRootAgent();
+    currentBackendEndpoint.set(originalBackendEndpoint, false);
+    cy.startDummyServer();
+  });
+  after(() => {
+    const originalBackendEndpoint = currentBackendEndpoint.get();
+    currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
+    cy.cleanRootAgent();
+    currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.stopDummyServer();
   });
 }
