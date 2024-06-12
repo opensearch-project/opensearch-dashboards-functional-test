@@ -197,17 +197,15 @@ Cypress.Commands.add('stopDummyServer', () => {
 });
 
 Cypress.Commands.add('sendAssistantMessage', (body, dataSourceId) => {
-  const url = `${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}${
-    dataSourceId ? `?dataSourceId=${dataSourceId}` : ''
-  }`;
-  apiRequest(url, 'POST', body);
+  const url = `${BASE_PATH}${ASSISTANT_API.SEND_MESSAGE}`;
+  const qs = { dataSourceId: dataSourceId };
+  apiRequest(url, 'POST', body, qs);
 });
 
 Cypress.Commands.add('deleteConversation', (conversationId, dataSourceId) => {
-  const url = `${BASE_PATH}${ASSISTANT_API.CONVERSATION}/${conversationId}${
-    dataSourceId ? `?dataSourceId=${dataSourceId}` : ''
-  }`;
-  apiRequest(url, 'DELETE');
+  const url = `${BASE_PATH}${ASSISTANT_API.CONVERSATION}/${conversationId}`;
+  const qs = { dataSourceId: dataSourceId };
+  apiRequest(url, 'DELETE', undefined, qs);
 });
 
 Cypress.Commands.add('setDefaultDataSourceForAssistant', () => {
@@ -218,6 +216,7 @@ Cypress.Commands.add('setDefaultDataSourceForAssistant', () => {
       const dataSourceId = result[0];
       // set default data source
       cy.setDefaultDataSource(dataSourceId);
+      return cy.wrap(dataSourceId);
     });
   }
 });

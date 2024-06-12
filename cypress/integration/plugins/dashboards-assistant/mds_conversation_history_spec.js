@@ -12,15 +12,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     let dataSourceId;
 
     before(() => {
-      if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
-        cy.deleteAllDataSources();
-        // create data source
-        cy.createDataSourceNoAuth().then((result) => {
-          dataSourceId = result[0];
-          // set default data source
-          cy.setDefaultDataSource(dataSourceId);
-        });
-      }
+      cy.setDefaultDataSourceForAssistant().then((id) => {
+        dataSourceId = id;
+      });
       // Set welcome screen tracking to false
       restoreShowHome = setStorageItem(
         localStorage,
