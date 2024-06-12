@@ -4,6 +4,7 @@
  */
 
 import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
+import { devToolsRequest } from './helpers';
 
 export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
 
@@ -680,4 +681,11 @@ Cypress.Commands.add('removeSampleDataFromDataSource', (dataSourceTitle) => {
   cy.get('button[data-test-subj="removeSampleDataSetlogs"]')
     .should('be.visible')
     .click();
+});
+
+Cypress.Commands.add('clearCache', () => {
+  devToolsRequest(`/_cache/clear?query=true&request=true`, 'POST');
+  devToolsRequest(`/_flush`, 'POST');
+  devToolsRequest(`/_forcemerge`, 'POST');
+  cy.wait(5000);
 });

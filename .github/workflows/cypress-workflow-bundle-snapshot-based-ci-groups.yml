@@ -6,6 +6,7 @@ on:
       - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
 
   push:
@@ -14,6 +15,7 @@ on:
       - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
 
 env:
