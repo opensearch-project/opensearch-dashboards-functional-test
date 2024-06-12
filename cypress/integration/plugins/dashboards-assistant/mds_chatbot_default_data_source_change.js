@@ -57,6 +57,10 @@ if (
       );
       // create new data source
       cy.createDataSourceNoAuth({ title: 'NewDataSource' }).as('newDataSource');
+
+      // Wait 3s for data source created
+      cy.wait(3000);
+
       cy.visit('/app/management/opensearch-dashboards/dataSources');
       cy.waitForLoader();
     });
