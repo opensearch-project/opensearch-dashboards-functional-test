@@ -68,6 +68,7 @@ describe('discover histogram', { scrollBehavior: false }, () => {
     );
     cy.deleteIndex('long-window-logstash-0');
     cy.deleteSavedObjectByType('index-pattern');
+    cy.clearCache();
   });
 
   it('should visualize monthly data with different day intervals', () => {
