@@ -24,6 +24,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     after(() => {
       // Clean up after all test are run
       cy.deleteAllDataSources();
+      // clear cache
+      cy.clearCache();
       // remove the default data source
       cy.setAdvancedSetting({
         defaultDataSource: '',
