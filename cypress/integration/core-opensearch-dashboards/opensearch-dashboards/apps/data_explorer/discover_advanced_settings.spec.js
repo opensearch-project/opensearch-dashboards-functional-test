@@ -216,7 +216,7 @@ describe('discover_advanced_setting', () => {
     it('check legacy table respects Number of rows setting', function () {
       cy.switchDiscoverTable('legacy');
       cy.wait(2000); // Intentional Wait to account for low performant env
-      cy.get('[aria-label="Next"]').should('have.length', 5);
+      cy.get('[aria-label="Toggle row details"]').should('have.length', 5);
     });
 
     after(() => {
