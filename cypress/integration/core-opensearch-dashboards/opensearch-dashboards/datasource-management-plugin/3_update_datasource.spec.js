@@ -51,6 +51,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     after(() => {
       // Clean up after all test are run
       cy.deleteAllDataSources();
+      // remove the default data source
+      cy.setAdvancedSetting({
+        defaultDataSource: '',
+      });
     });
 
     it('should successfully load the listing page & have 2 records in table', () => {
