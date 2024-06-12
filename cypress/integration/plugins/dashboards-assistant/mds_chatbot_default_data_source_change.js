@@ -51,7 +51,7 @@ if (
   describe('Assistant basic spec', () => {
     let dataSource1;
     let dataSource2;
-    before(() => {
+    beforeEach(() => {
       cy.deleteAllDataSources();
       // create data source 1
       cy.createDataSourceNoAuth({ title: 'NoAuthDataSource1' }).then(
@@ -67,8 +67,6 @@ if (
       );
       cy.visit('/app/management/opensearch-dashboards/dataSources');
       cy.waitForLoader();
-    });
-    beforeEach(() => {
       manualSetDefaultDataSource(dataSource1.title);
     });
 
