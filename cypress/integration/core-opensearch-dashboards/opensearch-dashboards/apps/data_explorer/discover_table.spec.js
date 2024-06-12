@@ -408,21 +408,26 @@ describe('discover_table', () => {
   describe('AutoSize table', () => {
     describe('Legacy Table', () => {
       it('check table Auto Size with change in time range', function () {
-        cy.get('[aria-label="Toggle row details"]')
+        cy.get('[data-test-subj="docTableExpandToggleColumn"]')
           .its('length')
           .then((noEntries) => {
             cy.setTopNavDate(
               'Sep 22, 2015 @ 14:00:00.000',
-              'Sep 22, 2015 @ 18:00:00.000'
+              'Sep 22, 2015 @ 14:05:00.000'
             );
-            cy.waitForLoader();
-            cy.get('[aria-label="Toggle row details"]')
+            cy.verifyHitCount('2'); // Intentional Wait
+            cy.get('[data-test-subj="docTableExpandToggleColumn"]')
               .its('length')
               .should('be.lessThan', noEntries);
           });
       });
 
       it('check table Auto Size with filter', function () {
+        cy.setTopNavDate(
+          'Sep 22, 2015 @ 14:00:00.000',
+          'Sep 22, 2015 @ 18:00:00.000'
+        );
+        cy.waitForLoader(); // Intentional Wait
         cy.get('[aria-label="Toggle row details"]')
           .its('length')
           .then((noEntries) => {
@@ -432,7 +437,7 @@ describe('discover_table', () => {
                 cy.get('[data-test-subj="plus-extension-gif"]')
                   .click()
                   .then(() => {
-                    cy.wait(2000);
+                    cy.verifyHitCount('1'); // Intentional Wait
                     cy.get('[aria-label="Toggle row details"]')
                       .its('length')
                       .should('be.lessThan', noEntries);
@@ -459,9 +464,9 @@ describe('discover_table', () => {
           .then((noEntries) => {
             cy.setTopNavDate(
               'Sep 22, 2015 @ 14:00:00.000',
-              'Sep 22, 2015 @ 18:00:00.000'
+              'Sep 22, 2015 @ 14:30:00.000'
             );
-            cy.waitForLoader();
+            cy.verifyHitCount('7');
             cy.get('[aria-label="Inspect document details"]')
               .its('length')
               .should('be.lessThan', noEntries);
@@ -475,11 +480,11 @@ describe('discover_table', () => {
             cy.get('[data-test-subj="field-extension-showDetails"]')
               .trigger('click')
               .then(() => {
-                cy.get('[data-test-subj="plus-extension-gif"]')
+                cy.get('[data-test-subj="plus-extension-css"]')
                   .trigger('click')
                   .then(() => {
-                    cy.switchDiscoverTable('new');
-                    cy.get('[aria-label="Inspect document details"]')
+                    cy.verifyHitCount('4');
+                    cy.get('[aria-label="Toggle row details"]')
                       .its('length')
                       .should('be.lessThan', noEntries);
                   });
