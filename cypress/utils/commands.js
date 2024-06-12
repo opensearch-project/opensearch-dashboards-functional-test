@@ -613,9 +613,12 @@ Cypress.Commands.add(
       });
     cy.getElementByTestId('dataSourceSelectorComboBox')
       .find('input')
-      .clear('{backspace}')
+      .clear('{backspace}');
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find('input')
       .type(dataSourceTitle);
     cy.wait(1000);
+
     let dataSourceElement;
     if (dataSourceId) {
       dataSourceElement = cy.get(`#${dataSourceId}`);
