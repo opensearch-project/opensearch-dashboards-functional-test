@@ -9,8 +9,12 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
     let restoreShowHome;
     let restoreNewThemeModal;
+    let dataSourceId;
 
     before(() => {
+      cy.setDefaultDataSourceForAssistant().then((id) => {
+        dataSourceId = id;
+      });
       // Set welcome screen tracking to false
       restoreShowHome = setStorageItem(
         localStorage,
@@ -37,6 +41,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.get('img[aria-label="toggle chat flyout icon"]').click();
     });
     after(() => {
+      cy.clearDataSourceForAssistant();
       if (restoreShowHome) {
         restoreShowHome();
       }
@@ -106,13 +111,16 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
       before(() => {
         // Create conversations data
-        cy.sendAssistantMessage({
-          input: {
-            type: 'input',
-            content: 'What are the indices in my cluster?',
-            contentType: 'text',
+        cy.sendAssistantMessage(
+          {
+            input: {
+              type: 'input',
+              content: 'What are the indices in my cluster?',
+              contentType: 'text',
+            },
           },
-        }).then((result) => {
+          dataSourceId
+        ).then((result) => {
           if (result.status !== 200) {
             throw result.body;
           }
@@ -123,7 +131,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       after(() => {
         // Clear created conversations in tests
         conversations.map(({ conversationId }) =>
-          cy.deleteConversation(conversationId)
+          cy.deleteConversation(conversationId, dataSourceId)
         );
       });
 
