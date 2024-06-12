@@ -26,7 +26,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       after(() => {
         // Clean up after all test are run
-        cy.deleteAllDataSourcesOnUI();
+        cy.deleteAllDataSources();
+        // remove the default data source
+        cy.setAdvancedSetting({
+          defaultDataSource: '',
+        });
       });
       it('The first data source is the default data source', () => {
         cy.visitDataSourcesListingPage();
