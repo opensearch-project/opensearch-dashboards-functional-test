@@ -135,6 +135,7 @@ Cypress.Commands.add('registerRootAgent', () => {
 });
 
 Cypress.Commands.add('putRootAgentId', (agentId) => {
+  // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
     Cypress.env('SECURITY_ENABLED') &&
     !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
