@@ -15,6 +15,7 @@ const manualSetDefaultDataSource = (dataSourceTitle) => {
   if (
     cy.getElementByTestId('editSetDefaultDataSource').contains('Set as default')
   ) {
+    cy.wait(2000);
     cy.getElementByTestId('editSetDefaultDataSource').click();
   }
   // Back to data source list
