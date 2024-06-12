@@ -8,6 +8,7 @@ import { BASE_PATH } from '../../../utils/constants';
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Interaction trace spec', () => {
     before(() => {
+      cy.setDefaultDataSourceForAssistant();
       // Set welcome screen tracking to false
       localStorage.setItem('home:welcome:show', 'false');
       // Set new theme modal to false
@@ -36,6 +37,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     // clean up localStorage items
     after(() => {
+      cy.clearDataSourceForAssistant();
       localStorage.removeItem('home:welcome:show');
       localStorage.removeItem('home:newThemeModal:show');
     });
