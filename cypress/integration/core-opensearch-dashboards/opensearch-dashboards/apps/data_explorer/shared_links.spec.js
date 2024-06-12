@@ -58,6 +58,11 @@ describe('shared links', () => {
     cy.fleshTenantSettings();
   });
 
+  after(() => {
+    cy.deleteIndex(indexSet.join(','));
+    cy.clearCache();
+  });
+
   describe('shared links with state in query', () => {
     it('should allow for copying the snapshot URL', function () {
       const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
@@ -125,9 +130,9 @@ describe('shared links', () => {
     });
 
     after(() => {
-      cy.setAdvancedSetting({
-        'state:storeStateInSessionStorage': false,
-      });
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+      cy.deleteSavedObjectByType('config');
     });
 
     it('should allow for copying the snapshot URL', function () {
