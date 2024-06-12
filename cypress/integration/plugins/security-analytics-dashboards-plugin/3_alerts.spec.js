@@ -269,9 +269,6 @@ describe('Alerts', () => {
         2
       );
       const documentLines = document.split('\n');
-      cy.get(
-        '[data-test-subj="finding-details-flyout-document-toggle-0"]'
-      ).click({ force: true });
       cy.get('[data-test-subj="finding-details-flyout-rule-document-0"]')
         .get('[class="euiCodeBlock__line"]')
         .each((lineElement, lineIndex) => {
