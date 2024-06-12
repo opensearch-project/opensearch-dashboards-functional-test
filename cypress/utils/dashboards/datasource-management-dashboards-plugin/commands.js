@@ -348,3 +348,18 @@ Cypress.Commands.add('ifElementExists', (selector, callback) => {
     }
   });
 });
+
+Cypress.Commands.add('setDefaultDataSource', (dataSourceId) => {
+  cy.request({
+    method: 'POST',
+    url: `${BASE_PATH}/api/opensearch-dashboards/settings`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      changes: {
+        defaultDataSource: dataSourceId,
+      },
+    },
+  });
+});
