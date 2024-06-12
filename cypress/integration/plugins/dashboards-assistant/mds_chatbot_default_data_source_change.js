@@ -49,28 +49,19 @@ if (
   Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   describe('Assistant basic spec', () => {
-    let dataSource1;
-    let dataSource2;
-    beforeEach(() => {
+    beforeEach(function () {
       cy.deleteAllDataSources();
-      // create data source 1
-      cy.createDataSourceNoAuth({ title: 'NoAuthDataSource1' }).then(
-        ([id, title]) => {
-          dataSource1 = { id, title };
-        }
+      // create default data source
+      cy.createDataSourceNoAuth({ title: 'DefaultDataSource' }).then(
+        ([dataSourceId]) => cy.setDefaultDataSource(dataSourceId)
       );
-      // create data source 2
-      cy.createDataSourceNoAuth({ title: 'NoAuthDataSource2' }).then(
-        ([id, title]) => {
-          dataSource2 = { id, title };
-        }
-      );
+      // create new data source
+      cy.createDataSourceNoAuth({ title: 'NewDataSource' }).as('newDataSource');
       cy.visit('/app/management/opensearch-dashboards/dataSources');
       cy.waitForLoader();
-      manualSetDefaultDataSource(dataSource1.title);
     });
 
-    it('should reload history with new data source id', () => {
+    it('should reload history with new data source id', function () {
       // The header may render multiple times, wait for UI to be stable
       cy.wait(5000);
       // enable to toggle and show Chatbot
@@ -83,60 +74,44 @@ if (
         'loadConversationsRequest'
       );
 
-      manualSetDefaultDataSource(dataSource2.title);
+      manualSetDefaultDataSource(this.newDataSource[1]);
 
       cy.wait('@loadConversationsRequest').then(({ request }) => {
-        expect(request.url).contains(dataSource2.id);
+        expect(request.url).contains(this.newDataSource[0]);
       });
-      // Back to chat tab
-      cy.get('.llm-chat-flyout button[aria-label="history"]')
-        .should('be.visible')
-        .click();
-      // Close chat bot
-      cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
     });
 
-    it('should not reset to chat tab after data source change in history page', () => {
+    it('should not reset to chat tab after data source change in history page', function () {
       openChatBotAndSendMessage();
 
       cy.get('.llm-chat-flyout button[aria-label="history"]')
         .should('be.visible')
         .click();
 
-      manualSetDefaultDataSource(dataSource2.title);
+      manualSetDefaultDataSource(this.newDataSource[1]);
 
       // Should reset conversation and stay history page
       cy.get('h3').contains('OpenSearch Assistant').should('be.visible');
       cy.get('h3').contains('Conversations').should('be.visible');
-
-      // Back to chat tab
-      cy.get('.llm-chat-flyout button[aria-label="history"]')
-        .should('be.visible')
-        .click();
-      // Close chat bot
-      cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
     });
 
-    it('should reset chat conversation after data source changed', () => {
+    it('should reset chat conversation after data source changed', function () {
       openChatBotAndSendMessage();
 
-      manualSetDefaultDataSource(dataSource2.title);
+      manualSetDefaultDataSource(this.newDataSource[1]);
 
       // Should reset chat
       cy.get('h3').contains('OpenSearch Assistant').should('be.visible');
       cy.get('[aria-label="chat message bubble"]').should('have.length', 1);
-
-      //close chat bot
-      cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
     });
 
-    it('should reset chat tab after data source changed in trace page', () => {
+    it('should reset chat tab after data source changed in trace page', function () {
       openChatBotAndSendMessage();
       // click view trace button
       cy.get(`[aria-label="How was this generated?"]`).click();
       cy.contains('How was this generated').should('be.visible');
 
-      manualSetDefaultDataSource(dataSource2.title);
+      manualSetDefaultDataSource(this.newDataSource[1]);
 
       // Should reset chat tab
       cy.get('#how-was-this-generated').should('not.exist');
