@@ -12,9 +12,14 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Update workspace', () => {
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
-      cy.createWorkspace({ name: workspaceName }).then(
-        (value) => (workspaceId = value)
-      );
+      cy.createWorkspace({
+        name: workspaceName,
+        features: [
+          'workspace_overview',
+          'workspace_update',
+          'use-case-observability',
+        ],
+      }).then((value) => (workspaceId = value));
     });
 
     beforeEach(() => {
@@ -77,21 +82,16 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
         cy.contains('Invalid workspace name').should('exist');
       });
+    });
 
-      it('workspace description is not valid', () => {
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-descriptionInputText'
-        ).clear({
-          force: true,
-        });
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-descriptionInputText'
-        ).type('./+');
-        cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
-          force: true,
-        });
-        cy.contains('Invalid workspace description').should('exist');
+    it('workspace use case is required', () => {
+      cy.getElementByTestId('workspaceUseCase-observability').uncheck({
+        force: true,
       });
+      cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
+        force: true,
+      });
+      cy.contains('Use case is required. Select a use case.').should('exist');
     });
 
     describe('Update a workspace successfully', () => {
@@ -111,13 +111,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         ).type(workspaceName);
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
-        ).type('test_workspace_description');
+        ).type('test_workspace_description.+~!');
         cy.getElementByTestId(
           'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
         ).type('#D36086');
-        cy.getElementByTestId(
-          'workspaceForm-workspaceFeatureVisibility-OpenSearch Dashboards'
-        ).check({ force: true });
+        cy.getElementByTestId('workspaceUseCase-observability').check({
+          force: true,
+        });
         cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
           force: true,
         });
@@ -130,13 +130,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         );
         const expectedWorkspace = {
           name: workspaceName,
-          description: 'test_workspace_description',
+          description: 'test_workspace_description.+~!',
           features: [
-            'dashboards',
-            'visualize',
-            'discover',
             'workspace_update',
             'workspace_overview',
+            'use-case-observability',
           ],
         };
         cy.checkWorkspace(workspaceId, expectedWorkspace);
@@ -148,7 +146,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       Cypress.env('SECURITY_ENABLED')
     ) {
       describe('Update a workspace with permissions successfully', () => {
-        it.only('should successfully update a workspace with permissions', () => {
+        it('should successfully update a workspace with permissions', () => {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-nameInputText'
           ).clear({
@@ -168,11 +166,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
           ).type('#000000');
-          cy.getElementByTestId(
-            'workspaceForm-workspaceFeatureVisibility-OpenSearch Dashboards'
-          ).check({ force: true });
-          cy.get('[id$="discover"]').uncheck({ force: true });
-          cy.get('button').contains('Users & Permissions').click();
+          cy.getElementByTestId('workspaceUseCase-observability').check({
+            force: true,
+          });
           cy.getElementByTestId(
             'workspaceForm-permissionSettingPanel-user-addNew'
           ).click();
@@ -193,10 +189,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             name: workspaceName,
             description: 'test_workspace_description',
             features: [
-              'dashboards',
-              'visualize',
               'workspace_update',
               'workspace_overview',
+              'use-case-observability',
             ],
             permissions: {
               read: {

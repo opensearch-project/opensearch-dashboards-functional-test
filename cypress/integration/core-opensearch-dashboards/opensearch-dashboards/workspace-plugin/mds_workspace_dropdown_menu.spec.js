@@ -20,7 +20,14 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.deleteAllWorkspaces();
 
       for (const workspaceName of workspaceNames) {
-        cy.createWorkspace({ name: workspaceName }).then((workspaceId) => {
+        cy.createWorkspace({
+          name: workspaceName,
+          features: [
+            'workspace_overview',
+            'workspace_update',
+            'use-case-observability',
+          ],
+        }).then((workspaceId) => {
           workspaceNameIdMapping[workspaceName] = workspaceId;
         });
       }
@@ -98,7 +105,14 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
       // Create 3 more workspaces so that there are more than 5 workspaces in the system
       for (const workspaceName of newWorkspaceNames) {
-        cy.createWorkspace({ name: workspaceName });
+        cy.createWorkspace({
+          name: workspaceName,
+          features: [
+            'workspace_overview',
+            'workspace_update',
+            'use-case-observability',
+          ],
+        });
       }
 
       cy.wait(1000);
