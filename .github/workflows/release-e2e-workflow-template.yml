@@ -41,8 +41,8 @@ jobs:
           path: cypress-test
       - name: Remove Github built-in Chromium
         run: |
-          rm /usr/bin/chromium
-          rm /usr/bin/chromium-browser
+          sudo rm /usr/bin/chromium
+          sudo rm /usr/bin/chromium-browser
       - name: Download Chromium 112
         working-directory: cypress-test
         run: |
