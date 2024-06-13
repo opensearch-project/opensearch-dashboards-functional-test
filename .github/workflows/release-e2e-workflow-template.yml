@@ -42,7 +42,7 @@ jobs:
       - name: Download Chromium 112
         working-directory: cypress-test
         run: |
-          ./browser_downloader.sh
+          source ./browser_downloader.sh
           download_chromium
       - name: Get package version
         working-directory: cypress-test
