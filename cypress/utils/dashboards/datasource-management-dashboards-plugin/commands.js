@@ -35,28 +35,31 @@ Cypress.Commands.add('deleteAllDataSources', () => {
   );
 });
 
-Cypress.Commands.add('createDataSourceNoAuth', () => {
-  cy.request({
-    method: 'POST',
-    url: `${BASE_PATH}/api/saved_objects/data-source`,
-    headers: {
-      'osd-xsrf': true,
-    },
-    body: {
-      attributes: {
-        title: 'RemoteDataSourceNoAuth',
-        endpoint: Cypress.env('remoteDataSourceNoAuthUrl'),
-        auth: {
-          type: 'no_auth',
+Cypress.Commands.add(
+  'createDataSourceNoAuth',
+  ({ title = 'RemoteDataSourceNoAuth' } = {}) => {
+    cy.request({
+      method: 'POST',
+      url: `${BASE_PATH}/api/saved_objects/data-source`,
+      headers: {
+        'osd-xsrf': true,
+      },
+      body: {
+        attributes: {
+          title,
+          endpoint: Cypress.env('remoteDataSourceNoAuthUrl'),
+          auth: {
+            type: 'no_auth',
+          },
         },
       },
-    },
-  }).then((resp) => {
-    if (resp && resp.body && resp.body.id) {
-      return [resp.body.id, 'RemoteDataSourceNoAuth'];
-    }
-  });
-});
+    }).then((resp) => {
+      if (resp && resp.body && resp.body.id) {
+        return [resp.body.id, title];
+      }
+    });
+  }
+);
 
 Cypress.Commands.add('createDataSourceBasicAuth', () => {
   cy.request({
