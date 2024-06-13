@@ -36,18 +36,6 @@ jobs:
         with:
           repository: ${{github.repository}}
           path: cypress-test
-      - name: Remove Github built-in Chromium
-        run: |
-          rm /usr/bin/chromium
-          rm /usr/bin/chromium-browser
-      - name: Download Chromium 112
-        working-directory: cypress-test
-        run: |
-          ## using Chromium 112 for stable test env, for more detail: https://github.com/opensearch-project/opensearch-build/issues/4241
-          source ./browser_downloader.sh
-          download_chromium
-          ln -s $chromium_path /usr/bin/chromium
-          ln -s $chromium_path /usr/bin/chromium-browser
       - name: Get package version
         working-directory: cypress-test
         run: |
