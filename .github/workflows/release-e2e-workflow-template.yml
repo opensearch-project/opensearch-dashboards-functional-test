@@ -39,6 +39,10 @@ jobs:
         with:
           repository: ${{github.repository}}
           path: cypress-test
+      - name: Download Chromium 112
+        working-directory: cypress-test
+        run: |
+          sh ./browser_downloader.sh
       - name: Get package version
         working-directory: cypress-test
         run: |

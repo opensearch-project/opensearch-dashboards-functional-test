@@ -6,12 +6,14 @@ on:
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
       - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
   push:
     branches: ['**']
     paths:
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
       - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
 
 jobs:
   tests-with-security:
