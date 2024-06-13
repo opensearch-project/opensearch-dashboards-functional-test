@@ -39,6 +39,8 @@ jobs:
         with:
           repository: ${{github.repository}}
           path: cypress-test
+      - name: Remove Github built-in Chromium
+        run: sudo apt-get remove -y chromium-browser
       - name: Download Chromium 112
         working-directory: cypress-test
         run: |
