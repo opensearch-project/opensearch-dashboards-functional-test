@@ -48,8 +48,8 @@ jobs:
         run: |
           source ./browser_downloader.sh
           download_chromium
-          ln -s $chromium_path /usr/bin/chromium
-          ln -s $chromium_path /usr/bin/chromium-browser
+          sudo ln -s $chromium_path /usr/bin/chromium
+          sudo ln -s $chromium_path /usr/bin/chromium-browser
       - name: Get package version
         working-directory: cypress-test
         run: |
