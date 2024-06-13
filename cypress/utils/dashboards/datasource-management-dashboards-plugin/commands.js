@@ -305,7 +305,8 @@ Cypress.Commands.add('singleDeleteDataSourceByTitle', (dataSourceTitle) => {
     .should('exist') // Ensure the button exists
     .should('be.visible') // Ensure the button is visible
     .click({ force: true }); // Click the button
-  cy.wait(1000);
+
+  cy.wait(2000);
   cy.visitDataSourcesListingPage();
 });
 
