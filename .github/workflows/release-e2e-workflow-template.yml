@@ -46,6 +46,7 @@ jobs:
       - name: Download Chromium 112
         working-directory: cypress-test
         run: |
+          ## using Chromium 112 for stable test env, for more detail: https://github.com/opensearch-project/opensearch-build/issues/4241
           source ./browser_downloader.sh
           download_chromium
           sudo ln -s $chromium_path /usr/bin/chromium
