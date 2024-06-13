@@ -5,11 +5,13 @@ on:
     paths:
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - '.github/workflows/release-e2e-workflow-template-windows.yml'
   push:
     branches: [ '**' ]
     paths:
       - 'cypress/**/core-opensearch-dashboards/**'
       - 'cypress/utils/dashboards/**'
+      - '.github/workflows/release-e2e-workflow-template-windows.yml'
 
 jobs:
   tests-with-security:
