@@ -142,6 +142,7 @@ jobs:
       - run: npx cypress cache path
       - name: Cypress tests
         uses: cypress-io/github-action@v2
+        timeout-minutes: 60
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
