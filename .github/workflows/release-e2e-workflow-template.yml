@@ -140,7 +140,6 @@ jobs:
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
-          config: numTestsKeptInMemory=1,videoUploadOnPasses=false
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
