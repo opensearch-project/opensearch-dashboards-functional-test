@@ -33,6 +33,5 @@
       "clipboard": "allow"
     },
     "UIMETRIC_ENABLED": false
-  },
-  "numTestsKeptInMemory": 1
+  }
 }
