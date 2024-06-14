@@ -139,7 +139,11 @@ jobs:
       - run: npx cypress cache path
       - name: Cypress tests
         uses: cypress-io/github-action@v2
+        env:
+          # remove success video to save space and memory
+          CYPRESS_DELETE_SUCCESS_VIDEOS: true
         with:
+          numTestsKeptInMemory: 1
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
