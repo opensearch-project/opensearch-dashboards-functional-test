@@ -143,7 +143,6 @@ jobs:
           # remove success video to save space and memory
           CYPRESS_DELETE_SUCCESS_VIDEOS: true
         with:
-          numTestsKeptInMemory: 1
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
