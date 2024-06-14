@@ -14,6 +14,9 @@ on:
       security-enabled:
         required: false
         type: string
+      videos-name:
+        required: false
+        type: string
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -153,7 +156,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         if: always()
         with:
-          name: cypress-videos
+          name: ${{ inputs.videos-name || 'cypress-videos' }}
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v1
