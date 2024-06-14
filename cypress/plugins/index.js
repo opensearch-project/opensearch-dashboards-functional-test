@@ -16,8 +16,6 @@
 
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
-const fs = require('fs');
-const path = require('path');
 
 /**
  * @type {Cypress.PluginConfig}
@@ -26,27 +24,4 @@ const path = require('path');
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-  if (config.env.DELETE_SUCCESS_VIDEOS) {
-    // remove video if all spec pass to save
-    on('after:spec', (spec, results) => {
-      if (results && results.video) {
-        // Check for test failures in any retry attempts
-        const failures = results.tests.some((test) =>
-          test.attempts.some((attempt) => attempt.state === 'failed')
-        );
-
-        if (!failures) {
-          // Delete the video if the spec passed and no tests were retried
-          const videoPath = path.join(config.videosFolder, results.video);
-          fs.unlink(videoPath, (err) => {
-            if (err) {
-              console.error('Failed to delete video:', err);
-            } else {
-              console.log('Deleted video:', videoPath);
-            }
-          });
-        }
-      }
-    });
-  }
 };
