@@ -51,7 +51,6 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.getElementByTestId('newItemButton').click();
       cy.getElementByTestId('visType-vis-builder').click();
       cy.location('pathname').should('eq', VB_APP_PATH);
-      cy.waitForLoader();
     });
 
     it('Create new basic metric visualization', () => {
