@@ -103,8 +103,3 @@ if (
     cy.stopDummyServer();
   });
 }
-
-before(() => {
-  // clearCache before each spec
-  cy.clearCache();
-});
