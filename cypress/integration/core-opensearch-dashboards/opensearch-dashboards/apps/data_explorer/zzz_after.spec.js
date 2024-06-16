@@ -16,7 +16,6 @@ const testFixtureHandler = new TestFixtureHandler(
 describe('After', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    cy.fleshTenantSettings();
     //cy.deleteAllIndices();
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt'
