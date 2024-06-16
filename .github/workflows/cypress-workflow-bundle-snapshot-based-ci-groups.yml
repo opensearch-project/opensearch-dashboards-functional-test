@@ -70,7 +70,7 @@ jobs:
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
       test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --opensearch_security.multitenancy.enabled=false
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --opensearch_security.multitenancy.tenants.preferred='["Global"]'
 
   tests-without-security:
     needs: ["get_spec"]
