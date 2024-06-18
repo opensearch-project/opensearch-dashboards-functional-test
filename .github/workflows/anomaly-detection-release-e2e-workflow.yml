@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/anomaly-detection-release-e2e-workflow.yml'
             - 'cypress/**/anomaly-detection-dashboards-plugin/**'
 
   tests:

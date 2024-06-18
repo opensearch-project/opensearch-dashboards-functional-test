@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/query-workbench-release-e2e-workflow.yml'
             - 'cypress/**/query-workbench-dashboards/**'
 
   tests:

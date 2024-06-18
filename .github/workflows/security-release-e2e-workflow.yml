@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/security-release-e2e-workflow.yml'
             - 'cypress/**/security/**'
             - 'cypress/**/security-dashboards-plugin/**'
 

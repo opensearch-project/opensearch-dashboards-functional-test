@@ -13,6 +13,7 @@ jobs:
       with:
         filters: |
           tests:
+            - '.github/workflows/gantt-chart-release-e2e-workflow.yml'
             - 'cypress/**/gantt-chart-dashboards/**'
 
   tests:
