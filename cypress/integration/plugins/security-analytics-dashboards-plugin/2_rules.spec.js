@@ -7,6 +7,10 @@ import {
   NODE_API,
   OPENSEARCH_DASHBOARDS_URL,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+import {
+  getLogTypeLabel,
+  setupIntercept,
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -16,7 +20,7 @@ const SAMPLE_RULE = {
   detectionLine: [
     'condition: Selection_1',
     'Selection_1:',
-    'FieldKey|contains:',
+    'FieldKey|all:',
     '- FieldValue',
   ],
   severity: 'Critical',
@@ -72,7 +76,7 @@ const checkRulesFlyout = () => {
 
       // Validate log type
       cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(
-        SAMPLE_RULE.logType
+        getLogTypeLabel(SAMPLE_RULE.logType)
       );
 
       // Validate description
@@ -151,6 +155,9 @@ const checkRulesFlyout = () => {
 };
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
+const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
+const getImportRuleFilePicker = () =>
+  cy.get('[data-test-subj="import_rule_file_picker"]');
 const getNameField = () => cy.sa_getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
@@ -170,10 +177,6 @@ const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
 const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
 const getConditionField = () =>
   cy.get('[data-test-subj="rule_detection_field"]');
-const getConditionAddButton = () =>
-  cy.get('[data-test-subj="condition-add-selection-btn"]');
-const getConditionRemoveButton = (index) =>
-  cy.get(`[data-test-subj="selection-exp-field-item-remove-${index}"]`);
 const getRuleSubmitButton = () =>
   cy.get('[data-test-subj="submit_rule_form_button"]');
 const getTagField = (index) =>
@@ -196,7 +199,7 @@ const fillCreateForm = () => {
   getAuthorField().type(`${SAMPLE_RULE.author}`);
 
   // rule details
-  getLogTypeField().sa_selectComboboxItem(SAMPLE_RULE.logType);
+  getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
   getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
 
   // rule detection
@@ -207,8 +210,6 @@ const fillCreateForm = () => {
     getTextRadioField().click({ force: true });
     getMapValueField().type('FieldValue');
   });
-
-  getConditionAddButton().click({ force: true });
 
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
@@ -226,9 +227,7 @@ describe('Rules', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=true`).as(
-        'rulesSearch'
-      );
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -243,22 +242,20 @@ describe('Rules', () => {
 
     it('...should validate rule name', () => {
       getNameField().sa_containsHelperText(
-        'Rule name must contain 5-50 characters. Valid characters are a-z, A-Z, 0-9, hyphens, spaces, and underscores'
+        'Rule name can be max 256 characters.'
       );
 
       getNameField().should('be.empty');
       getNameField().focus().blur();
       getNameField().sa_containsError('Rule name is required');
-      getNameField().type('text').focus().blur();
-      getNameField().sa_containsError('Invalid rule name.');
 
       getNameField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('tex&')
+        .type('*$&*#(#*($*($')
         .focus()
-        .blur();
-      getNameField().sa_containsError('Invalid rule name.');
+        .blur()
+        .sa_shouldNotHaveError();
 
       getNameField()
         .type('{selectall}')
@@ -270,18 +267,19 @@ describe('Rules', () => {
     });
 
     it('...should validate rule description field', () => {
-      const longDescriptionText =
-        'This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text. This is a long text.';
-
       getDescriptionField().should('be.empty');
-      getDescriptionField().type(longDescriptionText).focus().blur();
+
+      const invalidDescription = 'a'.repeat(65535);
+      getDescriptionField()
+        .focus()
+        .invoke('val', invalidDescription)
+        .type('b')
+        .blur();
 
       getDescriptionField()
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
-        .contains(
-          'Description should only consist of upper and lowercase letters, numbers 0-9, commas, hyphens, periods, spaces, and underscores. Max limit of 500 characters.'
-        );
+        .contains(`Description has max limit of 65,535 characters.`);
 
       getDescriptionField()
         .type('{selectall}')
@@ -308,22 +306,20 @@ describe('Rules', () => {
 
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
-      getAuthorField().sa_containsError('Author name is required');
-      getAuthorField().type('text').focus().blur();
+
+      let invalidAuthor = '';
+
+      for (let i = 0; i < 256; i++) {
+        invalidAuthor += 'a';
+      }
+
+      getAuthorField().focus().invoke('val', invalidAuthor).type('b').blur();
       getAuthorField().sa_containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
         .type('{backspace}')
-        .type('tex&')
-        .focus()
-        .blur();
-      getAuthorField().sa_containsError('Invalid author.');
-
-      getAuthorField()
-        .type('{selectall}')
-        .type('{backspace}')
-        .type('Rule name')
+        .type('Rule author (@)')
         .focus()
         .blur()
         .sa_shouldNotHaveError();
@@ -334,8 +330,10 @@ describe('Rules', () => {
       getLogTypeField().focus().blur();
       getLogTypeField().sa_containsError('Log type is required');
 
-      getLogTypeField().sa_selectComboboxItem(SAMPLE_RULE.logType);
-      getLogTypeField().focus().blur().sa_shouldNotHaveError();
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
+      getLogTypeField().focus().click().blur().sa_shouldNotHaveError();
     });
 
     it('...should validate rule level field', () => {
@@ -379,13 +377,20 @@ describe('Rules', () => {
     it('...should validate selection map key field', () => {
       getSelectionPanelByIndex(0).within(() => {
         getMapKeyField().should('be.empty');
-        getMapKeyField().focus().blur();
+        getMapKeyField()
+          .focus()
+          .blur()
+          .parents('.euiFormRow__fieldWrapper')
+          .find('.euiFormErrorText')
+          .should('not.exist');
+
+        getMapKeyField().type('hello@');
         getMapKeyField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
-          .contains('Key name is required');
+          .contains('Invalid key name');
 
-        getMapKeyField().type('FieldKey');
+        getMapKeyField().focus().type('{selectall}').type('FieldKey');
         getMapKeyField()
           .focus()
           .blur()
@@ -439,15 +444,8 @@ describe('Rules', () => {
       getRuleSubmitButton().click({ force: true });
       getConditionField()
         .parents('.euiFormRow__fieldWrapper')
-        .contains('Condition is required');
-
-      getConditionAddButton().click({ force: true });
-      getConditionField().find('.euiFormErrorText').should('not.exist');
-
-      getConditionRemoveButton(0).click({ force: true });
-      getConditionField()
-        .parents('.euiFormRow__fieldWrapper')
-        .contains('Condition is required');
+        .contains('Condition is required')
+        .should('not.exist');
     });
 
     it('...should validate tag field', () => {
@@ -475,13 +473,14 @@ describe('Rules', () => {
 
       // author field
       getAuthorField().sa_clearValue();
-      toastShouldExist();
       getAuthorField().type('John Doe');
 
       // log field
       getLogTypeField().sa_clearCombobox();
       toastShouldExist();
-      getLogTypeField().sa_selectComboboxItem(SAMPLE_RULE.logType);
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
 
       // severity field
       getRuleLevelField().sa_clearCombobox();
@@ -506,7 +505,6 @@ describe('Rules', () => {
       getSelectionPanelByIndex(0).within(() =>
         getMapKeyField().type('{selectall}').type('{backspace}')
       );
-      toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
         getMapKeyField().type('FieldKey')
       );
@@ -516,6 +514,7 @@ describe('Rules', () => {
         getMapValueField().type('{selectall}').type('{backspace}')
       );
       toastShouldExist();
+
       getSelectionPanelByIndex(0).within(() =>
         getMapValueField().type('FieldValue', { force: true })
       );
@@ -531,11 +530,6 @@ describe('Rules', () => {
         getMapListField().type('FieldValue', { force: true });
       });
 
-      // condition field
-      getConditionRemoveButton(0).click({ force: true });
-      toastShouldExist();
-      getConditionAddButton().click({ force: true });
-
       // tags field
       getTagField(0).sa_clearValue().type('wrong.tag');
       toastShouldExist();
@@ -545,9 +539,7 @@ describe('Rules', () => {
 
   describe('...should validate create rule flow', () => {
     beforeEach(() => {
-      cy.intercept(`${NODE_API.RULES_BASE}/_search?prePackaged=false`).as(
-        'rulesSearch'
-      );
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -572,9 +564,7 @@ describe('Rules', () => {
         cy.get('[data-test-subj="rule_yaml_editor"]').contains(line)
       );
 
-      cy.intercept({
-        url: `${NODE_API.RULES_BASE}/_search?prePackaged=false`,
-      }).as('getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
       submitRule();
 
@@ -618,10 +608,12 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().sa_selectComboboxItem(SAMPLE_RULE.logType);
+      getLogTypeField().sa_selectComboboxItem(
+        getLogTypeLabel(SAMPLE_RULE.logType)
+      );
       getLogTypeField()
         .sa_containsValue(SAMPLE_RULE.logType)
-        .contains(SAMPLE_RULE.logType);
+        .contains(getLogTypeLabel(SAMPLE_RULE.logType));
 
       SAMPLE_RULE.description += ' edited';
       YAML_RULE_LINES[4] = `description: ${SAMPLE_RULE.description}`;
@@ -629,9 +621,7 @@ describe('Rules', () => {
       getDescriptionField().type(SAMPLE_RULE.description);
       getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
-      cy.intercept({
-        url: `${NODE_API.RULES_BASE}/_search?prePackaged=false`,
-      }).as('getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
       submitRule();
 
@@ -644,14 +634,17 @@ describe('Rules', () => {
       checkRulesFlyout();
     });
 
-    it('...can be deleted', () => {
-      cy.intercept('POST', `${NODE_API.RULES_BASE}/_search?prePackaged=true`, {
-        delay: 5000,
-      }).as('getPrePackagedRules');
+    it('...can be imported with log type', () => {
+      getImportButton().click({ force: true });
+      getImportRuleFilePicker().selectFile(
+        './cypress/fixtures/plugins/security-analytics-dashboards-plugin/sample_aws_s3_rule_to_import.yml'
+      );
+      // Check that AWS S3 log type is set.
+      cy.contains('AWS S3');
+    });
 
-      cy.intercept('POST', `${NODE_API.RULES_BASE}/_search?prePackaged=false`, {
-        delay: 5000,
-      }).as('getCustomRules');
+    it('...can be deleted', () => {
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules', 'POST');
 
       cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(
         SAMPLE_RULE.name
@@ -677,8 +670,7 @@ describe('Rules', () => {
             );
 
           cy.wait(5000);
-          cy.wait('@getCustomRules');
-          cy.wait('@getPrePackagedRules');
+          cy.wait('@getRules');
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);

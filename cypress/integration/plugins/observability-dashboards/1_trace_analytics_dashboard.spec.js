@@ -9,7 +9,7 @@ import { delayTime, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing dashboard table empty state', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -23,7 +23,7 @@ describe('Testing dashboard table empty state', () => {
 
 describe('Testing dashboard table', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -91,7 +91,7 @@ describe('Testing dashboard table', () => {
 
 describe('Testing plots', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },

@@ -135,33 +135,25 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
 });
 
 Cypress.Commands.add('switchDiscoverTable', (name) => {
-  cy.getElementByTestId('datagridTableButton')
+  cy.getElementByTestId('discoverOptionsButton')
     .then(($button) => {
-      const buttonText = $button.text();
+      cy.wrap($button).click({ force: true });
 
-      if (name === 'new' && buttonText.includes('Try new Discover')) {
-        cy.wrap($button).click();
-      }
-      if (name === 'legacy' && buttonText.includes('Use legacy Discover')) {
-        cy.wrap($button).click();
-      }
-      cy.waitForLoader();
+      cy.getElementByTestId('discoverOptionsLegacySwitch').then(
+        ($switchButton) => {
+          if (name === 'new') {
+            cy.wrap($switchButton).click({ force: true });
+          }
+          if (name === 'legacy') {
+            cy.wrap($switchButton).click({ force: true });
+          }
+          cy.waitForLoader();
+        }
+      );
     })
     .then(() => {
       checkForElementVisibility();
     });
-});
-
-Cypress.Commands.add('makeDatePickerMenuOpen', () => {
-  cy.get(
-    '[class="euiFormControlLayout euiFormControlLayout--group euiSuperDatePicker"]'
-  ).then(($popover) => {
-    // Check if the popover does not have the 'euiPopover-isOpen' class
-    if (!$popover.hasClass('euiPopover-isOpen')) {
-      // If not open, click the button to open the quick menu
-      cy.getElementByTestId('superDatePickerToggleQuickMenuButton').click();
-    }
-  });
 });
 
 function checkForElementVisibility() {

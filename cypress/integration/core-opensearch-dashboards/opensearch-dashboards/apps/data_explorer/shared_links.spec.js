@@ -27,6 +27,7 @@ const indexSet = [
 describe('shared links', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
@@ -52,13 +53,29 @@ describe('shared links', () => {
     cy.waitForSearch();
   });
 
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+  });
+
+  after(() => {
+    cy.deleteIndex(indexSet.join(','));
+    cy.clearCache();
+  });
+
   describe('shared links with state in query', () => {
     it('should allow for copying the snapshot URL', function () {
       const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
-        .should('eq', url)
+        // Even though `CURRENT_TENANT.newTenant` is set to global, that could change and hence this test will remove
+        // either of the tenants it sees.
+        .should(
+          'satisfy',
+          (copied) =>
+            copied.replace(/\?security_tenant=(global|private)/, '') === url
+        )
         .then((url) => {
           cy.log(url);
           cy.request(url).its('status').should('eq', 200);
@@ -100,6 +117,8 @@ describe('shared links', () => {
 
   describe('shared links with state in sessionStorage', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'state:storeInSessionStorage': true,
       });
@@ -111,9 +130,9 @@ describe('shared links', () => {
     });
 
     after(() => {
-      cy.setAdvancedSetting({
-        'state:storeStateInSessionStorage': false,
-      });
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+      cy.deleteSavedObjectByType('config');
     });
 
     it('should allow for copying the snapshot URL', function () {

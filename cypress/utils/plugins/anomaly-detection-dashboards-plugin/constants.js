@@ -45,7 +45,7 @@ export function getADStopDetectorApiPath(detectorId) {
 const BASE_AD_NODE_API_PATH = BASE_PATH + '/api/anomaly_detectors';
 
 export const AD_NODE_API_PATH = {
-  GET_DETECTORS: BASE_AD_NODE_API_PATH + '/detectors*',
+  GET_DETECTORS: BASE_AD_NODE_API_PATH + '/detectors/_list*',
   GET_INDICES: BASE_AD_NODE_API_PATH + '/_indices*',
   GET_MAPPINGS: BASE_AD_NODE_API_PATH + '/_mappings*',
   VALIDATE: BASE_AD_NODE_API_PATH + '/detectors/_validate',

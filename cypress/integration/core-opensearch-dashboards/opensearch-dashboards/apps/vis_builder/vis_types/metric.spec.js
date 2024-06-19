@@ -12,10 +12,13 @@ import {
   VB_PATH_INDEX_DATA,
   VB_PATH_SO_DATA,
 } from '../../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../../utils/commands';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Vis Builder: Metric Chart', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
       cy.importSavedObjects(VB_PATH_SO_DATA);

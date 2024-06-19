@@ -9,8 +9,12 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
     let restoreShowHome;
     let restoreNewThemeModal;
+    let dataSourceId;
 
     before(() => {
+      cy.setDefaultDataSourceForAssistant().then((id) => {
+        dataSourceId = id;
+      });
       // Set welcome screen tracking to false
       restoreShowHome = setStorageItem(
         localStorage,
@@ -37,6 +41,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.get('img[aria-label="toggle chat flyout icon"]').click();
     });
     after(() => {
+      cy.clearDataSourceForAssistant();
       if (restoreShowHome) {
         restoreShowHome();
       }
@@ -79,8 +84,12 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('textarea[placeholder="Ask me anything..."]').should('exist');
       });
 
-      it('should hide back button in fullscreen mode', () => {
-        cy.get('.llm-chat-flyout button[aria-label="fullScreen"]').click();
+      it('should hide back button in takeover fullscreen mode', () => {
+        //switch to takeover mode for fullscreen
+        cy.get('[id="sidecarModeIcon"]').click();
+        cy.get(
+          '[data-test-subj="sidecar-mode-icon-menu-item-takeover"]'
+        ).click();
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
 
         cy.get('.llm-chat-flyout')
@@ -91,8 +100,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           .contains('Back', { timeout: 3000 })
           .should('not.exist');
 
-        // Back to default mode
-        cy.get('.llm-chat-flyout button[aria-label="fullScreen"]').click();
+        // Switch to default docked right mode
+        cy.get('[id="sidecarModeIcon"]').click();
+        cy.get('[data-test-subj="sidecar-mode-icon-menu-item-right"]').click();
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
       });
     });
@@ -101,13 +111,16 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
       before(() => {
         // Create conversations data
-        cy.sendAssistantMessage({
-          input: {
-            type: 'input',
-            content: 'What are the indices in my cluster?',
-            contentType: 'text',
+        cy.sendAssistantMessage(
+          {
+            input: {
+              type: 'input',
+              content: 'What are the indices in my cluster?',
+              contentType: 'text',
+            },
           },
-        }).then((result) => {
+          dataSourceId
+        ).then((result) => {
           if (result.status !== 200) {
             throw result.body;
           }
@@ -118,7 +131,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       after(() => {
         // Clear created conversations in tests
         conversations.map(({ conversationId }) =>
-          cy.deleteConversation(conversationId)
+          cy.deleteConversation(conversationId, dataSourceId)
         );
       });
 

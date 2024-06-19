@@ -28,6 +28,8 @@ jobs:
       # 2.12 onwards security demo configuration require a custom admin password
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
@@ -37,6 +39,18 @@ jobs:
         with:
           repository: ${{github.repository}}
           path: cypress-test
+      - name: Remove Github built-in Chromium
+        run: |
+          sudo rm /usr/bin/chromium
+          sudo rm /usr/bin/chromium-browser
+      - name: Download Chromium 112
+        working-directory: cypress-test
+        run: |
+          ## using Chromium 112 for stable test env, for more detail: https://github.com/opensearch-project/opensearch-build/issues/4241
+          source ./browser_downloader.sh
+          download_chromium
+          sudo ln -s $chromium_path /usr/bin/chromium
+          sudo ln -s $chromium_path /usr/bin/chromium-browser
       - name: Get package version
         working-directory: cypress-test
         run: |
@@ -66,6 +80,17 @@ jobs:
               timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
               curl https://localhost:9200 -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
+      - uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: false
+          port: 9201
+      - uses: ./.github/actions/start-opensearch
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: true
+          admin-password: admin
+          port: 9202
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
@@ -114,6 +139,7 @@ jobs:
       - run: npx cypress cache path
       - name: Cypress tests
         uses: cypress-io/github-action@v2
+        timeout-minutes: 120
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}

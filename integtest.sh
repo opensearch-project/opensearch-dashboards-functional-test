@@ -2,6 +2,8 @@
 
 set -e
 
+. ./browser_downloader.sh
+
 function usage() {
     echo ""
     echo "This script is used to run integration tests for plugin installed on a remote OpenSearch/Dashboards cluster."
@@ -99,7 +101,9 @@ PASSWORD=`echo $CREDENTIAL | awk -F ':' '{print $2}'`
 # User can send custom browser path through env variable
 if [ -z "$BROWSER_PATH" ]
 then
-  BROWSER_PATH="chromium"
+    # chromium@1108766 is version 112 with revision r1108766
+    # Please keep this version until cypress upgrade or test will freeze: https://github.com/opensearch-project/opensearch-build/issues/4241
+    BROWSER_PATH=`download_chromium | head -n 1 | cut -d ' ' -f1`
 fi
 
 . ./test_finder.sh
@@ -118,9 +122,8 @@ echo "BROWSER_PATH: $BROWSER_PATH"
 # We need to ensure the cypress tests are the last execute process to
 # the error code gets passed to the CI.
 
-if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
-    echo "Disable video recording in Windows due to ffmpeg missing libs in Windows Docker Container"
-    echo "TODO: https://github.com/opensearch-project/opensearch-dashboards-functional-test/issues/1068"
+if [ "$DISABLE_VIDEO" = "true" ]; then
+    echo "Disable video recording when running tests in Cypress"
     jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
     mv -v cypress_new.json cypress.json
 fi

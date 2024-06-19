@@ -4,7 +4,9 @@
  */
 
 import './vis_builder/commands';
+import './vis_type_timeline/commands';
 import './vis_type_table/commands';
+import './vis_type_vega/commands';
 import './vis-augmenter/commands';
 import './data_explorer/commands';
 

@@ -55,7 +55,7 @@ describe('Findings', () => {
     cy.contains('No items found').should('not.exist');
 
     // Check for expected findings
-    cy.contains('System Activity: Windows');
+    cy.contains('System Activity: Microsoft Windows');
     cy.contains('High');
   });
 
@@ -150,6 +150,29 @@ describe('Findings', () => {
     cy.get(`[data-test-subj="rule_flyout_${ruleName}"]`).within(() => {
       cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(ruleName);
     });
+  });
+
+  it('shows document not found warning when the document is empty', () => {
+    cy.deleteIndex(indexName);
+    cy.reload();
+
+    // Wait for page to load
+    cy.sa_waitForPageLoad('findings', {
+      contains: 'Findings',
+    });
+
+    // filter table to show only sample_detector findings
+    cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
+
+    // open Finding details flyout via finding id link. cy.wait essential, timeout insufficient.
+    cy.sa_getTableFirstRow('[data-test-subj="view-details-icon"]').then(
+      ($el) => {
+        cy.get($el).click({ force: true });
+      }
+    );
+
+    // Flyout should show 'Document not found' warning
+    cy.contains('Document not found');
   });
 
   after(() => cy.sa_cleanUpTests());
