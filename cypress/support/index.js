@@ -19,7 +19,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import { currentBackendEndpoint } from '../utils/commands';
+import '../utils/commands';
 import '../utils/dashboards/commands';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
@@ -33,6 +33,7 @@ import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
+import { currentBackendEndpoint } from '../utils/commands';
 
 import 'cypress-real-events';
 
