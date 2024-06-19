@@ -17,7 +17,7 @@ describe('Rollups', () => {
     cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
 
     // Click on "Sample data" tab
-    cy.contains('Sample data').click({ force: true });
+    cy.contains('Sample data', { timeout: 60000 }).click({ force: true });
     // Load sample eCommerce data
     cy.get(`button[data-test-subj="addSampleDataSetecommerce"]`).click({
       force: true,

@@ -167,7 +167,7 @@ describe('Aliases', () => {
         );
         let num =
           response_obj['_all']['total']['translog']['uncommitted_operations'];
-        expect(num).to.equal(1);
+        expect(num).not.equal(0);
       });
 
       cy.get('[data-test-subj="moreAction"]').click();

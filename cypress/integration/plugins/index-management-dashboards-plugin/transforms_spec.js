@@ -266,6 +266,9 @@ describe('Transforms', () => {
         .should('not.be.disabled')
         .click();
 
+      // Extra wait to reduce the possibility of version conflict exception
+      cy.wait(2000);
+
       cy.wait('@stopTransform');
       cy.wait('@getTransform');
 
