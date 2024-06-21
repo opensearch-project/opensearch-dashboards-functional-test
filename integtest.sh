@@ -89,7 +89,6 @@ then
 fi
 
 if [ -n "$ENV_VAR" ]; then
-then
   echo "User defined ENV_VAR for the run: $ENV_VAR"
   ENV_VAR="env $ENV_VAR"
 fi
