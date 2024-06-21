@@ -183,6 +183,10 @@ describe('Aliases', () => {
       });
 
       cy.get('[data-test-subj="moreAction"]').click();
+
+      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
+      cy.wait(2000);
+
       // Flush btn should be enabled
       cy.get('[data-test-subj="Flush Action"]')
         .should('exist')
