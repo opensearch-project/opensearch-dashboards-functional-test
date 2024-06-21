@@ -141,7 +141,9 @@ if [ "$SECURITY_ENABLED" = "true" ]
 then
    cmd="$ENV_VAR yarn cypress:run-with-security --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security enabled tests: $cmd"
+   eval $cmd
 else
    cmd="$ENV_VAR yarn cypress:run-without-security --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security disabled tests: $cmd"
+   eval $cmd
 fi
