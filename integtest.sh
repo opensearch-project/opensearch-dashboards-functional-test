@@ -139,11 +139,11 @@ fi
 
 if [ "$SECURITY_ENABLED" = "true" ]
 then
-   cmd="yarn cypress:run --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=3000,$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   cmd="yarn cypress:run --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=3000$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security enabled tests: $cmd"
    eval $cmd
 else
-   cmd="$ENV_VAR yarn cypress:run --env SECURITY_ENABLED=false,$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   cmd="$ENV_VAR yarn cypress:run --env SECURITY_ENABLED=false$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security disabled tests: $cmd"
    eval $cmd
 fi
