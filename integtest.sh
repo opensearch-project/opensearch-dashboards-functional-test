@@ -90,7 +90,6 @@ fi
 
 if [ -n "$ENV_VAR" ]; then
   echo "User defined ENV_VAR for the run: $ENV_VAR"
-  ENV_VAR="env $ENV_VAR"
 fi
 
 if [ -z "$REMOTE_CYPRESS_ENABLED" ]
@@ -139,11 +138,11 @@ fi
 
 if [ "$SECURITY_ENABLED" = "true" ]
 then
-   cmd="$ENV_VAR yarn cypress:run-with-security --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   cmd="yarn cypress:run-with-security \"$ENV_VAR\" --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security enabled tests: $cmd"
    eval $cmd
 else
-   cmd="$ENV_VAR yarn cypress:run-without-security --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   cmd="$ENV_VAR yarn cypress:run-without-security \"$ENV_VAR\" --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
    echo "run security disabled tests: $cmd"
    eval $cmd
 fi
