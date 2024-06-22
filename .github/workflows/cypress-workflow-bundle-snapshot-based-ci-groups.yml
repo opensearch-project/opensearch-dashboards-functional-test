@@ -38,17 +38,14 @@ jobs:
         name: Get specs array
         run: |
           cd spec-detect
+          source ./test_finder.sh
           result="["
           ## split CI_Groups into array
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
             item="{\"ciGroup\": \"${group}\", \"specs\": "
-            IFS="," read -a SPEC_ARRAY <<< "$(npm run -s osd:ciGroup${group})"
-            FORMATTED_SPEC="\""
-            for i in "${SPEC_ARRAY[@]}"; do
-              FORMATTED_SPEC+="cypress/integration/core-opensearch-dashboards/opensearch-dashboards/${i},"
-            done
-            FORMATTED_SPEC+="\" }"
+            specs_of_ci_group=`ci_grouped_specs_finder ${group}`
+            FORMATTED_SPEC="\"${specs_of_ci_group}\" }"
             if [[ "${result}" != "[" ]];
             then
                 result+=","
