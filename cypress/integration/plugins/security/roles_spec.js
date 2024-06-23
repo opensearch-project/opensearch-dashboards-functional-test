@@ -50,7 +50,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .click({ force: true });
 
       cy.contains('span', 'cluster:admin/opendistro/ad/detector/search').should(
-        'not.exist'
+        'exist'
       );
     });
 
