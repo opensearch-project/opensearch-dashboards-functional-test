@@ -128,6 +128,12 @@ if [ "$DISABLE_VIDEO" = "true" ]; then
     mv -v cypress_new.json cypress.json
 fi
 
+# Windows does not set timezone even when you specify `env TZ=America/Los_Angeles`
+# Using powershell to force the timezone change to PST which is same as America/Los_Angeles
+if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
+    powershell -Command "Set-TimeZone -Id 'Pacific Standard Time' -PassThru"
+fi
+
 if [ "$SECURITY_ENABLED" = "true" ]
 then
    echo "run security enabled tests"
