@@ -55,7 +55,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.reload();
 
-      cy.contains('h3', 'Tenants');
+      cy.contains('h3', 'Dashboards tenants');
       // should contain the new tenant that was just created
       cy.contains('.euiTableCellContent', tenantName);
       cy.contains('span', tenantDescription);
