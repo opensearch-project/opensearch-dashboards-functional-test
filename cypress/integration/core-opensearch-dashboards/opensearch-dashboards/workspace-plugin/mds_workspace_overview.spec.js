@@ -23,6 +23,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           'workspace_update',
           'use-case-observability',
         ],
+        settings: {
+          permissions: {
+            library_write: { users: ['%me%'] },
+            write: { users: ['%me%'] },
+          },
+        },
       }).then((id) => {
         workspaceId = id;
       });
@@ -97,14 +103,17 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       );
     });
 
-    it('should show wokrspace update when click on settings tab', () => {
+    it('should show workspace update when click on settings tab', () => {
       // click on settings tab
       cy.getElementByTestId('workspaceTabs').find('#settings').click();
-      cy.contains('Enter Details').should('be.visible');
+      cy.contains('Enter details').should('be.visible');
 
-      cy.getElementByTestId('workspaceForm-workspaceDetails-nameInputText')
-        .clear()
-        .type(`${workspaceDescription}-updated`);
+      cy.getElementByTestId(
+        'workspaceForm-workspaceDetails-nameInputText'
+      ).clear();
+      cy.getElementByTestId(
+        'workspaceForm-workspaceDetails-nameInputText'
+      ).type(`${workspaceDescription}-updated`);
       cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
         force: true,
       });
