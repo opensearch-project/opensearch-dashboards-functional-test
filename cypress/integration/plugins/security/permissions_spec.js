@@ -72,7 +72,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('button', 'Create from selection');
     });
 
-    it.only('should create new action group successfully by selecting `Create from blank`', () => {
+    it('should create new action group successfully by selecting `Create from blank`', () => {
       cy.mockPermissionsAction(
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
@@ -110,7 +110,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('span', actionGroupName);
     });
 
-    it.only('should create new action group successfully by selecting `Create from selection`', () => {
+    it('should create new action group successfully by selecting `Create from selection`', () => {
       cy.mockPermissionsAction(
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
