@@ -7,7 +7,7 @@ import {
   BASE_PATH,
   SEC_UI_TENANTS_PATH,
   SEC_INTERNALUSERS_FIXTURES_PATH,
-  SEC_API_INTERNAL_ACCOUNTS_PATH,
+  SEC_API_INTERNAL_USERS_PATH,
 } from '../../../utils/constants';
 
 if (Cypress.env('SECURITY_ENABLED')) {
@@ -65,7 +65,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Navigate to Security/Internal User Database section
 
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
-      cy.intercept(`${SEC_API_INTERNAL_ACCOUNTS_PATH}*`, {
+      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
       }).as('listUserResponse');
@@ -81,7 +81,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Submit the form to create the user
       cy.get('button').contains('Create').click();
 
-      cy.intercept(`${SEC_API_INTERNAL_ACCOUNTS_PATH}*`, {
+      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH +
           '/internalusers_response_post_new_user_creation.json',
