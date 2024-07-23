@@ -55,8 +55,6 @@ export const SEC_API_ACTIONGROUPS_PATH = BASE_SEC_API_PATH + '/actiongroups';
 export const SEC_API_TENANTS_PATH = BASE_SEC_API_PATH + '/tenants';
 
 export const SEC_API_INTERNAL_USERS_PATH = BASE_SEC_API_PATH + '/internalusers';
-export const SEC_API_INTERNAL_ACCOUNTS_PATH =
-  BASE_SEC_API_PATH + '/internalaccounts';
 
 export const SEC_API_ACCOUNT_PATH = BASE_SEC_API_PATH + '/account';
 
