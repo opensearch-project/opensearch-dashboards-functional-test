@@ -41,7 +41,7 @@ Cypress.Commands.add('deleteWorkspaceByName', (workspaceName) => {
   });
 });
 
-Cypress.Commands.add('createWorkspace', (workspace) => {
+Cypress.Commands.add('createWorkspace', ({ settings, ...workspace } = {}) => {
   cy.request({
     method: 'POST',
     url: `${BASE_PATH}${WORKSPACE_API_PREFIX}`,
@@ -53,6 +53,7 @@ Cypress.Commands.add('createWorkspace', (workspace) => {
         ...workspace,
         description: workspace.description || 'test_description',
       },
+      settings,
     },
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
