@@ -72,10 +72,9 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('button', 'Create from selection');
     });
 
-    it('should create new action group successfully by selecting `Create from blank`', () => {
+    it.only('should create new action group successfully by selecting `Create from blank`', () => {
       cy.mockPermissionsAction(
-        SEC_PERMISSIONS_FIXTURES_PATH +
-          '/actiongroups_post_new_creation_response.json',
+        SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
           cy.visit(SEC_UI_PERMISSIONS_PATH);
         }
@@ -111,8 +110,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('span', actionGroupName);
     });
 
-    it('should create new action group successfully by selecting `Create from selection`', () => {
-      cy.visit(SEC_UI_PERMISSIONS_PATH);
+    it.only('should create new action group successfully by selecting `Create from selection`', () => {
+      cy.mockPermissionsAction(
+        SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
+        () => {
+          cy.visit(SEC_UI_PERMISSIONS_PATH);
+        }
+      );
 
       // `Create from selection` should be disabled initially
       cy.contains('button', 'Create action group')
@@ -138,7 +142,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('button', 'Cancel');
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
-      const actionGroupName = 'test';
+      const actionGroupName = 'test-2';
       cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
         force: true,
       });
