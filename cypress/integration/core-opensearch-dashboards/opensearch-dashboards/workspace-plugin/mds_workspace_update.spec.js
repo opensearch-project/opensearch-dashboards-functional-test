@@ -19,6 +19,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           'workspace_update',
           'use-case-observability',
         ],
+        settings: {
+          permissions: {
+            library_write: { users: ['%me%'] },
+            write: { users: ['%me%'] },
+          },
+        },
       }).then((value) => (workspaceId = value));
     });
 
@@ -57,7 +63,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
           force: true,
         });
-        cy.contains("Name can't be empty").should('exist');
+        cy.contains('Name is required. Enter a name.').should('exist');
       });
 
       it('workspace name is not valid', () => {
@@ -80,7 +86,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
           force: true,
         });
-        cy.contains('Invalid workspace name').should('exist');
+        cy.contains('Name is invalid. Enter a valid name.').should('exist');
       });
     });
 
@@ -172,8 +178,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'workspaceForm-permissionSettingPanel-user-addNew'
           ).click();
-          cy.getElementByTestId('comboBoxSearchInput')
-            .last()
+          cy.contains('.euiComboBoxPlaceholder', 'Select a user')
+            .parent()
+            .find('input')
             .type('test_user_Fnxs972xC');
           cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
             force: true,

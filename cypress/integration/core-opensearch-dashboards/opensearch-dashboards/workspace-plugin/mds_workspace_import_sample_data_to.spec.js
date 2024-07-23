@@ -21,22 +21,39 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     before(() => {
       if (MDSEnabled) {
-        cy.createDataSourceNoAuth().then((result) => {
-          dataSourceId = result[0];
-          dataSourceTitle = result[1];
+        cy.createDataSourceNoAuth()
+          .then((result) => {
+            dataSourceId = result[0];
+            dataSourceTitle = result[1];
+            return result;
+          })
+          .then((result) => {
+            cy.createWorkspace({
+              name: workspaceName,
+              settings: MDSEnabled
+                ? {
+                    dataSources: [result[0]],
+                  }
+                : undefined,
+            }).then((id) => {
+              workspaceId = id;
+            });
+          });
+      } else {
+        cy.createWorkspace({
+          name: workspaceName,
+        }).then((id) => {
+          workspaceId = id;
         });
       }
-      cy.createWorkspace({ name: workspaceName }).then((id) => {
-        workspaceId = id;
-      });
     });
 
     after(() => {
       if (workspaceId) {
         cy.deleteWorkspaceById(workspaceId);
       }
-      if (dataSourceId) {
-        cy.deleteDataSource(dataSourceId);
+      if (MDSEnabled) {
+        cy.deleteAllDataSources();
       }
     });
 
