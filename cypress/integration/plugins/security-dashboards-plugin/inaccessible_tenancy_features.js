@@ -5,7 +5,7 @@
 
 import { TENANTS_MANAGE_PATH } from '../../../utils/dashboards/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.env('SECURITY_ENABLED') && !Cypress.env('MULTITENANCY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
       cy.server();
