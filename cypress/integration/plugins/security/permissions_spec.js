@@ -91,7 +91,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('button', 'Cancel');
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
-      const actionGroupName = 'test';
+      const actionGroupName = 'test-creation';
       cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
         force: true,
       });
@@ -138,7 +138,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('button', 'Cancel');
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
-      const actionGroupName = 'test';
+      const actionGroupName = 'test-selection';
       cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
         force: true,
       });
