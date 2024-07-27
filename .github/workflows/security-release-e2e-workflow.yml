@@ -19,6 +19,9 @@ jobs:
   tests:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
+    strategy:
+      matrix:
+        run: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security
