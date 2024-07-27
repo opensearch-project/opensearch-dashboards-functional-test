@@ -86,13 +86,16 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
       const actionGroupName = 'test-creation';
-      cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
-        force: true,
-      });
+      cy.get('input[data-test-subj="name-text"]')
+        .type(actionGroupName, {
+          force: true,
+        })
+        .blur();
       cy.get('input[data-test-subj="name-text"]').should(
         'have.value',
         actionGroupName
       );
+      cy.get('button[id="submit"]').should('not.have.attr', 'disabled');
 
       cy.mockPermissionsAction(
         SEC_PERMISSIONS_FIXTURES_PATH +
@@ -138,13 +141,16 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
       const actionGroupName = 'test-selection';
-      cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
-        force: true,
-      });
+      cy.get('input[data-test-subj="name-text"]')
+        .type(actionGroupName, {
+          force: true,
+        })
+        .blur();
       cy.get('input[data-test-subj="name-text"]').should(
         'have.value',
         actionGroupName
       );
+      cy.get('button[id="submit"]').should('not.have.attr', 'disabled');
 
       cy.get('div[data-test-subj="comboBoxInput"]')
         .find('span')
