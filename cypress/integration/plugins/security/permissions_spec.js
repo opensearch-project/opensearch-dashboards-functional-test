@@ -87,6 +87,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       const actionGroupName = 'test-creation';
       cy.get('input[data-test-subj="name-text"]')
+        .focus()
+        .clear()
         .type(actionGroupName, {
           force: true,
         })
@@ -142,10 +144,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       const actionGroupName = 'test-selection';
       cy.get('input[data-test-subj="name-text"]')
+        .focus()
+        .clear()
         .type(actionGroupName, {
           force: true,
         })
         .blur();
+
       cy.get('input[data-test-subj="name-text"]').should(
         'have.value',
         actionGroupName
