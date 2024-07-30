@@ -343,6 +343,11 @@ describe('Bucket-Level Monitors', () => {
         // Click Edit button
         cy.contains('Edit').click({ force: true });
 
+        // Wait for page to load
+        // The default admin user for a docker-created domain doesn't have the permissions needed to select clusters. Disabling this check when security is enabled
+        if (!Cypress.env('SECURITY_ENABLED'))
+          cy.contains('Select clusters').click({ force: true });
+
         // Click on the Index field and type in multiple index names to replicate the bug
         cy.get('#index')
           .click({ force: true })
