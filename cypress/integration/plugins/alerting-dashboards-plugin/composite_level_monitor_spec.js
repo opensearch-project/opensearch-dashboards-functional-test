@@ -11,6 +11,7 @@ import {
 import sampleCompositeJson from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_composite_level_monitor.json';
 import * as _ from 'lodash';
 import { BASE_PATH } from '../../../utils/base_constants';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const sample_index_1 = 'sample_index_1';
 const sample_index_2 = 'sample_index_2';
@@ -109,8 +110,7 @@ describe('CompositeLevelMonitor', () => {
         .type('{backspace}', { force: true })
         .type('Composite trigger', { force: true });
 
-      cy.intercept('api/alerting/workflows').as('createMonitorRequest');
-      cy.intercept(`api/alerting/monitors?*`).as('getMonitorsRequest');
+      setupIntercept(cy, 'api/alerting/workflows', 'createMonitorRequest');
       cy.get('button').contains('Create').click({ force: true });
 
       // Wait for monitor to be created
@@ -192,7 +192,12 @@ describe('CompositeLevelMonitor', () => {
         .type('monitorThree', { delay: 50 })
         .type('{enter}');
 
-      cy.intercept('api/alerting/workflows/*').as('updateMonitorRequest');
+      setupIntercept(
+        cy,
+        'api/alerting/workflows',
+        'updateMonitorRequest',
+        'PUT'
+      );
       cy.get('button').contains('Update').click({ force: true });
 
       // Wait for monitor to be created
