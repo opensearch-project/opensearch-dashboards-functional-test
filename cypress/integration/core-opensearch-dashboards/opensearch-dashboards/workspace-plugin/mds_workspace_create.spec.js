@@ -38,7 +38,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
         ).type('#000000');
-        cy.getElementByTestId('workspaceUseCase-observability').check({
+        cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
@@ -52,17 +52,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
           cy.location('pathname', { timeout: 6000 }).should(
             'include',
-            'app/workspace_overview'
+            'app/workspace_detail'
           );
 
           const expectedWorkspace = {
             name: workspaceName,
             description: 'test_workspace_description.+~!',
-            features: [
-              'workspace_update',
-              'workspace_overview',
-              'use-case-observability',
-            ],
+            features: ['workspace_detail', 'use-case-observability'],
           };
           cy.checkWorkspace(workspaceId, expectedWorkspace);
         });
@@ -100,7 +96,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
-        cy.getElementByTestId('workspaceUseCase-observability').check({
+        cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
@@ -139,7 +135,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
           ).type('#000000');
-          cy.getElementByTestId('workspaceUseCase-observability').check({
+          cy.getElementByTestId('workspaceUseCase-observability').click({
             force: true,
           });
           cy.getElementByTestId(
@@ -159,16 +155,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             workspaceId = interception.response.body.result.id;
             cy.location('pathname', { timeout: 6000 }).should(
               'include',
-              'app/workspace_overview'
+              'app/workspace_detail'
             );
             const expectedWorkspace = {
               name: workspaceName,
               description: 'test_workspace_description',
-              features: [
-                'workspace_update',
-                'workspace_overview',
-                'use-case-observability',
-              ],
+              features: ['workspace_detail', 'use-case-observability'],
               permissions: {
                 read: {
                   users: ['test_user_sfslja260'],
