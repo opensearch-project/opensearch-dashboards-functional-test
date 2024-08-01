@@ -73,13 +73,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should create new action group successfully by selecting `Create from blank`', () => {
-      cy.mockPermissionsAction(
-        SEC_PERMISSIONS_FIXTURES_PATH +
-          '/actiongroups_post_new_creation_response.json',
-        () => {
-          cy.visit(SEC_UI_PERMISSIONS_PATH);
-        }
-      );
+      cy.visit(SEC_UI_PERMISSIONS_PATH);
 
       cy.contains('button', 'Create action group')
         .first()
@@ -92,16 +86,26 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
       const actionGroupName = 'test-creation';
-      cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
-        force: true,
-      });
+      cy.get('input[data-test-subj="name-text"]')
+        .focus()
+        .clear()
+        .type(actionGroupName, {
+          force: true,
+        })
+        .blur();
       cy.get('input[data-test-subj="name-text"]').should(
         'have.value',
         actionGroupName
       );
+      cy.get('button[id="submit"]').should('not.have.attr', 'disabled');
 
-      cy.get('button[id="submit"]').first().click({ force: true });
-
+      cy.mockPermissionsAction(
+        SEC_PERMISSIONS_FIXTURES_PATH +
+          '/actiongroups_post_new_creation_response.json',
+        () => {
+          cy.get('button[id="submit"]').first().click({ force: true });
+        }
+      );
       cy.url().should((url) => {
         expect(url).to.contain('/permissions');
       });
@@ -139,13 +143,19 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('.euiModalHeader__title', 'Create new action group');
 
       const actionGroupName = 'test-selection';
-      cy.get('input[data-test-subj="name-text"]').type(actionGroupName, {
-        force: true,
-      });
+      cy.get('input[data-test-subj="name-text"]')
+        .focus()
+        .clear()
+        .type(actionGroupName, {
+          force: true,
+        })
+        .blur();
+
       cy.get('input[data-test-subj="name-text"]').should(
         'have.value',
         actionGroupName
       );
+      cy.get('button[id="submit"]').should('not.have.attr', 'disabled');
 
       cy.get('div[data-test-subj="comboBoxInput"]')
         .find('span')
