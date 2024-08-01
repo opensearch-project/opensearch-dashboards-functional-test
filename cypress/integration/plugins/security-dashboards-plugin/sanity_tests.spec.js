@@ -156,7 +156,16 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
-      cy.get('button[aria-label="Closes this modal window"]').click();
+
+      cy.get('.euiOverlayMask').then(($body) => {
+        if (
+          $body.find('button[aria-label="Closes this modal window"]').length
+        ) {
+          cy.get('button[aria-label="Closes this modal window"]').click();
+        } else {
+          // do nothing
+        }
+      });
       cy.contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
