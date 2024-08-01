@@ -1,7 +1,7 @@
 {
   "total": 26,
   "data": {
-    "test": {
+    "test-creation": {
       "reserved": false,
       "hidden": false,
       "allowed_actions": [],
