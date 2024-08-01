@@ -45,6 +45,7 @@ describe('index pattern without field spec', () => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
+    cy.deleteSavedObjectByType('index-pattern');
   });
 
   it('should not display a timepicker', () => {
