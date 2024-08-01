@@ -40,7 +40,7 @@ const validateAlertPanel = (alertName) =>
     .eq(2)
     .within(() => cy.sa_getElementByText('button', alertName));
 
-const dataSourceLabel = 'Select or input source indexes or index patterns';
+const dataSourceLabel = 'Select indexes/aliases';
 
 const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
