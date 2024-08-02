@@ -31,7 +31,7 @@ describe('Documents layer', () => {
     cy.get("button[data-test-subj='addLayerButton']", {
       timeout: 120000,
     }).click();
-    cy.contains('Documents', { timeout: 120000 }).click();
+    cy.wait(10000).contains('Documents', { timeout: 120000 }).click();
     cy.contains('Select index pattern', { timeout: 120000 }).wait(3000).click({
       force: true,
     });
