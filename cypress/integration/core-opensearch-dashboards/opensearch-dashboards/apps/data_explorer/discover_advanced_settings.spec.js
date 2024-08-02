@@ -435,78 +435,78 @@ describe('discover_advanced_setting', () => {
     });
   });
 
-  describe('modifyColumnsOnSwitch advanced setting', () => {
-    before(() => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.fleshTenantSettings();
-      cy.setAdvancedSetting({
-        'discover:modifyColumnsOnSwitch': false,
-      });
-    });
+  after(() => {});
+});
 
-    it.skip('check columns still available after switching data sources in legacy table', function () {
-      miscUtils.visitPage(
-        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-      );
-      cy.waitForSearch();
-      cy.get('[data-test-subj="fieldToggle-agent"]').click();
-
-      // Now switching the data sources
-      cy.get('[data-test-subj="comboBoxSearchInput"]')
-        .type('nestedindex')
-        .then(() => {
-          cy.get('[title="nestedindex*"]')
-            .trigger('click')
-            .then(() => {
-              cy.wait(300);
-              cy.get('[data-test-subj="docTableHeader-agent"]').should(
-                'be.visible'
-              );
-              cy.get('[data-test-subj="docTableField"]')
-                .contains('-')
-                .should('exist');
-            });
-        });
-
-      /*
-       */
-    });
-
-    it('check columns still available after switching data sources in new table', function () {
-      miscUtils.visitPage(
-        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-      );
-      cy.waitForSearch();
-      cy.switchDiscoverTable('new');
-
-      cy.get('[data-test-subj="fieldToggle-agent"]').click();
-
-      // Now switching the data sources
-      cy.get('[data-test-subj="comboBoxSearchInput"]')
-        .type('nestedindex')
-        .then(() => {
-          cy.waitForSearch();
-          cy.get('[title="nestedindex*"]')
-            .trigger('click')
-            .then(() => {
-              cy.get('[data-test-subj="dataGridHeaderCell-agent"]').should(
-                'be.visible'
-              );
-              cy.get('[data-test-subj="dataGridRowCell"]')
-                .contains('-')
-                .should('exist');
-            });
-        });
-    });
-
-    after(() => {
-      cy.setAdvancedSetting({
-        'discover:modifyColumnsOnSwitch': true,
-      });
+describe('modifyColumnsOnSwitch advanced setting', () => {
+  before(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+    cy.setAdvancedSetting({
+      'discover:modifyColumnsOnSwitch': false,
     });
   });
 
+  it.skip('check columns still available after switching data sources in legacy table', function () {
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
+    cy.waitForSearch();
+    cy.get('[data-test-subj="fieldToggle-agent"]').click();
+
+    // Now switching the data sources
+    cy.get('[data-test-subj="comboBoxSearchInput"]')
+      .type('nestedindex')
+      .then(() => {
+        cy.get('[title="nestedindex*"]')
+          .trigger('click')
+          .then(() => {
+            cy.wait(300);
+            cy.get('[data-test-subj="docTableHeader-agent"]').should(
+              'be.visible'
+            );
+            cy.get('[data-test-subj="docTableField"]')
+              .contains('-')
+              .should('exist');
+          });
+      });
+
+    /*
+     */
+  });
+
+  it('check columns still available after switching data sources in new table', function () {
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_a=(discover:(metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
+    cy.waitForSearch();
+    cy.switchDiscoverTable('new');
+
+    cy.get('[data-test-subj="fieldToggle-agent"]').click();
+
+    // Now switching the data sources
+    cy.get('[data-test-subj="comboBoxSearchInput"]')
+      .type('nestedindex')
+      .then(() => {
+        cy.waitForSearch();
+        cy.get('[title="nestedindex*"]')
+          .trigger('click')
+          .then(() => {
+            cy.get('[data-test-subj="dataGridHeaderCell-agent"]').should(
+              'be.visible'
+            );
+            cy.wait(2000);
+            cy.get('[data-test-subj="dataGridRowCell"]')
+              .contains('-')
+              .should('exist');
+          });
+      });
+  });
+
   after(() => {
-    cy.deleteIndexPattern('nestedindex');
+    cy.setAdvancedSetting({
+      'discover:modifyColumnsOnSwitch': true,
+    });
+    cy.deleteSavedObjectByType('index-pattern');
   });
 });
