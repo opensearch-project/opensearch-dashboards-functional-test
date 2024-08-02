@@ -61,7 +61,7 @@ describe('Dump test data', () => {
   });
 });
 
-describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
+describe('Save a gantt chart', () => {
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
@@ -86,7 +86,6 @@ describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
 
 describe(
   'Render and configure a gantt chart',
-  { defaultCommandTimeout: 20000 },
   () => {
     beforeEach(() => {
       CURRENT_TENANT.newTenant = 'global';
@@ -135,7 +134,7 @@ describe(
   }
 );
 
-describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
+describe('Configure panel settings', () => {
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
@@ -258,7 +257,6 @@ describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
 
 describe(
   'Add gantt chart to dashboard',
-  { defaultCommandTimeout: 20000 },
   () => {
     it('Adds gantt chart to dashboard', () => {
       CURRENT_TENANT.newTenant = 'global';
