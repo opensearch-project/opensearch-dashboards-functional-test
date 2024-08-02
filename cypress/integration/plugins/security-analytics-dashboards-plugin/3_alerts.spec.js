@@ -396,13 +396,19 @@ describe('Alerts', () => {
       .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[class="euiFilterSelect__items"]').within(() => {
-      cy.contains('Active').click({ force: true });
-      cy.contains('Acknowledged').click({ force: true });
+    cy.get('body').then(($body) => {
+      if ($body.find('[class="euiFilterSelect__items"]').length === 0) {
+        cy.get('[data-text="Status"]').click({ force: true });
+      }
+
+      cy.get('[class="euiFilterSelect__items"]').within(() => {
+        cy.contains('Active').click({ force: true });
+        cy.contains('Acknowledged').click({ force: true });
+      });
     });
 
     // Wait for filter to apply
-    cy.wait(2000);
+    cy.wait(3000);
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
