@@ -268,7 +268,8 @@ describe('Test create, edit and delete recipient group', () => {
     cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({
       force: true,
     });
-    cy.get('input[placeholder="delete"]').type('delete');
+    cy.wait(NOTIFICATIONS_DELAY);
+    cy.get('input[placeholder="delete"]').should('be.visible').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
       '[data-test-subj="delete-recipient-group-modal-delete-button"]'
