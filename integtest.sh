@@ -17,6 +17,7 @@ function usage() {
     echo -e "-b BIND_ADDRESS\t, defaults to localhost | 127.0.0.1, can be changed to any IP or domain name for the cluster location."
     echo -e "-p BIND_PORT\t, defaults to 9200 or 5601 depends on OpenSearch or Dashboards, can be changed to any port for the cluster location."
     echo -e "-s SECURITY_ENABLED\t(true | false), defaults to true. Specify the OpenSearch/Dashboards have security enabled or not."
+    echo -e "-e ENV_VAR\t, no defaults, specify potential ENV_VAR in integtest.sh, separate by comma(,) if adding multiple (-e \"CYPRESS_NO_COMMAND_LOG=1,SOME_PARAMS=2\")"
     echo -e "-c CREDENTIAL\t(usename:password), no defaults, effective when SECURITY_ENABLED=true."
     echo -e "-t TEST_COMPONENTS\t(OpenSearch-Dashboards reportsDashboards etc.), optional, specify test components, separate with space, else test everything."
     echo -e "-v VERSION\t, no defaults, indicates the OpenSearch version to test."
@@ -26,7 +27,7 @@ function usage() {
     echo "--------------------------------------------------------------------------"
 }
 
-while getopts ":hb:p:s:c:t:v:o:r:" arg; do
+while getopts ":hb:p:s:e:c:t:v:o:r:" arg; do
     case $arg in
         h)
             usage
@@ -40,6 +41,9 @@ while getopts ":hb:p:s:c:t:v:o:r:" arg; do
             ;;
         s)
             SECURITY_ENABLED=$OPTARG
+            ;;
+        e)
+            ENV_VAR=$OPTARG
             ;;
         c)
             CREDENTIAL=$OPTARG
@@ -82,6 +86,11 @@ fi
 if [ -z "$SECURITY_ENABLED" ]
 then
   SECURITY_ENABLED="true"
+fi
+
+if [ -n "$ENV_VAR" ]; then
+  echo "User defined ENV_VAR for the run: $ENV_VAR"
+  ENV_VAR=,$ENV_VAR
 fi
 
 if [ -z "$REMOTE_CYPRESS_ENABLED" ]
@@ -136,9 +145,11 @@ fi
 
 if [ "$SECURITY_ENABLED" = "true" ]
 then
-   echo "run security enabled tests"
-   yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+   cmd="yarn cypress:run --env SECURITY_ENABLED=true,openSearchUrl=https://localhost:9200,AGGREGATION_VIEW=true,WAIT_FOR_LOADER_BUFFER_MS=3000$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   echo "run security enabled tests: $cmd"
+   eval $cmd
 else
-   echo "run security disabled tests"
-   yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+   cmd="$ENV_VAR yarn cypress:run --env SECURITY_ENABLED=false$ENV_VAR --browser \"$BROWSER_PATH\" --spec \"$TEST_FILES\""
+   echo "run security disabled tests: $cmd"
+   eval $cmd
 fi
