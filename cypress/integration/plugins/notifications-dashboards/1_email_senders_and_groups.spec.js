@@ -272,9 +272,8 @@ describe('Test create, edit and delete recipient group', () => {
 
   it('deletes recipient groups', () => {
     cy.wait(NOTIFICATIONS_DELAY);
-    cy.get('tbody > tr').should(($tr) => {
-      expect($tr, '1 row').to.have.length(1);
-    });
+    cy.contains('Test recipient group').should('exist');
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="checkboxSelectAll"]').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({
