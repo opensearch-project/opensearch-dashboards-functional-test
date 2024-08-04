@@ -166,6 +166,7 @@ describe('Bucket-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_EXTRACTION_QUERY_MONITOR);
 
       // Wait for input to load and then type in the index name
+      cy.contains('Select clusters');
       cy.get('#index').type('*{enter}', { force: true });
 
       // Input extraction query
@@ -225,6 +226,7 @@ describe('Bucket-Level Monitors', () => {
 
       // Wait for input to load and then type in the index name
       // Pressing enter at the end to create combo box entry and trigger change events for time field below
+      cy.contains('Select clusters');
       cy.get('#index').type(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, {
         force: true,
       });
@@ -344,9 +346,7 @@ describe('Bucket-Level Monitors', () => {
         cy.contains('Edit').click({ force: true });
 
         // Wait for page to load
-        // The default admin user for a docker-created domain doesn't have the permissions needed to select clusters. Disabling this check when security is enabled
-        if (!Cypress.env('SECURITY_ENABLED'))
-          cy.contains('Select clusters').click({ force: true });
+        cy.contains('Select clusters');
 
         // Click on the Index field and type in multiple index names to replicate the bug
         cy.get('#index')
