@@ -170,28 +170,20 @@ describe('Aliases', () => {
         expect(num).to.equal(1);
       });
 
-      cy.get('[data-test-subj="moreAction"]').click();
-      // Flush btn should be disabled if no items selected
-      cy.get('[data-test-subj="Flush Action"]').should(
-        'have.class',
-        'euiContextMenuItem-isDisabled'
-      );
+      cy.get('[data-test-subj="moreAction"] button')
+        .click()
+        .get('[data-test-subj="Flush Action"]')
+        .should('be.disabled')
+        .end();
 
-      // Select an alias
-      cy.get(`[data-test-subj="checkboxSelectRow-${sample_alias}"]`).check({
-        force: true,
-      });
-
-      cy.get('[data-test-subj="moreAction"]').click();
-
-      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
-      cy.wait(2000);
-
-      // Flush btn should be enabled
-      cy.get('[data-test-subj="Flush Action"]')
-        .should('exist')
-        .should('not.have.class', 'euiContextMenuItem-isDisabled')
-        .click();
+      cy.get(`#_selection_column_${sample_alias}-checkbox`)
+        .click()
+        .get('[data-test-subj="moreAction"] button')
+        .click()
+        .get('[data-test-subj="Flush Action"]')
+        .should('not.be.disabled')
+        .click()
+        .end();
 
       // Check for flush index modal
       cy.contains('Flush alias');
