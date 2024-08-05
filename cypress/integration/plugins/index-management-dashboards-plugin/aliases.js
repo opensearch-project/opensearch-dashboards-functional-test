@@ -142,9 +142,9 @@ describe('Aliases', () => {
 
   describe('can flush an alias', () => {
     it('successfully flush an index', () => {
-      let sample_alias = `${SAMPLE_ALIAS_PREFIX}-${1}`;
+      let sample_alias = `${SAMPLE_ALIAS_PREFIX}-1`;
       // Sort all aliases in asc order to make it at first page
-      cy.contains('Alias name').click();
+      cy.get('[placeholder="Search..."]').type(`${sample_alias}{enter}`);
       // Confirm we have our initial alias
       cy.contains(sample_alias);
       // index a test doc
