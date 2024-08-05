@@ -6,6 +6,7 @@ OSD_BUILD_MANIFEST='../local-test-cluster/opensearch-dashboards-*/manifest.yml'
 OSD_TEST_PATH='cypress/integration/core-opensearch-dashboards'
 OSD_PLUGIN_TEST_PATH='cypress/integration/plugins'
 TEST_TYPE=$OPTION
+CI_GROUP_PATTERN_PREFIX="OpenSearch-Dashboards-ci-group-"
 
 # Map component name in opensearch-build repo INPUT_MANIFEST with folder name for tests in functional repo
 OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
@@ -23,6 +24,15 @@ OSD_COMPONENT_TEST_MAP=( "OpenSearch-Dashboards:opensearch-dashboards"
                          "mlCommonsDashboards:ml-commons-dashboards"
                          "securityAnalyticsDashboards:security-analytics-dashboards-plugin"
                          "assistantDashboards:dashboards-assistant"
+                         "OpenSearch-Dashboards-ci-group-1:OpenSearch-Dashboards-ci-group-1"
+                         "OpenSearch-Dashboards-ci-group-2:OpenSearch-Dashboards-ci-group-2"
+                         "OpenSearch-Dashboards-ci-group-3:OpenSearch-Dashboards-ci-group-3"
+                         "OpenSearch-Dashboards-ci-group-4:OpenSearch-Dashboards-ci-group-4"
+                         "OpenSearch-Dashboards-ci-group-5:OpenSearch-Dashboards-ci-group-5"
+                         "OpenSearch-Dashboards-ci-group-6:OpenSearch-Dashboards-ci-group-6"
+                         "OpenSearch-Dashboards-ci-group-7:OpenSearch-Dashboards-ci-group-7"
+                         "OpenSearch-Dashboards-ci-group-8:OpenSearch-Dashboards-ci-group-8"
+                         "OpenSearch-Dashboards-ci-group-9:OpenSearch-Dashboards-ci-group-9"
                        )
 
 if [ -z $TEST_TYPE ]; then
@@ -71,7 +81,13 @@ function get_test_list() {
             else
                 for test_component in $TEST_COMPONENTS_LOCAL; do
                     if [ "$test_component" = "$component_name" ]; then
-                        TEST_FILES_LOCAL+="$TEST_PATH_LOCAL/$test_folder/$TEST_FILES_EXT_LOCAL,"
+                        ci_group_pattern="${CI_GROUP_PATTERN_PREFIX}*"
+                        if [[ $test_component == $ci_group_pattern ]]; then
+                            group=${test_component#${CI_GROUP_PATTERN_PREFIX}}
+                            TEST_FILES_LOCAL=`ci_grouped_specs_finder ${group}`
+                        else
+                            TEST_FILES_LOCAL+="$TEST_PATH_LOCAL/$test_folder/$TEST_FILES_EXT_LOCAL,"
+                        fi
                         break
                     fi
                 done
@@ -86,4 +102,16 @@ function get_test_list() {
     done
 
     echo "${TEST_FILES_LOCAL%,}"
+}
+
+function ci_grouped_specs_finder {
+    group=$1
+
+    IFS="," read -a SPEC_ARRAY <<< "$(npm run -s osd:ciGroup${group})"
+    FORMATTED_SPEC=""
+    for i in "${SPEC_ARRAY[@]}"; do
+        FORMATTED_SPEC+="${OSD_TEST_PATH}/opensearch-dashboards/${i},"
+    done
+
+    echo "${FORMATTED_SPEC}"
 }

@@ -75,10 +75,13 @@ describe('Alerts', () => {
   });
 
   it('are generated', () => {
+    setupIntercept(cy, '/_security_analytics/alerts', 'getAlerts', 'GET');
+
     // Refresh the table
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({
       force: true,
     });
+    cy.wait('@getAlerts').should('have.property', 'state', 'Complete');
 
     // Confirm there are alerts created
     cy.get('tbody > tr')
@@ -385,16 +388,21 @@ describe('Alerts', () => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
+    // Wait for acknowledge to go through
+    cy.wait(2000);
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
       .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
     });
 
+    // Wait for filter to apply
+    cy.wait(2000);
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)

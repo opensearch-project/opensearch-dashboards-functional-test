@@ -57,7 +57,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         }
       );
 
-      cy.contains('span', 'Create user account');
+      cy.contains('span', 'Create internal user');
 
       cy.url().should((url) => {
         expect(url).to.not.contain('/users/create');
