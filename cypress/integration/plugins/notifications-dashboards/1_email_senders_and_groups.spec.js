@@ -157,23 +157,28 @@ describe('Test delete senders', () => {
   });
 
   it('deletes smtp senders', () => {
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiCheckbox__input[aria-label="Select this row"]').eq(0).click(); // ssl sender
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="senders-table-delete-button"]').click({
       force: true,
     });
-    cy.get('input[placeholder="delete"]').type('delete');
+    cy.wait(NOTIFICATIONS_DELAY);
+    cy.get('input[placeholder="delete"]').should('be.visible').type('delete')
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click();
     cy.contains('successfully deleted.').should('exist');
   });
 
   it('deletes ses senders', () => {
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.get('.euiCheckbox__input[aria-label="Select this row"]').last().click(); // ses sender
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="ses-senders-table-delete-button"]').click({
       force: true,
     });
-    cy.get('input[placeholder="delete"]').type('delete');
+    cy.wait(NOTIFICATIONS_DELAY);
+    cy.get('input[placeholder="delete"]').should('be.visible').type('delete')
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click();
     cy.contains('successfully deleted.').should('exist');
@@ -259,12 +264,17 @@ describe('Test create, edit and delete recipient group', () => {
   });
 
   it('deletes recipient groups', () => {
+    cy.wait(NOTIFICATIONS_DELAY);
+    cy.get('tbody > tr').should(($tr) => {
+      expect($tr, '1 row').to.have.length(1);
+    });
     cy.get('[data-test-subj="checkboxSelectAll"]').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="recipient-groups-table-delete-button"]').click({
       force: true,
     });
-    cy.get('input[placeholder="delete"]').type('delete');
+    cy.wait(NOTIFICATIONS_DELAY);
+    cy.get('input[placeholder="delete"]').should('be.visible').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get(
       '[data-test-subj="delete-recipient-group-modal-delete-button"]'
