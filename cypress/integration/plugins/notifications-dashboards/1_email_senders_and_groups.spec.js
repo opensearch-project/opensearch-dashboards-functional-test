@@ -188,7 +188,7 @@ describe('Test delete senders', () => {
       force: true,
     });
     cy.wait(NOTIFICATIONS_DELAY);
-    cy.get('input[placeholder="delete"]').should('be.visible').type('delete')
+    cy.get('input[placeholder="delete"]').should('be.visible').type('delete');
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="delete-sender-modal-delete-button"]').click({
       force: true,
