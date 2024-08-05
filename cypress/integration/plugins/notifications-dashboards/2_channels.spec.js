@@ -35,7 +35,7 @@ describe('Test create channels', () => {
 
     cy.get('[placeholder="Enter channel name"]').type('Test slack channel');
     cy.get('[data-test-subj="create-channel-slack-webhook-input"]').type(
-      'https://sample-slack-webhook'
+      'https://hooks.slack.com/services/A123456/B1234567/A1B2C3D4E5F6G7H8I9J0K1L2'
     );
     cy.wait(NOTIFICATIONS_DELAY);
     cy.get('[data-test-subj="create-channel-send-test-message-button"]').click({
@@ -44,10 +44,12 @@ describe('Test create channels', () => {
     cy.wait(NOTIFICATIONS_DELAY);
     // This needs some time to appear as it will wait for backend call to timeout
     cy.contains('test message.').should('exist');
+    cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-create-button"]').click({
       force: true,
     });
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('successfully created.').should('exist');
   });
 
@@ -62,11 +64,12 @@ describe('Test create channels', () => {
     cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-chime-webhook-input"]').type(
-      'https://sample-chime-webhook'
+      'https://hooks.chime.aws/incomingwebhooks/sample_chime_url?token=123456'
     );
     cy.wait(NOTIFICATIONS_DELAY);
 
     cy.get('[data-test-subj="create-channel-create-button"]').click();
+    cy.wait(NOTIFICATIONS_DELAY);
     cy.contains('successfully created.').should('exist');
   });
 
