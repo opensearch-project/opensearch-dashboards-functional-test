@@ -84,6 +84,7 @@ describe('Alerts', () => {
     cy.wait('@getAlerts').should('have.property', 'state', 'Complete');
 
     // Confirm there are alerts created
+    cy.wait(2000);
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
       .should('have.length', docCount);
