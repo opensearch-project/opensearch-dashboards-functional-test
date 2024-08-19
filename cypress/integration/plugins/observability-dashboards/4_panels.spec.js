@@ -30,7 +30,9 @@ describe('Testing panels table', () => {
     cy.get('input.euiFieldText').focus().type(TEST_PANEL, {
       delay: 50,
     });
-    cy.intercept('POST', '/api/saved_objects/*').as('createDashboard');
+    cy.intercept('POST', `${BASE_PATH}/api/saved_objects/*`).as(
+      'createDashboard'
+    );
     cy.get('.euiButton__text')
       .contains(/^Create$/)
       .trigger('mouseover')
