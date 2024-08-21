@@ -88,7 +88,7 @@ describe('Anomaly detection integration with vis augmenter', () => {
   it('Associate existing detector - creation flow', () => {
     openAddAnomalyDetectorFlyout(dashboardName, visualizationName);
 
-    cy.get('.euiFlyout').find('.euiTitle').contains('Add anomaly detector');
+    cy.get('.euiFlyout').find('.euiText').contains('Add anomaly detector');
     // ensuring the flyout is defaulting to detector creation vs. association
     cy.getElementByTestId('adAnywhereCreateDetectorButton');
     cy.get('[id="add-anomaly-detector__existing"]').click();
