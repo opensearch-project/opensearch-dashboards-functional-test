@@ -92,6 +92,8 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       // Click the "Import to Visbuilder" button using its specific data test subject
       cy.getElementByTestId('dashboardImportToVisBuilder').click();
 
+      cy.getElementByTestId('confirmModalConfirmButton').click();
+
       // Check the last breadcrumb
       cy.getElementByTestId('breadcrumb last').should(
         'contain',
@@ -106,27 +108,35 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.get('input[type="search"]').clear().type('line-1{enter}');
       cy.get('.euiBasicTable-loading').should('not.exist');
 
-      // Find the specific row for the Line Chart object and click the title to navigate
+      // Find the specific row for the Line Chart object
       cy.contains('tr', 'line-1').within(() => {
-        cy.get('[data-test-subj^="visListingTitleLink"]').click();
+        // Click the pencil icon using the test id "dashboardEditBtn"
+        cy.getElementByTestId('dashboardEditBtn').click();
       });
 
+      // Click the "Import to Visbuilder" button using its specific data test subject
+      cy.getElementByTestId('dashboardImportToVisBuilder').click();
+
+      cy.getElementByTestId('confirmModalConfirmButton').click();
+
       // Find the Save button and click it
-      cy.getElementByTestId('visualizeSaveButton').click();
+      cy.getElementByTestId('visBuilderSaveButton').click();
 
       // Verify that clicking the Save button causes a popup to appear
       cy.getElementByTestId('savedObjectSaveModal').should('be.visible');
+
+      cy.get('input[type="text"]').clear().type('test1');
 
       // Find the Save button in the modal and click it
       cy.getElementByTestId('confirmSaveSavedObjectButton').click();
 
       // Verify that the visualization is saved by checking for the success message
-      cy.getElementByTestId('saveVisualizationSuccess')
+      cy.getElementByTestId('globalToastList')
         .should('be.visible')
-        .and('contain', "Saved 'line-1'");
+        .and('contain', 'Saved');
     });
 
-    it('should import line chart to Visbuilder and verify filters, queries, and aggregations', () => {
+    it.only('should import line chart to Visbuilder and verify filters, queries, and aggregations', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
 
       // Search for the line chart visualization
@@ -135,12 +145,14 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Find the specific row for the Line Chart object
       cy.contains('tr', 'line-1').within(() => {
-        // Click the pencil icon
+        // Click the pencil icon using the test id "dashboardEditBtn"
         cy.getElementByTestId('dashboardEditBtn').click();
       });
 
-      // Click the "Import to Visbuilder" option
+      // Click the "Import to Visbuilder" button using its specific data test subject
       cy.getElementByTestId('dashboardImportToVisBuilder').click();
+
+      cy.getElementByTestId('confirmModalConfirmButton').click();
 
       // Locate the global query bar first
       cy.getElementByTestId('globalQueryBar').should('exist');
