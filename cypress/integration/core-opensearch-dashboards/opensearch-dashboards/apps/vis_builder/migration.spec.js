@@ -136,7 +136,7 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
         .and('contain', 'Saved');
     });
 
-    it.only('should import line chart to Visbuilder and verify filters, queries, and aggregations', () => {
+    it('should import line chart to Visbuilder and verify filters, queries, and aggregations', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
 
       // Search for the line chart visualization
