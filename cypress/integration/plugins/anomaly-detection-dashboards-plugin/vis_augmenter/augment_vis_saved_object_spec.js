@@ -18,6 +18,7 @@ import {
   INDEX_SETTINGS_FILEPATH_SIMPLE,
   SAMPLE_DATA_FILEPATH_SIMPLE,
 } from '../../../../utils/constants';
+import { AD_URL } from '../../../../utils/plugins/anomaly-detection-dashboards-plugin/constants';
 
 describe('AD augment-vis saved objects', () => {
   const commonUI = new CommonUI(cy);
@@ -50,6 +51,7 @@ describe('AD augment-vis saved objects', () => {
       dashboardName,
       [visualizationSpec]
     );
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
   });
 
   after(() => {
