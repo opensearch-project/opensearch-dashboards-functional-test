@@ -117,6 +117,8 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       ADMIN_AUTH.newUser = Cypress.env('username');
       ADMIN_AUTH.newPassword = Cypress.env('password');
       CURRENT_TENANT.newTenant = 'private';
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
     });
   });
 }
