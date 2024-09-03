@@ -9,7 +9,7 @@ import { delayTime, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing dashboard table empty state', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -23,7 +23,7 @@ describe('Testing dashboard table empty state', () => {
 
 describe('Testing dashboard table', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -35,6 +35,10 @@ describe('Testing dashboard table', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
 
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
@@ -64,6 +68,11 @@ describe('Testing dashboard table', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
     cy.get('.euiButtonIcon[aria-label="Open popover"]').first().click();
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should(
       'exist'
@@ -74,6 +83,11 @@ describe('Testing dashboard table', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
     cy.get('[data-test-subj="dashboard-table-traces-button"]')
       .contains('13')
       .click();
@@ -91,7 +105,7 @@ describe('Testing dashboard table', () => {
 
 describe('Testing plots', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -100,6 +114,10 @@ describe('Testing plots', () => {
     cy.get(
       '[data-test-subj="trace-groups-service-operation-accordian"]'
     ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
   });
 
   it('Renders plots', () => {

@@ -279,15 +279,12 @@ describe('discover app', { scrollBehavior: false }, () => {
             .should('be.visible')
             .clear()
             .type('2');
-
-          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Let auto refresh run
           cy.wait(100);
 
           // Close the auto refresh
-          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Check the timestamp of the last request, it should be different than the first timestamp

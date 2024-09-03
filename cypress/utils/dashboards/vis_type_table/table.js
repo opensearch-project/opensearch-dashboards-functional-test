@@ -119,5 +119,5 @@ Cypress.Commands.add('tbClickFilterFromExpand', (action) => {
   cy.get('[class="euiPopoverFooter"]')
     .find('[class="euiFlexItem"]')
     .find(`[data-test-subj=${actionButton}]`)
-    .click();
+    .click({ force: true });
 });

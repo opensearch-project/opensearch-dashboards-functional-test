@@ -4,8 +4,12 @@
  */
 
 import { createSampleDetector } from '../../../utils/helpers';
+import { AD_URL } from '../../../utils/plugins/anomaly-detection-dashboards-plugin/constants';
 
 context('Sample detectors', () => {
+  before(() => {
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
+  });
   beforeEach(() => {
     cy.deleteAllIndices();
     cy.deleteADSystemIndices();
