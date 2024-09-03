@@ -51,6 +51,7 @@ describe('table visualization in embedded mode', () => {
 
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     cy.deleteIndex(TABLE_INDEX_ID);
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
     cy.bulkUploadDocs(TABLE_PATH_INDEX_DATA);
@@ -96,12 +97,16 @@ describe('table visualization in embedded mode', () => {
 
   it('Should allow to filter in embedded mode', () => {
     commonUI.addFilterRangeRetrySelection('age', 'is between', '10', '30');
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(['0', '1,059', '20', '1,114']);
     });
     commonUI.removeFilter('age');
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });
@@ -109,23 +114,33 @@ describe('table visualization in embedded mode', () => {
 
   it('Should filter for value in embedded mode', () => {
     cy.tbClickTableCellAction(2, 0, 0, 'filter for', 0, true);
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(['0', '1,059']);
     });
     commonUI.removeFilter('age');
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });
+    cy.wait(2000);
     cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
+    cy.wait(2000);
     cy.tbClickFilterFromExpand('filter for');
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(['0', '1,059']);
     });
     commonUI.removeFilter('age');
+    cy.wait(2000);
     cy.reload();
+    cy.wait(2000);
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });

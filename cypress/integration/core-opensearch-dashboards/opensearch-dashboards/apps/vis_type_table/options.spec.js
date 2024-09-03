@@ -20,6 +20,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 describe('Table visualization options', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     cy.deleteIndex(TABLE_INDEX_ID);
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
     cy.bulkUploadDocs(TABLE_PATH_INDEX_DATA);

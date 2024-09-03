@@ -18,6 +18,7 @@ const testFixtureHandler = new TestFixtureHandler(
 describe('index pattern without field spec', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
@@ -35,10 +36,16 @@ describe('index pattern without field spec', () => {
     cy.waitForLoader();
   });
 
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+  });
+
   after(() => {
     testFixtureHandler.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/index_pattern_without_timefield/mappings.json.txt'
     );
+    cy.deleteSavedObjectByType('index-pattern');
   });
 
   it('should not display a timepicker', () => {

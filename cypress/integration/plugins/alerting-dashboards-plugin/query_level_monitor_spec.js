@@ -120,6 +120,7 @@ describe('Query-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_MONITOR, { force: true });
 
       // Wait for input to load and then type in the index name
+      cy.contains('Select clusters');
       cy.get('#index').type('*', { force: true });
 
       // Add a trigger
@@ -210,6 +211,9 @@ describe('Query-Level Monitors', () => {
       cy.contains('Edit', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
         force: true,
       });
+
+      // Wait for page to load
+      cy.contains('Select clusters');
 
       // Click on the Index field and type in multiple index names to replicate the bug
       cy.get('#index')
@@ -335,6 +339,9 @@ describe('Query-Level Monitors', () => {
 
       // Select visual editor
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
+
+      // Wait for page to load
+      cy.contains('Select clusters');
 
       // Wait for input to load and then type in the index name
       cy.get('#index').type(
@@ -472,13 +479,13 @@ describe('Query-Level Monitors', () => {
     });
   });
 
-  after(() => {
-    // Delete all existing monitors and destinations
-    cy.deleteAllMonitors();
-
-    // Delete sample data
-    cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
-    cy.deleteIndexByName(TESTING_INDEX_A);
-    cy.deleteIndexByName(TESTING_INDEX_B);
-  });
+  // after(() => {
+  //   // Delete all existing monitors and destinations
+  //   cy.deleteAllMonitors();
+  //
+  //   // Delete sample data
+  //   cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+  //   cy.deleteIndexByName(TESTING_INDEX_A);
+  //   cy.deleteIndexByName(TESTING_INDEX_B);
+  // });
 });

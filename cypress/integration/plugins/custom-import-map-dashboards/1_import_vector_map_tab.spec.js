@@ -6,15 +6,17 @@
 /// <reference types="cypress" />
 
 import { BASE_PATH } from '../../../utils/constants';
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../utils/commands';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
+
 describe('Verify the presence of import custom map tab in region map plugin', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.deleteAllIndices();
     miscUtils.addSampleData();
+    cy.wait(15000);
 
     // Load region map visualization with sample data opensearch_dashboards_sample_data_flights
     cy.visit(

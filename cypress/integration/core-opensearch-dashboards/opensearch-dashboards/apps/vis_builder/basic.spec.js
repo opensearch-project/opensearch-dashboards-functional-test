@@ -23,9 +23,15 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Base Tests', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
       cy.importSavedObjects(VB_PATH_SO_DATA);
+    });
+
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
     });
 
     it('Show existing visualizations in Visualize and navigate to it', () => {
@@ -153,6 +159,47 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
 
       // Cleanup
       cy.deleteSavedObjectByType(VB_SO_TYPE, `vb${cleanupKey}`);
+    });
+
+    it('Check toggle legend functionality', () => {
+      // Settting up the page
+      cy.visit(VB_APP_URL);
+
+      // Wait for page to load
+      cy.waitForLoader();
+      cy.vbSelectDataSource(VB_INDEX_PATTERN);
+
+      cy.getElementByTestId('field-undefined-showDetails').drag(
+        '[data-test-subj=dropBoxAddField-metric]'
+      );
+
+      // default behaviour: hidden
+      cy.getElementByTestId('legend-Count').should('be.visible');
+      cy.getElementByTestId('vislibToggleLegend').click();
+
+      cy.getElementByTestId('legend-Count').should('not.exist');
+      cy.getElementByTestId('vislibToggleLegend').click();
+
+      cy.getElementByTestId('legend-Count').should('be.visible');
+    });
+
+    it('Check dragging a field out of bounds does not scroll the pane', () => {
+      // Settting up the page
+      cy.visit(VB_APP_URL);
+
+      // Wait for page to load
+      cy.waitForLoader();
+      cy.vbSelectDataSource(VB_INDEX_PATTERN);
+
+      cy.getElementByTestId('field-undefined-showDetails').drag(
+        '[data-test-subj=dropBoxAddField-metric]'
+      );
+
+      cy.getElementByTestId('dropBoxField-metric-0').drag(
+        '[data-test-subj="vbOption-Settings"]'
+      );
+
+      cy.get('[class="vbConfig__title"]').contains('Configuration');
     });
 
     after(() => {

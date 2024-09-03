@@ -27,6 +27,7 @@ const indexSet = [
 describe('shared links', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
@@ -50,6 +51,16 @@ describe('shared links', () => {
     cy.waitForLoader();
     cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
     cy.waitForSearch();
+  });
+
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
+  });
+
+  after(() => {
+    cy.deleteIndex(indexSet.join(','));
+    cy.clearCache();
   });
 
   describe('shared links with state in query', () => {
@@ -106,6 +117,8 @@ describe('shared links', () => {
 
   describe('shared links with state in sessionStorage', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.setAdvancedSetting({
         'state:storeInSessionStorage': true,
       });
@@ -117,9 +130,9 @@ describe('shared links', () => {
     });
 
     after(() => {
-      cy.setAdvancedSetting({
-        'state:storeStateInSessionStorage': false,
-      });
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
+      cy.deleteSavedObjectByType('config');
     });
 
     it('should allow for copying the snapshot URL', function () {

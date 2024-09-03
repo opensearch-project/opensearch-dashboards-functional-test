@@ -41,7 +41,7 @@ describe('Alerts', () => {
       aliasMappings,
       ruleSettings,
       indexDoc,
-      4
+      docCount
     );
 
     // Wait for the detector to execute
@@ -75,12 +75,16 @@ describe('Alerts', () => {
   });
 
   it('are generated', () => {
+    setupIntercept(cy, '/_security_analytics/alerts', 'getAlerts', 'GET');
+
     // Refresh the table
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click({
       force: true,
     });
+    cy.wait('@getAlerts').should('have.property', 'state', 'Complete');
 
     // Confirm there are alerts created
+    cy.wait(2000);
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
       .should('have.length', docCount);
@@ -251,23 +255,25 @@ describe('Alerts', () => {
         });
       });
 
-      // Confirm the rule document ID is present
-      cy.get('[data-test-subj="finding-details-flyout-rule-document-id"]')
-        .invoke('text')
-        .then((text) => expect(text).to.not.equal('-'));
-
       // Confirm the rule index
       cy.get(
         '[data-test-subj="finding-details-flyout-rule-document-index"]'
       ).contains(indexName);
 
+      // Confirm there is atleast one row of document
+      cy.get('tbody > tr').should('have.length.least', 1);
+
       // Confirm the rule document matches
       // The EuiCodeEditor used for this component stores each line of the JSON in an array of elements;
       // so this test formats the expected document into an array of strings,
       // and matches each entry with the corresponding element line.
-      const document = JSON.stringify(JSON.parse('{"EventID": 2003}'), null, 2);
+      const document = JSON.stringify(
+        JSON.parse('{"winlog.event_id": 2003}'),
+        null,
+        2
+      );
       const documentLines = document.split('\n');
-      cy.get('[data-test-subj="finding-details-flyout-rule-document"]')
+      cy.get('[data-test-subj="finding-details-flyout-rule-document-0"]')
         .get('[class="euiCodeBlock__line"]')
         .each((lineElement, lineIndex) => {
           let line = lineElement.text();
@@ -350,6 +356,7 @@ describe('Alerts', () => {
       .should('have.length', 2);
 
     // Filter the table to show only "Active" alerts
+    cy.get('[data-text="Status"]');
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Acknowledged').click({ force: true });
       cy.contains('Active').click({ force: true });
@@ -382,16 +389,21 @@ describe('Alerts', () => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
+    // Wait for acknowledge to go through
+    cy.wait(2000);
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
       .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
+    cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
       cy.contains('Acknowledged').click({ force: true });
     });
 
+    // Wait for filter to apply
+    cy.wait(2000);
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)

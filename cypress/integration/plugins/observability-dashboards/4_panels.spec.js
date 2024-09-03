@@ -30,11 +30,13 @@ describe('Testing panels table', () => {
     cy.get('input.euiFieldText').focus().type(TEST_PANEL, {
       delay: 50,
     });
+    cy.intercept('POST', `${BASE_PATH}/api/saved_objects/*`).as(
+      'createDashboard'
+    );
     cy.get('.euiButton__text')
       .contains(/^Create$/)
       .trigger('mouseover')
       .click();
-    cy.intercept('POST', '/api/saved_objects/*').as('createDashboard');
     cy.wait('@createDashboard');
 
     cy.contains(TEST_PANEL).should('exist');
