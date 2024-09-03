@@ -18,10 +18,13 @@ import {
   VB_METRIC_VIS_TITLE,
   VB_BAR_VIS_TITLE,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 if (Cypress.env('VISBUILDER_ENABLED')) {
   describe('Visualization Builder Dashboard Tests', () => {
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       cy.deleteIndex(VB_INDEX_ID);
       cy.bulkUploadDocs(VB_PATH_INDEX_DATA);
 
@@ -33,6 +36,11 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.waitForLoader();
 
       cy.setTopNavDate(VB_INDEX_START_TIME, VB_INDEX_END_TIME);
+    });
+
+    beforeEach(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
     });
 
     it('Should have valid visualizations', () => {
@@ -108,38 +116,42 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
       cy.deleteSavedObjectByType(VB_SO_TYPE, `vb${cleanupKey}`);
     });
 
-    it('Should be able to edit a visualization', () => {
-      // Navigate to vis builder
-      cy.getElementByTestId('dashboardEditMode').click();
-      cy.getElementByTestId(
-        `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
-      )
-        .find('[data-test-subj="embeddablePanelToggleMenuIcon"]')
-        .click();
-      cy.getElementByTestId('embeddablePanelAction-editPanel').click();
-      cy.getElementByTestId('visualizationLoader')
-        .find('.mtrVis__value')
-        .should('contain.text', VB_INDEX_DOC_COUNT);
+    it(
+      'Should be able to edit a visualization',
+      { retries: { runMode: 2 } },
+      () => {
+        // Navigate to vis builder
+        cy.getElementByTestId('dashboardEditMode').click();
+        cy.getElementByTestId(
+          `embeddablePanelHeading-${toTestId(VB_METRIC_VIS_TITLE, '')}`
+        )
+          .find('[data-test-subj="embeddablePanelToggleMenuIcon"]')
+          .click();
+        cy.getElementByTestId('embeddablePanelAction-editPanel').click();
+        cy.getElementByTestId('visualizationLoader')
+          .find('.mtrVis__value')
+          .should('contain.text', VB_INDEX_DOC_COUNT);
 
-      // Edit visualization
-      const newLabel = 'Editied Label';
-      cy.getElementByTestId('dropBoxField-metric-0').click();
-      cy.vbEditAgg([
-        {
-          testSubj: 'visEditorStringInput1customLabel',
-          type: 'input',
-          value: newLabel,
-        },
-      ]);
+        // Edit visualization
+        const newLabel = 'Editied Label';
+        cy.getElementByTestId('dropBoxField-metric-0').click();
+        cy.vbEditAgg([
+          {
+            testSubj: 'visEditorStringInput1customLabel',
+            type: 'input',
+            value: newLabel,
+          },
+        ]);
 
-      // Save and return
-      cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
+        // Save and return
+        cy.getElementByTestId('visBuilderSaveAndReturnButton').click();
 
-      cy.getElementByTestId('visualizationLoader').should(
-        'contain.text',
-        newLabel
-      );
-    });
+        cy.getElementByTestId('visBuilderLoader').should(
+          'contain.text',
+          newLabel
+        );
+      }
+    );
 
     after(() => {
       cy.deleteIndex(VB_INDEX_ID);

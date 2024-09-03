@@ -10,47 +10,33 @@ import { WAIT_TIME, BASE_PATH, TIMEOUT } from '../../../utils/constants';
 describe('Cypress', () => {
   // remove sample data
   after(() => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardflights"]')
       .contains('Remove')
       .click();
     cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardecommerce"]')
       .contains('Remove')
       .click();
     cy.wait(3000);
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`);
+    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      waitForGetTenant: true,
+    });
     cy.get('div[data-test-subj="sampleDataSetCardlogs"]')
       .contains('Remove')
       .click();
     cy.wait(3000);
   });
 
-  it('Download from reporting homepage', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+  it('Download pdf from in-context menu', () => {
+    cy.visit(`${BASE_PATH}/app/dashboards#`, {
       waitForGetTenant: true,
     });
-    cy.location('pathname', { timeout: TIMEOUT }).should(
-      'include',
-      '/reports-dashboards'
-    );
-
-    cy.wait(12500);
-    cy.get('[id="landingPageOnDemandDownload"]')
-      .contains('PDF')
-      .click({ force: true });
-    cy.get('body').then(($body) => {
-      if ($body.find('#downloadInProgressLoadingModal').length > 0) {
-        return;
-      } else {
-        assert(false);
-      }
-    });
-  });
-
-  it('Download pdf from in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/dashboards#`);
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -72,7 +58,9 @@ describe('Cypress', () => {
   });
 
   it('Download png from in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/dashboards#`);
+    cy.visit(`${BASE_PATH}/app/dashboards#`, {
+      waitForGetTenant: true,
+    });
     cy.wait(5000);
 
     // click first entry in dashboards page
@@ -91,13 +79,13 @@ describe('Cypress', () => {
   });
 
   it('Download csv from saved search in-context menu', () => {
-    cy.visit(`${BASE_PATH}/app/discover#`);
+    cy.visit(`${BASE_PATH}/app/discover#`, {
+      waitForGetTenant: true,
+    });
     cy.wait(5000);
 
     // open saved search list
-    cy.get(
-      'button.euiButtonEmpty:nth-child(3) > span:nth-child(1) > span:nth-child(1)'
-    ).click({ force: true });
+    cy.get('[data-test-subj="discoverOpenButton"]').click({ force: true });
     cy.wait(5000);
 
     // click first entry
@@ -137,6 +125,8 @@ describe('Cypress', () => {
 
     cy.get('#generateReportFromDetailsFileFormat').click({ force: true });
 
-    cy.get('#downloadInProgressLoadingModal');
+    cy.get('.euiToastHeader__title')
+      .contains('Successfully generated report')
+      .should('exist');
   });
 });

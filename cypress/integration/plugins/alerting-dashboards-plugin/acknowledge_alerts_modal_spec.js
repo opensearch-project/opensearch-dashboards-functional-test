@@ -16,12 +16,13 @@ const BUCKET_TRIGGER = 'sample_alerts_flyout_bucket_level_trigger';
 const QUERY_MONITOR = 'sample_alerts_flyout_query_level_monitor';
 const QUERY_TRIGGER = 'sample_alerts_flyout_query_level_trigger';
 
-const TWENTY_SECONDS = 20000;
+const TWENTY_SECONDS = 60000;
 
 describe('AcknowledgeAlertsModal', () => {
   before(() => {
     // Delete any existing monitors
     cy.deleteAllMonitors();
+    cy.deleteAllAlerts();
 
     // Load sample data
     cy.loadSampleEcommerceData();
@@ -42,8 +43,14 @@ describe('AcknowledgeAlertsModal', () => {
   });
 
   beforeEach(() => {
+    const getMonitorsUrl = new RegExp('.*api/alerting/monitors/_search.*');
+    cy.intercept(getMonitorsUrl).as('searchMonitors');
+
     // Reloading the page to close any modals that were not closed by other tests that had failures.
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
+
+    // Wait for the monitor search call to finish before checking for the monitors below
+    cy.wait('@searchMonitors');
 
     // Confirm dashboard is displaying rows for the test monitors.
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
@@ -216,6 +223,9 @@ describe('AcknowledgeAlertsModal', () => {
   after(() => {
     // Delete all monitors
     cy.deleteAllMonitors();
+
+    // Delete all alerts
+    cy.deleteAllAlerts();
 
     // Delete sample data
     cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);

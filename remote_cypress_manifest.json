@@ -1,0 +1,31 @@
+{
+  "schema-version": "1.0",
+  "build": {
+    "name": "OpenSearch Dashboards Functional Test",
+    "version": "3.0.0"
+  },
+  "ci": {
+    "image": {
+    }
+  },
+  "components": [
+    {
+      "name": "OpenSearch-Dashboards",
+      "repository": "opensearch-project/OpenSearch-Dashboards",
+      "workflow-name": "",
+      "ref": "",
+      "operating-system": "linux",
+      "arch": "x64",
+      "integ-test": {
+        "test-configs": [
+          "with-security",
+          "without-security"
+        ],
+        "additional-cluster-configs": {
+          "vis_builder.enabled": true,
+          "data_source.enabled": true
+        }
+      }
+    }
+  ]
+}

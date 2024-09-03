@@ -16,6 +16,7 @@ import {
   TABLE_INDEX_END_TIME,
   toTestId,
 } from '../../../../../utils/constants';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const commonUI = new CommonUI(cy);
 
@@ -24,6 +25,8 @@ const commonUI = new CommonUI(cy);
 
 describe('table visualization data', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     cy.deleteIndex(TABLE_INDEX_ID);
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
     cy.bulkUploadDocs(TABLE_PATH_INDEX_DATA);

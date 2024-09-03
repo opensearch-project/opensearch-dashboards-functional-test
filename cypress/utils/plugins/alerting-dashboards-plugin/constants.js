@@ -12,7 +12,10 @@ export const ALERTING_INDEX = {
 
 export const ALERTING_API = {
   MONITOR_BASE: `${API_ROUTE_PREFIX}/monitors`,
+  WORKFLOW_BASE: `${API_ROUTE_PREFIX}/workflows`,
   DESTINATION_BASE: `${API_ROUTE_PREFIX}/destinations`,
 };
 
 export const ALERTING_PLUGIN_NAME = 'alerting';
+
+export const ALERTING_PLUGIN_TIMEOUT = 60000;

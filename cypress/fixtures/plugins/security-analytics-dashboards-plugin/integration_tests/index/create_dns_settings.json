@@ -1,21 +1,15 @@
 {
   "mappings": {
     "properties": {
-      "DnsAnswerType": {
+      "dns.answers.type": {
         "type": "text"
       },
-      "DnsQuestionRegisteredDomain": {
+      "dns.question.name": {
         "type": "text"
       },
-      "DnsQuestionName": {
+      "dns.question.registered_domain": {
         "type": "text"
       }
-    }
-  },
-  "settings": {
-    "index": {
-      "number_of_shards": "1",
-      "number_of_replicas": "1"
     }
   }
 }

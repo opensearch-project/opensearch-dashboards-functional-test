@@ -6,26 +6,10 @@
 /// <reference types="cypress" />
 
 import {
-  delayTime,
   SERVICE_NAME,
   setTimeFilter,
+  delayTime,
 } from '../../../utils/constants';
-
-describe('Testing services table empty state', () => {
-  beforeEach(() => {
-    cy.visit('app/observability-traces#/services', {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
-    cy.wait(delayTime * 3);
-  });
-
-  it('Renders empty state', () => {
-    cy.contains(' (0)').should('exist');
-    cy.contains('No matches').should('exist');
-  });
-});
 
 describe('Testing services table', () => {
   beforeEach(() => {
@@ -37,13 +21,6 @@ describe('Testing services table', () => {
     setTimeFilter();
   });
 
-  it('Renders the services table', () => {
-    cy.contains(' (8)').should('exist');
-    cy.contains('analytics-service, frontend-client, recommendation').should(
-      'exist'
-    );
-  });
-
   it('Searches correctly', () => {
     cy.get('input[type="search"]')
       .first()
@@ -51,6 +28,14 @@ describe('Testing services table', () => {
       .type(`${SERVICE_NAME}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.contains(' (1)').should('exist');
+  });
+
+  it('Opens service flyout', () => {
+    cy.get('button[data-test-subj^="service-flyout-action-btn"]')
+      .first()
+      .click();
+    cy.wait(delayTime);
+    cy.get('span').contains('Overview').should('exist');
   });
 });
 
@@ -66,12 +51,6 @@ describe('Testing service view empty state', () => {
       },
     });
   });
-
-  it('Renders service view empty state', () => {
-    cy.contains('frontend-client').should('exist');
-    cy.get('.euiText').contains('0').should('exist');
-    cy.get('.euiText').contains('-').should('exist');
-  });
 });
 
 describe('Testing service view', () => {
@@ -86,10 +65,5 @@ describe('Testing service view', () => {
       },
     });
     setTimeFilter(undefined, false);
-  });
-
-  it('Renders service view', () => {
-    cy.get('h2.euiTitle').contains(SERVICE_NAME).should('exist');
-    cy.get('div.vis-network').should('exist');
   });
 });

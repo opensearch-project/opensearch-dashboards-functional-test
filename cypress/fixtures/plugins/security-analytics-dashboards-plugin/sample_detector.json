@@ -20,14 +20,18 @@
             "id": "1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"
           }
         ],
-        "custom_rules": []
+        "custom_rules": [
+          {
+            "id": ""
+          }
+        ]
       }
     }
   ],
   "triggers": [
     {
       "name": "sample_alert_condition",
-      "sev_levels": [],
+      "sev_levels": ["high"],
       "tags": [],
       "actions": [
         {
@@ -35,11 +39,11 @@
           "name": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: sample_detector",
           "destination_id": "",
           "subject_template": {
-            "source": "Triggered alert condition:  - Severity: 1 (Highest) - Threat detector: sample_detector",
+            "source": "Triggered alert condition:  - Severity: 1 (Highest)  - Threat detector: sample_detector",
             "lang": "mustache"
           },
           "message_template": {
-            "source": "Triggered alert condition: \nSeverity: 1 (Highest)\nThreat detector: sample_detector\nDescription: Description for sample_detector.\nDetector data sources:\n\twindows",
+            "source": "Triggered alert condition: \nSeverity: 1 (Highest) \nThreat detector: sample_detector\nDescription: Description for sample_detector.\nDetector data sources:\n\twindows",
             "lang": "mustache"
           },
           "throttle_enabled": false,
@@ -51,7 +55,7 @@
       ],
       "types": ["windows"],
       "severity": "4",
-      "ids": ["1a4bd6e3-4c6e-405d-a9a3-53a116e341d4"]
+      "ids": []
     }
   ]
 }

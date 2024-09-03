@@ -3,7 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BASE_PATH, IM_API } from './constants';
+import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
+import { devToolsRequest } from './helpers';
+
+export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
 
 export const ADMIN_AUTH = {
   username: Cypress.env('username'),
@@ -22,6 +25,45 @@ export const CURRENT_TENANT = {
     this.defaultTenant = changedTenant;
   },
 };
+
+// Overwrite default backend endpoint to customized one, remember set to original value after tests complete.
+export const currentBackendEndpoint = (() => {
+  let currentEndpoint = BACKEND_BASE_PATH;
+  const DEFAULT_ENDPOINT = BACKEND_BASE_PATH;
+  const REMOTE_NO_AUTH_ENDPOINT = Cypress.env('remoteDataSourceNoAuthUrl');
+
+  return Object.freeze({
+    DEFAULT: DEFAULT_ENDPOINT,
+    REMOTE_NO_AUTH: REMOTE_NO_AUTH_ENDPOINT,
+    /**
+     * Change current backend endpoint
+     * @param {*} changedEndPoint
+     * @param {*} immediately set immediately false to change tenant after all pending promise be invoked,
+     * useful for reset backend endpoint after all tests run.
+     */
+    set(changedEndPoint, immediately = true) {
+      if (
+        ![DEFAULT_ENDPOINT, REMOTE_NO_AUTH_ENDPOINT].includes(changedEndPoint)
+      ) {
+        throw new Error(`Invalid endpoint:${changedEndPoint}`);
+      }
+      const updateEndpoint = () => {
+        currentEndpoint = changedEndPoint;
+        cy.log(
+          `Current backend endpoint has been changed to: ${currentEndpoint}`
+        );
+      };
+      if (immediately) {
+        updateEndpoint();
+      } else {
+        cy.wrap().then(updateEndpoint);
+      }
+    },
+    get() {
+      return currentEndpoint;
+    },
+  });
+})();
 
 export const supressNoRequestOccurred = () => {
   cy.on('fail', (err) => {
@@ -46,9 +88,15 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
         auth: ADMIN_AUTH,
       };
     }
-    newOptions.qs = { security_tenant: CURRENT_TENANT.defaultTenant };
+    if (!newOptions.excludeTenant) {
+      newOptions.qs = {
+        ...newOptions.qs,
+        security_tenant: CURRENT_TENANT.defaultTenant,
+      };
+    }
+
     if (waitForGetTenant) {
-      cy.intercept('GET', '/api/v1/multitenancy/tenant').as('getTenant');
+      cy.intercept('GET', '/api/v1/multitenancy/tenant*').as('getTenant');
       orig(url, newOptions);
       supressNoRequestOccurred();
       cy.wait('@getTenant');
@@ -81,6 +129,24 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
     [options.method, options.url, options.body] = args;
   }
 
+  /**
+   *
+   * Overwrite opensearch backend endpoint to customized endpoint if data source management enabled and
+   * request url start with default backend base path. It's useful for prepare testing data for other
+   * data source.
+   *
+   */
+  if (
+    !!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
+    currentBackendEndpoint.get() !== currentBackendEndpoint.DEFAULT &&
+    options.url &&
+    options.url.startsWith(BACKEND_BASE_PATH)
+  ) {
+    options.url = options.url.replace(
+      new RegExp(`^${BACKEND_BASE_PATH}`),
+      currentBackendEndpoint.get()
+    );
+  }
   return originalFn(Object.assign({}, defaults, options));
 });
 
@@ -96,6 +162,7 @@ Cypress.Commands.add('login', () => {
   });
 });
 
+// This function does not delete all indices
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.log('Deleting all indices');
   cy.request(
@@ -243,6 +310,15 @@ Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
   });
 });
 
+Cypress.Commands.add('getIndices', (index = null, settings = {}) => {
+  cy.request({
+    method: 'GET',
+    url: `${Cypress.env('openSearchUrl')}/_cat/indices/${index ? index : ''}`,
+    failOnStatusCode: false,
+    ...settings,
+  });
+});
+
 // TODO: Impliment chunking
 Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   const sendBulkAPIRequest = (ndjson) => {
@@ -367,6 +443,23 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
   });
 });
 
+Cypress.Commands.add('createDashboard', (attributes = {}, headers = {}) => {
+  const url = `${Cypress.config().baseUrl}/api/saved_objects/dashboard`;
+
+  cy.request({
+    method: 'POST',
+    url,
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+      ...headers,
+    },
+    body: JSON.stringify({
+      attributes,
+    }),
+  });
+});
+
 Cypress.Commands.add('changeDefaultTenant', (attributes, header = {}) => {
   const url =
     Cypress.env('openSearchUrl') + '/_plugins/_security/api/tenancy/config';
@@ -393,6 +486,11 @@ Cypress.Commands.add('setAdvancedSetting', (changes) => {
     .request({
       method: 'POST',
       url,
+      qs: Cypress.env('SECURITY_ENABLED')
+        ? {
+            security_tenant: CURRENT_TENANT.defaultTenant,
+          }
+        : {},
       headers: {
         'content-type': 'application/json;charset=UTF-8',
         'osd-xsrf': true,
@@ -483,3 +581,111 @@ Cypress.Commands.add(
       });
   }
 );
+
+// type: logs, ecommerce, flights
+Cypress.Commands.add('loadSampleData', (type) => {
+  cy.request({
+    method: 'POST',
+    headers: { 'osd-xsrf': 'opensearch-dashboards' },
+    url: `${BASE_PATH}/api/sample_data/${type}`,
+  });
+});
+
+Cypress.Commands.add('fleshTenantSettings', () => {
+  if (Cypress.env('SECURITY_ENABLED')) {
+    // Use xhr request is good enough to flesh tenant
+    cy.request({
+      url: `${BASE_PATH}/app/home?security_tenant=${CURRENT_TENANT.defaultTenant}`,
+      method: 'GET',
+      failOnStatusCode: false,
+    });
+  }
+});
+
+Cypress.Commands.add(
+  'selectFromDataSourceSelector',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find(`button[data-test-subj="comboBoxClearButton"]`)
+      .then((clearButton) => {
+        if (clearButton.length > 0) {
+          clearButton.click();
+        }
+      });
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find('input')
+      .clear('{backspace}');
+    cy.getElementByTestId('dataSourceSelectorComboBox')
+      .find('input')
+      .type(dataSourceTitle);
+    cy.wait(1000);
+
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiFilterSelectItem')
+        .contains(dataSourceTitle)
+        .closest('.euiFilterSelectItem');
+    }
+    dataSourceElement.click();
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId('dataSourceSelectorComboBox')
+        .last('button')
+        .click();
+    }
+  }
+);
+
+Cypress.Commands.add('viewData', (sampleData) => {
+  cy.get(`button[data-test-subj="launchSampleDataSet${sampleData}"]`)
+    .should('be.visible')
+    .click();
+});
+
+Cypress.Commands.add('addSampleDataToDataSource', (dataSourceTitle) => {
+  cy.visit('app/home#/tutorial_directory');
+  cy.selectFromDataSourceSelector(dataSourceTitle);
+  cy.get('button[data-test-subj="addSampleDataSetecommerce"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardecommerce"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+  cy.get('button[data-test-subj="addSampleDataSetflights"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardflights"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+  cy.get('button[data-test-subj="addSampleDataSetlogs"]')
+    .should('be.visible')
+    .click();
+  cy.get(
+    'div[data-test-subj="sampleDataSetCardlogs"] > span > span[title="INSTALLED"]'
+  ).should('have.text', 'INSTALLED');
+});
+
+Cypress.Commands.add('removeSampleDataFromDataSource', (dataSourceTitle) => {
+  cy.visit('app/home#/tutorial_directory');
+  cy.selectFromDataSourceSelector(dataSourceTitle);
+  cy.get('button[data-test-subj="removeSampleDataSetecommerce"]')
+    .should('be.visible')
+    .click();
+  cy.get('button[data-test-subj="removeSampleDataSetflights"]')
+    .should('be.visible')
+    .click();
+
+  cy.get('button[data-test-subj="removeSampleDataSetlogs"]')
+    .should('be.visible')
+    .click();
+});
+
+Cypress.Commands.add('clearCache', () => {
+  devToolsRequest(`/_cache/clear?query=true&request=true`, 'POST');
+  devToolsRequest(`/_flush`, 'POST');
+  devToolsRequest(`/_forcemerge`, 'POST');
+  cy.wait(5000);
+});

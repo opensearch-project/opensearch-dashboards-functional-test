@@ -152,7 +152,7 @@ describe('Rollups', () => {
       cy.get('button').contains('Next').click({ force: true });
 
       // Confirm that we got to step 4 of creation page
-      cy.contains('Job name and indices');
+      cy.contains('Job name and indexes');
 
       // Click the create button
       cy.get('button').contains('Create').click({ force: true });
@@ -257,6 +257,10 @@ describe('Rollups', () => {
       // Confirm we have our initial rollup
       cy.contains(ROLLUP_ID);
 
+      // Intercept different rollups requests endpoints to wait before clicking disable and enable buttons
+      cy.intercept(`/api/ism/rollups/${ROLLUP_ID}`).as('getRollup');
+      cy.intercept(`/api/ism/rollups/${ROLLUP_ID}/_stop`).as('stopRollup');
+
       // Click into rollup job details page
       cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({
         force: true,
@@ -264,21 +268,26 @@ describe('Rollups', () => {
 
       cy.contains(`${ROLLUP_ID}`);
 
-      // Disable button is enabled
-      cy.get(`[data-test-subj="disableButton"]`).should('not.be.disabled');
+      cy.wait('@getRollup').wait(2000);
 
       // Click Disable button
-      cy.get(`[data-test-subj="disableButton"]`).trigger('click', {
-        force: true,
-      });
+      cy.get(`[data-test-subj="disableButton"]`)
+        .should('not.be.disabled')
+        .click({ force: true });
+
+      cy.wait('@stopRollup');
+      cy.wait('@getRollup');
 
       // Confirm we get toaster saying rollup job is disabled
       cy.contains(`${ROLLUP_ID} is disabled`);
 
+      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
+      cy.wait(2000);
+
       // Click Enable button
-      cy.get(`[data-test-subj="enableButton"]`).trigger('click', {
-        force: true,
-      });
+      cy.get(`[data-test-subj="enableButton"]`)
+        .should('not.be.disabled')
+        .click({ force: true });
 
       // Confirm we get toaster saying rollup job is enabled
       cy.contains(`${ROLLUP_ID} is enabled`);

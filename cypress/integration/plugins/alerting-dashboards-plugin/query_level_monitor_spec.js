@@ -7,6 +7,7 @@ import _ from 'lodash';
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
+  ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
 import sampleQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor';
 import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
@@ -34,7 +35,16 @@ const addVisualQueryLevelTrigger = (
   thresholdValue
 ) => {
   // Click 'Add trigger' button
-  cy.contains('Add trigger', { timeout: 20000 }).click({ force: true });
+  if (triggerIndex === 0)
+    cy.contains('Add trigger', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
+      force: true,
+    });
+  else
+    cy.contains('Add another trigger', {
+      timeout: ALERTING_PLUGIN_TIMEOUT,
+    }).click({
+      force: true,
+    });
 
   if (isEdit) {
     // TODO: Passing button props in EUI accordion was added in newer versions (31.7.0+).
@@ -81,7 +91,7 @@ describe('Query-Level Monitors', () => {
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors`);
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
-    cy.contains('Create monitor', { timeout: 20000 });
+    cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
   });
 
   describe('can be created', () => {
@@ -110,6 +120,7 @@ describe('Query-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_MONITOR, { force: true });
 
       // Wait for input to load and then type in the index name
+      cy.contains('Select clusters');
       cy.get('#index').type('*', { force: true });
 
       // Add a trigger
@@ -160,13 +171,15 @@ describe('Query-Level Monitors', () => {
 
     it('by changing the name', () => {
       // Confirm we can see the created monitor in the list
-      cy.contains(SAMPLE_MONITOR, { timeout: 20000 });
+      cy.contains(SAMPLE_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
 
       // Select the existing monitor
       cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
-      cy.contains('Edit', { timeout: 20000 }).click({ force: true });
+      cy.contains('Edit', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
+        force: true,
+      });
 
       // Wait for input to load and then type in the new monitor name
       cy.get('input[name="name"]')
@@ -189,13 +202,18 @@ describe('Query-Level Monitors', () => {
 
     it('to have multiple indices', () => {
       // Confirm we can see the created monitor in the list
-      cy.contains(SAMPLE_MONITOR, { timeout: 20000 });
+      cy.contains(SAMPLE_MONITOR, { timeout: ALERTING_PLUGIN_TIMEOUT });
 
       // Select the existing monitor
       cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
-      cy.contains('Edit', { timeout: 20000 }).click({ force: true });
+      cy.contains('Edit', { timeout: ALERTING_PLUGIN_TIMEOUT }).click({
+        force: true,
+      });
+
+      // Wait for page to load
+      cy.contains('Select clusters');
 
       // Click on the Index field and type in multiple index names to replicate the bug
       cy.get('#index')
@@ -207,20 +225,20 @@ describe('Query-Level Monitors', () => {
 
       // Confirm Index field only contains the expected text
       cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       });
       cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_A, {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       });
       cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_B, {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       });
 
       // Click the update button
       cy.get('button').contains('Update').last().click({ force: true });
 
       // Confirm we're on the Monitor Details page by searching for the History element
-      cy.contains('History', { timeout: 20000 });
+      cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });
     });
   });
 
@@ -244,6 +262,10 @@ describe('Query-Level Monitors', () => {
 
       // Click the Delete button
       cy.contains('Delete').click({ force: true });
+      cy.wait(1000);
+      cy.get('[data-test-subj="confirmModalConfirmButton"]').click({
+        force: true,
+      });
 
       // Confirm we can see an empty monitor list
       cy.contains('There are no existing monitors');
@@ -318,6 +340,9 @@ describe('Query-Level Monitors', () => {
       // Select visual editor
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
+      // Wait for page to load
+      cy.contains('Select clusters');
+
       // Wait for input to load and then type in the index name
       cy.get('#index').type(
         `{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`,
@@ -348,7 +373,7 @@ describe('Query-Level Monitors', () => {
 
       // Confirm we can see the correct number of rows in the trigger list by checking <caption> element
       cy.contains(`This table contains ${triggers.length} rows`, {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       });
 
       // Click Edit button
@@ -412,11 +437,11 @@ describe('Query-Level Monitors', () => {
       cy.get('[data-test-subj="frequency_field"]').contains('By interval');
 
       cy.get('[data-test-subj="interval_interval_field"]', {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       }).should('have.value', 7);
 
       cy.get('[data-test-subj="interval_unit_field"]', {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       }).contains('Days');
     });
 
@@ -445,22 +470,22 @@ describe('Query-Level Monitors', () => {
       );
 
       cy.get('[data-test-subj="customCron_cronExpression_field"]', {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       }).contains('30 11 * * 1-5');
 
       cy.get('[data-test-subj="timezoneComboBox"]', {
-        timeout: 20000,
+        timeout: ALERTING_PLUGIN_TIMEOUT,
       }).contains('US/Pacific');
     });
   });
 
-  after(() => {
-    // Delete all existing monitors and destinations
-    cy.deleteAllMonitors();
-
-    // Delete sample data
-    cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
-    cy.deleteIndexByName(TESTING_INDEX_A);
-    cy.deleteIndexByName(TESTING_INDEX_B);
-  });
+  // after(() => {
+  //   // Delete all existing monitors and destinations
+  //   cy.deleteAllMonitors();
+  //
+  //   // Delete sample data
+  //   cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+  //   cy.deleteIndexByName(TESTING_INDEX_A);
+  //   cy.deleteIndexByName(TESTING_INDEX_B);
+  // });
 });

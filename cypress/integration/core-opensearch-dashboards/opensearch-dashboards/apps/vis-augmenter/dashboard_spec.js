@@ -12,6 +12,7 @@ import {
   deleteVisAugmenterData,
   bootstrapDashboard,
 } from '../../../../../utils/dashboards/vis-augmenter/helpers';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 describe('Vis augmenter - existing dashboards work as expected', () => {
   describe('dashboard with ineligible, eligible, and vega visualizations', () => {
@@ -79,6 +80,8 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
     );
 
     before(() => {
+      CURRENT_TENANT.newTenant = 'global';
+      cy.fleshTenantSettings();
       // Create a dashboard and add some visualizations
       bootstrapDashboard(
         INDEX_SETTINGS_FILEPATH_SIMPLE,

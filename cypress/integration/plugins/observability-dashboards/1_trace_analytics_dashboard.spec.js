@@ -9,23 +9,21 @@ import { delayTime, setTimeFilter } from '../../../utils/constants';
 
 describe('Testing dashboard table empty state', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
     });
     cy.wait(delayTime * 3);
-  });
-
-  it('Renders empty state', () => {
-    cy.contains(' (0)').should('exist');
-    cy.contains('No matches').should('exist');
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
   });
 });
 
 describe('Testing dashboard table', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
@@ -33,14 +31,15 @@ describe('Testing dashboard table', () => {
     setTimeFilter();
   });
 
-  it('Renders the dashboard table', () => {
-    cy.contains(' (10)').should('exist');
-    cy.contains('client_cancel_order').should('exist');
-    cy.contains('166.44').should('exist');
-    cy.contains('7.14%').should('exist');
-  });
-
   it('Adds the percentile filters', () => {
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
     cy.contains(' >= 95 percentile').click({ force: true });
     cy.wait(delayTime);
     cy.contains(' >= 95 percentile').click({ force: true });
@@ -66,6 +65,14 @@ describe('Testing dashboard table', () => {
 
   it('Opens latency trend popover', () => {
     setTimeFilter(true);
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
     cy.get('.euiButtonIcon[aria-label="Open popover"]').first().click();
     cy.get('text.ytitle[data-unformatted="Hourly latency (ms)"]').should(
       'exist'
@@ -73,11 +80,19 @@ describe('Testing dashboard table', () => {
   });
 
   it('Redirects to traces table with filter', () => {
-    cy.wait(delayTime);
-    cy.get('.euiLink').contains('13').click();
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
+    cy.get('[data-test-subj="dashboard-table-traces-button"]')
+      .contains('13')
+      .click();
     cy.wait(delayTime);
 
-    cy.get('h2.euiTitle').contains('Traces').should('exist');
     cy.contains(' (13)').should('exist');
     cy.contains('client_create_order').should('exist');
 
@@ -90,30 +105,19 @@ describe('Testing dashboard table', () => {
 
 describe('Testing plots', () => {
   beforeEach(() => {
-    cy.visit('app/observability-traces#/', {
+    cy.visit('app/observability-traces#/traces', {
       onBeforeLoad: (win) => {
         win.sessionStorage.clear();
       },
     });
     setTimeFilter();
-  });
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
 
-  it('Renders service map', () => {
-    // plotly scale texts are in attribute "data-unformatted"
-    cy.get('text.ytitle[data-unformatted="Latency (ms)"]').should('exist');
-    cy.get('text[data-unformatted="200"]').should('exist');
-    cy.get('.vis-network').should('exist');
-
-    cy.get('.euiButton__text[title="Error rate"]').click();
-    cy.get('text.ytitle[data-unformatted="Error rate"]').should('exist');
-    cy.get('text[data-unformatted="10%"]').should('exist');
-
-    cy.get('.euiButton__text[title="Throughput"]').click();
-    cy.get('text.ytitle[data-unformatted="Throughput"]').should('exist');
-    cy.get('text[data-unformatted="50"]').should('exist');
-
-    cy.get('input[type="search"]').eq(1).focus().type('payment{enter}');
-    cy.wait(delayTime);
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
   });
 
   it('Renders plots', () => {

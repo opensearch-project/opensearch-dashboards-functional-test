@@ -2,15 +2,15 @@
   "properties": {
     "dns-answers-type": {
       "type": "alias",
-      "path": "DnsAnswerType"
+      "path": "dns.answers.type"
     },
     "dns-question-name": {
       "type": "alias",
-      "path": "DnsQuestionName"
+      "path": "dns.question.name"
     },
     "dns-question-registered_domain": {
       "type": "alias",
-      "path": "DnsQuestionRegisteredDomain"
+      "path": "dns.question.registered_domain"
     }
   }
 }
