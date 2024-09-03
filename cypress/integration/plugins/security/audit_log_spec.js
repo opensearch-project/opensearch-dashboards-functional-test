@@ -24,7 +24,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         }
       );
 
-      cy.contains('h3', 'Audit logging');
+      cy.contains('h1', 'Audit logging');
       cy.contains('h3', 'General settings');
       cy.contains('h3', 'Compliance settings');
     });
