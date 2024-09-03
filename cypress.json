@@ -18,7 +18,6 @@
     "SECURITY_ENABLED": false,
     "MULTITENANCY_ENABLED": true,
     "AGGREGATION_VIEW": false,
-    "MULTITENANCY_ENABLED": true,
     "username": "admin",
     "password": "myStrongPassword123!",
     "ENDPOINT_WITH_PROXY": false,
