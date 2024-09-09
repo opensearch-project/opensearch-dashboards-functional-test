@@ -34,7 +34,7 @@ const getCreateDetectorButton = () => cy.sa_getButtonByText('Create detector');
 
 const validateAlertPanel = (alertName) =>
   cy
-    .sa_getElementByText('.euiTitle', 'Alert triggers')
+    .sa_getElementByText('.euiText', 'Alert triggers')
     .parentsUntil('.euiPanel')
     .siblings()
     .eq(2)
@@ -98,9 +98,9 @@ const validateFieldMappingsTable = (message = '') => {
 
 const editDetectorDetails = (detectorName, panelTitle) => {
   cy.sa_urlShouldContain('detector-details').then(() => {
-    cy.sa_getElementByText('.euiTitle', detectorName);
-    cy.sa_getElementByText('.euiPanel .euiTitle', panelTitle);
-    cy.sa_getElementByText('.euiPanel .euiTitle', panelTitle)
+    cy.sa_getElementByText('.euiText', detectorName);
+    cy.sa_getElementByText('.euiPanel .euiText', panelTitle);
+    cy.sa_getElementByText('.euiPanel .euiText', panelTitle)
       .parent()
       .siblings()
       .within(() => cy.get('button').contains('Edit').click());
@@ -490,11 +490,11 @@ describe('Detectors', () => {
         .find('.euiTableCellContent button')
         .click();
 
-      cy.sa_getElementByText('.euiTitle', 'Detection rules (13)');
+      cy.sa_getElementByText('.euiText', 'Detection rules (13)');
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
       cy.sa_urlShouldContain('detector-details').then(() => {
-        cy.sa_getElementByText('.euiTitle', detectorName);
-        cy.sa_getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
+        cy.sa_getElementByText('.euiText', detectorName);
+        cy.sa_getElementByText('.euiPanel .euiText', 'Active rules (13)');
       });
     });
 
