@@ -42,7 +42,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     it('should successfully load the page', () => {
       cy.contains(workspaceName, { timeout: 60000 }).should('be.visible');
       cy.contains('Overview', { timeout: 60000 }).should('be.visible');
-      cy.contains('Settings', { timeout: 60000 }).should('be.visible');
+      cy.contains('settings', { timeout: 60000 }).should('be.visible');
 
       if (Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED')) {
         cy.contains('Collaborators', { timeout: 60000 }).should('be.visible');
@@ -51,7 +51,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     describe('settings tab', () => {
       beforeEach(() => {
-        cy.contains('Settings').click();
+        cy.contains('settings').click();
       });
 
       describe('Validate workspace name and description', () => {
@@ -66,6 +66,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           ).clear({
             force: true,
           });
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-descriptionInputText'
           ).type('test_workspace_description');
@@ -86,6 +87,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           ).clear({
             force: true,
           });
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-nameInputText'
           ).type('./+');
@@ -111,6 +113,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           ).clear({
             force: true,
           });
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-nameInputText'
           ).type(workspaceName);
@@ -121,9 +124,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
           ).type('#D36086');
-          cy.getElementByTestId('workspaceUseCase-observability').click({
-            force: true,
-          });
           cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
             force: true,
           });
@@ -153,13 +153,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.contains('Collaborators').click();
         });
         it('should successfully update a workspace with permissions', () => {
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
           cy.getElementByTestId(
-            'workspaceForm-permissionSettingPanel-user-addNew'
+            'workspaceForm-permissionSettingPanel-addNew'
           ).click();
-          cy.contains('.euiComboBoxPlaceholder', 'Select a user')
-            .parent()
-            .find('input')
-            .type('test_user_Fnxs972xC');
+          cy.get(
+            'input[placeholder="Enter user name or uer ID"][value=""]'
+          ).type('test_user_Fnxs972xC');
           cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
             force: true,
           });
