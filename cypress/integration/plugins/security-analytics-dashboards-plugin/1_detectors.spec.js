@@ -210,7 +210,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
         .should('contain', detectorId)
         .then(() => {
           // Confirm detector state
-          cy.sa_getElementByText('.euiTitle', detectorName);
+          cy.sa_getElementByText('.euiText', detectorName);
           cy.sa_getElementByText('.euiHealth', 'Active').then(() => {
             cy.sa_validateDetailsItem('Detector name', detectorName);
             cy.sa_validateDetailsItem('Description', '-');
