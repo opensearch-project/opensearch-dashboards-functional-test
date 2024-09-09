@@ -323,6 +323,8 @@ describe('discover_advanced_setting', () => {
 
     it('check new table respects doc_table:highlight setting', function () {
       // check if we have highlighted fields
+      cy.get('mark').should('exist');
+
       cy.setAdvancedSetting({
         'doc_table:highlight': false,
       });
@@ -335,8 +337,6 @@ describe('discover_advanced_setting', () => {
         'doc_table:highlight': true,
       });
       cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.get('mark').should('exist');
     });
 
     it('check legacy table respects doc_table:highlight setting', function () {
@@ -354,6 +354,12 @@ describe('discover_advanced_setting', () => {
         'doc_table:highlight': true,
       });
       cy.reload();
+      cy.get('[data-test-subj="fieldToggle-index"]')
+        .click()
+        .then(() => {
+          cy.get('[data-test-subj="field-index-showDetails"]').click();
+          cy.get('[data-test-subj="plus-index-logstash-2015.09.22"]').click();
+        });
 
       cy.get('mark').should('exist');
     });
