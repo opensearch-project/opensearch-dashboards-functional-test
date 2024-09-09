@@ -6,6 +6,23 @@
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_az3RBx6cE';
+
+const inputWorkspaceName = (workspaceName) => {
+  const nameInput = cy.getElementByTestId(
+    'workspaceForm-workspaceDetails-nameInputText'
+  );
+  nameInput.clear();
+  nameInput.type(workspaceName);
+};
+
+const inputWorkspaceColor = (color = '#000000') => {
+  const colorPicker = cy.getElementByTestId(
+    'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
+  );
+  colorPicker.clear({ force: true });
+  colorPicker.type(color);
+};
+
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Create workspace', () => {
     before(() => {
@@ -29,15 +46,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     describe('Create a workspace successfully', () => {
       it('should successfully create a workspace', () => {
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-nameInputText'
-        ).type(workspaceName);
+        inputWorkspaceName(workspaceName);
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description.+~!');
-        cy.getElementByTestId(
-          'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
-        ).type('#000000');
+        inputWorkspaceColor();
         cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
@@ -52,13 +65,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
           cy.location('pathname', { timeout: 6000 }).should(
             'include',
-            'app/workspace_detail'
+            `w/${workspaceId}/app`
           );
 
           const expectedWorkspace = {
             name: workspaceName,
             description: 'test_workspace_description.+~!',
-            features: ['workspace_detail', 'use-case-observability'],
+            features: ['use-case-observability'],
           };
           cy.checkWorkspace(workspaceId, expectedWorkspace);
         });
@@ -68,8 +81,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     describe('Validate workspace name and description', () => {
       it('workspace name is required', () => {
         cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-descriptionInputText'
-        ).type('test_workspace_description');
+          'workspaceForm-workspaceDetails-nameInputText'
+        ).clear();
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
@@ -77,9 +90,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       it('workspace name is not valid', () => {
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-nameInputText'
-        ).type('./+');
+        inputWorkspaceName('./+');
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
@@ -90,9 +101,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       it('workspace name cannot use an existing name', () => {
-        cy.getElementByTestId(
-          'workspaceForm-workspaceDetails-nameInputText'
-        ).type(workspaceName);
+        cy.deleteWorkspaceByName(workspaceName);
+        cy.createWorkspace({
+          name: workspaceName,
+          features: ['use-case-observability'],
+        });
+        inputWorkspaceName(workspaceName);
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
@@ -106,16 +120,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
     });
 
-    it('workspace use case is required', () => {
-      cy.getElementByTestId(
-        'workspaceForm-workspaceDetails-nameInputText'
-      ).type(workspaceName);
-      cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
-        force: true,
-      });
-      cy.contains('Use case is required. Select a use case.').should('exist');
-    });
-
     if (
       Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
       Cypress.env('SECURITY_ENABLED')
@@ -126,24 +130,19 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
 
         it('should successfully create a workspace with permissions', () => {
-          cy.getElementByTestId(
-            'workspaceForm-workspaceDetails-nameInputText'
-          ).type(workspaceName);
+          inputWorkspaceName(workspaceName);
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-descriptionInputText'
           ).type('test_workspace_description');
-          cy.getElementByTestId(
-            'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
-          ).type('#000000');
+          inputWorkspaceColor();
           cy.getElementByTestId('workspaceUseCase-observability').click({
             force: true,
           });
           cy.getElementByTestId(
-            'workspaceForm-permissionSettingPanel-user-addNew'
+            'workspaceForm-permissionSettingPanel-addNew'
           ).click();
-          cy.contains('.euiComboBoxPlaceholder', 'Select a user')
-            .parent()
-            .find('input')
+          cy.getElementByTestId('workspaceFormUserIdOrGroupInput')
+            .last()
             .type('test_user_sfslja260');
           cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
             force: true,
@@ -155,12 +154,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             workspaceId = interception.response.body.result.id;
             cy.location('pathname', { timeout: 6000 }).should(
               'include',
-              'app/workspace_detail'
+              `w/${workspaceId}/app`
             );
             const expectedWorkspace = {
               name: workspaceName,
               description: 'test_workspace_description',
-              features: ['workspace_detail', 'use-case-observability'],
+              features: ['use-case-observability'],
               permissions: {
                 read: {
                   users: ['test_user_sfslja260'],
