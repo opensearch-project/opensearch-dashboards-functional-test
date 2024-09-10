@@ -34,7 +34,7 @@ const makeTestNotebook = () => {
 
   cy.contains(`Notebook "${notebookName}" successfully created`);
 
-  cy.get('h3[data-test-subj="notebookTitle"]')
+  cy.get('[data-test-subj="notebookTitle"]')
     .contains(notebookName)
     .should('exist');
 
