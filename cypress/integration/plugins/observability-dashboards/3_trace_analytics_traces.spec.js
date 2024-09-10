@@ -35,7 +35,8 @@ describe('Testing traces table', () => {
       .eq(11)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss', true).isValid()).to.be.true;
+        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss.SSS', true).isValid()).to.be
+          .true;
       });
   });
 });
