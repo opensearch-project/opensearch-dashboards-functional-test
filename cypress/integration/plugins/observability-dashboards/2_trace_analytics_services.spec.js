@@ -26,7 +26,7 @@ describe('Testing services table', () => {
       .first()
       .focus()
       .type(`${SERVICE_NAME}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('button[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
   });
 
