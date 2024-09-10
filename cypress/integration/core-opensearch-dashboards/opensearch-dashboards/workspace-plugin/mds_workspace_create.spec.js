@@ -8,19 +8,16 @@ const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_az3RBx6cE';
 
 const inputWorkspaceName = (workspaceName) => {
-  const nameInput = cy.getElementByTestId(
-    'workspaceForm-workspaceDetails-nameInputText'
-  );
-  nameInput.clear();
-  nameInput.type(workspaceName);
+  const nameInputTestId = 'workspaceForm-workspaceDetails-nameInputText';
+  cy.getElementByTestId(nameInputTestId).clear();
+  cy.getElementByTestId(nameInputTestId).type(workspaceName);
 };
 
 const inputWorkspaceColor = (color = '#000000') => {
-  const colorPicker = cy.getElementByTestId(
-    'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
-  );
-  colorPicker.clear({ force: true });
-  colorPicker.type(color);
+  const colorPickerTestId =
+    'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker';
+  cy.getElementByTestId(colorPickerTestId).clear({ force: true });
+  cy.getElementByTestId(colorPickerTestId).type(color);
 };
 
 if (Cypress.env('WORKSPACE_ENABLED')) {
