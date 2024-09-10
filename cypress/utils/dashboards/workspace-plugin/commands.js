@@ -23,9 +23,7 @@ Cypress.Commands.add('deleteWorkspaceByName', (workspaceName) => {
     headers: {
       'osd-xsrf': true,
     },
-    body: {
-      perPage: 9999,
-    },
+    body: {},
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
       resp.body.result.workspaces.map(({ name, id }) => {
