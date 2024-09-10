@@ -494,24 +494,30 @@ describe('Rules', () => {
 
       // selection name field
       getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('{selectall}').type('{backspace}')
+        getSelectionNameField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('Selection_1')
+        getSelectionNameField().type('Selection_1', { force: true })
       );
 
       // selection map key field
       getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('{selectall}').type('{backspace}')
+        getMapKeyField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('FieldKey')
+        getMapKeyField().type('FieldKey', { force: true })
       );
 
       // selection map value field
       getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('{selectall}').type('{backspace}')
+        getMapValueField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       toastShouldExist();
 
