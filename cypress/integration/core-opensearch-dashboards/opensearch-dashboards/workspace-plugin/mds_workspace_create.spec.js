@@ -119,16 +119,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
     });
 
-    // it('workspace use case is required', () => {
-    //   cy.getElementByTestId(
-    //     'workspaceForm-workspaceDetails-nameInputText'
-    //   ).type(workspaceName);
-    //   cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
-    //     force: true,
-    //   });
-    //   cy.contains('Use case is required. Select a use case.').should('exist');
-    // });
-
     if (
       Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
       Cypress.env('SECURITY_ENABLED')
@@ -154,9 +144,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
               force: true,
             })
             .type('#000000');
-          // cy.getElementByTestId('workspaceUseCase-observability').click({
-          //   force: true,
-          // });
           cy.getElementByTestId(
             'workspaceForm-permissionSettingPanel-addNew'
           ).click();
