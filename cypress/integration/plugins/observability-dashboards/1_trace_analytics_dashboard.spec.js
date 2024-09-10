@@ -59,7 +59,7 @@ describe('Testing dashboard table', () => {
     cy.contains('Latency percentile within trace group: < 95th').should(
       'exist'
     );
-    cy.contains(' (8)').should('exist');
+    cy.contains(' (7)').should('exist');
     cy.contains('383.05').should('exist');
   });
 
@@ -89,11 +89,11 @@ describe('Testing dashboard table', () => {
     );
 
     cy.get('[data-test-subj="dashboard-table-traces-button"]')
-      .contains('13')
+      .contains('6')
       .click();
     cy.wait(delayTime);
 
-    cy.contains(' (13)').should('exist');
+    cy.contains(' (9)').should('exist');
     cy.contains('client_create_order').should('exist');
 
     cy.get('.euiSideNavItemButton__label').contains('Trace analytics').click();
@@ -122,10 +122,10 @@ describe('Testing plots', () => {
 
   it('Renders plots', () => {
     cy.get('text.ytitle[data-unformatted="Error rate (%)"]').should('exist');
-    cy.get('text.annotation-text[data-unformatted="Now: 14.81%"]').should(
+    cy.get('text.annotation-text[data-unformatted="Now: 26.83%"]').should(
       'exist'
     );
     cy.get('text.ytitle[data-unformatted="Throughput (n)"]').should('exist');
-    cy.get('text.annotation-text[data-unformatted="Now: 108"]').should('exist');
+    cy.get('text.annotation-text[data-unformatted="Now: 41"]').should('exist');
   });
 });
