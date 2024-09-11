@@ -65,7 +65,7 @@ describe('Aliases', () => {
   describe('can create a alias with wildcard and specific name', () => {
     it('successfully', () => {
       cy.get('[data-test-subj="Create aliasButton"]').click();
-      cy.get('[data-test-subj="form-name-alias"]').type(CREATE_ALIAS);
+      cy.get('[data-test-subj="form-name-alias"] input').type(CREATE_ALIAS);
       cy.get(
         '[data-test-subj="form-name-indexArray"] [data-test-subj="comboBoxSearchInput"]'
       ).type(`${EDIT_INDEX}{enter}${SAMPLE_INDEX_PREFIX}-*{enter}`);
@@ -142,9 +142,9 @@ describe('Aliases', () => {
 
   describe('can flush an alias', () => {
     it('successfully flush an index', () => {
-      let sample_alias = `${SAMPLE_ALIAS_PREFIX}-${1}`;
+      let sample_alias = `${SAMPLE_ALIAS_PREFIX}-1`;
       // Sort all aliases in asc order to make it at first page
-      cy.contains('Alias name').click();
+      cy.get('[placeholder="Search..."]').type(`${sample_alias}{enter}`);
       // Confirm we have our initial alias
       cy.contains(sample_alias);
       // index a test doc
@@ -170,28 +170,20 @@ describe('Aliases', () => {
         expect(num).to.equal(1);
       });
 
-      cy.get('[data-test-subj="moreAction"]').click();
-      // Flush btn should be disabled if no items selected
-      cy.get('[data-test-subj="Flush Action"]').should(
-        'have.class',
-        'euiContextMenuItem-isDisabled'
-      );
+      cy.get('[data-test-subj="moreAction"] button')
+        .click()
+        .get('[data-test-subj="Flush Action"]')
+        .should('be.disabled')
+        .end();
 
-      // Select an alias
-      cy.get(`[data-test-subj="checkboxSelectRow-${sample_alias}"]`).check({
-        force: true,
-      });
-
-      cy.get('[data-test-subj="moreAction"]').click();
-
-      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
-      cy.wait(2000);
-
-      // Flush btn should be enabled
-      cy.get('[data-test-subj="Flush Action"]')
-        .should('exist')
-        .should('not.have.class', 'euiContextMenuItem-isDisabled')
-        .click();
+      cy.get(`#_selection_column_${sample_alias}-checkbox`)
+        .click()
+        .get('[data-test-subj="moreAction"] button')
+        .click()
+        .get('[data-test-subj="Flush Action"]')
+        .should('not.be.disabled')
+        .click()
+        .end();
 
       // Check for flush index modal
       cy.contains('Flush alias');

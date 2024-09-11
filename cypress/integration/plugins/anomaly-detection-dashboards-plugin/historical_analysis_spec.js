@@ -52,10 +52,12 @@ describe('Historical results page', () => {
 
   // Creating a sample detector and visiting the config page
   before(() => {
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
     cy.deleteAllIndices();
     cy.deleteADSystemIndices();
     cy.wait(5000);
-    cy.visit(AD_URL.OVERVIEW);
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
+    cy.wait(2000);
     cy.get('[data-test-subj=createHttpSampleDetectorButton]').then(() => {
       cy.getElementByTestId('createHttpSampleDetectorButton').click();
       cy.wait(10000);
