@@ -80,7 +80,9 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
       timeout: TIMEOUT_DELAY,
     }).type('{selectall}' + endTime, { force: true });
   }
-  if (refresh) cy.get('.euiButton__text').contains('Refresh').click();
+  if (refresh) {
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
+  }
   cy.wait(delayTime);
 };
 

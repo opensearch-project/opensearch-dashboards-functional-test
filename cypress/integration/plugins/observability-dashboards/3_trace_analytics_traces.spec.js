@@ -29,13 +29,14 @@ describe('Testing traces table', () => {
 
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
     cy.get('.euiTableCellContent')
       .eq(11)
       .invoke('text')
       .then((text) => {
-        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss', true).isValid()).to.be.true;
+        expect(dayjs(text, 'MM/DD/YYYY HH:mm:ss.SSS', true).isValid()).to.be
+          .true;
       });
   });
 });
