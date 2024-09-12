@@ -59,7 +59,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     beforeEach(() => {
       cy.visit(`/w/${workspaceId}/app/import_sample_data`);
-      cy.waitForLoader();
       if (MDSEnabled) {
         cy.selectFromDataSourceSelector(dataSourceTitle, dataSourceId);
       }
