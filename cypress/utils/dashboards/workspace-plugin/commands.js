@@ -23,7 +23,9 @@ Cypress.Commands.add('deleteWorkspaceByName', (workspaceName) => {
     headers: {
       'osd-xsrf': true,
     },
-    body: {},
+    body: {
+      perPage: 9999,
+    },
   }).then((resp) => {
     if (resp && resp.body && resp.body.success) {
       resp.body.result.workspaces.map(({ name, id }) => {
@@ -51,6 +53,7 @@ Cypress.Commands.add('createWorkspace', ({ settings, ...workspace } = {}) => {
     body: {
       attributes: {
         ...workspace,
+        features: workspace.features || ['use-case-observability'],
         description: workspace.description || 'test_description',
       },
       settings,
@@ -149,6 +152,25 @@ Cypress.Commands.add('checkWorkspace', (workspaceId, expected) => {
       }
     } else {
       throw new Error(`cannot find workspace ${workspaceId}`);
+    }
+  });
+});
+
+Cypress.Commands.add('checkAssignedDatasource', (id, workspaceId) => {
+  cy.request({
+    method: 'GET',
+    headers: {
+      'osd-xsrf': true,
+    },
+    url: `/api/saved_objects/data-source/${id}`,
+  }).then((resp) => {
+    if (resp.body) {
+      const { workspaces } = resp.body;
+      if (!workspaces.includes(workspaceId)) {
+        throw new Error(
+          `data source ${id} is not assigned to workspace ${workspaceId}`
+        );
+      }
     }
   });
 });
