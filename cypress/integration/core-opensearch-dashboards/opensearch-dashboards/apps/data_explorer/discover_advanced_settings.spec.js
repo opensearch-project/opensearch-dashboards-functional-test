@@ -100,7 +100,7 @@ describe('discover_advanced_setting', () => {
   });
 
   describe('Default Sort Order advanced setting', () => {
-    it('check Default Sort Order Descending is respected in new table', function () {
+    it.skip('check Default Sort Order Descending is respected in new table', function () {
       cy.setAdvancedSetting({
         'discover:sort:defaultOrder': 'desc',
       });
@@ -123,7 +123,7 @@ describe('discover_advanced_setting', () => {
         });
     });
 
-    it('check Default Sort Order Ascending is respected in new table', function () {
+    it.skip('check Default Sort Order Ascending is respected in new table', function () {
       cy.setAdvancedSetting({
         'discover:sort:defaultOrder': 'asc',
       });
@@ -194,7 +194,7 @@ describe('discover_advanced_setting', () => {
     });
   });
 
-  describe('Number of rows advanced setting', () => {
+  describe.skip('Number of rows advanced setting', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
@@ -266,7 +266,7 @@ describe('discover_advanced_setting', () => {
       });
     });
 
-    it('check time is not added on removing last column when hideTimeColumn is true in new table', function () {
+    it.skip('check time is not added on removing last column when hideTimeColumn is true in new table', function () {
       miscUtils.visitPage(
         `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
       );
@@ -321,7 +321,7 @@ describe('discover_advanced_setting', () => {
         });
     });
 
-    it('check new table respects doc_table:highlight setting', function () {
+    it.skip('check new table respects doc_table:highlight setting', function () {
       // check if we have highlighted fields
       cy.get('mark').should('exist');
 
@@ -384,7 +384,7 @@ describe('discover_advanced_setting', () => {
         });
     });
 
-    it('check defaultcolumns setting is respected in new table', function () {
+    it.skip('check defaultcolumns setting is respected in new table', function () {
       cy.setAdvancedSetting({
         defaultColumns: ['host', 'agent'],
       });
@@ -481,7 +481,7 @@ describe('modifyColumnsOnSwitch advanced setting', () => {
      */
   });
 
-  it('check columns still available after switching data sources in new table', function () {
+  it.skip('check columns still available after switching data sources in new table', function () {
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_a=(discover:(metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );

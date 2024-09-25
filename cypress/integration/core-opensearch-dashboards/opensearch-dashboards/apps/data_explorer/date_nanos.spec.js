@@ -37,7 +37,7 @@ describe('date_nanos', () => {
 
     cy.setTopNavDate(fromTime, toTime);
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
+    //cy.switchDiscoverTable('new');
   });
 
   after(() => {

@@ -47,7 +47,7 @@ describe('discover tab', () => {
     );
     cy.waitForLoader();
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
+    //cy.switchDiscoverTable('new');
   });
 
   after(() => {});

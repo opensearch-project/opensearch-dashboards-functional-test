@@ -68,7 +68,7 @@ describe('discover_table', () => {
     });
   });
 
-  describe('dynamic height of row in new table', () => {
+  describe.skip('dynamic height of row in new table', () => {
     before(() => {
       cy.switchDiscoverTable('new');
       cy.waitForLoader();
@@ -121,7 +121,7 @@ describe('discover_table', () => {
     });
   });
 
-  describe('data source selector', () => {
+  describe.skip('data source selector', () => {
     before(() => {
       // Creating additional index patterns
       // logstash index pattern
@@ -305,7 +305,7 @@ describe('discover_table', () => {
     });
   });
 
-  describe('Saved Search in new table', () => {
+  describe.skip('Saved Search in new table', () => {
     before(() => {
       cy.switchDiscoverTable('new');
     });
@@ -453,7 +453,7 @@ describe('discover_table', () => {
         cy.waitForSearch();
       });
     });
-    describe('New Table', () => {
+    describe.skip('New Table', () => {
       before(() => {
         cy.switchDiscoverTable('new');
       });

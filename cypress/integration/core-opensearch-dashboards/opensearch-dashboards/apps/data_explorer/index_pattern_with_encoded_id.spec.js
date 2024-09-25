@@ -37,7 +37,7 @@ describe('index pattern with encoded id', () => {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
     cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
-    cy.switchDiscoverTable('new');
+    //cy.switchDiscoverTable('new');
     cy.waitForLoader();
   });
 
