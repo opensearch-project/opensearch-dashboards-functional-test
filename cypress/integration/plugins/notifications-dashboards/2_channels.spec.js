@@ -154,9 +154,7 @@ describe('Test create channels', () => {
   });
 
   it('creates a webhook channel', () => {
-    cy.get('[placeholder="Enter channel name"]').type(
-      'Test webhook channel'
-    );
+    cy.get('[placeholder="Enter channel name"]').type('Test webhook channel');
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
@@ -207,9 +205,8 @@ describe('Test create channels', () => {
 
     updateLocalClusterSettings(deniedIps);
 
-    cy.get('[placeholder="Enter channel name"]').type(
-      'Test denied webhook channels'
-    );
+    cy.get('[placeholder="Enter channel name"]')
+      .type('Test denied webhook channels');
 
     cy.get('.euiSuperSelectControl').contains('Slack')
       .click({ force: true });
@@ -230,9 +227,8 @@ describe('Test create channels', () => {
         .type(webhookUrl);
 
       // Send the test message
-      cy.get('[data-test-subj="create-channel-send-test-message-button"]').click({
-        force: true,
-      });
+      cy.get('[data-test-subj="create-channel-send-test-message-button"]')
+        .click({ force: true });
       cy.wait(NOTIFICATIONS_DELAY);
 
       // Check for the expected error message indicating the host is denied
@@ -241,8 +237,7 @@ describe('Test create channels', () => {
       cy.get('.euiButton__text').contains('See the full error')
         .click({ force: true });
       cy.contains('Host of url is denied').should('exist');
-      cy.get('.euiButton__text')
-        .contains('Close')
+      cy.get('.euiButton__text').contains('Close')
         .click({ force: true });
     });
   });
