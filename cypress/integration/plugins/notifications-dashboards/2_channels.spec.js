@@ -154,7 +154,9 @@ describe('Test create channels', () => {
   });
 
   it('creates a webhook channel', () => {
-    cy.get('[placeholder="Enter channel name"]').type('Test webhook channel');
+    cy.get('[placeholder="Enter channel name"]').type(
+      'Test webhook channel'
+    );
 
     cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
     cy.wait(NOTIFICATIONS_DELAY);
@@ -168,7 +170,8 @@ describe('Test create channels', () => {
     );
 
     cy.get('[data-test-subj="create-channel-create-button"]').click();
-    cy.contains('successfully created.').should('exist');
+    cy.contains('successfully created.')
+      .should('exist');
   });
 
   const updateLocalClusterSettings = (denyList) => {
@@ -204,35 +207,43 @@ describe('Test create channels', () => {
 
     updateLocalClusterSettings(deniedIps);
 
-    cy.get('[placeholder="Enter channel name"]').type('Test denied webhook channels');
+    cy.get('[placeholder="Enter channel name"]').type(
+      'Test denied webhook channels'
+    );
 
-    cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
-    cy.wait(delay);
+    cy.get('.euiSuperSelectControl').contains('Slack')
+      .click({ force: true });
+    cy.wait(NOTIFICATIONS_DELAY);
     // Optionally, add a check to ensure the dropdown options are visible/loaded
     cy.get('.euiContextMenuItem__text').should('be.visible');
     cy.get('.euiContextMenuItem__text')
       .contains('Custom webhook')
       .click({ force: true });
-    cy.wait(delay);
+    cy.wait(NOTIFICATIONS_DELAY);
 
-    deniedIps.forEach(ip => {
+    deniedIps.forEach((ip) => {
       // Constructing the custom webhook URL for each IP
       const webhookUrl = `https://${ip}:8888/test-path?params1=value1&params2=value2&params3=value3&params4=value4&params5=values5&params6=values6&params7=values7`;
 
-      cy.get('[data-test-subj="custom-webhook-url-input"]').clear().type(webhookUrl);
+      cy.get('[data-test-subj="custom-webhook-url-input"]')
+        .clear()
+        .type(webhookUrl);
 
       // Send the test message
       cy.get('[data-test-subj="create-channel-send-test-message-button"]').click({
         force: true,
       });
-      cy.wait(delay);
+      cy.wait(NOTIFICATIONS_DELAY);
 
       // Check for the expected error message indicating the host is denied
       cy.contains('Failed to send the test message').should('exist');
       cy.get('.euiButton__text').should('be.visible');
-      cy.get('.euiButton__text').contains('See the full error').click({ force: true });
+      cy.get('.euiButton__text').contains('See the full error')
+        .click({ force: true });
       cy.contains('Host of url is denied').should('exist');
-      cy.get('.euiButton__text').contains('Close').click({ force: true });
+      cy.get('.euiButton__text')
+        .contains('Close')
+        .click({ force: true });
     });
   });
 
