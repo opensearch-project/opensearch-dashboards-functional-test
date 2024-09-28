@@ -171,6 +171,71 @@ describe('Test create channels', () => {
     cy.contains('successfully created.').should('exist');
   });
 
+  const updateLocalClusterSettings = (denyList) => {
+    cy.request({
+      method: 'PUT',
+      url: 'http://localhost:9200/_cluster/settings',
+      body: {
+        persistent: {
+          opensearch: {
+            notifications: {
+              core: {
+                http: {
+                  host_deny_list: denyList,
+                },
+              },
+            },
+          },
+        },
+      },
+    }).then((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.body).to.have.property('acknowledged', true);
+    });
+  };
+
+  it('sends a test message for denied IPs', () => {
+    const deniedIps = [
+      '127.0.0.1',
+      '169.254.0.1',
+      '10.0.0.1',
+      '255.255.255.255'
+    ];
+
+    updateLocalClusterSettings(deniedIps);
+
+    cy.get('[placeholder="Enter channel name"]').type('Test denied webhook channels');
+
+    cy.get('.euiSuperSelectControl').contains('Slack').click({ force: true });
+    cy.wait(delay);
+    // Optionally, add a check to ensure the dropdown options are visible/loaded
+    cy.get('.euiContextMenuItem__text').should('be.visible');
+    cy.get('.euiContextMenuItem__text')
+      .contains('Custom webhook')
+      .click({ force: true });
+    cy.wait(delay);
+
+    deniedIps.forEach(ip => {
+      // Constructing the custom webhook URL for each IP
+      const webhookUrl = `https://${ip}:8888/test-path?params1=value1&params2=value2&params3=value3&params4=value4&params5=values5&params6=values6&params7=values7`;
+
+      cy.get('[data-test-subj="custom-webhook-url-input"]').clear().type(webhookUrl);
+
+      // Send the test message
+      cy.get('[data-test-subj="create-channel-send-test-message-button"]').click({
+        force: true,
+      });
+      cy.wait(delay);
+
+      // Check for the expected error message indicating the host is denied
+      cy.contains('Failed to send the test message').should('exist');
+      cy.get('.euiButton__text').should('be.visible');
+      cy.get('.euiButton__text').contains('See the full error').click({ force: true });
+      cy.contains('Host of url is denied').should('exist');
+      cy.get('.euiButton__text').contains('Close').click({ force: true });
+    });
+  });
+
   it('creates an sns channel', () => {
     cy.get('[placeholder="Enter channel name"]').type('test-sns-channel');
 
