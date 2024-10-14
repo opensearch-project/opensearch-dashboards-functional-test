@@ -43,7 +43,7 @@ describe('Create Workflow', () => {
     const filePath =
       'cypress/fixtures/' +
       FF_FIXTURE_BASE_PATH +
-      'semantic_search_example.json';
+      'import_semantic_search.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
     cy.wait(5000);
