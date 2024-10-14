@@ -6,33 +6,35 @@
 import {
   FF_URL,
   FF_FIXTURE_BASE_PATH,
-  modelParameters,
+  MODEL_PARAMETERS,
+  WORKFLOW_DETAIL_URL_SEGMENT,
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
+import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
 
-describe('Create Workflow', () => {
+describe('Creating Workflows Using Various Methods', () => {
   before(() => {
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
-        modelParameters.connectorId = connectorResponse.connector_id;
+        MODEL_PARAMETERS.CONNECTOR_ID = connectorResponse.connector_id;
         return cy.registerModel({
           body: {
             ...registerModelBody,
-            connector_id: modelParameters.connectorId,
+            connector_id: MODEL_PARAMETERS.CONNECTOR_ID,
             function_name: 'remote',
           },
         });
       })
       .then((modelResponse) => {
-        modelParameters.modelId = modelResponse.model_id;
-        return cy.deployModel(modelParameters.modelId);
+        MODEL_PARAMETERS.MODEL_ID = modelResponse.model_id;
+        return cy.deployModel(MODEL_PARAMETERS.MODEL_ID);
       });
   });
 
   beforeEach(() => {
     cy.visit(FF_URL.WORKFLOWS_NEW);
-    cy.url().should('include', FF_URL.WORKFLOWS_NEW);
+    cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_NEW));
   });
 
   it('create workflow using import', () => {
@@ -47,6 +49,7 @@ describe('Create Workflow', () => {
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
     cy.wait(5000);
+    cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_LIST));
     cy.get('.euiFieldSearch').focus();
     cy.get('.euiFieldSearch').type('semantic_search_1{enter}');
     cy.contains('semantic_search_1');
@@ -57,7 +60,7 @@ describe('Create Workflow', () => {
       .should('be.visible')
       .click();
   });
-  it('create workflow failed import', () => {
+  it('Workflow Creation with Improper Import File', () => {
     cy.getElementByDataTestId('importWorkflowButton')
       .should('be.visible')
       .click();
@@ -93,7 +96,7 @@ describe('Create Workflow', () => {
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
       .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.url().should('include', '/workflows/');
     cy.getElementByDataTestId('editSourceDataButton')
       .should('be.visible')
       .click();
@@ -150,7 +153,7 @@ describe('Create Workflow', () => {
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
       .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
   });
 
   it('create workflow using Hybrid Search template', () => {
@@ -163,7 +166,7 @@ describe('Create Workflow', () => {
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
       .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
   });
 
   it('create workflow using Multimodal Search template', () => {
@@ -176,7 +179,7 @@ describe('Create Workflow', () => {
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
       .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
   });
 
   it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
@@ -191,15 +194,15 @@ describe('Create Workflow', () => {
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
       .click();
-    cy.url().should('include', FF_URL.WORKFLOWS + '/');
+    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
   });
 
   after(() => {
-    if (modelParameters.modelId != '') {
-      cy.undeployMLCommonsModel(modelParameters.modelId).then((Response) => {
+    if (MODEL_PARAMETERS.MODEL_ID != '') {
+      cy.undeployMLCommonsModel(MODEL_PARAMETERS.MODEL_ID).then((Response) => {
         console.log('Response:', Response);
       });
-      cy.deleteMLCommonsModel(modelParameters.modelId).then((Response) => {
+      cy.deleteMLCommonsModel(MODEL_PARAMETERS.MODEL_ID).then((Response) => {
         console.log('Response:', Response);
       });
     }

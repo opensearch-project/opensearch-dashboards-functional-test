@@ -18,6 +18,8 @@ export const FF_URL = {
   WORKFLOWS_NEW: BASE_FF_PATH + '/workflows?tab=create',
 };
 
+export const WORKFLOW_DETAIL_URL_SEGMENT = '/workflow/';
+
 /**
  *****************************
  PUBLIC API CONSTANTS
@@ -50,7 +52,7 @@ export const SEARCH_NODE_API_PATH =
 
 export const FF_FIXTURE_BASE_PATH = 'plugins/dashboards-flow-framework/';
 
-export const modelParameters = {
-  connectorId: '',
-  modelId: '',
+export const MODEL_PARAMETERS = {
+  CONNECTOR_ID: '',
+  MODEL_ID: '',
 };

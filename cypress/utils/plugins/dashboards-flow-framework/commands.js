@@ -111,7 +111,7 @@ Cypress.Commands.add('deleteMLCommonsModel', (modelId) =>
 
 Cypress.Commands.add('getWorkflowId', () => {
   return cy.url().then((url) => {
-    return url.substring(url.lastIndexOf('/') + 1); // Return the extracted workflow ID
+    return url.substring(url.lastIndexOf('/') + 1);
   });
 });
 
