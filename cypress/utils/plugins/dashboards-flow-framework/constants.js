@@ -18,7 +18,7 @@ export const FF_URL = {
   WORKFLOWS_NEW: BASE_FF_PATH + '/workflows?tab=create',
 };
 
-export const WORKFLOW_DETAIL_URL_SEGMENT = '/workflow/';
+export const WORKFLOW_DETAIL_URL_SEGMENT = '/workflows/';
 
 /**
  *****************************
