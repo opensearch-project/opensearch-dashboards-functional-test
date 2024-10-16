@@ -9,10 +9,6 @@ import {
   SEARCH_NODE_API_PATH,
 } from '../../../utils/constants';
 
-Cypress.Commands.add('getElementByDataTestId', (testId) => {
-  return cy.get(`[data-testid="${testId}"]`);
-});
-
 Cypress.Commands.add('createConnector', (connectorBody) =>
   cy
     .request({
@@ -124,17 +120,17 @@ Cypress.Commands.add('mockIngestion', (funcMockedOn) => {
   cy.wait('@ingestionRequest');
 });
 
-Cypress.Commands.add('mockSearchIndex', (funcMockedOn) => {
-  cy.fixture(FF_FIXTURE_BASE_PATH + 'search_response.json').then(
-    (searchResults) => {
-      cy.intercept('POST', SEARCH_NODE_API_PATH + '/*', {
-        statusCode: 200,
-        body: searchResults,
-      }).as('searchRequest');
+Cypress.Commands.add('mockSemanticSearchIndexSearch', (funcMockedOn) => {
+  cy.fixture(
+    FF_FIXTURE_BASE_PATH + 'semantic_search/search_response.json'
+  ).then((searchResults) => {
+    cy.intercept('POST', SEARCH_NODE_API_PATH + '/*', {
+      statusCode: 200,
+      body: searchResults,
+    }).as('searchRequest');
 
-      funcMockedOn();
+    funcMockedOn();
 
-      cy.wait('@searchRequest');
-    }
-  );
+    cy.wait('@searchRequest');
+  });
 });

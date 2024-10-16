@@ -8,6 +8,7 @@ import {
   FF_FIXTURE_BASE_PATH,
   MODEL_PARAMETERS,
   WORKFLOW_DETAIL_URL_SEGMENT,
+  FF_TIMEOUT,
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
@@ -45,7 +46,7 @@ describe('Creating Workflows Using Various Methods', () => {
     const filePath =
       'cypress/fixtures/' +
       FF_FIXTURE_BASE_PATH +
-      'import_semantic_search.json';
+      'semantic_search/import_workflow.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
     cy.wait(5000);
@@ -65,7 +66,9 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
     const filePath =
-      'cypress/fixtures/' + FF_FIXTURE_BASE_PATH + 'semantic_search_query.json';
+      'cypress/fixtures/' +
+      FF_FIXTURE_BASE_PATH +
+      'semantic_search/search_query.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.contains('The uploaded file is not a valid workflow').should(
       'be.visible'
@@ -73,7 +76,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Semantic Search template', () => {
-    cy.contains('h2', 'Semantic Search', { timeout: 120000 })
+    cy.contains('h2', 'Semantic Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -102,7 +105,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('uploadSourceDataButton')
       .should('be.visible')
       .click();
-    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}/semantic_search_source_data.json`;
+    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}/semantic_search/source_data.json`;
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('closeSourceDataButton')
       .should('be.visible')
@@ -117,33 +120,33 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     cy.getElementByDataTestId('queryEditButton').should('be.visible').click();
     cy.get('[data-testid="editQueryModalBody"]').within(() => {
-      cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search_query.json').then(
-        (jsonData) => {
-          const jsonString = JSON.stringify(jsonData);
-          cy.get('.ace_text-input')
-            .focus()
-            .clear({ force: true })
-            .focus()
-            .wait(2000)
-            .type(jsonString, {
-              force: true,
-              parseSpecialCharSequences: false,
-              delay: 5,
-            })
-            .trigger('blur', { force: true });
-        }
-      );
+      cy.fixture(
+        FF_FIXTURE_BASE_PATH + 'semantic_search/search_query.json'
+      ).then((jsonData) => {
+        const jsonString = JSON.stringify(jsonData);
+        cy.get('.ace_text-input')
+          .focus()
+          .clear({ force: true })
+          .focus()
+          .wait(2000)
+          .type(jsonString, {
+            force: true,
+            parseSpecialCharSequences: false,
+            delay: 5,
+          })
+          .trigger('blur', { force: true });
+      });
     });
     cy.getElementByDataTestId('searchQueryCloseButton')
       .should('be.visible')
       .click();
-    cy.mockSearchIndex(() => {
+    cy.mockSemanticSearchIndexSearch(() => {
       cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
     });
   });
 
   it('create workflow using Sentiment Analysis template', () => {
-    cy.contains('h2', 'Sentiment Analysis', { timeout: 120000 })
+    cy.contains('h2', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -156,7 +159,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Hybrid Search template', () => {
-    cy.contains('h2', 'Hybrid Search', { timeout: 120000 })
+    cy.contains('h2', 'Hybrid Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -169,7 +172,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Multimodal Search template', () => {
-    cy.contains('h2', 'Multimodal Search', { timeout: 120000 })
+    cy.contains('h2', 'Multimodal Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -183,7 +186,7 @@ describe('Creating Workflows Using Various Methods', () => {
 
   it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
     cy.contains('h2', 'Retrieval-Augmented Generation (RAG)', {
-      timeout: 120000,
+      timeout: FF_TIMEOUT,
     })
       .should('be.visible')
       .parents('.euiCard')
