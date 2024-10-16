@@ -112,12 +112,16 @@ Cypress.Commands.add('getWorkflowId', () => {
 });
 
 Cypress.Commands.add('mockIngestion', (funcMockedOn) => {
-  cy.intercept('POST', INGEST_NODE_API_PATH, {
-    statusCode: 200,
-    body: {},
-  }).as('ingestionRequest');
-  funcMockedOn();
-  cy.wait('@ingestionRequest');
+  cy.fixture(
+    FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response.json'
+  ).then((ingestResponse) => {
+    cy.intercept('POST', INGEST_NODE_API_PATH, {
+      statusCode: 200,
+      body: ingestResponse,
+    }).as('ingestionRequest');
+    funcMockedOn();
+    cy.wait('@ingestionRequest');
+  });
 });
 
 Cypress.Commands.add('mockSemanticSearchIndexSearch', (funcMockedOn) => {

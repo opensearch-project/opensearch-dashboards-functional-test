@@ -6,7 +6,6 @@
 import {
   FF_URL,
   FF_FIXTURE_BASE_PATH,
-  MODEL_PARAMETERS,
   WORKFLOW_DETAIL_URL_SEGMENT,
   FF_TIMEOUT,
 } from '../../../utils/constants';
@@ -14,22 +13,23 @@ import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-frame
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
 import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
 
+var modelId = '';
+
 describe('Creating Workflows Using Various Methods', () => {
   before(() => {
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
-        MODEL_PARAMETERS.CONNECTOR_ID = connectorResponse.connector_id;
         return cy.registerModel({
           body: {
             ...registerModelBody,
-            connector_id: MODEL_PARAMETERS.CONNECTOR_ID,
+            connector_id: connectorResponse.connector_id,
             function_name: 'remote',
           },
         });
       })
       .then((modelResponse) => {
-        MODEL_PARAMETERS.MODEL_ID = modelResponse.model_id;
-        return cy.deployModel(MODEL_PARAMETERS.MODEL_ID);
+        modelId = modelResponse.model_id;
+        return cy.deployModel(modelId);
       });
   });
 
@@ -105,7 +105,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('uploadSourceDataButton')
       .should('be.visible')
       .click();
-    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}/semantic_search/source_data.json`;
+    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.json`;
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('closeSourceDataButton')
       .should('be.visible')
@@ -115,6 +115,27 @@ describe('Creating Workflows Using Various Methods', () => {
         .should('be.visible')
         .click();
     });
+    // Checking Run ingestion response
+    cy.sa_getElementByText('button.euiTab', 'Run ingestion')
+      .should('be.visible')
+      .click();
+    cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
+      (expectedJson) => {
+        cy.get('#tools_panel_id .ace_editor .ace_content')
+          .should('be.visible')
+          .invoke('text')
+          .then((editorText) => {
+            expect(editorText).to.include(`"took": ${expectedJson.took}`);
+            expect(editorText).to.include(
+              `"ingest_took": ${expectedJson.ingest_took}`
+            );
+            expect(editorText).to.include(`"errors": ${expectedJson.errors}`);
+            expect(editorText).to.include(
+              `"result": "${expectedJson.items[0].index.result}"`
+            );
+          });
+      }
+    );
     cy.getElementByDataTestId('searchPipelineButton')
       .should('be.visible')
       .click();
@@ -143,6 +164,24 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.mockSemanticSearchIndexSearch(() => {
       cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
     });
+    // Checking Run query response
+    cy.sa_getElementByText('button.euiTab', 'Run query')
+      .should('be.visible')
+      .click();
+
+    cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/search_response').then(
+      (expectedSearchJson) => {
+        cy.get('#tools_panel_id .ace_editor .ace_content')
+          .should('be.visible')
+          .invoke('text')
+          .then((editorText) => {
+            const editorJson = JSON.parse(editorText);
+            expect(JSON.stringify(editorJson)).to.contain(
+              JSON.stringify(expectedSearchJson['hits']['hits'][0]['_source'])
+            );
+          });
+      }
+    );
   });
 
   it('create workflow using Sentiment Analysis template', () => {
@@ -200,13 +239,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   after(() => {
-    if (MODEL_PARAMETERS.MODEL_ID != '') {
-      cy.undeployMLCommonsModel(MODEL_PARAMETERS.MODEL_ID).then((Response) => {
-        console.log('Response:', Response);
-      });
-      cy.deleteMLCommonsModel(MODEL_PARAMETERS.MODEL_ID).then((Response) => {
-        console.log('Response:', Response);
-      });
+    if (modelId != '') {
+      cy.undeployMLCommonsModel(modelId);
+      cy.deleteMLCommonsModel(modelId);
     }
   });
 });

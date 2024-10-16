@@ -1,18 +1,24 @@
-[
-  {
-    "item_text": "purpul high heels",
-    "item_price": 150
-  },
-  {
-    "item_text": "pair of jordans",
-    "item_price": 250
-  },
-  {
-    "item_text": "baseball cleats",
-    "item_price": 85
-  },
-  {
-    "item_text": "red pants",
-    "item_price": 95
+{
+  "hits": {
+    "hits": [
+      {
+        "_source": {
+          "shoes": [
+            {
+              "item_text": "purpul high heels",
+              "item_price": 150
+            },
+            {
+              "item_text": "pair of jordans",
+              "item_price": 250
+            },
+            {
+              "item_text": "baseball cleats",
+              "item_price": 85
+            }
+          ]
+        }
+      }
+    ]
   }
-]
+}
