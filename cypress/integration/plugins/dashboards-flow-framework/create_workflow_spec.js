@@ -13,9 +13,9 @@ import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-frame
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
 import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
 
-var modelId = '';
-
 describe('Creating Workflows Using Various Methods', () => {
+  var modelId = '';
+
   before(() => {
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
