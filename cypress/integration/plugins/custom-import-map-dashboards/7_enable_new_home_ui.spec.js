@@ -9,19 +9,22 @@ import { CURRENT_TENANT } from '../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 
-describe('Add flights dataset saved object', () => {
-  before(() => {
+describe('Add flights dataset saved object', function () {
+  before(function () {
     CURRENT_TENANT.newTenant = 'global';
     cy.deleteAllIndices();
     miscUtils.addSampleData();
     cy.wait(10000);
 
-    // Enable the new home UI
+    // Enable the new home UI if possible
     cy.visit(`${BASE_PATH}/app/settings`);
     cy.get(
       '[data-test-subj="advancedSetting-editField-home:useNewHomePage"]'
     ).then(($switch) => {
-      if ($switch.attr('aria-checked') === 'false') {
+      if ($switch.attr('disabled') === 'disabled') {
+        cy.log('Switch is disabled and cannot be changed.');
+        this.skip(); // Skip all tests in this suite
+      } else if ($switch.attr('aria-checked') === 'false') {
         cy.wrap($switch).click();
         cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
         cy.get('button.euiButton--primary.euiButton--small', {
@@ -35,12 +38,14 @@ describe('Add flights dataset saved object', () => {
 
   after(() => {
     miscUtils.removeSampleData();
-    // Disable the new home UI
+    // Disable the new home UI if possible
     cy.visit(`${BASE_PATH}/app/settings`);
     cy.get(
       '[data-test-subj="advancedSetting-editField-home:useNewHomePage"]'
     ).then(($switch) => {
-      if ($switch.attr('aria-checked') === 'true') {
+      if ($switch.attr('disabled') === 'disabled') {
+        cy.log('Switch is disabled and cannot be changed.');
+      } else if ($switch.attr('aria-checked') === 'true') {
         cy.wrap($switch).click();
         cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
         cy.get('button.euiButton--primary.euiButton--small', {
