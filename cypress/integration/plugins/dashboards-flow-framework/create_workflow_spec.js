@@ -49,7 +49,7 @@ describe('Creating Workflows Using Various Methods', () => {
       'semantic_search/import_workflow.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
-    cy.url().should('include', 'getLastPathSegment(FF_URL.WORKFLOWS_LIST)');
+    cy.contains('Manage workflows').should('be.visible');
     cy.get('.euiFieldSearch').focus();
     cy.get('.euiFieldSearch').type('semantic_search_1{enter}');
     cy.contains('semantic_search_1');
