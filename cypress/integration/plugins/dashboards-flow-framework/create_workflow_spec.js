@@ -49,7 +49,7 @@ describe('Creating Workflows Using Various Methods', () => {
       'semantic_search/import_workflow.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
-    cy.wait(5000);
+    cy.url().should('include', 'getLastPathSegment(FF_URL.WORKFLOWS_LIST)');
     cy.get('.euiFieldSearch').focus();
     cy.get('.euiFieldSearch').type('semantic_search_1{enter}');
     cy.contains('semantic_search_1');
@@ -76,7 +76,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Semantic Search template', () => {
-    cy.contains('h2', 'Semantic Search', { timeout: FF_TIMEOUT })
+    cy.contains('h3', 'Semantic Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -116,7 +116,7 @@ describe('Creating Workflows Using Various Methods', () => {
         .click();
     });
     // Checking Run ingestion response
-    cy.sa_getElementByText('button.euiTab', 'Run ingestion')
+    cy.sa_getElementByText('button.euiTab', 'Ingest response')
       .should('be.visible')
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
@@ -165,7 +165,7 @@ describe('Creating Workflows Using Various Methods', () => {
       cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
     });
     // Checking Run query response
-    cy.sa_getElementByText('button.euiTab', 'Run query')
+    cy.sa_getElementByText('button.euiTab', 'Search response')
       .should('be.visible')
       .click();
 
@@ -185,7 +185,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Sentiment Analysis template', () => {
-    cy.contains('h2', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
+    cy.contains('h3', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -198,7 +198,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Hybrid Search template', () => {
-    cy.contains('h2', 'Hybrid Search', { timeout: FF_TIMEOUT })
+    cy.contains('h3', 'Hybrid Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -211,7 +211,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Multimodal Search template', () => {
-    cy.contains('h2', 'Multimodal Search', { timeout: FF_TIMEOUT })
+    cy.contains('h3', 'Multimodal Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -224,7 +224,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
-    cy.contains('h2', 'Retrieval-Augmented Generation (RAG)', {
+    cy.contains('h3', 'Retrieval-Augmented Generation (RAG)', {
       timeout: FF_TIMEOUT,
     })
       .should('be.visible')
