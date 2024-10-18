@@ -1,0 +1,62 @@
+{
+  "name": "BedRock Titan embedding model",
+  "version": "1.0.1",
+  "function_name": "remote",
+  "description": "",
+  "connector_id": "connector_id",
+  "interface": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "inputText": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": true
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "inference_results": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "output": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "dataAsMap": {
+                      "type": "object",
+                      "properties": {
+                        "embedding": {
+                          "type": "array"
+                        }
+                      },
+                      "required": ["embedding"]
+                    }
+                  },
+                  "required": ["name", "dataAsMap"]
+                }
+              },
+              "status_code": {
+                "type": "integer"
+              }
+            },
+            "required": ["output", "status_code"]
+          }
+        }
+      },
+      "required": ["inference_results"]
+    }
+  }
+}

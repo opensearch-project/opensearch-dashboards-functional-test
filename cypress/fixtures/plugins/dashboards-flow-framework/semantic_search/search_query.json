@@ -1,0 +1,9 @@
+{
+  "query": {
+    "term": {
+      "item_text": {
+        "value": "shoes"
+      }
+    }
+  }
+}

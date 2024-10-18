@@ -1,0 +1,275 @@
+{
+  "name": "semantic_search_1",
+  "use_case": "",
+  "description": "A basic workflow containing the ingest pipeline, search pipeline, and index configurations for performing semantic search",
+  "version": {
+    "template": "1.0.0",
+    "compatibility": ["2.17.0", "3.0.0"]
+  },
+  "workflows": {
+    "provision": {
+      "user_params": {},
+      "nodes": [
+        {
+          "id": "ingest_pipeline_4112b7671c507097",
+          "type": "create_ingest_pipeline",
+          "previous_node_inputs": {},
+          "user_inputs": {
+            "configurations": "{\"description\":\"An ingest pipeline\",\"processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"item_text\"}],\"output_map\":[{\"my_embedding\":\"embedding\"}],\"full_response_path\":false,\"ignore_missing\":false,\"ignore_failure\":false,\"model_config\":{}}}]}",
+            "pipeline_id": "ingest_pipeline_4112b7671c507097"
+          }
+        },
+        {
+          "id": "search_pipeline_bbfed4e51c5f8b65",
+          "type": "create_search_pipeline",
+          "previous_node_inputs": {},
+          "user_inputs": {
+            "configurations": "{\"request_processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"query.term.item_text.value\"}],\"output_map\":[{\"vector\":\"embedding\"}],\"query_template\":\"{\\n  \\\"_source\\\": {\\n    \\\"excludes\\\": [\\n      \\\"my_embedding\\\"\\n    ]\\n  },\\n  \\\"query\\\": {\\n    \\\"knn\\\": {\\n      \\\"my_embedding\\\": {\\n        \\\"vector\\\": ${vector},\\n        \\\"k\\\": 10\\n      }\\n    }\\n  }\\n}\",\"full_response_path\":false,\"ignore_missing\":false,\"ignore_failure\":false,\"model_config\":{}}}],\"response_processors\":[],\"phase_results_processors\":[]}",
+            "pipeline_id": "search_pipeline_bbfed4e51c5f8b65"
+          }
+        },
+        {
+          "id": "knn_index_adda44",
+          "type": "create_index",
+          "previous_node_inputs": {
+            "ingest_pipeline_4112b7671c507097": "pipeline_id",
+            "search_pipeline_bbfed4e51c5f8b65": "pipeline_id"
+          },
+          "user_inputs": {
+            "configurations": "{\"settings\":{\"index.knn\":true,\"default_pipeline\":\"${{ingest_pipeline_4112b7671c507097.pipeline_id}}\",\"index.search.default_pipeline\":\"${{search_pipeline_bbfed4e51c5f8b65.pipeline_id}}\"},\"mappings\":{\"properties\":{\"item_text\":{\"type\":\"text\"},\"my_embedding\":{\"type\":\"knn_vector\",\"dimension\":1536}}}}",
+            "index_name": "knn_index_adda44"
+          }
+        }
+      ],
+      "edges": [
+        {
+          "source": "ingest_pipeline_4112b7671c507097",
+          "dest": "knn_index_adda44"
+        },
+        {
+          "source": "search_pipeline_bbfed4e51c5f8b65",
+          "dest": "knn_index_adda44"
+        }
+      ]
+    }
+  },
+  "ui_metadata": {
+    "type": "Semantic search",
+    "config": {
+      "search": {
+        "pipelineName": {
+          "id": "pipelineName",
+          "type": "string",
+          "value": "search_pipeline_bbfed4e51c5f8b65"
+        },
+        "request": {
+          "id": "request",
+          "type": "json",
+          "value": "{\n  \"query\": {\n    \"term\": {\n      \"item_text\": {\n        \"value\": \"shoes\"\n      }\n    }\n  }\n}"
+        },
+        "index": {
+          "name": {
+            "id": "indexName",
+            "type": "string",
+            "value": "knn_index_adda44"
+          }
+        },
+        "enrichRequest": {
+          "processors": [
+            {
+              "name": "ML Inference Processor",
+              "id": "ml_processor_search_request_664d078f4e3c6083",
+              "fields": [
+                {
+                  "id": "model",
+                  "type": "model",
+                  "value": {
+                    "id": "jUssbZIBtUlObUc3aHho"
+                  }
+                },
+                {
+                  "id": "input_map",
+                  "type": "mapArray",
+                  "value": [
+                    [
+                      {
+                        "value": "query.term.item_text.value",
+                        "key": "inputText"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "id": "output_map",
+                  "type": "mapArray",
+                  "value": [
+                    [
+                      {
+                        "value": "embedding",
+                        "key": "vector"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "type": "ml_inference",
+              "optionalFields": [
+                {
+                  "id": "query_template",
+                  "type": "jsonString",
+                  "value": "{\n  \"_source\": {\n    \"excludes\": [\n      \"my_embedding\"\n    ]\n  },\n  \"query\": {\n    \"knn\": {\n      \"my_embedding\": {\n        \"vector\": ${vector},\n        \"k\": 10\n      }\n    }\n  }\n}"
+                },
+                {
+                  "id": "model_config",
+                  "type": "json",
+                  "value": "{}"
+                },
+                {
+                  "id": "full_response_path",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "ignore_missing",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "ignore_failure",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "max_prediction_tasks",
+                  "type": "number",
+                  "value": 10
+                },
+                {
+                  "id": "tag",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "id": "description",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        "enrichResponse": {
+          "processors": []
+        }
+      },
+      "ingest": {
+        "pipelineName": {
+          "id": "pipelineName",
+          "type": "string",
+          "value": "ingest_pipeline_4112b7671c507097"
+        },
+        "enrich": {
+          "processors": [
+            {
+              "name": "ML Inference Processor",
+              "id": "ml_processor_ingest_f32b4938df7a4cc2",
+              "fields": [
+                {
+                  "id": "model",
+                  "type": "model",
+                  "value": {
+                    "id": "jUssbZIBtUlObUc3aHho"
+                  }
+                },
+                {
+                  "id": "input_map",
+                  "type": "mapArray",
+                  "value": [
+                    [
+                      {
+                        "value": "item_text",
+                        "key": "inputText"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "id": "output_map",
+                  "type": "mapArray",
+                  "value": [
+                    [
+                      {
+                        "value": "embedding",
+                        "key": "my_embedding"
+                      }
+                    ]
+                  ]
+                }
+              ],
+              "type": "ml_inference",
+              "optionalFields": [
+                {
+                  "id": "model_config",
+                  "type": "json",
+                  "value": "{}"
+                },
+                {
+                  "id": "full_response_path",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "ignore_missing",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "ignore_failure",
+                  "type": "boolean",
+                  "value": false
+                },
+                {
+                  "id": "max_prediction_tasks",
+                  "type": "number",
+                  "value": 10
+                },
+                {
+                  "id": "tag",
+                  "type": "string",
+                  "value": ""
+                },
+                {
+                  "id": "description",
+                  "type": "string",
+                  "value": ""
+                }
+              ]
+            }
+          ]
+        },
+        "index": {
+          "settings": {
+            "id": "indexSettings",
+            "type": "json",
+            "value": "{\n  \"index.knn\": true\n}"
+          },
+          "mappings": {
+            "id": "indexMappings",
+            "type": "json",
+            "value": "{\n  \"properties\": {\n    \"item_text\": {\n      \"type\": \"text\"\n    },\n    \"my_embedding\": {\n      \"type\": \"knn_vector\",\n      \"dimension\": 1536\n    }\n  }\n}"
+          },
+          "name": {
+            "id": "indexName",
+            "type": "string",
+            "value": "knn_index_adda44"
+          }
+        },
+        "enabled": {
+          "id": "enabled",
+          "type": "boolean",
+          "value": true
+        }
+      }
+    }
+  }
+}
