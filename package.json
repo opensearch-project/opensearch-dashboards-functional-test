@@ -1,6 +1,6 @@
 {
   "name": "opensearch-dashboards-functional-test",
-  "version": "2.17.0",
+  "version": "2.18.0",
   "description": "Maintains functional tests for OpenSearch Dashboards and Dashboards plugins",
   "main": "index.js",
   "scripts": {
