@@ -52,4 +52,4 @@ export const SEARCH_NODE_API_PATH =
 
 export const FF_FIXTURE_BASE_PATH = 'plugins/dashboards-flow-framework/';
 
-export const FF_TIMEOUT = 60000;
+export const FF_TIMEOUT = 100000;

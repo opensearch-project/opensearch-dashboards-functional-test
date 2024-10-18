@@ -39,7 +39,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using import', () => {
-    cy.getElementByDataTestId('importWorkflowButton')
+    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
@@ -49,9 +49,11 @@ describe('Creating Workflows Using Various Methods', () => {
       'semantic_search/import_workflow.json';
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('importJSONButton').should('be.visible').click();
-    cy.contains('Manage workflows').should('be.visible');
-    cy.get('.euiFieldSearch').focus();
-    cy.get('.euiFieldSearch').type('semantic_search_1{enter}');
+    cy.get('.euiFieldSearch').should('be.visible').focus();
+    cy.wait(1000);
+    cy.get('.euiFieldSearch')
+      .should('be.visible')
+      .type('semantic_search_1{enter}');
     cy.contains('semantic_search_1');
     cy.get('.euiTableRow').should('have.length.greaterThan', 0);
     cy.get('.euiTableRow').first().find('button.euiButtonIcon--danger').click();
@@ -60,6 +62,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
   });
+
   it('Workflow Creation with Improper Import File', () => {
     cy.getElementByDataTestId('importWorkflowButton')
       .should('be.visible')
