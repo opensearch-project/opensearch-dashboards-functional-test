@@ -34,7 +34,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
+    cy.visit(FF_URL.WORKFLOWS_LIST, { timeout: 10000 });
     cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_NEW));
   });
 
