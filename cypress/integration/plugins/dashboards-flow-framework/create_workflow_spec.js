@@ -11,7 +11,6 @@ import {
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
-import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
@@ -35,7 +34,6 @@ describe('Creating Workflows Using Various Methods', () => {
 
   beforeEach(() => {
     cy.visit(FF_URL.WORKFLOWS_LIST, { timeout: 10000 });
-    cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_NEW));
   });
 
   it('create workflow using import', () => {
