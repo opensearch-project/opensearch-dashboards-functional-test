@@ -17,7 +17,6 @@ describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
 
   before(() => {
-    CURRENT_TENANT.newTenant = 'global';
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
         return cy.registerModel({
@@ -35,11 +34,11 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
   it('create workflow using import', () => {
-    cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
