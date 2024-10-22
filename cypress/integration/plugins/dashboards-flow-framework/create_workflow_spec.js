@@ -17,6 +17,7 @@ describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
 
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
         return cy.registerModel({
@@ -35,17 +36,18 @@ describe('Creating Workflows Using Various Methods', () => {
 
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
-    cy.fleshTenantSettings();
-    cy.wait(15000);
+    // cy.fleshTenantSettings();
+    cy.wait(20000);
     cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
   it('create workflow using import', () => {
     CURRENT_TENANT.newTenant = 'global';
-    cy.fleshTenantSettings();
+    // cy.fleshTenantSettings();
+    cy.wait(20000);
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
-      .click();
+      .click({ force: true });
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
     const filePath =
       'cypress/fixtures/' +
