@@ -111,7 +111,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.url().should('include', '/workflows/');
-    cy.getElementByDataTestId('editSourceDataButton')
+    cy.getElementByDataTestId('selectDataToImportButton')
       .should('be.visible')
       .click();
     cy.getElementByDataTestId('uploadSourceDataButton')
