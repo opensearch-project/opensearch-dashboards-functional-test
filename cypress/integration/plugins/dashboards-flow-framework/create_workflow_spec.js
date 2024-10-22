@@ -36,22 +36,8 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
-  it('Workflow Creation with Improper Import File', () => {
-    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
-      .should('be.visible')
-      .click();
-    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
-    const filePath =
-      'cypress/fixtures/' +
-      FF_FIXTURE_BASE_PATH +
-      'semantic_search/search_query.json';
-    cy.get('input[type=file]').selectFile(filePath);
-    cy.contains('The uploaded file is not a valid workflow').should(
-      'be.visible'
-    );
-  });
-
   it('create workflow using import', () => {
+    cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
@@ -74,6 +60,21 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('deleteWorkflowButton')
       .should('be.visible')
       .click();
+  });
+
+  it('Workflow Creation with Improper Import File', () => {
+    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
+    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
+    const filePath =
+      'cypress/fixtures/' +
+      FF_FIXTURE_BASE_PATH +
+      'semantic_search/search_query.json';
+    cy.get('input[type=file]').selectFile(filePath);
+    cy.contains('The uploaded file is not a valid workflow').should(
+      'be.visible'
+    );
   });
 
   it('create workflow using Semantic Search template', () => {
