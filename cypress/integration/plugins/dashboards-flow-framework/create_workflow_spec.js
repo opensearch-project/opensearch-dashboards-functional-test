@@ -11,11 +11,13 @@ import {
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
 
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
         return cy.registerModel({
