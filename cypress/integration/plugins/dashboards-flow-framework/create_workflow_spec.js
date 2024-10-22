@@ -41,6 +41,8 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using import', () => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
