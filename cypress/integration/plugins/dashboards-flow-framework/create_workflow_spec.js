@@ -33,11 +33,10 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
-    cy.visit(FF_URL.WORKFLOWS_LIST, { timeout: 10000 });
+    cy.visit(FF_URL.WORKFLOWS, { timeout: 10000 });
   });
 
   it('create workflow using import', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
@@ -63,8 +62,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Workflow Creation with Improper Import File', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
-    cy.getElementByDataTestId('importWorkflowButton')
+    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
@@ -79,7 +77,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Semantic Search template', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Semantic Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -189,7 +189,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Sentiment Analysis template', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -203,6 +205,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Hybrid Search template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Hybrid Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -216,7 +221,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Multimodal Search template', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Multimodal Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -230,7 +237,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Retrieval-Augmented Generation (RAG)', {
       timeout: FF_TIMEOUT,
     })
