@@ -35,6 +35,7 @@ describe('Creating Workflows Using Various Methods', () => {
 
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.wait(15000);
     cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
