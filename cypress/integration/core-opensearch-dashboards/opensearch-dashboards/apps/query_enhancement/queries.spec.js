@@ -109,8 +109,10 @@ describe('query enhancement queries', { scrollBehavior: false }, () => {
       cy.getElementByTestId(`osdQueryEditor__multiLine`).contains(
         `source = timestamp-* | head 10`
       );
-      cy.reload();
       cy.waitForSearch();
+      cy.reload();
+      cy.getElementByTestId('queryResultCompleteMsg').click()
+      cy.get('[class="euiText euiText--small"]').then((text) => cy.log(text))
       cy.verifyHitCount(4);
 
       //query should persist across refresh
