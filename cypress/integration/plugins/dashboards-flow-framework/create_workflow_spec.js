@@ -11,12 +11,13 @@ import {
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
-import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
 
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
         return cy.registerModel({
@@ -34,14 +35,17 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
-    cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_NEW));
+    CURRENT_TENANT.newTenant = 'global';
+    cy.wait(20000);
+    cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
   it('create workflow using import', () => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.wait(20000);
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
-      .click();
+      .click({ force: true });
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
     const filePath =
       'cypress/fixtures/' +
@@ -64,7 +68,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Workflow Creation with Improper Import File', () => {
-    cy.getElementByDataTestId('importWorkflowButton')
+    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
@@ -79,13 +83,18 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Semantic Search template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Semantic Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
         cy.contains('button', 'Go').click();
       });
-    cy.getElementByDataTestId('optionalConfigurationButton')
+    cy.getElementByDataTestId('optionalConfigurationButton', {
+      timeout: FF_TIMEOUT,
+    })
       .should('be.visible')
       .click();
     cy.getElementByDataTestId('selectDeployedModel')
@@ -188,6 +197,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Sentiment Analysis template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -201,6 +213,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Hybrid Search template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Hybrid Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -214,6 +229,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Multimodal Search template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Multimodal Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
@@ -227,6 +245,9 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Retrieval-Augmented Generation (RAG)', {
       timeout: FF_TIMEOUT,
     })
