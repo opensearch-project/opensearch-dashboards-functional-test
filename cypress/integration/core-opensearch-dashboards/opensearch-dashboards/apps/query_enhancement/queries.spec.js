@@ -6,7 +6,7 @@ import {
   MiscUtils,
   TestFixtureHandler,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-import { CURRENT_TENANT } from '../../../../../../utils/commands';
+import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -40,12 +40,6 @@ describe('query enhancement queries', { scrollBehavior: false }, () => {
     testFixtureHandler.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
     );
-
-    //   miscUtils.visitPage(`app/import_sample_data`);
-    //   cy.getElementByTestId(
-    //     'addSampleDataSetecommerce'
-    //   ).click();
-    //   cy.waitForLoaderNewHeader();
 
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
