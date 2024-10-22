@@ -33,7 +33,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
-    cy.visit(FF_URL.WORKFLOWS, { timeout: 10000 });
+    cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
   it('create workflow using import', () => {
@@ -86,7 +86,9 @@ describe('Creating Workflows Using Various Methods', () => {
       .within(() => {
         cy.contains('button', 'Go').click();
       });
-    cy.getElementByDataTestId('optionalConfigurationButton')
+    cy.getElementByDataTestId('optionalConfigurationButton', {
+      timeout: FF_TIMEOUT,
+    })
       .should('be.visible')
       .click();
     cy.getElementByDataTestId('selectDeployedModel')
