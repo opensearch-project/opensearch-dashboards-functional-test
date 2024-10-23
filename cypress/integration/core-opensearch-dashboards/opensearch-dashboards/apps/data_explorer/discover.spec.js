@@ -86,6 +86,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
         'be.visible'
       );
+      cy.clearTopNavQuery();
     });
   });
 
