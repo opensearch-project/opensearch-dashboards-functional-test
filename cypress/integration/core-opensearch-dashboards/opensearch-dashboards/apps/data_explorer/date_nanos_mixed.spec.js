@@ -36,7 +36,7 @@ describe('date_nanos_mixed', () => {
     const toTime = 'Jan 1, 2019 @ 23:59:59.999';
     cy.setTopNavDate(fromTime, toTime);
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
+    //cy.switchDiscoverTable('new');
   });
 
   after(() => {

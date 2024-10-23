@@ -53,7 +53,7 @@ describe('discover app', { scrollBehavior: false }, () => {
     );
     cy.waitForLoader();
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
+    //cy.switchDiscoverTable('new');
   });
 
   beforeEach(() => {
@@ -170,7 +170,7 @@ describe('discover app', { scrollBehavior: false }, () => {
       before(() => {
         CURRENT_TENANT.newTenant = 'global';
         cy.fleshTenantSettings();
-        cy.switchDiscoverTable('new');
+        //cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
       });
 
@@ -285,7 +285,7 @@ describe('discover app', { scrollBehavior: false }, () => {
 
   describe('refresh interval', function () {
     beforeEach(() => {
-      cy.switchDiscoverTable('new');
+      //cy.switchDiscoverTable('new');
     });
 
     it('should refetch when autofresh is enabled', () => {
