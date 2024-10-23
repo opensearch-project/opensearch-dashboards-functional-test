@@ -17,7 +17,7 @@ Cypress.Commands.add('verifyTimeConfig', (start, end) => {
     .should('have.text', end);
 });
 
-Cypress.Commands.add('saveSearch', (name) => {
+Cypress.Commands.add('saveSearch', (name, isEnhancement) => {
   cy.log('in func save search');
   const opts = { log: false };
 
@@ -26,10 +26,10 @@ Cypress.Commands.add('saveSearch', (name) => {
   cy.getElementByTestId('confirmSaveSavedObjectButton').click({ force: true });
 
   // Wait for page to load
-  cy.waitForLoader();
+  cy.waitForLoader(isEnhancement);
 });
 
-Cypress.Commands.add('loadSaveSearch', (name) => {
+Cypress.Commands.add('loadSaveSearch', (name, isEnhancement) => {
   const opts = {
     log: false,
     force: true,
@@ -38,7 +38,7 @@ Cypress.Commands.add('loadSaveSearch', (name) => {
   cy.getElementByTestId('discoverOpenButton', opts).click(opts);
   cy.getElementByTestId(`savedObjectTitle${toTestId(name)}`).click();
 
-  cy.waitForLoader();
+  cy.waitForLoader(isEnhancement);
 });
 
 Cypress.Commands.add('verifyHitCount', (count) => {
@@ -57,45 +57,51 @@ Cypress.Commands.add('waitForSearch', () => {
   cy.getElementByTestId('docTable');
 });
 
-Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {
-  cy.setTopNavDate(fromTime, toTime);
-  cy.waitForLoader();
-  // wait until the search has been finished
-  cy.waitForSearch();
-  cy.get('select').select(`${interval}`);
-  cy.waitForLoader();
-  cy.waitForSearch();
-});
+Cypress.Commands.add(
+  'prepareTest',
+  (fromTime, toTime, interval, isEnhancement) => {
+    cy.setTopNavDate(fromTime, toTime);
+    cy.waitForLoader(isEnhancement);
+    // wait until the search has been finished
+    cy.waitForSearch();
+    cy.get('select').select(`${interval}`);
+    cy.waitForLoader(isEnhancement);
+    cy.waitForSearch();
+  }
+);
 
 Cypress.Commands.add('verifyMarkCount', (count) => {
   cy.getElementByTestId('docTable').find('mark').should('have.length', count);
 });
 
-Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
-  cy.getElementByTestId('addFilter').click();
-  cy.getElementByTestId('filterFieldSuggestionList')
-    .should('be.visible')
-    .click()
-    .type(`${field}{downArrow}{enter}`)
-    .trigger('blur', { force: true });
-
-  cy.getElementByTestId('filterOperatorList')
-    .should('be.visible')
-    .click()
-    .type(`${operator}{downArrow}{enter}`)
-    .trigger('blur', { force: true });
-
-  if (value) {
-    cy.get('[data-test-subj^="filterParamsComboBox"]')
+Cypress.Commands.add(
+  'submitFilterFromDropDown',
+  (field, operator, value, isEnhancement = false) => {
+    cy.getElementByTestId(isEnhancement ? 'addFilters' : 'addFilter').click();
+    cy.getElementByTestId('filterFieldSuggestionList')
       .should('be.visible')
       .click()
-      .type(`${value}{downArrow}{enter}`)
+      .type(`${field}{downArrow}{enter}`)
       .trigger('blur', { force: true });
-  }
 
-  cy.getElementByTestId('saveFilter').click({ force: true });
-  cy.waitForLoader();
-});
+    cy.getElementByTestId('filterOperatorList')
+      .should('be.visible')
+      .click()
+      .type(`${operator}{downArrow}{enter}`)
+      .trigger('blur', { force: true });
+
+    if (value) {
+      cy.get('[data-test-subj^="filterParamsComboBox"]')
+        .should('be.visible')
+        .click()
+        .type(`${value}{downArrow}{enter}`)
+        .trigger('blur', { force: true });
+    }
+
+    cy.getElementByTestId('saveFilter').click({ force: true });
+    cy.waitForLoader(isEnhancement);
+  }
+);
 
 Cypress.Commands.add('saveQuery', (name, description) => {
   cy.whenTestIdNotFound('saved-query-management-popover', () => {
@@ -154,6 +160,25 @@ Cypress.Commands.add('switchDiscoverTable', (name) => {
     .then(() => {
       checkForElementVisibility();
     });
+});
+
+Cypress.Commands.add('selectDatasetForEnhancement', (indexPattern) => {
+  Cypress.log({
+    name: 'selectDataset',
+    displayName: 'select dataset',
+    message: indexPattern,
+  });
+
+  cy.get('.datasetSelector__button').click();
+
+  cy.get('.euiSelectable.datasetSelector__selectable').should('be.visible');
+
+  cy.get('.euiSelectableListItem')
+    .contains(indexPattern)
+    .should('be.visible')
+    .click();
+
+  cy.get('.datasetSelector__button').should('contain.text', indexPattern);
 });
 
 function checkForElementVisibility() {

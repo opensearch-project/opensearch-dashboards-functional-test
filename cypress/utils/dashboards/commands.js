@@ -9,8 +9,9 @@ import './vis_type_table/commands';
 import './vis_type_vega/commands';
 import './vis-augmenter/commands';
 import './data_explorer/commands';
+import moment from 'moment';
 
-Cypress.Commands.add('waitForLoader', () => {
+Cypress.Commands.add('waitForLoader', (isEnhancement = false) => {
   const opts = { log: false };
 
   Cypress.log({
@@ -18,28 +19,41 @@ Cypress.Commands.add('waitForLoader', () => {
     displayName: 'wait',
     message: 'page load',
   });
+
   cy.wait(Cypress.env('WAIT_FOR_LOADER_BUFFER_MS'));
-  cy.getElementByTestId('homeIcon', opts); // Update to `homeLoader` once useExpandedHeader is enabled
+
+  // Use recentItemsSectionButton for query enhancement, otherwise use homeIcon
+  cy.getElementByTestId(
+    isEnhancement ? 'recentItemsSectionButton' : 'homeIcon',
+    opts
+  );
 });
 
-Cypress.Commands.add('setTopNavQuery', (value, submit = true) => {
-  const opts = { log: false };
+Cypress.Commands.add(
+  'setTopNavQuery',
+  (value, submit = true, isEnhancement = false) => {
+    const opts = { log: false };
 
-  Cypress.log({
-    name: 'setTopNavQuery',
-    displayName: 'set query',
-    message: value,
-  });
+    Cypress.log({
+      name: 'setTopNavQuery',
+      displayName: 'set query',
+      message: value,
+    });
 
-  cy.getElementByTestId('queryInput', opts)
-    .clear(opts)
-    .type(value, opts)
-    .blur(opts);
+    const selector = isEnhancement
+      ? '.osdQueryEditor__input .monaco-editor .inputarea' // find by class
+      : '[data-test-subj="queryInput"]';
 
-  if (submit) {
-    cy.updateTopNav(opts);
+    Cypress.log({ message: `isEnhancement is ${isEnhancement}` });
+    Cypress.log({ message: `selector is ${selector}` });
+
+    cy.get(selector, opts).clear(opts).type(value, opts).blur(opts);
+
+    if (submit) {
+      cy.updateTopNav(opts);
+    }
   }
-});
+);
 
 Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
   const opts = { log: false };
@@ -115,6 +129,69 @@ Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
     cy.updateTopNav(opts);
   }
 });
+
+Cypress.Commands.add(
+  'setTopNavDateWithRetry',
+  (start, end, isEnhancement = false) => {
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 1000;
+
+    const parseDateString = (dateStr) => {
+      // Remove any trailing milliseconds if present (e.g., .000)
+      const cleanStr = dateStr.replace(/\.\d{3}$/, '');
+      return moment(cleanStr, 'MMM DD, YYYY @ HH:mm:ss');
+    };
+
+    const areDatesEqual = (date1Str, date2Str) => {
+      const date1 = parseDateString(date1Str);
+      const date2 = parseDateString(date2Str);
+      return date1.isSame(date2);
+    };
+
+    const verifyDates = () => {
+      return cy
+        .get('[data-test-subj="superDatePickerstartDatePopoverButton"]')
+        .should('be.visible')
+        .invoke('text')
+        .then((startText) => {
+          return cy
+            .get('[data-test-subj="superDatePickerendDatePopoverButton"]')
+            .should('be.visible')
+            .invoke('text')
+            .then((endText) => {
+              const startDateCorrect = areDatesEqual(startText.trim(), start);
+              const endDateCorrect = areDatesEqual(endText.trim(), end);
+              return { startDateCorrect, endDateCorrect };
+            });
+        });
+    };
+
+    const attemptSetDates = (attempt = 1) => {
+      cy.log(`Attempt ${attempt} of ${MAX_RETRIES} to set dates`);
+
+      return cy
+        .setTopNavDate(start, end)
+        .then(() => {
+          cy.waitForLoader(isEnhancement);
+        })
+        .then(() => verifyDates())
+        .then(({ startDateCorrect, endDateCorrect }) => {
+          if (!startDateCorrect || !endDateCorrect) {
+            if (attempt < MAX_RETRIES) {
+              cy.wait(RETRY_DELAY);
+              return attemptSetDates(attempt + 1);
+            } else {
+              throw new Error(
+                `Failed to set dates correctly after ${MAX_RETRIES} attempts`
+              );
+            }
+          }
+        });
+    };
+
+    return attemptSetDates();
+  }
+);
 
 Cypress.Commands.add('updateTopNav', (options) => {
   cy.getElementByTestId('querySubmitButton', options).click({ force: true });
