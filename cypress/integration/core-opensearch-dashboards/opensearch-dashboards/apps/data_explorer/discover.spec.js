@@ -28,6 +28,9 @@ describe('discover app', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.fleshTenantSettings();
+    // delete all saved searches
+    cy.deleteSavedObjectByType('search');
+
     // import logstash functional
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
@@ -61,7 +64,9 @@ describe('discover app', { scrollBehavior: false }, () => {
     cy.fleshTenantSettings();
   });
 
-  after(() => {});
+  after(() => {
+    cy.deleteSavedObjectByType('search');
+  });
 
   describe('filters and queries', () => {
     after(() => {
@@ -126,7 +131,7 @@ describe('discover app', { scrollBehavior: false }, () => {
     it('should show the correct hit count', function () {
       cy.loadSaveSearch(saveSearch2);
       cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
-      const expectedHitCount = '14,004';
+      const expectedHitCount = '12,891';
       cy.verifyHitCount(expectedHitCount);
     });
 
@@ -155,8 +160,22 @@ describe('discover app', { scrollBehavior: false }, () => {
 
       // reset to persisted state
       cy.getElementByTestId('resetSavedSearch').click();
-      const expectedHitCount = '14,004';
+      const expectedHitCount = '12,891';
       cy.verifyHitCount(expectedHitCount);
+    });
+
+    it('after adding a filter to a saved search and reloading the page the added filter should persist', function () {
+      cy.loadSaveSearch(saveSearch2);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
+      cy.submitFilterFromDropDown('@tags.raw', 'is', 'success');
+      cy.reload();
+      cy.get('[data-test-subj~="filter-key-@tags.raw"]').should('be.visible');
+    });
+
+    it('reset filters while we create a new search', function () {
+      cy.get('[data-test-subj~="filter-key-@tags.raw"]').should('be.visible');
+      cy.get('[data-test-subj="discoverNewButton"]').click({ force: true });
+      cy.get('[data-test-subj~="filter-key-@tags.raw"]').should('not.exist');
     });
   });
 
