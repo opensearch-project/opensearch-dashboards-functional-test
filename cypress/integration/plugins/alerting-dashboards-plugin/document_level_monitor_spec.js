@@ -432,8 +432,8 @@ describe('DocumentLevelMonitor', () => {
 
         // TODO: Test with Notifications plugin
 
-        // Click the update button
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click the save button
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we can see only one row in the trigger list by checking <caption> element
         cy.contains('This table contains 2 rows');
@@ -512,8 +512,8 @@ describe('DocumentLevelMonitor', () => {
 
         // TODO: Test with Notifications plugin
 
-        // Click the create button
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click the save button
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we can see only one row in the trigger list by checking <caption> element
         cy.contains('This table contains 1 row');
@@ -569,8 +569,8 @@ describe('DocumentLevelMonitor', () => {
           timeout: ALERTING_PLUGIN_TIMEOUT,
         });
 
-        // Click the update button
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click the save button
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we're on the Monitor Details page by searching for the History element
         cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });
