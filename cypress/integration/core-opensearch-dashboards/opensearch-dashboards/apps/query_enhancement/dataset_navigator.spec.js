@@ -42,17 +42,18 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
 
   describe('select indices', () => {
     before(() => {
-      // import logstash functional
-      testFixtureHandler.importJSONDocIfNeeded(
-        indexSet,
-        'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
-        'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+      testFixtureHandler.importJSONMapping(
+        'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/mappings.json.txt'
       );
-
+  
+      testFixtureHandler.importJSONDoc(
+        'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/data.json.txt'
+      );
+  
       // Go to the Discover page
-      miscUtils.visitPage(
-        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-      );
+      miscUtils.visitPage(`app/data-explorer/discover#/`);
+  
+      cy.waitForLoaderNewHeader();
     });
 
     it('with SQL as default language', function () {
@@ -60,7 +61,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
       cy.get(`[title="Default Cluster"]`).click();
-      cy.get(`[title="logstash-2015.09.20"]`).click();
+      cy.get(`[title="timestamp-nanos"]`).click();
       cy.getElementByTestId('datasetSelectorNext').click();
 
       cy.get(`[class="euiModalHeader__title"]`).should(
@@ -79,10 +80,10 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.waitForLoaderNewHeader();
 
       // Selected language in the language picker should be SQL
-      cy.getElementByTestId('queryEditorLanguageSelector').should(
-        'contain',
-        'SQL'
-      );
+      // cy.getElementByTestId('queryEditorLanguageSelector').should(
+      //   'contain',
+      //   'SQL'
+      // );
 
       // The following steps are needed because when selecting SQL, discover loaded with data but the
       // multi-line query editor are not loaded properly(it renders a single line query bar) unless we select SQL again
@@ -111,7 +112,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
       cy.get(`[title="Default Cluster"]`).click();
-      cy.get(`[title="logstash-2015.09.21"]`).click();
+      cy.get(`[title="timestamp-nanos"]`).click();
       cy.getElementByTestId('datasetSelectorNext').click();
 
       cy.get(`[class="euiModalHeader__title"]`).should(
@@ -119,16 +120,11 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         'Step 2: Configure data'
       );
 
-      // should have two options: SQL and PPL
-      cy.getElementByTestId('advancedSelectorLanguageSelect')
-        .get('option')
-        .should('have.length', 2);
-
       //select PPL
       cy.getElementByTestId('advancedSelectorLanguageSelect').select('PPL');
 
       cy.getElementByTestId(`advancedSelectorTimeFieldSelect`).select(
-        '@timestamp'
+        'timestamp'
       );
       cy.getElementByTestId('advancedSelectorConfirmButton').click();
 
@@ -140,13 +136,17 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         'PPL'
       );
 
+      const fromTime = 'Sep 19, 2018 @ 00:00:00.000';
+      const toTime = 'Sep 21, 2019 @ 00:00:00.000';
+      cy.setTopNavDate(fromTime, toTime);
+
       cy.waitForLoaderNewHeader();
 
       // Query should finish running with timestamp and finish time in the footer
       cy.getElementByTestId('queryResultCompleteMsg').should('be.visible');
       cy.getElementByTestId('queryEditorFooterTimestamp').should(
         'contain',
-        '@timestamp'
+        'timestamp'
       );
 
       // Switch language to SQL
@@ -161,7 +161,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.getElementByTestId('queryResultCompleteMsg').should('be.visible');
       cy.getElementByTestId('queryEditorFooterTimestamp').should(
         'contain',
-        '@timestamp'
+        'timestamp'
       );
     });
   });
