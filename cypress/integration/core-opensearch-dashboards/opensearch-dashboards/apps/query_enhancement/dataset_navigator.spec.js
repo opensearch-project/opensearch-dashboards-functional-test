@@ -56,8 +56,8 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
     });
 
     it('with SQL as default language', function () {
-      cy.get(`[class~="datasetSelector__button"]`).click();
-      cy.get(`[class~="datasetSelector__advancedButton"]`).click();
+      cy.getElementByTestId(`datasetSelectorButton`).click();
+      cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
       cy.get(`[title="Default Cluster"]`).click();
       cy.get(`[title="logstash-2015.09.20"]`).click();
@@ -68,12 +68,17 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         'Step 2: Configure data'
       );
       // should have two options: SQL and PPL
-      cy.get('option').should('have.length', 2);
+      cy.getElementByTestId('advancedSelectorLanguageSelect')
+        .get('option')
+        .should('have.length', 2);
+
+      //select SQL
+      cy.getElementByTestId('advancedSelectorLanguageSelect').select('SQL');
       cy.getElementByTestId('advancedSelectorConfirmButton').click();
 
       cy.waitForLoaderNewHeader();
 
-      // Selected language should be SQL
+      // Selected language in the language picker should be SQL
       cy.getElementByTestId('queryEditorLanguageSelector').should(
         'contain',
         'SQL'
@@ -102,8 +107,8 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
     });
 
     it('with PPL as default language', function () {
-      cy.get(`[class~="datasetSelector__button"]`).click();
-      cy.get(`[class~="datasetSelector__advancedButton"]`).click();
+      cy.getElementByTestId(`datasetSelectorButton`).click();
+      cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
       cy.get(`[title="Default Cluster"]`).click();
       cy.get(`[title="logstash-2015.09.21"]`).click();
@@ -113,8 +118,16 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         'contain',
         'Step 2: Configure data'
       );
-      // should have two options: SQL and PPL; PPL should be selected
-      cy.getElementByTestId('advancedSelectorTimeFieldSelect').select(
+
+      // should have two options: SQL and PPL
+      cy.getElementByTestId('advancedSelectorLanguageSelect')
+        .get('option')
+        .should('have.length', 2);
+
+      //select PPL
+      cy.getElementByTestId('advancedSelectorLanguageSelect').select('PPL');
+
+      cy.getElementByTestId(`advancedSelectorTimeFieldSelect`).select(
         '@timestamp'
       );
       cy.getElementByTestId('advancedSelectorConfirmButton').click();
@@ -128,6 +141,8 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       );
 
       cy.waitForLoaderNewHeader();
+
+      // Query should finish running with timestamp and finish time in the footer
       cy.getElementByTestId('queryResultCompleteMsg').should('be.visible');
       cy.getElementByTestId('queryEditorFooterTimestamp').should(
         'contain',
@@ -136,9 +151,12 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
 
       // Switch language to SQL
       cy.getElementByTestId('queryEditorLanguageSelector').click();
-      cy.get(`[class~="languageSelector__menuItem"]`).eq(1).click({
-        force: true,
-      });
+      cy.get(`[class~="languageSelector__menuItem"]`)
+        .should('have.length', 2)
+        .eq(1)
+        .click({
+          force: true,
+        });
       cy.waitForLoaderNewHeader();
       cy.getElementByTestId('queryResultCompleteMsg').should('be.visible');
       cy.getElementByTestId('queryEditorFooterTimestamp').should(
