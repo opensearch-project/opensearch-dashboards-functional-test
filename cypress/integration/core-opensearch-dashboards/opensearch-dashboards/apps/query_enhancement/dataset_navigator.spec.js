@@ -45,14 +45,14 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       testFixtureHandler.importJSONMapping(
         'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/mappings.json.txt'
       );
-  
+
       testFixtureHandler.importJSONDoc(
         'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/data.json.txt'
       );
-  
+
       // Go to the Discover page
       miscUtils.visitPage(`app/data-explorer/discover#/`);
-  
+
       cy.waitForLoaderNewHeader();
     });
 
@@ -80,14 +80,12 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.waitForLoaderNewHeader();
 
       // Selected language in the language picker should be SQL
+      // bug: SQL won't be selected in cypress; manually click SQL in language selector
       // cy.getElementByTestId('queryEditorLanguageSelector').should(
       //   'contain',
       //   'SQL'
       // );
 
-      // The following steps are needed because when selecting SQL, discover loaded with data but the
-      // multi-line query editor are not loaded properly(it renders a single line query bar) unless we select SQL again
-      // This bug only exist in cypress test; can not reproduce manually
       cy.get(`[data-test-subj="queryEditorLanguageSelector"]`).click();
       cy.get(`[class~="languageSelector__menuItem"]`)
         .should('have.length', 2)
@@ -168,6 +166,12 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
 
   describe('index pattern', () => {
     it('create index pattern and select it', function () {
+      // import logstash functional
+      testFixtureHandler.importJSONDocIfNeeded(
+        indexSet,
+        'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
+        'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
+      );
       testFixtureHandler.importJSONMapping(
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
       );
