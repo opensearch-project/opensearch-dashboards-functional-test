@@ -106,7 +106,7 @@ describe('Testing notebook actions', () => {
   });
 });
 
-describe('Test reporting integration if plugin installed', () => {
+describe('Test reporting integration if the plugin is installed', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
     cy.get('body').then(($body) => {
