@@ -108,12 +108,21 @@ describe('Testing notebook actions', () => {
 
 describe('Test reporting integration if the plugin is installed', () => {
   beforeEach(() => {
+    cy.window().then((win) => {
+      cy.stub(win, 'open').as('windowOpen'); //Stub window.open for intercepting redirects
+    });
     let notebookName = makeTestNotebook();
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
     makePopulatedParagraph();
     cy.wrap({ name: notebookName }).as('notebook');
+  });
+
+  afterEach(() => {
+    cy.get('@notebook').then((notebook) => {
+      deleteNotebook(notebook.name);
+    });
   });
 
   it('Create in-context PDF report from notebook', () => {
@@ -137,10 +146,13 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
       .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should(
-      'include',
-      '/reports-dashboards'
-    );
+
+    //Capture and redirect to URL instead of opening a new tab
+    cy.get('@windowOpen').should('have.been.calledOnce').then((stub) => {
+      const reportDefinitionUrl = stub.args[0][0];
+      cy.visit(reportDefinitionUrl);
+    });
+    cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
     cy.get('#reportSettingsName').type('Create notebook on-demand report');
     cy.get('#createNewReportDefinition').click({ force: true });
   });
@@ -150,9 +162,14 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
       .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should(
-      'include',
-      '/reports-dashboards'
-    );
+
+    //Capture and redirect to URL instead of opening a new tab
+    cy.get('@windowOpen').should('have.been.calledOnce').then((stub) => {
+      const reportsHomepageUrl = stub.args[0][0];
+      cy.visit(reportsHomepageUrl);
+    });
+
+    cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
   });
 });
+
