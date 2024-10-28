@@ -106,7 +106,7 @@ describe('Testing notebook actions', () => {
   });
 });
 
-describe('Test reporting integration if the plugin is installed', () => {
+describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
     cy.get('body').then(($body) => {
@@ -127,7 +127,7 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
-    //cy.get('body').contains('Please continue report generation in the new tab');
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create in-context PNG report from notebook', () => {
@@ -135,7 +135,7 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
-    //cy.get('body').contains('Please continue report generation in the new tab');
+    cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create on-demand report definition from context menu', () => {
@@ -143,7 +143,10 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
       .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
+    cy.location('pathname', { timeout: delayTime * 3 }).should(
+      'include',
+      '/reports-dashboards'
+    );
     cy.get('#reportSettingsName').type('Create notebook on-demand report');
     cy.get('#createNewReportDefinition').click({ force: true });
   });
@@ -153,6 +156,9 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
       .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
+    cy.location('pathname', { timeout: delayTime * 3 }).should(
+      'include',
+      '/reports-dashboards'
+    );
   });
 });
