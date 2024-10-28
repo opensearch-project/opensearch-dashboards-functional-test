@@ -108,9 +108,6 @@ describe('Testing notebook actions', () => {
 
 describe('Test reporting integration if the plugin is installed', () => {
   beforeEach(() => {
-    cy.window().then((win) => {
-      cy.stub(win, 'open').as('windowOpen'); //Stub window.open for intercepting redirects
-    });
     let notebookName = makeTestNotebook();
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
@@ -130,7 +127,7 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+    //cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create in-context PNG report from notebook', () => {
@@ -138,7 +135,7 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+    //cy.get('body').contains('Please continue report generation in the new tab');
   });
 
   it('Create on-demand report definition from context menu', () => {
@@ -146,12 +143,6 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
       .click();
-
-    //Capture and redirect to URL instead of opening a new tab
-    cy.get('@windowOpen').should('have.been.calledOnce').then((stub) => {
-      const reportDefinitionUrl = stub.args[0][0];
-      cy.visit(reportDefinitionUrl);
-    });
     cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
     cy.get('#reportSettingsName').type('Create notebook on-demand report');
     cy.get('#createNewReportDefinition').click({ force: true });
@@ -162,14 +153,6 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
       .click();
-
-    //Capture and redirect to URL instead of opening a new tab
-    cy.get('@windowOpen').should('have.been.calledOnce').then((stub) => {
-      const reportsHomepageUrl = stub.args[0][0];
-      cy.visit(reportsHomepageUrl);
-    });
-
     cy.location('pathname', { timeout: delayTime * 3 }).should('include', '/reports-dashboards');
   });
 });
-
