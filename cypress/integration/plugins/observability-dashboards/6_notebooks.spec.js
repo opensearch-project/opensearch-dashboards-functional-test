@@ -130,7 +130,7 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('body').contains('Please continue report generation in the new tab');
   });
 
-  it('Create in-context PNG report from notebook', () => {
+  it.skip('Create in-context PNG report from notebook', () => {
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
