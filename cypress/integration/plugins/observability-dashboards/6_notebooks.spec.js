@@ -122,11 +122,17 @@ describe('Test reporting integration if the plugin is installed', () => {
     });
   });
 
-  it.skip('Create in-context PDF report from notebook', () => {
+  it('Create in-context PDF report from notebook', () => {
     cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
+
+    //Stub window.open to prevent new tab
+    cy.window().then((win) => {
+      cy.stub(win, 'open').as('windowOpen');
+    });
+
     cy.get('body').contains('Please continue report generation in the new tab');
   });
 
@@ -135,6 +141,12 @@ describe('Test reporting integration if the plugin is installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
+
+    //Stub window.open to prevent new tab
+    cy.window().then((win) => {
+      cy.stub(win, 'open').as('windowOpen');
+    });
+
     cy.get('body').contains('Please continue report generation in the new tab');
   });
 
