@@ -60,7 +60,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     beforeEach(() => {
       cy.visit(`/w/${workspaceId}/app/import_sample_data`);
       if (MDSEnabled) {
-        cy.selectFromDataSourceSelector(dataSourceTitle, dataSourceId);
+        cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
       }
     });
 
@@ -104,7 +104,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.visit(`/w/${workspaceId}/app/import_sample_data`);
 
       if (MDSEnabled) {
-        cy.selectFromDataSourceSelector(dataSourceTitle, dataSourceId);
+        cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
       }
       cy.getElementByTestId('removeSampleDataSetecommerce').click();
     });
@@ -127,7 +127,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.visit(`/w/${workspaceId}/app/import_sample_data`);
 
       if (MDSEnabled) {
-        cy.selectFromDataSourceSelector(dataSourceTitle, dataSourceId);
+        cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
       }
       cy.getElementByTestId('removeSampleDataSetflights').click();
     });
@@ -152,7 +152,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.visit(`/w/${workspaceId}/app/import_sample_data`);
 
       if (MDSEnabled) {
-        cy.selectFromDataSourceSelector(dataSourceTitle, dataSourceId);
+        cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
       }
       cy.getElementByTestId('removeSampleDataSetlogs').click();
     });
