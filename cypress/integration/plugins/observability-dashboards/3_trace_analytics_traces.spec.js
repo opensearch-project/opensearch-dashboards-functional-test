@@ -5,7 +5,11 @@
 
 /// <reference types="cypress" />
 
-import { setTimeFilter, TRACE_ID, TIMEOUT_DELAY} from '../../../utils/constants';
+import {
+  setTimeFilter,
+  TRACE_ID,
+  TIMEOUT_DELAY,
+} from '../../../utils/constants';
 
 describe('Testing traces table', () => {
   beforeEach(() => {
