@@ -170,7 +170,7 @@ describe('Creating Workflows Using Various Methods', () => {
           .trigger('blur', { force: true });
       });
     });
-    cy.getElementByDataTestId('searchQueryCloseButton')
+    cy.getElementByDataTestId('updateSearchQueryButton')
       .should('be.visible')
       .click();
     cy.mockSemanticSearchIndexSearch(() => {
