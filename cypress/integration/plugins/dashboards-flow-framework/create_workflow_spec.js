@@ -119,7 +119,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.json`;
     cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('closeSourceDataButton')
+    cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
       .click();
     cy.mockIngestion(() => {
