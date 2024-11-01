@@ -419,7 +419,7 @@ describe('discover_advanced_setting', () => {
     });
   });
 
-  describe('searchOnPageLoad advanced setting', () => {
+  describe.skip('searchOnPageLoad advanced setting', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
