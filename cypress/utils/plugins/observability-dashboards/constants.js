@@ -80,7 +80,7 @@ export const setTimeFilter = (setEndTime = false, refresh = true) => {
       timeout: TIMEOUT_DELAY,
     }).type('{selectall}' + endTime, { force: true });
   }
-  if (refresh){
+  if (refresh) {
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
       timeout: TIMEOUT_DELAY,
     }).click();
@@ -175,8 +175,7 @@ export const querySearch = (query, rangeSelected) => {
   cy.get(rangeSelected).click();
   cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
     timeout: TIMEOUT_DELAY,
-  })
-    .click();
+  }).click();
 };
 
 export const landOnEventHome = () => {
