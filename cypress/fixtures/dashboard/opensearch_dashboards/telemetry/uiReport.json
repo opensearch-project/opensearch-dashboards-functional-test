@@ -1,0 +1,1 @@
+{"report":{"reportVersion":1,"uiStatsMetrics":{"console-count-GET_cat.indices":{"key":"console-count-GET_cat.indices","appName":"console","eventName":"GET_cat.indices","type":"count","stats":{"min":0,"max":1,"avg":0.5,"sum":21}}}}}

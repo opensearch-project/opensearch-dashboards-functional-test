@@ -6,12 +6,12 @@
 import {
   SEC_API_CONFIG_PATH,
   SEC_API_ROLES_PATH,
-  SEC_API_INTERNAL_ACCOUNTS_PATH,
   SEC_API_ACTIONGROUPS_PATH,
   SEC_API_TENANTS_PATH,
   SEC_API_AUDIT_PATH,
   SEC_API_AUDIT_CONFIG_PATH,
   SEC_API_CACHE_PURGE_PATH,
+  SEC_API_INTERNAL_USERS_PATH,
 } from '../../constants';
 
 /**
@@ -22,7 +22,7 @@ import {
 Cypress.Commands.add(
   'mockAuthAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_CONFIG_PATH, {
+    cy.intercept(`${SEC_API_CONFIG_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getAuthDetails');
 
@@ -35,7 +35,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockRolesAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_ROLES_PATH, {
+    cy.intercept(`${SEC_API_ROLES_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getRoleDetails');
 
@@ -48,7 +48,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockInternalUsersAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_INTERNAL_ACCOUNTS_PATH, {
+    cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getInternalUsersDetails');
 
@@ -61,7 +61,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockPermissionsAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_ACTIONGROUPS_PATH, {
+    cy.intercept(`${SEC_API_ACTIONGROUPS_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getPermissions');
 
@@ -74,7 +74,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockTenantsAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_TENANTS_PATH, {
+    cy.intercept(`${SEC_API_TENANTS_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getTenants');
 
@@ -87,7 +87,7 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockAuditLogsAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(SEC_API_AUDIT_PATH, {
+    cy.intercept(`${SEC_API_AUDIT_PATH}*`, {
       fixture: fixtureFileName,
     }).as('getAuditInfo');
 
@@ -101,7 +101,7 @@ Cypress.Commands.add(
   'mockAuditConfigUpdateAction',
   function (fixtureFileName, funcMockedOn) {
     cy.intercept(
-      { method: 'POST', url: SEC_API_AUDIT_CONFIG_PATH },
+      { method: 'POST', url: `${SEC_API_AUDIT_CONFIG_PATH}*` },
       {
         fixture: fixtureFileName,
       }
@@ -117,7 +117,7 @@ Cypress.Commands.add(
   'mockCachePurgeAction',
   function (fixtureFileName, funcMockedOn) {
     cy.intercept(
-      { method: 'DELETE', url: SEC_API_CACHE_PURGE_PATH },
+      { method: 'DELETE', url: `${SEC_API_CACHE_PURGE_PATH}*` },
       {
         fixture: fixtureFileName,
       }

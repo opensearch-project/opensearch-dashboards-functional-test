@@ -1,0 +1,114 @@
+name: Cypress test for core Dashboards
+on:
+  pull_request:
+    branches: ['**']
+    paths:
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
+      - 'cypress/**/core-opensearch-dashboards/**'
+      - 'cypress/utils/dashboards/**'
+      - 'package.json'
+      - '.github/actions/start-opensearch/action.yml'
+
+  push:
+    branches: ['**']
+    paths:
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
+      - 'cypress/**/core-opensearch-dashboards/**'
+      - 'cypress/utils/dashboards/**'
+      - 'package.json'
+      - '.github/actions/start-opensearch/action.yml'
+
+env:
+  CI_GROUPS: "1,2,3,4,5,6,7,8,9"
+
+jobs:
+  get_spec:
+    runs-on: 'ubuntu-latest'
+    outputs:
+      MATRIX_INCLUDES: ${{ steps.get_spec.outputs.MATRIX_INCLUDES }}
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+      - name: Checkout cypress-test
+        uses: actions/checkout@v2
+        with:
+          repository: ${{github.repository}}
+          path: spec-detect
+      - id: get_spec
+        name: Get specs array
+        run: |
+          cd spec-detect
+          source ./test_finder.sh
+          result="["
+          ## split CI_Groups into array
+          IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
+          for group in "${groups[@]}"; do
+            item="{\"ciGroup\": \"${group}\", \"specs\": "
+            specs_of_ci_group=`ci_grouped_specs_finder ${group}`
+            FORMATTED_SPEC="\"${specs_of_ci_group}\" }"
+            if [[ "${result}" != "[" ]];
+            then
+                result+=","
+            fi
+            item+="${FORMATTED_SPEC}"
+            result+="${item}"
+          done
+
+          result+=']';
+
+          echo ${result}
+          echo "MATRIX_INCLUDES=${result}" >> "$GITHUB_OUTPUT"
+
+  tests-with-security:
+    needs: ["get_spec"]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
+    name: (security)osd:ciGroup${{ matrix.ciGroup }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: "osd:ciGroup${{ matrix.ciGroup }}"
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
+
+  tests-without-security:
+    needs: ["get_spec"]
+    strategy:
+      fail-fast: false
+      matrix:
+        include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
+    name: (non-security)osd:ciGroup${{ matrix.ciGroup }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: "osd:ciGroup${{ matrix.ciGroup }}"
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec '${{ matrix.specs }}'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
+      security-enabled: false
+
+  # Hold on windows test cases
+  # https://github.com/opensearch-project/opensearch-dashboards-functional-test/actions/runs/9377445544/job/25819022121?pr=1352
+  # tests-with-security-windows:
+  #   needs: ["get_spec"]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
+  #   name: (security)osd:ciGroup${{ matrix.ciGroup }}
+  #   uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+  #   with:
+  #     test-name: "osd:ciGroup${{ matrix.ciGroup }}"
+  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec '${{ matrix.specs }}'
+  
+  # tests-without-security-windows:
+  #   needs: ["get_spec"]
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include: ${{ fromJSON(needs.get_spec.outputs.MATRIX_INCLUDES) }}
+  #   name: (non-security)osd:ciGroup${{ matrix.ciGroup }}
+  #   uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+  #   with:
+  #     test-name: "osd:ciGroup${{ matrix.ciGroup }}"
+  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec '${{ matrix.specs }}'
+  #     security-enabled: false

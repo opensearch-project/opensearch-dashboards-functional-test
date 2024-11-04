@@ -4,7 +4,9 @@
  */
 
 import './vis_builder/commands';
+import './vis_type_timeline/commands';
 import './vis_type_table/commands';
+import './vis_type_vega/commands';
 import './vis-augmenter/commands';
 import './data_explorer/commands';
 
@@ -33,6 +35,22 @@ Cypress.Commands.add('setTopNavQuery', (value, submit = true) => {
     .clear(opts)
     .type(value, opts)
     .blur(opts);
+
+  if (submit) {
+    cy.updateTopNav(opts);
+  }
+});
+
+Cypress.Commands.add('clearTopNavQuery', (submit = true) => {
+  const opts = { log: false };
+
+  Cypress.log({
+    name: 'clearTopNavQuery',
+    displayName: 'clear query',
+    message: 'clearing query field',
+  });
+
+  cy.getElementByTestId('queryInput', opts).clear(opts).blur(opts);
 
   if (submit) {
     cy.updateTopNav(opts);

@@ -20,6 +20,8 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Yulong Ruan       | [ruanyl](https://github.com/ruanyl)                 | Amazon      |
 | Lin Wang          | [wanglam](https://github.com/wanglam)               | Amazon      |
 | Tianyu Gao        | [raintygao](https://github.com/raintygao)           | Amazon      |
+| Zhongnan Su       | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
+| Emma Jin          | [yujin-emma](https://github.com/yujin-emma)         | Amazon      |
 
 ## Emeritus
 

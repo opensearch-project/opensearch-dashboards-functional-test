@@ -6,7 +6,6 @@
 import {
   BASE_PATH,
   SEC_UI_TENANTS_PATH,
-  SEC_TENANTS_FIXTURES_PATH,
   SEC_INTERNALUSERS_FIXTURES_PATH,
   SEC_API_INTERNAL_USERS_PATH,
 } from '../../../utils/constants';
@@ -48,18 +47,15 @@ if (Cypress.env('SECURITY_ENABLED')) {
         tenantDescription
       );
 
-      cy.mockTenantsAction(
-        SEC_TENANTS_FIXTURES_PATH + '/tenants_post_creation_response.json',
-        () => {
-          cy.get('button[id="submit"]').first().click({ force: true });
-        }
-      );
+      cy.get('button[id="submit"]').first().click({ force: true });
 
       cy.url().should((url) => {
         expect(url).to.contain('/tenants');
       });
 
-      cy.contains('h3', 'Tenants');
+      cy.reload();
+
+      cy.contains('h3', 'Dashboards tenants');
       // should contain the new tenant that was just created
       cy.contains('.euiTableCellContent', tenantName);
       cy.contains('span', tenantDescription);
@@ -69,7 +65,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Navigate to Security/Internal User Database section
 
       cy.visit(`${BASE_PATH}/app/security-dashboards-plugin#/users`);
-      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
       }).as('listUserResponse');
@@ -85,7 +81,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Submit the form to create the user
       cy.get('button').contains('Create').click();
 
-      cy.intercept(SEC_API_INTERNAL_USERS_PATH, {
+      cy.intercept(`${SEC_API_INTERNAL_USERS_PATH}*`, {
         fixture:
           SEC_INTERNALUSERS_FIXTURES_PATH +
           '/internalusers_response_post_new_user_creation.json',
@@ -160,8 +156,17 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.loadSampleData('flights');
       // Step 3: Navigate to Manage data to add an index pattern
       cy.visit(`${BASE_PATH}/app/home`);
-      cy.get('button[aria-label="Closes this modal window"]').click();
-      cy.get('a').contains('Manage').click(); // Adjust the selector as needed
+
+      cy.get('.euiOverlayMask').then(($body) => {
+        if (
+          $body.find('button[aria-label="Closes this modal window"]').length
+        ) {
+          cy.get('button[aria-label="Closes this modal window"]').click();
+        } else {
+          // do nothing
+        }
+      });
+      cy.contains('Manage').click(); // Adjust the selector as needed
 
       // Step 4: Add the index pattern
       cy.get('[data-test-subj="indexPatterns"]').click();

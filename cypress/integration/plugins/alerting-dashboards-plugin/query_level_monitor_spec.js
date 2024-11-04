@@ -120,6 +120,7 @@ describe('Query-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_MONITOR, { force: true });
 
       // Wait for input to load and then type in the index name
+      cy.contains('Select clusters');
       cy.get('#index').type('*', { force: true });
 
       // Add a trigger
@@ -186,8 +187,8 @@ describe('Query-Level Monitors', () => {
         .clear()
         .type(UPDATED_MONITOR, { force: true });
 
-      // Click Update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm the update process is done and the page loaded
       cy.contains('Edit monitor');
@@ -211,6 +212,9 @@ describe('Query-Level Monitors', () => {
         force: true,
       });
 
+      // Wait for page to load
+      cy.contains('Select clusters');
+
       // Click on the Index field and type in multiple index names to replicate the bug
       cy.get('#index')
         .click({ force: true })
@@ -230,8 +234,8 @@ describe('Query-Level Monitors', () => {
         timeout: ALERTING_PLUGIN_TIMEOUT,
       });
 
-      // Click the update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click the save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm we're on the Monitor Details page by searching for the History element
       cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });
@@ -336,6 +340,9 @@ describe('Query-Level Monitors', () => {
       // Select visual editor
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
+      // Wait for page to load
+      cy.contains('Select clusters');
+
       // Wait for input to load and then type in the index name
       cy.get('#index').type(
         `{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`,
@@ -361,8 +368,8 @@ describe('Query-Level Monitors', () => {
         );
       }
 
-      // Click Update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm we can see the correct number of rows in the trigger list by checking <caption> element
       cy.contains(`This table contains ${triggers.length} rows`, {
@@ -472,13 +479,13 @@ describe('Query-Level Monitors', () => {
     });
   });
 
-  after(() => {
-    // Delete all existing monitors and destinations
-    cy.deleteAllMonitors();
-
-    // Delete sample data
-    cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
-    cy.deleteIndexByName(TESTING_INDEX_A);
-    cy.deleteIndexByName(TESTING_INDEX_B);
-  });
+  // after(() => {
+  //   // Delete all existing monitors and destinations
+  //   cy.deleteAllMonitors();
+  //
+  //   // Delete sample data
+  //   cy.deleteIndexByName(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}`);
+  //   cy.deleteIndexByName(TESTING_INDEX_A);
+  //   cy.deleteIndexByName(TESTING_INDEX_B);
+  // });
 });

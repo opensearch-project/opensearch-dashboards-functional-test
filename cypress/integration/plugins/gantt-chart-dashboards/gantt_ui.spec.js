@@ -61,7 +61,7 @@ describe('Dump test data', () => {
   });
 });
 
-describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
+describe('Save a gantt chart', () => {
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
@@ -84,58 +84,54 @@ describe('Save a gantt chart', { defaultCommandTimeout: 20000 }, () => {
   });
 });
 
-describe(
-  'Render and configure a gantt chart',
-  { defaultCommandTimeout: 20000 },
-  () => {
-    beforeEach(() => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.visit(`${BASE_PATH}/app/visualize#`);
-      cy.intercept('**').as('searchRequest');
-      cy.get('.euiFieldSearch').focus();
-      cy.get('.euiFieldSearch').type(GANTT_VIS_NAME);
-      cy.wait('@searchRequest');
-      cy.wait(5000);
-      cy.get('[data-test-subj="itemsInMemTable"]')
-        .contains(GANTT_VIS_NAME)
-        .click({
-          force: true,
-        });
-    });
-
-    it('Renders no data message', () => {
-      cy.contains('No data').should('exist');
-    });
-
-    it('Renders the chart', () => {
-      cy.get('button.euiSuperSelectControl').eq(0).click({ force: true });
-      cy.get('.euiContextMenuItem__text')
-        .contains(/^spanID$/)
-        .click({ force: true });
-      // Click away so the dropdown closes
-      cy.get('.euiTitle').eq(1).click();
-      cy.get('button.euiSuperSelectControl').eq(1).click({ force: true });
-      cy.get('.euiContextMenuItem__text')
-        .contains(/^startTime$/)
-        .click({ force: true });
-      // Click away so the dropdown closes
-      cy.get('.euiTitle').eq(1).click();
-      cy.get('button.euiSuperSelectControl').eq(2).click({ force: true });
-      cy.get('.euiContextMenuItem__text')
-        .contains(/^duration$/)
-        .click({ force: true });
-      cy.get('.euiButton__text').contains('Update').click({ force: true });
-
-      cy.get('.traces').should('have.length', DEFAULT_SIZE);
-      cy.get('.euiButton__text').contains('Save').click({ force: true });
-      cy.get('button[data-test-subj="confirmSaveSavedObjectButton"]').click({
+describe('Render and configure a gantt chart', () => {
+  beforeEach(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.visit(`${BASE_PATH}/app/visualize#`);
+    cy.intercept('**').as('searchRequest');
+    cy.get('.euiFieldSearch').focus();
+    cy.get('.euiFieldSearch').type(GANTT_VIS_NAME);
+    cy.wait('@searchRequest');
+    cy.wait(5000);
+    cy.get('[data-test-subj="itemsInMemTable"]')
+      .contains(GANTT_VIS_NAME)
+      .click({
         force: true,
       });
-    });
-  }
-);
+  });
 
-describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
+  it('Renders no data message', () => {
+    cy.contains('No data').should('exist');
+  });
+
+  it('Renders the chart', () => {
+    cy.get('button.euiSuperSelectControl').eq(0).click({ force: true });
+    cy.get('.euiContextMenuItem__text')
+      .contains(/^spanID$/)
+      .click({ force: true });
+    // Click away so the dropdown closes
+    cy.get('.euiTitle').eq(1).click();
+    cy.get('button.euiSuperSelectControl').eq(1).click({ force: true });
+    cy.get('.euiContextMenuItem__text')
+      .contains(/^startTime$/)
+      .click({ force: true });
+    // Click away so the dropdown closes
+    cy.get('.euiTitle').eq(1).click();
+    cy.get('button.euiSuperSelectControl').eq(2).click({ force: true });
+    cy.get('.euiContextMenuItem__text')
+      .contains(/^duration$/)
+      .click({ force: true });
+    cy.get('.euiButton__text').contains('Update').click({ force: true });
+
+    cy.get('.traces').should('have.length', DEFAULT_SIZE);
+    cy.get('.euiButton__text').contains('Save').click({ force: true });
+    cy.get('button[data-test-subj="confirmSaveSavedObjectButton"]').click({
+      force: true,
+    });
+  });
+});
+
+describe('Configure panel settings', () => {
   beforeEach(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.visit(`${BASE_PATH}/app/visualize#`);
@@ -256,23 +252,19 @@ describe('Configure panel settings', { defaultCommandTimeout: 20000 }, () => {
   });
 });
 
-describe(
-  'Add gantt chart to dashboard',
-  { defaultCommandTimeout: 20000 },
-  () => {
-    it('Adds gantt chart to dashboard', () => {
-      CURRENT_TENANT.newTenant = 'global';
-      cy.visit(`${BASE_PATH}/app/dashboards#/create`);
-      cy.contains('Add an existing').click({ force: true });
-      cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').focus();
-      cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').type(
-        GANTT_VIS_NAME
-      );
-      cy.get(`.euiListGroupItem__label[title="${GANTT_VIS_NAME}"]`).click({
-        force: true,
-      });
-
-      cy.get('g.traces').should('have.length', DEFAULT_SIZE);
+describe('Add gantt chart to dashboard', () => {
+  it('Adds gantt chart to dashboard', () => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.visit(`${BASE_PATH}/app/dashboards#/create`);
+    cy.contains('Add an existing').click({ force: true });
+    cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').focus();
+    cy.get('input[data-test-subj="savedObjectFinderSearchInput"]').type(
+      GANTT_VIS_NAME
+    );
+    cy.get(`.euiListGroupItem__label[title="${GANTT_VIS_NAME}"]`).click({
+      force: true,
     });
-  }
-);
+
+    cy.get('g.traces').should('have.length', DEFAULT_SIZE);
+  });
+});

@@ -17,6 +17,5 @@ declare namespace Cypress {
       clearSaveQuery(): Chainable<any>;
       deleteSaveQuery(name: string): Chainable<any>;
       switchDiscoverTable(name: string): Chainable<any>;
-      makeDatePickerMenuOpen(): Chainable<any>;
     }
   }

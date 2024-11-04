@@ -12,6 +12,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
     before(() => {
       cy.server();
+      localStorage.setItem('home:welcome:show', false);
+      localStorage.setItem('home:newThemeModal:show', false);
     });
     it('Checks that the tenant switcher can switch tenants despite a different tenant being present in the tenant query parameter.', function () {
       CURRENT_TENANT.newTenant = tenantName;

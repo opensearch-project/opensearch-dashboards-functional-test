@@ -9,6 +9,7 @@ context('Detector configuration page', () => {
   // Creating a sample detector and visiting the config page. Stopping the detector
   // for easier checks when editing detector
   before(() => {
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
     cy.deleteAllIndices();
     cy.deleteADSystemIndices();
     cy.visit(AD_URL.OVERVIEW);
