@@ -8,6 +8,7 @@ on:
       - 'cypress/utils/dashboards/**'
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
 
   push:
     branches: ['**']
@@ -17,6 +18,7 @@ on:
       - 'cypress/utils/dashboards/**'
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
 
 env:
   CI_GROUPS: "1,2,3,4,5,6,7,8,9"
