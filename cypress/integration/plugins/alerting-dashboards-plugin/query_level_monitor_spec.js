@@ -187,8 +187,8 @@ describe('Query-Level Monitors', () => {
         .clear()
         .type(UPDATED_MONITOR, { force: true });
 
-      // Click Update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm the update process is done and the page loaded
       cy.contains('Edit monitor');
@@ -234,8 +234,8 @@ describe('Query-Level Monitors', () => {
         timeout: ALERTING_PLUGIN_TIMEOUT,
       });
 
-      // Click the update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click the save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm we're on the Monitor Details page by searching for the History element
       cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });
@@ -368,8 +368,8 @@ describe('Query-Level Monitors', () => {
         );
       }
 
-      // Click Update button
-      cy.get('button').contains('Update').last().click({ force: true });
+      // Click save button
+      cy.get('button').contains('Save').last().click({ force: true });
 
       // Confirm we can see the correct number of rows in the trigger list by checking <caption> element
       cy.contains(`This table contains ${triggers.length} rows`, {

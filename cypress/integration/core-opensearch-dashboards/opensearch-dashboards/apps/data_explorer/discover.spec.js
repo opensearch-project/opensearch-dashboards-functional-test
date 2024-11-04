@@ -63,6 +63,33 @@ describe('discover app', { scrollBehavior: false }, () => {
 
   after(() => {});
 
+  describe('filters and queries', () => {
+    after(() => {
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
+      cy.getElementByTestId(`deleteFilter`).click();
+      cy.switchDiscoverTable('legacy');
+    });
+    it('should persist across refresh', function () {
+      // Set up query and filter
+      cy.setTopNavQuery('response:200');
+      cy.submitFilterFromDropDown('extension.raw', 'is one of', 'jpg');
+      cy.reload();
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
+        'be.visible'
+      );
+    });
+
+    it('should persist across switching table', function () {
+      cy.switchDiscoverTable('new');
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
+        'be.visible'
+      );
+      cy.clearTopNavQuery();
+    });
+  });
+
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';

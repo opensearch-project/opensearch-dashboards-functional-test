@@ -398,11 +398,14 @@ describe('Alerts', () => {
       .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[data-text="Status"]').click({ force: true });
-    cy.get('[class="euiFilterSelect__items"]').within(() => {
-      cy.contains('Active').click({ force: true });
-      cy.contains('Acknowledged').click({ force: true });
-    });
+    cy.wait(2000);
+    cy.get('[data-text="Status"]').should('be.visible').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('Active').click({ force: true });
+        cy.contains('Acknowledged').click({ force: true });
+      });
 
     // Wait for filter to apply
     cy.wait(2000);
