@@ -14,6 +14,9 @@ on:
       security-enabled:
         required: false
         type: string
+      artifact-name-suffix:
+        required: false
+        type: string
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -135,17 +138,17 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots${{ inputs.test-name }}
+          name: cypress-screenshots${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-videos${{ inputs.test-name }}
+          name: cypress-videos${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-results${{ inputs.test-name }}
+          name: cypress-results${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/results
