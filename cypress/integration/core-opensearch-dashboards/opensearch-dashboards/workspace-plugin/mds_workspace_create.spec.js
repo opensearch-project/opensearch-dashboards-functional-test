@@ -4,8 +4,10 @@
  */
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_az3RBx6cE';
+const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 
 const inputWorkspaceName = (workspaceName) => {
   const nameInputTestId = 'workspaceForm-workspaceDetails-nameInputText';
@@ -13,17 +15,30 @@ const inputWorkspaceName = (workspaceName) => {
   cy.getElementByTestId(nameInputTestId).type(workspaceName);
 };
 
-const inputWorkspaceColor = (color = '#000000') => {
-  const colorPickerTestId =
-    'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker';
-  cy.getElementByTestId(colorPickerTestId).clear({ force: true });
-  cy.getElementByTestId(colorPickerTestId).type(color);
+const inputDataSourceWhenMDSEnabled = (dataSourceTitle) => {
+  if (!MDSEnabled) {
+    return;
+  }
+  cy.getElementByTestId('workspace-creator-dataSources-assign-button').click();
+
+  cy.get(`li[title="${dataSourceTitle}"]`).click();
+
+  cy.getElementByTestId(
+    'workspace-detail-dataSources-associateModal-save-button'
+  ).click();
 };
 
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Create workspace', () => {
+    let dataSourceTitle;
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
+      if (MDSEnabled) {
+        cy.deleteAllDataSources();
+        cy.createDataSourceNoAuth().then((result) => {
+          dataSourceTitle = result[1];
+        });
+      }
     });
 
     beforeEach(() => {
@@ -35,6 +50,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     after(() => {
       cy.deleteWorkspaceByName(workspaceName);
+      if (MDSEnabled) {
+        cy.deleteAllDataSources();
+      }
     });
 
     it('should successfully load the page', () => {
@@ -47,10 +65,10 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description.+~!');
-        inputWorkspaceColor();
         cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
@@ -80,10 +98,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-nameInputText'
         ).clear();
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
-        cy.contains('Name is required. Enter a name.').should('exist');
+        cy.contains('Enter a name.').should('exist');
       });
 
       it('workspace name is not valid', () => {
@@ -91,10 +110,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
-        cy.contains('Name is invalid. Enter a valid name.').should('exist');
+        cy.contains('Enter a valid name.').should('exist');
       });
 
       it('workspace name cannot use an existing name', () => {
@@ -110,6 +130,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
@@ -131,16 +152,10 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-descriptionInputText'
           ).type('test_workspace_description');
-          inputWorkspaceColor();
           cy.getElementByTestId('workspaceUseCase-observability').click({
             force: true,
           });
-          cy.getElementByTestId(
-            'workspaceForm-permissionSettingPanel-addNew'
-          ).click();
-          cy.getElementByTestId('workspaceFormUserIdOrGroupInput')
-            .last()
-            .type('test_user_sfslja260');
+          inputDataSourceWhenMDSEnabled(dataSourceTitle);
           cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
             force: true,
           });
@@ -158,12 +173,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
               description: 'test_workspace_description',
               features: ['use-case-observability'],
               permissions: {
-                read: {
-                  users: ['test_user_sfslja260'],
-                },
-                library_read: {
-                  users: ['test_user_sfslja260'],
-                },
                 write: {
                   users: [`${Cypress.env('username')}`],
                 },
