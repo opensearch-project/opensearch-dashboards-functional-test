@@ -27,6 +27,7 @@ import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
 import '../utils/plugins/security/commands';
 import '../utils/plugins/security-dashboards-plugin/commands';
 import '../utils/plugins/alerting-dashboards-plugin/commands';
+import '../utils/plugins/dashboards-flow-framework/commands';
 import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/notifications-dashboards/commands';

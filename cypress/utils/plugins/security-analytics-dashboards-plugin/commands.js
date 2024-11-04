@@ -198,6 +198,9 @@ Cypress.Commands.add(
     Cypress.log({ message: `Select combobox items: ${items.join(' | ')}` });
     items.map((item) => {
       cy.wrap(subject).type(item);
+
+      // Short wait to reduce flakiness
+      cy.wait(3000);
       cy.get(`[title="${item}"]`).click({ force: true });
     });
   }
