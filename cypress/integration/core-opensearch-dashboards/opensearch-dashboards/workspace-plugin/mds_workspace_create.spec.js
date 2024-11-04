@@ -138,6 +138,43 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
     });
 
+    if (MDSEnabled) {
+      describe('Create a workspace with associated data sources', () => {
+        before(() => {
+          cy.deleteWorkspaceByName(workspaceName);
+        });
+
+        it('should be exists inside workspace data source list', () => {
+          inputWorkspaceName(workspaceName);
+          cy.getElementByTestId(
+            'workspaceForm-workspaceDetails-descriptionInputText'
+          ).type('test_workspace_description');
+          cy.getElementByTestId('workspaceUseCase-observability').click({
+            force: true,
+          });
+          inputDataSourceWhenMDSEnabled(dataSourceTitle);
+          cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+            force: true,
+          });
+
+          cy.wait('@createWorkspaceRequest')
+            .then((interception) => {
+              expect(interception.response.statusCode).to.equal(200);
+              return interception.response.body.result.id;
+            })
+            .then((workspaceId) => {
+              const dataSourcePathname = `w/${workspaceId}/app/dataSources`;
+              miscUtils.visitPage(dataSourcePathname);
+              cy.location('pathname', { timeout: 6000 }).should(
+                'include',
+                dataSourcePathname
+              );
+              cy.contains(dataSourceTitle).should('exist');
+            });
+        });
+      });
+    }
+
     if (
       Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
       Cypress.env('SECURITY_ENABLED')
