@@ -2,16 +2,16 @@ name: Bundle Snapshot based E2E Cypress tests workflow for core Dashboards
 on:
   pull_request:
     branches: ['**']
-    paths:
-      - 'cypress/**/core-opensearch-dashboards/**'
-      - 'cypress/utils/dashboards/**'
-      - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
+#    paths:
+#      - 'cypress/**/core-opensearch-dashboards/**'
+#      - 'cypress/utils/dashboards/**'
+#      - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
   push:
     branches: ['**']
-    paths:
-      - 'cypress/**/core-opensearch-dashboards/**'
-      - 'cypress/utils/dashboards/**'
-      - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
+#    paths:
+#      - 'cypress/**/core-opensearch-dashboards/**'
+#      - 'cypress/utils/dashboards/**'
+#      - '.github/workflows/cypress-workflow-bundle-snapshot-based.yml'
 
 jobs:
   tests-with-security:
