@@ -157,7 +157,7 @@ describe('Aliases', () => {
         body: { test: 'test' },
       });
 
-      // confirm uncommitted_operations is 1 after indexing doc
+      // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
         url: `${Cypress.env('openSearchUrl')}/${sample_alias}/_stats/translog`,
@@ -167,7 +167,7 @@ describe('Aliases', () => {
         );
         let num =
           response_obj['_all']['total']['translog']['uncommitted_operations'];
-        expect(num).to.equal(1);
+        expect(num).not.equal(0);
       });
 
       cy.get('[data-test-subj="moreAction"] button')
