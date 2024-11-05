@@ -7,6 +7,7 @@ import {
   TestFixtureHandler,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
+import { clusterName, clusterConnection } from '../../../../../utils/constants';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -26,6 +27,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
     cy.fleshTenantSettings();
     cy.deleteAllIndices();
     cy.deleteSavedObjectByType('index-pattern');
+    cy.deleteSavedObjectByType('data-source');
   });
 
   describe('empty state', () => {
@@ -50,6 +52,28 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/data.json.txt'
       );
 
+      // Since default cluster is removed, need to create a data source connection
+      miscUtils.visitPage(
+        'app/management/opensearch-dashboards/dataSources/create'
+      );
+      cy.intercept('POST', '/api/saved_objects/data-source').as(
+        'createDataSourceRequest'
+      );
+      cy.getElementByTestId(`datasource_card_opensearch`).click();
+      cy.get('[name="dataSourceTitle"]').type(clusterName);
+      cy.get('[name="endpoint"]').type(clusterConnection);
+      cy.getElementByTestId('createDataSourceFormAuthTypeSelect').click();
+      cy.get(`button[id="no_auth"]`).click();
+
+      cy.getElementByTestId('createDataSourceButton').click();
+      cy.wait('@createDataSourceRequest').then((interception) => {
+        expect(interception.response.statusCode).to.equal(200);
+      });
+      cy.location('pathname', { timeout: 6000 }).should(
+        'include',
+        'app/management/opensearch-dashboards/dataSources'
+      );
+
       // Go to the Discover page
       miscUtils.visitPage(`app/data-explorer/discover#/`);
 
@@ -60,7 +84,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.getElementByTestId(`datasetSelectorButton`).click();
       cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
-      cy.get(`[title="Default Cluster"]`).click();
+      cy.get(`[title=${clusterName}]`).click();
       cy.get(`[title="timestamp-nanos"]`).click();
       cy.getElementByTestId('datasetSelectorNext').click();
 
@@ -74,33 +98,25 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
         .should('have.length', 2);
 
       //select SQL
-      cy.getElementByTestId('advancedSelectorLanguageSelect').select('SQL');
+      cy.getElementByTestId('advancedSelectorLanguageSelect').select(
+        'OpenSearch SQL'
+      );
       cy.getElementByTestId('advancedSelectorConfirmButton').click();
 
       cy.waitForLoaderNewHeader();
 
-      // Selected language in the language picker should be SQL
-      // bug: SQL won't be selected in cypress; manually click SQL in language selector
-      // cy.getElementByTestId('queryEditorLanguageSelector').should(
-      //   'contain',
-      //   'SQL'
-      // );
-
-      cy.get(`[data-test-subj="queryEditorLanguageSelector"]`).click();
-      cy.get(`[class~="languageSelector__menuItem"]`)
-        .should('have.length', 2)
-        .eq(1)
-        .click({
-          force: true,
-        });
+      // SQL should already be selected
+      cy.getElementByTestId('queryEditorLanguageSelector').should(
+        'contain',
+        'OpenSearch SQL'
+      );
       cy.waitForLoaderNewHeader();
+
+      // SQL query should be executed and sending back result
       cy.get(`[data-test-subj="queryResultCompleteMsg"]`).should('be.visible');
 
       // Switch language to PPL
-      cy.get(`[data-test-subj="queryEditorLanguageSelector"]`).click();
-      cy.get(`[class~="languageSelector__menuItem"]`).eq(0).click({
-        force: true,
-      });
+      cy.setQueryLanguage('PPL');
       cy.waitForLoaderNewHeader();
       cy.get(`[data-test-subj="queryResultCompleteMsg"]`).should('be.visible');
     });
@@ -109,7 +125,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.getElementByTestId(`datasetSelectorButton`).click();
       cy.getElementByTestId(`datasetSelectorAdvancedButton`).click();
       cy.get(`[title="Indexes"]`).click();
-      cy.get(`[title="Default Cluster"]`).click();
+      cy.get(`[title=${clusterName}]`).click();
       cy.get(`[title="timestamp-nanos"]`).click();
       cy.getElementByTestId('datasetSelectorNext').click();
 
@@ -128,7 +144,7 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
 
       cy.waitForLoaderNewHeader();
 
-      // Selected language should be PPL
+      // PPL should already be selected
       cy.getElementByTestId('queryEditorLanguageSelector').should(
         'contain',
         'PPL'
@@ -148,13 +164,8 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       );
 
       // Switch language to SQL
-      cy.getElementByTestId('queryEditorLanguageSelector').click();
-      cy.get(`[class~="languageSelector__menuItem"]`)
-        .should('have.length', 2)
-        .eq(1)
-        .click({
-          force: true,
-        });
+      cy.setQueryLanguage('OpenSearch SQL');
+
       cy.waitForLoaderNewHeader();
       cy.getElementByTestId('queryResultCompleteMsg').should('be.visible');
       cy.getElementByTestId('queryEditorFooterTimestamp').should(
