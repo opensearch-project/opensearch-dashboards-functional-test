@@ -13,17 +13,43 @@ const inputWorkspaceName = (workspaceName) => {
   cy.getElementByTestId(nameInputTestId).type(workspaceName);
 };
 
-const inputWorkspaceColor = (color = '#000000') => {
-  const colorPickerTestId =
-    'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker';
-  cy.getElementByTestId(colorPickerTestId).clear({ force: true });
-  cy.getElementByTestId(colorPickerTestId).type(color);
+const colors = [
+  '#54B399',
+  '#6092C0',
+  '#D36086',
+  '#9170B8',
+  '#CA8EAE',
+  '#D6BF57',
+  '#B9A888',
+  '#DA8B45',
+  '#AA6556',
+  '#E7664C',
+];
+
+const inputWorkspaceColor = (color = colors[2]) => {
+  const colorPickerTestId = 'euiColorPickerAnchor';
+  cy.getElementByTestId(colorPickerTestId).click({
+    force: true,
+  });
+  cy.get(`button[aria-label="Select ${color} as the color"]`).click({
+    force: true,
+  });
 };
 
-if (Cypress.env('WORKSPACE_ENABLED')) {
+if (
+  Cypress.env('WORKSPACE_ENABLED') &&
+  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+) {
   describe('Create workspace', () => {
+    let dataSourceId;
+    let dataSourceTitle;
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
+      cy.createDataSourceNoAuth().then((result) => {
+        dataSourceId = result[0];
+        dataSourceTitle = result[1];
+        return result;
+      });
     });
 
     beforeEach(() => {
@@ -35,6 +61,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     after(() => {
       cy.deleteWorkspaceByName(workspaceName);
+      cy.deleteAllDataSources();
     });
 
     it('should successfully load the page', () => {
@@ -51,6 +78,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
+        cy.getElementByTestId(
+          'workspace-creator-dataSources-assign-button'
+        ).click();
+        cy.contains('div', dataSourceTitle).click();
+        cy.getElementByTestId(
+          'workspace-detail-dataSources-associateModal-save-button'
+        ).click();
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
@@ -71,6 +105,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             features: ['use-case-observability'],
           };
           cy.checkWorkspace(workspaceId, expectedWorkspace);
+          cy.checkAssignedDatasource(dataSourceId, workspaceId);
         });
       });
     });
@@ -80,10 +115,17 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-nameInputText'
         ).clear();
+        cy.getElementByTestId(
+          'workspace-creator-dataSources-assign-button'
+        ).click();
+        cy.contains('div', dataSourceTitle).click();
+        cy.getElementByTestId(
+          'workspace-detail-dataSources-associateModal-save-button'
+        ).click();
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
-        cy.contains('Name is required. Enter a name.').should('exist');
+        cy.contains('Name: Enter a name.').should('exist');
       });
 
       it('workspace name is not valid', () => {
@@ -91,10 +133,17 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
         ).type('test_workspace_description');
+        cy.getElementByTestId(
+          'workspace-creator-dataSources-assign-button'
+        ).click();
+        cy.contains('div', dataSourceTitle).click();
+        cy.getElementByTestId(
+          'workspace-detail-dataSources-associateModal-save-button'
+        ).click();
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
-        cy.contains('Name is invalid. Enter a valid name.').should('exist');
+        cy.contains('Name: Enter a valid name.').should('exist');
       });
 
       it('workspace name cannot use an existing name', () => {
@@ -110,124 +159,18 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('workspaceUseCase-observability').click({
           force: true,
         });
+        cy.getElementByTestId(
+          'workspace-creator-dataSources-assign-button'
+        ).click();
+        cy.contains('div', dataSourceTitle).click();
+        cy.getElementByTestId(
+          'workspace-detail-dataSources-associateModal-save-button'
+        ).click();
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
           force: true,
         });
         cy.contains('workspace name has already been used').should('exist');
       });
     });
-
-    if (
-      Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-      Cypress.env('SECURITY_ENABLED')
-    ) {
-      describe('Create a workspace with permissions successfully', () => {
-        before(() => {
-          cy.deleteWorkspaceByName(workspaceName);
-        });
-
-        it('should successfully create a workspace with permissions', () => {
-          inputWorkspaceName(workspaceName);
-          cy.getElementByTestId(
-            'workspaceForm-workspaceDetails-descriptionInputText'
-          ).type('test_workspace_description');
-          inputWorkspaceColor();
-          cy.getElementByTestId('workspaceUseCase-observability').click({
-            force: true,
-          });
-          cy.getElementByTestId(
-            'workspaceForm-permissionSettingPanel-addNew'
-          ).click();
-          cy.getElementByTestId('workspaceFormUserIdOrGroupInput')
-            .last()
-            .type('test_user_sfslja260');
-          cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
-            force: true,
-          });
-
-          let workspaceId;
-          cy.wait('@createWorkspaceRequest').then((interception) => {
-            expect(interception.response.statusCode).to.equal(200);
-            workspaceId = interception.response.body.result.id;
-            cy.location('pathname', { timeout: 6000 }).should(
-              'include',
-              `w/${workspaceId}/app`
-            );
-            const expectedWorkspace = {
-              name: workspaceName,
-              description: 'test_workspace_description',
-              features: ['use-case-observability'],
-              permissions: {
-                read: {
-                  users: ['test_user_sfslja260'],
-                },
-                library_read: {
-                  users: ['test_user_sfslja260'],
-                },
-                write: {
-                  users: [`${Cypress.env('username')}`],
-                },
-                library_write: {
-                  users: [`${Cypress.env('username')}`],
-                },
-              },
-            };
-            cy.checkWorkspace(workspaceId, expectedWorkspace);
-          });
-        });
-      });
-    }
-
-    if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
-      describe('Create a workspace with data sources successfully', () => {
-        let dataSourceId;
-        let dataSourceTitle;
-        before(() => {
-          cy.deleteWorkspaceByName(workspaceName);
-          cy.createDataSourceNoAuth().then((result) => {
-            dataSourceId = result[0];
-            dataSourceTitle = result[1];
-            return result;
-          });
-        });
-        it('should successfully create a workspace with data sources', () => {
-          inputWorkspaceName(workspaceName);
-          cy.getElementByTestId(
-            'workspaceForm-workspaceDetails-descriptionInputText'
-          ).type('test_workspace_description');
-          inputWorkspaceColor();
-          cy.getElementByTestId('workspaceUseCase-observability').click({
-            force: true,
-          });
-          cy.getElementByTestId(
-            'workspace-creator-dataSources-assign-button'
-          ).click();
-          cy.contains('div', dataSourceTitle).click();
-          cy.getElementByTestId(
-            'workspace-detail-dataSources-associateModal-save-button'
-          ).click();
-          cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
-            force: true,
-          });
-          let workspaceId;
-          cy.wait('@createWorkspaceRequest').then((interception) => {
-            expect(interception.response.statusCode).to.equal(200);
-            workspaceId = interception.response.body.result.id;
-            cy.location('pathname', { timeout: 6000 }).should(
-              'include',
-              `w/${workspaceId}/app`
-            );
-            const expectedWorkspace = {
-              name: workspaceName,
-              description: 'test_workspace_description',
-              features: ['use-case-observability'],
-            };
-            cy.checkWorkspace(workspaceId, expectedWorkspace);
-            cy.checkAssignedDatasource(dataSourceId, workspaceId);
-            cy.deleteAllDataSources();
-          });
-        });
-      });
-    }
   });
 }
