@@ -36,6 +36,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.intercept('PUT', `/w/${workspaceId}/api/workspaces/${workspaceId}`).as(
         'updateWorkspaceRequest'
       );
+      cy.intercept('POST', `/w/${workspaceId}/api/workspaces/_associate`).as(
+        'associateDataSourceRequest'
+      );
     });
 
     after(() => {
@@ -45,10 +48,14 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     it('should successfully load the page', () => {
       cy.contains(workspaceName, { timeout: 60000 }).should('be.visible');
       cy.contains('Details', { timeout: 60000 }).should('be.visible');
+      cy.get(
+        `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+      )
+        .first()
+        .click();
       if (MDSEnabled) {
         cy.contains('Data sources', { timeout: 60000 }).should('be.visible');
       }
-
       if (Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED')) {
         cy.contains('Collaborators', { timeout: 60000 }).should('be.visible');
       }
@@ -124,19 +131,20 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-descriptionInputText'
           ).type(workspaceDescription);
-          cy.getElementByTestId(
-            'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
-          ).type('#D36086');
+          cy.getElementByTestId('euiColorPickerAnchor').click({
+            force: true,
+          });
+          cy.get(`button[aria-label="Select #D36086 as the color"]`).click({
+            force: true,
+          });
           cy.get('button.euiSuperSelectControl')
             .contains('Observability')
             .click({
               force: true,
             });
-          cy.get('button.euiSuperSelect__item')
-            .contains('Analytics (All)')
-            .click({
-              force: true,
-            });
+          cy.get('button.euiSuperSelect__item').contains('Analytics').click({
+            force: true,
+          });
           cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
             force: true,
           });
@@ -166,29 +174,28 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       describe('Collaborators tab', () => {
         describe('Update a workspace with permissions successfully', () => {
           beforeEach(() => {
+            cy.get(
+              `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+            )
+              .first()
+              .click();
             cy.contains('Collaborators').click();
-            cy.getElementByTestId(
-              'workspaceForm-workspaceDetails-edit'
-            ).click();
           });
           it('should successfully update a workspace with permissions', () => {
-            cy.getElementByTestId(
-              'workspaceForm-permissionSettingPanel-addNew'
-            ).click();
-            cy.getElementByTestId('workspaceFormUserIdOrGroupInput')
-              .last()
-              .type('test_user_Fnxs972xC');
-            cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click(
-              {
-                force: true,
-              }
+            cy.getElementByTestId('add-collaborator-button').click();
+            cy.contains('Add Users').click();
+            cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
+              'test_user_Fnxs972xC'
             );
+            cy.get('button[type="submit"]')
+              .contains('Add collaborators')
+              .click();
             cy.wait('@updateWorkspaceRequest').then((interception) => {
               expect(interception.response.statusCode).to.equal(200);
             });
             cy.location('pathname', { timeout: 6000 }).should(
               'include',
-              'app/workspace_detail'
+              'app/workspace_collaborators'
             );
             const expectedWorkspace = {
               name: workspaceName,
@@ -227,22 +234,27 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           });
         });
         beforeEach(() => {
+          cy.get(
+            `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+          )
+            .first()
+            .click();
+          cy.contains('Collaborators').click();
           cy.contains('Data sources').click();
         });
         it('should successfully update a workspace with data source', () => {
-          cy.getElementByTestId('workspace-detail-dataSources-assign-button')
-            .first()
-            .click();
+          cy.getElementByTestId('workspaceAssociateDataSourceButton').click();
+          cy.contains('OpenSearch data sources').click();
           cy.contains('div', dataSourceTitle).click();
           cy.getElementByTestId(
             'workspace-detail-dataSources-associateModal-save-button'
           ).click();
-          cy.wait('@updateWorkspaceRequest').then((interception) => {
+          cy.wait('@associateDataSourceRequest').then((interception) => {
             expect(interception.response.statusCode).to.equal(200);
           });
           cy.location('pathname', { timeout: 6000 }).should(
             'include',
-            'app/workspace_detail'
+            'app/dataSources'
           );
           cy.checkAssignedDatasource(dataSourceId, workspaceId);
           cy.deleteAllDataSources();
