@@ -4,10 +4,13 @@
  */
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
+const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_320sdfouAz';
 let workspaceDescription = 'This is a workspace description.';
 let workspaceId;
+let workspaceFeatures = ['use-case-observability'];
 
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Workspace detail', () => {
@@ -16,7 +19,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.createWorkspace({
         name: workspaceName,
         description: workspaceDescription,
-        features: ['workspace_detail', 'use-case-observability'],
+        features: workspaceFeatures,
         settings: {
           permissions: {
             library_write: { users: ['%me%'] },
@@ -33,6 +36,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.intercept('PUT', `/w/${workspaceId}/api/workspaces/${workspaceId}`).as(
         'updateWorkspaceRequest'
       );
+      cy.intercept('POST', `/w/${workspaceId}/api/workspaces/_associate`).as(
+        'associateDataSourceRequest'
+      );
     });
 
     after(() => {
@@ -41,17 +47,24 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     it('should successfully load the page', () => {
       cy.contains(workspaceName, { timeout: 60000 }).should('be.visible');
-      cy.contains('Overview', { timeout: 60000 }).should('be.visible');
-      cy.contains('Settings', { timeout: 60000 }).should('be.visible');
-
+      cy.contains('Details', { timeout: 60000 }).should('be.visible');
+      cy.get(
+        `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+      )
+        .first()
+        .click();
+      if (MDSEnabled) {
+        cy.contains('Data sources', { timeout: 60000 }).should('be.visible');
+      }
       if (Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED')) {
         cy.contains('Collaborators', { timeout: 60000 }).should('be.visible');
       }
     });
 
-    describe('settings tab', () => {
+    describe('Details tab', () => {
       beforeEach(() => {
-        cy.contains('Settings').click();
+        cy.contains('Details').click();
+        cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
       });
 
       describe('Validate workspace name and description', () => {
@@ -118,10 +131,18 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.getElementByTestId(
             'workspaceForm-workspaceDetails-descriptionInputText'
           ).type(workspaceDescription);
-          cy.getElementByTestId(
-            'euiColorPickerAnchor workspaceForm-workspaceDetails-colorPicker'
-          ).type('#D36086');
-          cy.getElementByTestId('workspaceUseCase-observability').click({
+          cy.getElementByTestId('euiColorPickerAnchor').click({
+            force: true,
+          });
+          cy.get(`button[aria-label="Select #D36086 as the color"]`).click({
+            force: true,
+          });
+          cy.get('button.euiSuperSelectControl')
+            .contains('Observability')
+            .click({
+              force: true,
+            });
+          cy.get('button.euiSuperSelect__item').contains('Analytics').click({
             force: true,
           });
           cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
@@ -137,9 +158,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           const expectedWorkspace = {
             name: workspaceName,
             description: 'test_workspace_description.+~!',
-            features: ['workspace_detail', 'use-case-observability'],
+            features: ['use-case-all'],
           };
           cy.checkWorkspace(workspaceId, expectedWorkspace);
+          // Update features after updated
+          workspaceFeatures = expectedWorkspace.features;
         });
       });
     });
@@ -148,48 +171,93 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
       Cypress.env('SECURITY_ENABLED')
     ) {
-      describe('Update a workspace with permissions successfully', () => {
-        beforeEach(() => {
-          cy.contains('Collaborators').click();
-        });
-        it('should successfully update a workspace with permissions', () => {
-          cy.getElementByTestId(
-            'workspaceForm-permissionSettingPanel-user-addNew'
-          ).click();
-          cy.contains('.euiComboBoxPlaceholder', 'Select a user')
-            .parent()
-            .find('input')
-            .type('test_user_Fnxs972xC');
-          cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
-            force: true,
+      describe('Collaborators tab', () => {
+        describe('Update a workspace with permissions successfully', () => {
+          beforeEach(() => {
+            cy.get(
+              `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+            )
+              .first()
+              .click();
+            cy.contains('Collaborators').click();
           });
-          cy.wait('@updateWorkspaceRequest').then((interception) => {
+          it('should successfully update a workspace with permissions', () => {
+            cy.getElementByTestId('add-collaborator-button').click();
+            cy.contains('Add Users').click();
+            cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
+              'test_user_Fnxs972xC'
+            );
+            cy.get('button[type="submit"]')
+              .contains('Add collaborators')
+              .click();
+            cy.wait('@updateWorkspaceRequest').then((interception) => {
+              expect(interception.response.statusCode).to.equal(200);
+            });
+            cy.location('pathname', { timeout: 6000 }).should(
+              'include',
+              'app/workspace_collaborators'
+            );
+            const expectedWorkspace = {
+              name: workspaceName,
+              description: workspaceDescription,
+              features: workspaceFeatures,
+              permissions: {
+                read: {
+                  users: ['test_user_Fnxs972xC'],
+                },
+                library_read: {
+                  users: ['test_user_Fnxs972xC'],
+                },
+                write: {
+                  users: [`${Cypress.env('username')}`],
+                },
+                library_write: {
+                  users: [`${Cypress.env('username')}`],
+                },
+              },
+            };
+            cy.checkWorkspace(workspaceId, expectedWorkspace);
+          });
+        });
+      });
+    }
+
+    if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+      describe('Update a workspace with data source successfully', () => {
+        let dataSourceId;
+        let dataSourceTitle;
+        before(() => {
+          cy.createDataSourceNoAuth().then((result) => {
+            dataSourceId = result[0];
+            dataSourceTitle = result[1];
+            return result;
+          });
+        });
+        beforeEach(() => {
+          cy.get(
+            `button[aria-label="Toggle primary navigation"][aria-expanded="false"]`
+          )
+            .first()
+            .click();
+          cy.contains('Collaborators').click();
+          cy.contains('Data sources').click();
+        });
+        it('should successfully update a workspace with data source', () => {
+          cy.getElementByTestId('workspaceAssociateDataSourceButton').click();
+          cy.contains('OpenSearch data sources').click();
+          cy.contains('div', dataSourceTitle).click();
+          cy.getElementByTestId(
+            'workspace-detail-dataSources-associateModal-save-button'
+          ).click();
+          cy.wait('@associateDataSourceRequest').then((interception) => {
             expect(interception.response.statusCode).to.equal(200);
           });
           cy.location('pathname', { timeout: 6000 }).should(
             'include',
-            'app/workspace_detail'
+            'app/dataSources'
           );
-          const expectedWorkspace = {
-            name: workspaceName,
-            description: workspaceDescription,
-            features: ['workspace_detail', 'use-case-observability'],
-            permissions: {
-              read: {
-                users: ['test_user_Fnxs972xC'],
-              },
-              library_read: {
-                users: ['test_user_Fnxs972xC'],
-              },
-              write: {
-                users: [`${Cypress.env('username')}`],
-              },
-              library_write: {
-                users: [`${Cypress.env('username')}`],
-              },
-            },
-          };
-          cy.checkWorkspace(workspaceId, expectedWorkspace);
+          cy.checkAssignedDatasource(dataSourceId, workspaceId);
+          cy.deleteAllDataSources();
         });
       });
     }
