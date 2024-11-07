@@ -204,6 +204,10 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
 
   after(() => {
     cy.deleteIndex('timestamp-nanos');
-    cy.deleteSavedObject('data-source', clusterName);
+    // delete the data source connection
+    miscUtils.visitPage('app/management/opensearch-dashboards/dataSources/');
+    cy.get(`[class="euiTableRowCell"]`).contains(clusterName).click();
+    cy.getElementByTestId('editDatasourceDeleteIcon').click();
+    cy.getElementByTestId('confirmModalConfirmButton').click();
   });
 });
