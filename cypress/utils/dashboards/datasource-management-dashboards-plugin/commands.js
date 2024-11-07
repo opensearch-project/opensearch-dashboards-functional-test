@@ -35,29 +35,57 @@ Cypress.Commands.add('deleteAllDataSources', () => {
   );
 });
 
-Cypress.Commands.add(
-  'createDataSourceNoAuth',
-  ({ title = 'RemoteDataSourceNoAuth' } = {}) => {
-    cy.request({
+const fetchDataSourceMetadata = (body) =>
+  cy
+    .request({
       method: 'POST',
-      url: `${BASE_PATH}/api/saved_objects/data-source`,
+      url: `${BASE_PATH}/internal/data-source-management/fetchDataSourceMetaData`,
       headers: {
         'osd-xsrf': true,
       },
-      body: {
-        attributes: {
-          title,
-          endpoint: Cypress.env('remoteDataSourceNoAuthUrl'),
-          auth: {
-            type: 'no_auth',
+      body,
+      failOnStatusCode: false,
+    })
+    .then(({ body }) => body);
+
+Cypress.Commands.add(
+  'createDataSourceNoAuth',
+  ({ title = 'RemoteDataSourceNoAuth' } = {}) => {
+    const endpoint = Cypress.env('remoteDataSourceNoAuthUrl');
+    const createDataSourceNoAuth = (dataSourceMetaData = {}) => {
+      cy.request({
+        method: 'POST',
+        url: `${BASE_PATH}/api/saved_objects/data-source`,
+        headers: {
+          'osd-xsrf': true,
+        },
+        body: {
+          attributes: {
+            title,
+            endpoint,
+            auth: {
+              type: 'no_auth',
+            },
+            ...dataSourceMetaData,
           },
         },
+      }).then((resp) => {
+        if (resp && resp.body && resp.body.id) {
+          return [resp.body.id, title];
+        }
+      });
+    };
+    fetchDataSourceMetadata({
+      dataSourceAttr: {
+        endpoint,
+        auth: {
+          type: 'no_auth',
+        },
       },
-    }).then((resp) => {
-      if (resp && resp.body && resp.body.id) {
-        return [resp.body.id, title];
-      }
-    });
+    }).then(
+      (dataSourceMeta) => createDataSourceNoAuth(dataSourceMeta),
+      () => createDataSourceNoAuth()
+    );
   }
 );
 
