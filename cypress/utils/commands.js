@@ -620,6 +620,41 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  'selectTopRightNavigationDataSource',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectableButton').click();
+    cy.getElementByTestId('dataSourceSelectable').find('input').clear();
+    cy.getElementByTestId('dataSourceSelectable')
+      .find('input')
+      .type(dataSourceTitle);
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiSelectableListItem')
+        .contains(dataSourceTitle)
+        .closest('.euiSelectableListItem');
+    }
+
+    if (dataSourceElement) {
+      dataSourceElement.then(($element) => {
+        if ($element.attr('aria-selected') === 'false') {
+          dataSourceElement.click();
+        } else {
+          // Close data source picker manually if data source already selected
+          cy.getElementByTestId('dataSourceSelectableButton').click();
+        }
+      });
+    }
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId('dataSourceSelectableButton').click();
+    }
+  }
+);
+
 Cypress.Commands.add('viewData', (sampleData) => {
   cy.get(`button[data-test-subj="launchSampleDataSet${sampleData}"]`)
     .should('be.visible')

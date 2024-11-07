@@ -32,3 +32,4 @@ jobs:
       test-name: ML Commons With Multi Data Source
       test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/ml-commons-dashboards/mds*.js'
       osd-serve-args: --ml_commons_dashboards.enabled=true --data_source.enabled=true --data_source.hideLocalCluster=true
+      artifact-name-suffix: "-with-security-and-mds"
