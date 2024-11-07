@@ -4,6 +4,8 @@
  */
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { ADMIN_AUTH } from '../../../../utils/commands';
+import { NONE_DASHBOARDS_ADMIN_USER } from '../../../../utils/dashboards/workspace-plugin/constants';
 
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_320sdfouAz';
@@ -23,18 +25,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           permissions: {
             library_write: { users: ['%me%'] },
             write: { users: ['%me%'] },
+            library_read: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
+            read: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
           },
         },
       }).then((value) => (workspaceId = value));
-    });
-
-    beforeEach(() => {
-      // Visit workspace update page
-      miscUtils.visitPage(`w/${workspaceId}/app/workspace_detail`);
-
-      cy.intercept('PUT', `/w/${workspaceId}/api/workspaces/${workspaceId}`).as(
-        'updateWorkspaceRequest'
-      );
     });
 
     after(() => {
@@ -43,6 +38,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     describe('workspace details', () => {
       beforeEach(() => {
+        // Visit workspace update page
+        miscUtils.visitPage(`w/${workspaceId}/app/workspace_detail`);
+
+        cy.intercept(
+          'PUT',
+          `/w/${workspaceId}/api/workspaces/${workspaceId}`
+        ).as('updateWorkspaceRequest');
         cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
       });
 
@@ -144,5 +146,115 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
       });
     });
+
+    if (Cypress.env('SECURITY_ENABLED')) {
+      describe('update with different workspace access level', () => {
+        let originalUser = ADMIN_AUTH.username;
+        let originalPassword = ADMIN_AUTH.password;
+        beforeEach(() => {
+          originalUser = ADMIN_AUTH.username;
+          originalPassword = ADMIN_AUTH.password;
+        });
+        afterEach(() => {
+          ADMIN_AUTH.newUser = originalUser;
+          ADMIN_AUTH.newPassword = originalPassword;
+        });
+        it('should not able to update workspace meta for non workspace admin', () => {
+          ADMIN_AUTH.newUser = 'kibanaserver';
+          ADMIN_AUTH.newPassword = 'kibanaserver';
+
+          // Visit workspace list page
+          miscUtils.visitPage(`/app/workspace_list`);
+
+          cy.getElementByTestId('headerApplicationTitle')
+            .contains('Workspaces')
+            .should('be.exist');
+
+          cy.get('[role="main"]').contains(workspaceName).should('be.exist');
+
+          cy.get(`#${workspaceId}-actions`).click();
+          cy.getElementByTestId('workspace-list-edit-icon').click();
+
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
+
+          cy.getElementByTestId(
+            'workspaceForm-workspaceDetails-descriptionInputText'
+          ).clear({
+            force: true,
+          });
+
+          cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
+            force: true,
+          });
+          cy.getElementByTestId('globalToastList')
+            .contains('Invalid workspace permission')
+            .should('be.exist');
+        });
+
+        it('should able to update workspace meta for workspace admin', () => {
+          const kibanaServerAdminWorkspace = {
+            name: 'kibana-server-workspace-admin',
+            features: ['use-case-all'],
+            settings: {
+              permissions: {
+                library_write: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
+                write: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
+              },
+            },
+          };
+          cy.deleteWorkspaceByName(kibanaServerAdminWorkspace.name);
+          cy.createWorkspace(kibanaServerAdminWorkspace)
+            .as('adminWorkspaceId')
+            .then(() => {
+              ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USER.username;
+              ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.username;
+            });
+
+          // Visit workspace list page
+          miscUtils.visitPage(`/app/workspace_list`);
+
+          cy.getElementByTestId('headerApplicationTitle')
+            .contains('Workspaces')
+            .should('be.exist');
+
+          cy.get('[role="main"]')
+            .contains(kibanaServerAdminWorkspace.name)
+            .should('be.exist');
+
+          cy.get('@adminWorkspaceId').then((adminWorkspaceId) => {
+            cy.get(`#${adminWorkspaceId}-actions`).click();
+          });
+          cy.getElementByTestId('workspace-list-edit-icon').click();
+
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
+
+          cy.getElementByTestId(
+            'workspaceForm-workspaceDetails-descriptionInputText'
+          ).clear({
+            force: true,
+          });
+
+          cy.getElementByTestId(
+            'workspaceForm-workspaceDetails-descriptionInputText'
+          ).type('This is a new workspace description.');
+
+          cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click({
+            force: true,
+          });
+          cy.getElementByTestId('globalToastList')
+            .contains('Update workspace successfully')
+            .should('be.exist');
+
+          cy.get('@adminWorkspaceId').then((adminWorkspaceId) => {
+            const expectedWorkspace = {
+              ...kibanaServerAdminWorkspace,
+              description: 'This is a new workspace description.',
+            };
+            cy.checkWorkspace(adminWorkspaceId, expectedWorkspace);
+            cy.deleteWorkspaceById(adminWorkspaceId);
+          });
+        });
+      });
+    }
   });
 }

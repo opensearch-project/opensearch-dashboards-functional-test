@@ -4,3 +4,8 @@
  */
 
 export const WORKSPACE_API_PREFIX = '/api/workspaces';
+
+export const NONE_DASHBOARDS_ADMIN_USER = {
+  username: 'kibanaserver',
+  password: 'kibanaserver',
+};
