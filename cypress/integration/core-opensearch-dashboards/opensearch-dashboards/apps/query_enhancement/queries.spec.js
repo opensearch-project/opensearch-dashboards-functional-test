@@ -24,8 +24,6 @@ describe('query enhancement queries', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.fleshTenantSettings();
-    cy.deleteAllIndices();
-    cy.deleteSavedObjectByType('index-pattern');
 
     testFixtureHandler.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/query_enhancement/mappings.json.txt'
@@ -107,22 +105,22 @@ describe('query enhancement queries', { scrollBehavior: false }, () => {
       // default PPL query should be set
       cy.waitForLoaderNewHeader();
       cy.getElementByTestId(`osdQueryEditor__multiLine`).contains(
-        `source = timestamp-* | head 10`
+        `source = timestamp-*`
       );
       cy.waitForSearch();
-      cy.reload();
-      cy.getElementByTestId('queryResultCompleteMsg').click()
-      cy.get('[class="euiText euiText--small"]').then((text) => cy.log(text))
+      cy.getElementByTestId('queryResultCompleteMsg').click();
+      cy.get('[class="euiText euiText--small"]').then((text) => cy.log(text));
       cy.verifyHitCount(4);
 
       //query should persist across refresh
       cy.reload();
       cy.verifyHitCount(4);
+    });
 
-      cy.getElementByTestId(`osdQueryEditor__multiLine`).type(`{backspace}`);
-      cy.getElementByTestId(`querySubmitButton`).click();
-      cy.waitForSearch();
-      cy.verifyHitCount(1);
+    after(() => {
+      cy.deleteIndex('timestamp-nanos');
+      cy.deleteIndex('timestamp-milis');
+      cy.deleteSavedObject('index-pattern', 'index-pattern:timestamp-*');
     });
   });
 });

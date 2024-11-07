@@ -25,9 +25,6 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.fleshTenantSettings();
-    cy.deleteAllIndices();
-    cy.deleteSavedObjectByType('index-pattern');
-    cy.deleteSavedObjectByType('data-source');
   });
 
   describe('empty state', () => {
@@ -203,5 +200,10 @@ describe('dataset navigator', { scrollBehavior: false }, () => {
       cy.waitForSearch();
       cy.verifyHitCount('14,004');
     });
+  });
+
+  after(() => {
+    cy.deleteIndex('timestamp-nanos');
+    cy.deleteSavedObject('data-source', clusterName);
   });
 });
