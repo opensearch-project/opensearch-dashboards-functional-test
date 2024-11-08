@@ -25,7 +25,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.createWorkspace({
         name: workspace1Name,
         description: workspace1Description,
-        features: ['workspace_detail', 'use-case-observability'],
+        features: ['use-case-observability'],
         settings: {
           permissions: {
             library_write: { users: ['%me%'] },
@@ -42,7 +42,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.createWorkspace({
         name: workspace2Name,
         description: workspace2Description,
-        features: ['workspace_detail', 'use-case-search'],
+        features: ['use-case-search'],
         settings: {
           permissions: {
             library_write: { users: ['%me%'] },
@@ -64,7 +64,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     describe('delete a workspace successfully using action buttons', () => {
       it('should successfully load delete button and show delete modal when clicking action button', () => {
         cy.contains(workspace1Name).should('be.visible');
-        cy.getElementByTestId('euiCollapsedItemActionsButton').first().click();
+        cy.getElementByTestId(`checkboxSelectRow-${workspace1Id}`)
+          .parents('tr')
+          .within(() => {
+            cy.getElementByTestId('euiCollapsedItemActionsButton').click();
+          });
         cy.getElementByTestId('workspace-list-delete-icon').should(
           'be.visible'
         );
@@ -88,7 +92,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     describe('delete workspace(s) successfully using multi-deletion button', () => {
       it('should successfully show multi-deletion button and perform deletion when choosing one workspace', () => {
         cy.contains(workspace1Name).should('be.visible');
-        cy.get('[data-test-subj^="checkboxSelectRow"]').first().click();
+        cy.getElementByTestId(`checkboxSelectRow-${workspace1Id}`).click();
         cy.getElementByTestId('multi-deletion-button').should('be.visible');
         cy.getElementByTestId('multi-deletion-button').click();
         cy.contains('Delete workspace').should('be.visible');
@@ -137,7 +141,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.createWorkspace({
         name: workspace1Name,
         description: workspace1Description,
-        features: ['workspace_detail', 'use-case-observability'],
+        features: ['use-case-observability'],
         settings: {
           permissions: {
             library_write: { users: ['%me%'] },
