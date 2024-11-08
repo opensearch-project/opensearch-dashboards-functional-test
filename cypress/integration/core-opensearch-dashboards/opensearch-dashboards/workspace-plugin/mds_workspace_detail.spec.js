@@ -147,21 +147,24 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
     });
 
-    if (Cypress.env('SECURITY_ENABLED')) {
+    if (
+      Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+      Cypress.env('SECURITY_ENABLED')
+    ) {
       describe('update with different workspace access level', () => {
-        let originalUser = ADMIN_AUTH.username;
-        let originalPassword = ADMIN_AUTH.password;
+        const originalUser = ADMIN_AUTH.username;
+        const originalPassword = ADMIN_AUTH.password;
         beforeEach(() => {
-          originalUser = ADMIN_AUTH.username;
-          originalPassword = ADMIN_AUTH.password;
+          ADMIN_AUTH.username = originalUser;
+          ADMIN_AUTH.password = originalPassword;
         });
-        afterEach(() => {
+        after(() => {
           ADMIN_AUTH.newUser = originalUser;
           ADMIN_AUTH.newPassword = originalPassword;
         });
         it('should not able to update workspace meta for non workspace admin', () => {
-          ADMIN_AUTH.newUser = 'kibanaserver';
-          ADMIN_AUTH.newPassword = 'kibanaserver';
+          ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USER.username;
+          ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.password;
 
           // Visit workspace list page
           miscUtils.visitPage(`/app/workspace_list`);
