@@ -207,7 +207,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             .as('adminWorkspaceId')
             .then(() => {
               ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USER.username;
-              ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.username;
+              ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.password;
             });
 
           // Visit workspace list page
