@@ -93,6 +93,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       it('should successfully create a workspace from home page', () => {
+        cy.deleteWorkspaceByName(workspaceName);
         miscUtils.visitPage('app/workspace_initial');
         cy.getElementByTestId(
           'workspace-initial-card-createWorkspace-button'
@@ -144,7 +145,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
       });
 
-      it('should successfully jump to collaborators page create a workspace after creating a workspace', () => {
+      it('should successfully jump to collaborators page after creating a workspace', () => {
+        cy.deleteWorkspaceByName(workspaceName);
         inputWorkspaceName(workspaceName);
         inputDataSourceWhenMDSEnabled(dataSourceTitle);
         cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
@@ -163,7 +165,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
       });
 
-      it('should correctly display create a workspace', () => {
+      it('should correctly display the summary card', () => {
         inputWorkspaceName(workspaceName);
         cy.getElementByTestId(
           'workspaceForm-workspaceDetails-descriptionInputText'
