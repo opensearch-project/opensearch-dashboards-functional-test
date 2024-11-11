@@ -11,6 +11,7 @@ const workspaceName = `test_workspace_${Math.random()
   .substring(7)}`;
 let workspaceDescription = 'This is a workspace description.';
 let workspaceId;
+let datasourceId;
 let workspaceFeatures = ['use-case-essentials'];
 
 const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
@@ -41,7 +42,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       if (MDSEnabled) {
         cy.deleteAllDataSources();
         cy.createDataSourceNoAuth().then((result) => {
-          const datasourceId = result[0];
+          datasourceId = result[0];
           expect(datasourceId).to.be.a('string').that.is.not.empty;
           createWorkspace(datasourceId);
         });
@@ -52,8 +53,10 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     after(() => {
       if (workspaceId) {
+        cy.removeSampleDataForWorkspace('ecommerce', workspaceId, datasourceId);
         cy.deleteWorkspaceById(workspaceId);
       }
+      cy.deleteAllDataSources();
     });
 
     beforeEach(() => {

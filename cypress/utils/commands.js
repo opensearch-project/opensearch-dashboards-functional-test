@@ -606,6 +606,17 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add(
+  'removeSampleDataForWorkspace',
+  (type, workspaceId, datasourceId) => {
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${datasourceId}`,
+    });
+  }
+);
+
 Cypress.Commands.add('fleshTenantSettings', () => {
   if (Cypress.env('SECURITY_ENABLED')) {
     // Use xhr request is good enough to flesh tenant

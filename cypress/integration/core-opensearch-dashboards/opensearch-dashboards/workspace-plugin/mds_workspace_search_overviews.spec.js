@@ -30,8 +30,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       },
     }).then((value) => {
       workspaceId = value;
-      // load sample data
-      cy.loadSampleDataForWorkspace('ecommerce', value, datasourceId);
     });
   };
 
@@ -54,6 +52,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       if (workspaceId) {
         cy.deleteWorkspaceById(workspaceId);
       }
+      cy.deleteAllDataSources();
     });
 
     beforeEach(() => {

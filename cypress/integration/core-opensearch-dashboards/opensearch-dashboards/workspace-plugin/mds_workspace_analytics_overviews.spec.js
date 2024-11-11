@@ -11,12 +11,13 @@ const workspaceName = `test_workspace_analytics_${Math.random()
   .substring(7)}`;
 let workspaceDescription = 'This is a analytics workspace description.';
 let workspaceId;
+let datasourceId;
 let workspaceFeatures = ['use-case-all'];
 
 const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 
 if (Cypress.env('WORKSPACE_ENABLED')) {
-  const createWorkspace = (datasourceId) => {
+  const createWorkspace = (dsId) => {
     cy.createWorkspace({
       name: workspaceName,
       description: workspaceDescription,
@@ -26,12 +27,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           library_write: { users: ['%me%'] },
           write: { users: ['%me%'] },
         },
-        dataSources: [datasourceId],
+        dataSources: [dsId],
       },
     }).then((value) => {
       workspaceId = value;
       // load sample data
-      cy.loadSampleDataForWorkspace('ecommerce', value, datasourceId);
+      cy.loadSampleDataForWorkspace('ecommerce', value, dsId);
     });
   };
 
@@ -41,7 +42,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       if (MDSEnabled) {
         cy.deleteAllDataSources();
         cy.createDataSourceNoAuth().then((result) => {
-          const datasourceId = result[0];
+          datasourceId = result[0];
           expect(datasourceId).to.be.a('string').that.is.not.empty;
           createWorkspace(datasourceId);
         });
@@ -52,8 +53,10 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     after(() => {
       if (workspaceId) {
+        cy.removeSampleDataForWorkspace('ecommerce', workspaceId, datasourceId);
         cy.deleteWorkspaceById(workspaceId);
       }
+      cy.deleteAllDataSources();
     });
 
     beforeEach(() => {
