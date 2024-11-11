@@ -91,6 +91,94 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.checkWorkspace(workspaceId, expectedWorkspace);
         });
       });
+
+      it('should successfully create a workspace from home page', () => {
+        miscUtils.visitPage('app/workspace_initial');
+        cy.getElementByTestId(
+          'workspace-initial-card-createWorkspace-button'
+        ).click({
+          force: true,
+        });
+        cy.getElementByTestId(
+          'workspace-initial-button-create-observability-workspace'
+        ).click({
+          force: true,
+        });
+        cy.contains('Observability')
+          .first()
+          .closest('.euiCheckableCard-isChecked')
+          .should('exist');
+
+        miscUtils.visitPage('app/workspace_initial');
+        cy.getElementByTestId(
+          'workspace-initial-useCaseCard-security-analytics-button-createWorkspace'
+        ).click({
+          force: true,
+        });
+        cy.contains('Security Analytics')
+          .first()
+          .closest('.euiCheckableCard-isChecked')
+          .should('exist');
+
+        inputWorkspaceName(workspaceName);
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
+
+        let workspaceId;
+        cy.wait('@createWorkspaceRequest').then((interception) => {
+          expect(interception.response.statusCode).to.equal(200);
+          workspaceId = interception.response.body.result.id;
+
+          cy.location('pathname', { timeout: 6000 }).should(
+            'include',
+            `w/${workspaceId}/app`
+          );
+
+          const expectedWorkspace = {
+            name: workspaceName,
+            features: ['use-case-security-analytics'],
+          };
+          cy.checkWorkspace(workspaceId, expectedWorkspace);
+        });
+      });
+
+      it('should successfully jump to collaborators page create a workspace after creating a workspace', () => {
+        inputWorkspaceName(workspaceName);
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
+        cy.getElementByTestId('workspaceForm-bottomBar-createButton').click({
+          force: true,
+        });
+
+        let workspaceId;
+        cy.wait('@createWorkspaceRequest').then((interception) => {
+          expect(interception.response.statusCode).to.equal(200);
+          workspaceId = interception.response.body.result.id;
+
+          cy.location('pathname', { timeout: 6000 }).should(
+            'include',
+            `w/${workspaceId}/app/workspace_collaborators`
+          );
+        });
+      });
+
+      it('should correctly display create a workspace', () => {
+        inputWorkspaceName(workspaceName);
+        cy.getElementByTestId(
+          'workspaceForm-workspaceDetails-descriptionInputText'
+        ).type('test_workspace_description.+~!');
+        cy.getElementByTestId('workspaceUseCase-essentials').click({
+          force: true,
+        });
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
+        cy.get('.workspaceCreateRightSidebar').within(() => {
+          cy.contains(workspaceName).should('exist');
+          cy.contains('test_workspace_description.+~!').should('exist');
+          cy.contains('Essentials').should('exist');
+          cy.contains(dataSourceTitle).should('exist');
+        });
+      });
     });
 
     describe('Validate workspace name and description', () => {
