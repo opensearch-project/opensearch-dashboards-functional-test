@@ -59,6 +59,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     beforeEach(() => {
       // Visit workspace update page
       miscUtils.visitPage(`w/${workspaceId}/app/search_overview`);
+      // wait for page load
+      cy.contains('h1', 'Overview');
     });
 
     it('Set up search cards display correctly', () => {

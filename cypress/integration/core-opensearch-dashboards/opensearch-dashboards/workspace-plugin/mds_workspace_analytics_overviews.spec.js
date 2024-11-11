@@ -6,12 +6,12 @@
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
-const workspaceName = `test_workspace_${Math.random()
+const workspaceName = `test_workspace_analytics_${Math.random()
   .toString(36)
   .substring(7)}`;
-let workspaceDescription = 'This is a workspace description.';
+let workspaceDescription = 'This is a analytics workspace description.';
 let workspaceId;
-let workspaceFeatures = ['use-case-essentials'];
+let workspaceFeatures = ['use-case-all'];
 
 const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
 
@@ -35,7 +35,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
   };
 
-  describe('Essential workspace overview', () => {
+  describe('Analytics workspace overview', () => {
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
       if (MDSEnabled) {
@@ -58,40 +58,35 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     beforeEach(() => {
       // Visit workspace update page
-      miscUtils.visitPage(`w/${workspaceId}/app/essentials_overview`);
+      miscUtils.visitPage(`w/${workspaceId}/app/all_overview`);
       // wait for page load
       cy.contains('h1', 'Overview');
     });
 
-    it('Get started cards display correctly', () => {
-      // verify four get started cards exist
-      cy.contains('Install sample data to experiment with OpenSearch.').click();
-      // verify url has app/import_sample_data
-      cy.url().should('include', 'app/import_sample_data');
-
-      // browser back
-      cy.go('back');
-      cy.contains('Explore data to uncover and discover insights.').click();
-      // verify url has app/data-explorer/discover
-      cy.url().should('include', 'app/data-explorer/discover');
-
-      // browser back
-      cy.go('back');
-      cy.contains(
-        'Gain deeper insights by visualizing and aggregating your data.'
-      ).click();
-      // verify url has app/visualize
-      cy.url().should('include', 'app/visualize');
+    it('should display get started sections', () => {
+      cy.get('.euiCard__footer')
+        .contains('Observability')
+        .should('be.visible')
+        .click();
+      cy.url().should('include', 'app/observability-overview');
 
       cy.go('back');
-      cy.contains(
-        'Monitor and explore your data using dynamic data visualization tools.'
-      ).click();
-      // verify url has app/dashboards
-      cy.url().should('include', 'app/dashboards');
+      cy.get('.euiCard__footer')
+        .contains('Security Analytics')
+        .should('be.visible')
+        .click();
+
+      cy.url().should('include', 'app/sa_overview');
+
+      cy.go('back');
+      cy.get('.euiCard__footer')
+        .contains('Search')
+        .should('be.visible')
+        .click();
+      cy.url().should('include', 'app/search_overview');
     });
 
-    it('Assets cards display correctly', () => {
+    it('should display asset section correctly', () => {
       // no recently view assets
       cy.contains('No assets to display');
 
@@ -118,32 +113,55 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.url().should('include', 'app/objects');
     });
 
-    it('Opensearch documentation cards display correctly', () => {
-      cy.contains('OpenSearch Documentation');
+    it('should display Recent alerts panel', () => {
+      cy.contains('Recent alerts').should('be.visible');
+      cy.get('.euiLink').contains('View all').should('be.visible');
+    });
 
-      // get a link with text as Quickstart guide
-      cy.get('a')
+    it('should display Recent threat alerts panel', () => {
+      cy.contains('Recent threat alerts').should('be.visible');
+      cy.get('.euiTableHeaderCell').contains('Time').should('be.visible');
+      cy.get('.euiTableHeaderCell')
+        .contains('Alert trigger')
+        .should('be.visible');
+      cy.get('.euiTableHeaderCell')
+        .contains('Alert severity')
+        .should('be.visible');
+      cy.get('.euiLink').contains('View all').should('be.visible');
+    });
+
+    it('should display OpenSearch Documentation panel', () => {
+      cy.contains('OpenSearch Documentation').should('be.visible');
+      cy.get('.euiLink')
         .contains('Quickstart guide')
-        .should(
+        .should('be.visible')
+        .and(
           'have.attr',
           'href',
           'https://opensearch.org/docs/latest/dashboards/quickstart/'
         );
-
-      cy.get('a')
+      cy.get('.euiLink')
         .contains('Building data visualizations')
-        .should(
+        .should('be.visible')
+        .and(
           'have.attr',
           'href',
           'https://opensearch.org/docs/latest/dashboards/visualize/viz-index/'
         );
-
-      cy.get('a')
+      cy.get('.euiLink')
         .contains('Creating dashboards')
-        .should(
+        .should('be.visible')
+        .and(
           'have.attr',
           'href',
           'https://opensearch.org/docs/latest/dashboards/dashboard/index/'
+        );
+      cy.contains('Learn more in Documentation')
+        .should('be.visible')
+        .and(
+          'have.attr',
+          'href',
+          'https://opensearch.org/docs/latest/dashboards/index/'
         );
     });
   });
