@@ -67,19 +67,16 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     it('should display get started sections', () => {
-      cy.get('.euiCard__footer')
-        .contains('Observability')
-        .should('be.visible')
-        .click();
-      cy.url().should('include', 'app/observability-overview');
+      cy.get('.euiCard__footer').contains('Observability').should('be.visible');
+      // this is depends on observability plugin been installed
+      // cy.url().should('include', 'app/observability-overview');
 
       cy.go('back');
       cy.get('.euiCard__footer')
         .contains('Security Analytics')
-        .should('be.visible')
-        .click();
-
-      cy.url().should('include', 'app/sa_overview');
+        .should('be.visible');
+      // this is depends on security analytics plugin been installed
+      // cy.url().should('include', 'app/sa_overview');
 
       cy.go('back');
       cy.get('.euiCard__footer')
@@ -116,22 +113,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.url().should('include', 'app/objects');
     });
 
-    it('should display Recent alerts panel', () => {
-      cy.contains('Recent alerts').should('be.visible');
-      cy.get('.euiLink').contains('View all').should('be.visible');
-    });
-
-    it('should display Recent threat alerts panel', () => {
-      cy.contains('Recent threat alerts').should('be.visible');
-      cy.get('.euiTableHeaderCell').contains('Time').should('be.visible');
-      cy.get('.euiTableHeaderCell')
-        .contains('Alert trigger')
-        .should('be.visible');
-      cy.get('.euiTableHeaderCell')
-        .contains('Alert severity')
-        .should('be.visible');
-      cy.get('.euiLink').contains('View all').should('be.visible');
-    });
+    // Alerts and threat Alerts cards are depends on plugins
 
     it('should display OpenSearch Documentation panel', () => {
       cy.contains('OpenSearch Documentation').should('be.visible');
