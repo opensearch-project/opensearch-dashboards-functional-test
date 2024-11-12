@@ -8,10 +8,15 @@ const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_collaborators';
 let workspaceId;
 
-if (Cypress.env('WORKSPACE_ENABLED')) {
+if (
+  Cypress.env('WORKSPACE_ENABLED') &&
+  Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+  Cypress.env('SECURITY_ENABLED')
+) {
   describe('Workspace collaborators', () => {
-    before(() => {
+    beforeEach(() => {
       cy.deleteWorkspaceByName(workspaceName);
+      //Create a workspace before each test
       cy.createWorkspace({
         name: workspaceName,
         features: ['use-case-observability'],
@@ -21,188 +26,221 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             write: { users: ['%me%'] },
           },
         },
-      }).then((value) => (workspaceId = value));
-    });
-
-    beforeEach(() => {
-      // Visit workspace collaborators page
-      miscUtils.visitPage(`w/${workspaceId}/app/workspace_collaborators`);
+      }).then((value) => {
+        workspaceId = value;
+        miscUtils.visitPage(`w/${value}/app/workspace_collaborators`);
+      });
     });
 
     after(() => {
       cy.deleteWorkspaceById(workspaceId);
     });
 
-    it('should successfully load the page', () => {
-      if (Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED')) {
-        cy.contains('Collaborators', { timeout: 60000 }).should('be.visible');
-      }
+    it('should add user and group collaborators successfully', () => {
+      //Add user
+      cy.getElementByTestId('add-collaborator-popover').click();
+      cy.get('button[id="user"]').click();
+      cy.contains('Add Users').should('be.visible');
+      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type('read_user');
+      cy.get('button[type="submit"]')
+        .contains('span', 'Add collaborators')
+        .click();
+
+      //Add group
+      cy.getElementByTestId('add-collaborator-popover').click();
+      cy.get('button[id="group"]').click();
+      cy.contains('Add Groups').should('be.visible');
+      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
+        'admin_group'
+      );
+      cy.get('span[title="Admin"]').click();
+      cy.get('button[type="submit"]')
+        .contains('span', 'Add collaborators')
+        .click();
+
+      cy.wait(2000); // Intentional Wait
+
+      cy.get('table')
+        .contains('td', 'read_user')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Read only');
+        });
+
+      cy.get('table')
+        .contains('td', 'admin_group')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Admin');
+        });
+      const expectedWorkspace = {
+        name: workspaceName,
+        features: ['use-case-observability'],
+        description: 'test_description',
+        permissions: {
+          library_write: {
+            users: [`${Cypress.env('username')}`],
+            groups: ['admin_group'],
+          },
+          write: {
+            users: [`${Cypress.env('username')}`],
+            groups: ['admin_group'],
+          },
+          library_read: {
+            users: ['read_user'],
+          },
+          read: {
+            users: ['read_user'],
+          },
+        },
+      };
+      cy.checkWorkspace(workspaceId, expectedWorkspace);
     });
 
-    if (
-      Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-      Cypress.env('SECURITY_ENABLED')
-    ) {
-      describe('Update collaborators', () => {
-        it('should add user and group collaborators successfully', () => {
-          //Add user
-          cy.getElementByTestId('add-collaborator-popover').click();
-          cy.get('button[id="user"]').click();
-          cy.contains('Add Users').should('be.visible');
-          cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
-            'read_user'
-          );
-          cy.get('button[type="submit"]')
-            .contains('span', 'Add collaborators')
-            .click();
-
-          //Add group
-          cy.getElementByTestId('add-collaborator-popover').click();
-          cy.get('button[id="group"]').click();
-          cy.contains('Add Groups').should('be.visible');
-          cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
-            'admin_group'
-          );
-          cy.get('span[title="Admin"]').click();
-          cy.get('button[type="submit"]')
-            .contains('span', 'Add collaborators')
-            .click();
-
-          cy.wait(2000); // Intentional Wait
-
-          cy.get('table')
-            .contains('td', 'read_user')
-            .parent()
-            .within(() => {
-              cy.get('td').eq(3).contains('Read only');
-            });
-
-          cy.get('table')
-            .contains('td', 'admin_group')
-            .parent()
-            .within(() => {
-              cy.get('td').eq(3).contains('Admin');
-            });
-          const expectedWorkspace = {
-            name: workspaceName,
-            features: ['use-case-observability'],
-            description: 'test_description',
-            permissions: {
-              library_write: {
-                users: [`${Cypress.env('username')}`],
-                groups: ['admin_group'],
-              },
-              write: {
-                users: [`${Cypress.env('username')}`],
-                groups: ['admin_group'],
-              },
-              library_read: {
-                users: ['read_user'],
-              },
-              read: {
-                users: ['read_user'],
-              },
+    it('should change access level successfully', () => {
+      //Add initial collaborators
+      cy.updateWorkspace({
+        id: workspaceId,
+        settings: {
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
             },
-          };
-          cy.checkWorkspace(workspaceId, expectedWorkspace);
-        });
-
-        it('should change access level successfully', () => {
-          cy.get('table')
-            .contains('td', 'read_user')
-            .parent('tr')
-            .within(() => {
-              cy.get('input[type="checkbox"]').check();
-            });
-          cy.get('table')
-            .contains('td', 'admin_group')
-            .parent('tr')
-            .within(() => {
-              cy.get('input[type="checkbox"]').check();
-            });
-
-          cy.getElementByTestId(
-            'workspace-detail-collaborator-table-actions'
-          ).click();
-          cy.get('div[role="dialog"]')
-            .find('span')
-            .contains('Change access level')
-            .click();
-          cy.get('div[role="dialog"]')
-            .find('span')
-            .contains('Read and write')
-            .click();
-          cy.getElementByTestId('confirmModalConfirmButton').click();
-
-          cy.wait(2000); // Intentional Wait
-
-          cy.get('table')
-            .contains('td', 'read_user')
-            .parent()
-            .within(() => {
-              cy.get('td').eq(3).contains('Read and write');
-            });
-          cy.get('table')
-            .contains('td', 'admin_group')
-            .parent()
-            .within(() => {
-              cy.get('td').eq(3).contains('Read and write');
-            });
-          const expectedWorkspace = {
-            name: workspaceName,
-            features: ['use-case-observability'],
-            description: 'test_description',
-            permissions: {
-              library_write: {
-                users: [`${Cypress.env('username')}`, 'read_user'],
-                groups: ['admin_group'],
-              },
-              write: {
-                users: [`${Cypress.env('username')}`],
-              },
-              read: {
-                groups: ['admin_group'],
-                users: ['read_user'],
-              },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
             },
-          };
-          cy.checkWorkspace(workspaceId, expectedWorkspace);
-        });
-
-        it('should delete collaborators successfully', () => {
-          cy.get('table')
-            .contains('td', 'read_user')
-            .parent('tr')
-            .within(() => {
-              cy.get('input[type="checkbox"]').check();
-            });
-          cy.get('table')
-            .contains('td', 'admin_group')
-            .parent('tr')
-            .within(() => {
-              cy.get('input[type="checkbox"]').check();
-            });
-
-          cy.getElementByTestId('confirm-delete-button').click();
-          cy.getElementByTestId('confirmModalConfirmButton').click();
-          cy.wait(2000); // Intentional Wait
-
-          const expectedWorkspace = {
-            name: workspaceName,
-            features: ['use-case-observability'],
-            description: 'test_description',
-            permissions: {
-              library_write: {
-                users: ['admin'],
-              },
-              write: {
-                users: ['admin'],
-              },
+            library_read: {
+              users: ['read_user'],
             },
-          };
-          cy.checkWorkspace(workspaceId, expectedWorkspace);
-        });
+            read: {
+              users: ['read_user'],
+            },
+          },
+        },
       });
-    }
+      miscUtils.visitPage(`w/${workspaceId}/app/workspace_collaborators`);
+      cy.wait(2000); // Intentional Wait
+
+      cy.get('table')
+        .contains('td', 'read_user')
+        .parent('tr')
+        .within(() => {
+          cy.get('input[type="checkbox"]').check();
+        });
+      cy.get('table')
+        .contains('td', 'admin_group')
+        .parent('tr')
+        .within(() => {
+          cy.get('input[type="checkbox"]').check();
+        });
+
+      cy.getElementByTestId(
+        'workspace-detail-collaborator-table-actions'
+      ).click();
+      cy.get('div[role="dialog"]')
+        .find('span')
+        .contains('Change access level')
+        .click();
+      cy.get('div[role="dialog"]')
+        .find('span')
+        .contains('Read and write')
+        .click();
+      cy.getElementByTestId('confirmModalConfirmButton').click();
+
+      cy.wait(2000); // Intentional Wait
+
+      cy.get('table')
+        .contains('td', 'read_user')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Read and write');
+        });
+      cy.get('table')
+        .contains('td', 'admin_group')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Read and write');
+        });
+      const expectedWorkspace = {
+        name: workspaceName,
+        features: ['use-case-observability'],
+        description: 'test_description',
+        permissions: {
+          library_write: {
+            users: [`${Cypress.env('username')}`, 'read_user'],
+            groups: ['admin_group'],
+          },
+          write: {
+            users: [`${Cypress.env('username')}`],
+          },
+          read: {
+            groups: ['admin_group'],
+            users: ['read_user'],
+          },
+        },
+      };
+      cy.checkWorkspace(workspaceId, expectedWorkspace);
+    });
+
+    it('should delete collaborators successfully', () => {
+      //Add initial collaborators
+      cy.updateWorkspace({
+        id: workspaceId,
+        settings: {
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            library_read: {
+              users: ['read_user'],
+            },
+            read: {
+              users: ['read_user'],
+            },
+          },
+        },
+      });
+      miscUtils.visitPage(`w/${workspaceId}/app/workspace_collaborators`);
+      cy.wait(2000); // Intentional Wait
+
+      cy.get('table')
+        .contains('td', 'read_user')
+        .parent('tr')
+        .within(() => {
+          cy.get('input[type="checkbox"]').check();
+        });
+      cy.get('table')
+        .contains('td', 'admin_group')
+        .parent('tr')
+        .within(() => {
+          cy.get('input[type="checkbox"]').check();
+        });
+
+      cy.getElementByTestId('confirm-delete-button').click();
+      cy.getElementByTestId('confirmModalConfirmButton').click();
+      cy.wait(2000); // Intentional Wait
+
+      const expectedWorkspace = {
+        name: workspaceName,
+        features: ['use-case-observability'],
+        description: 'test_description',
+        permissions: {
+          library_write: {
+            users: ['admin'],
+          },
+          write: {
+            users: ['admin'],
+          },
+        },
+      };
+      cy.checkWorkspace(workspaceId, expectedWorkspace);
+    });
   });
 }

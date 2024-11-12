@@ -65,6 +65,26 @@ Cypress.Commands.add('createWorkspace', ({ settings, ...workspace } = {}) => {
   });
 });
 
+Cypress.Commands.add('updateWorkspace', ({ settings, attributes, id } = {}) => {
+  cy.request({
+    method: 'PUT',
+    url: `${BASE_PATH}${WORKSPACE_API_PREFIX}/${id}`,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body: {
+      attributes,
+      settings,
+    },
+  }).then((resp) => {
+    if (resp && resp.body && resp.body.success) {
+      return resp.body.result.id;
+    } else {
+      throw new Error(`Update workspace failed!`);
+    }
+  });
+});
+
 /**
  * Check whether the given workspace is equal to the expected workspace or not,
  * the given workspace is as exepcted when the name, description, features, and permissions are as expected.
