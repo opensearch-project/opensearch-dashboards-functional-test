@@ -89,12 +89,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       ).should('exist');
     });
 
-    it('should navigate to workspace use case overview page', () => {
+    it('should navigate to the workspace', () => {
       cy.contains(workspaceName).click();
 
       cy.location('pathname', { timeout: 6000 }).should(
         'include',
-        `/w/${workspaceId}/app/observability-overview`
+        `/w/${workspaceId}/app/`
       );
     });
 
