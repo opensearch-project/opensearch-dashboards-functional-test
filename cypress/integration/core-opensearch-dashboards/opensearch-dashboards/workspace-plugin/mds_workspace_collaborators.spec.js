@@ -22,87 +22,6 @@ if (
         features: ['use-case-observability'],
         settings: {
           permissions: {
-            library_write: { users: ['%me%'] },
-            write: { users: ['%me%'] },
-          },
-        },
-      }).then((value) => {
-        workspaceId = value;
-        miscUtils.visitPage(`w/${value}/app/workspace_collaborators`);
-      });
-    });
-
-    after(() => {
-      cy.deleteWorkspaceById(workspaceId);
-    });
-
-    it('should add user and group collaborators successfully', () => {
-      //Add user
-      cy.getElementByTestId('add-collaborator-popover').click();
-      cy.get('button[id="user"]').click();
-      cy.contains('Add Users').should('be.visible');
-      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type('read_user');
-      cy.get('button[type="submit"]')
-        .contains('span', 'Add collaborators')
-        .click();
-
-      //Add group
-      cy.getElementByTestId('add-collaborator-popover').click();
-      cy.get('button[id="group"]').click();
-      cy.contains('Add Groups').should('be.visible');
-      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
-        'admin_group'
-      );
-      cy.get('span[title="Admin"]').click();
-      cy.get('button[type="submit"]')
-        .contains('span', 'Add collaborators')
-        .click();
-
-      cy.wait(2000); // Intentional Wait
-
-      cy.get('table')
-        .contains('td', 'read_user')
-        .parent()
-        .within(() => {
-          cy.get('td').eq(3).contains('Read only');
-        });
-
-      cy.get('table')
-        .contains('td', 'admin_group')
-        .parent()
-        .within(() => {
-          cy.get('td').eq(3).contains('Admin');
-        });
-      const expectedWorkspace = {
-        name: workspaceName,
-        features: ['use-case-observability'],
-        description: 'test_description',
-        permissions: {
-          library_write: {
-            users: [`${Cypress.env('username')}`],
-            groups: ['admin_group'],
-          },
-          write: {
-            users: [`${Cypress.env('username')}`],
-            groups: ['admin_group'],
-          },
-          library_read: {
-            users: ['read_user'],
-          },
-          read: {
-            users: ['read_user'],
-          },
-        },
-      };
-      cy.checkWorkspace(workspaceId, expectedWorkspace);
-    });
-
-    it('should change access level successfully', () => {
-      //Add initial collaborators
-      cy.updateWorkspace({
-        id: workspaceId,
-        settings: {
-          permissions: {
             library_write: {
               users: [`${Cypress.env('username')}`],
               groups: ['admin_group'],
@@ -119,10 +38,80 @@ if (
             },
           },
         },
+      }).then((value) => {
+        workspaceId = value;
+        miscUtils.visitPage(`w/${value}/app/workspace_collaborators`);
       });
-      miscUtils.visitPage(`w/${workspaceId}/app/workspace_collaborators`);
+    });
+
+    afterEach(() => {
+      cy.deleteWorkspaceById(workspaceId);
+    });
+
+    it('should add user and group collaborators successfully', () => {
+      //Add user
+      cy.getElementByTestId('add-collaborator-popover').click();
+      cy.get('button[id="user"]').click();
+      cy.contains('Add Users').should('be.visible');
+      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
+        'new_read_user'
+      );
+      cy.get('button[type="submit"]')
+        .contains('span', 'Add collaborators')
+        .click();
+
+      //Add group
+      cy.getElementByTestId('add-collaborator-popover').click();
+      cy.get('button[id="group"]').click();
+      cy.contains('Add Groups').should('be.visible');
+      cy.getElementByTestId('workspaceCollaboratorIdInput-0').type(
+        'new_admin_group'
+      );
+      cy.get('span[title="Admin"]').click();
+      cy.get('button[type="submit"]')
+        .contains('span', 'Add collaborators')
+        .click();
+
       cy.wait(2000); // Intentional Wait
 
+      cy.get('table')
+        .contains('td', 'new_read_user')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Read only');
+        });
+
+      cy.get('table')
+        .contains('td', 'new_admin_group')
+        .parent()
+        .within(() => {
+          cy.get('td').eq(3).contains('Admin');
+        });
+      const expectedWorkspace = {
+        name: workspaceName,
+        features: ['use-case-observability'],
+        description: 'test_description',
+        permissions: {
+          library_write: {
+            users: [`${Cypress.env('username')}`],
+            groups: ['admin_group', 'new_admin_group'],
+          },
+          write: {
+            users: [`${Cypress.env('username')}`],
+            groups: ['admin_group', 'new_admin_group'],
+          },
+          library_read: {
+            users: ['read_user', 'new_read_user'],
+          },
+          read: {
+            users: ['read_user', 'new_read_user'],
+          },
+        },
+      };
+      cy.checkWorkspace(workspaceId, expectedWorkspace);
+    });
+
+    it('should change access level successfully', () => {
       cy.get('table')
         .contains('td', 'read_user')
         .parent('tr')
@@ -185,31 +174,6 @@ if (
     });
 
     it('should delete collaborators successfully', () => {
-      //Add initial collaborators
-      cy.updateWorkspace({
-        id: workspaceId,
-        settings: {
-          permissions: {
-            library_write: {
-              users: [`${Cypress.env('username')}`],
-              groups: ['admin_group'],
-            },
-            write: {
-              users: [`${Cypress.env('username')}`],
-              groups: ['admin_group'],
-            },
-            library_read: {
-              users: ['read_user'],
-            },
-            read: {
-              users: ['read_user'],
-            },
-          },
-        },
-      });
-      miscUtils.visitPage(`w/${workspaceId}/app/workspace_collaborators`);
-      cy.wait(2000); // Intentional Wait
-
       cy.get('table')
         .contains('td', 'read_user')
         .parent('tr')
