@@ -27,7 +27,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           library_write: { users: ['%me%'] },
           write: { users: ['%me%'] },
         },
-        dataSources: [datasourceId],
+        ...(datasourceId ? { dataSources: [datasourceId] } : {}),
       },
     }).then((value) => {
       workspaceId = value;

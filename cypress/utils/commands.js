@@ -601,7 +601,9 @@ Cypress.Commands.add(
     cy.request({
       method: 'POST',
       headers: { 'osd-xsrf': 'opensearch-dashboards' },
-      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${datasourceId}`,
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
     });
   }
 );
@@ -612,7 +614,9 @@ Cypress.Commands.add(
     cy.request({
       method: 'DELETE',
       headers: { 'osd-xsrf': 'opensearch-dashboards' },
-      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${datasourceId}`,
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
     });
   }
 );

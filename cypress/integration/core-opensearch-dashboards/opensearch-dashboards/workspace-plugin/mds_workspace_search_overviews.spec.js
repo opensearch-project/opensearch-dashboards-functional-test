@@ -11,6 +11,7 @@ const workspaceName = `test_workspace_search_${Math.random()
   .substring(7)}`;
 let workspaceDescription = 'This is a  search workspace description.';
 let workspaceId;
+let datasourceId;
 let workspaceFeatures = ['use-case-search'];
 
 const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
@@ -26,7 +27,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           library_write: { users: ['%me%'] },
           write: { users: ['%me%'] },
         },
-        dataSources: [datasourceId],
+        ...(datasourceId ? { dataSources: [datasourceId] } : {}),
       },
     }).then((value) => {
       workspaceId = value;
@@ -39,7 +40,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       if (MDSEnabled) {
         cy.deleteAllDataSources();
         cy.createDataSourceNoAuth().then((result) => {
-          const datasourceId = result[0];
+          datasourceId = result[0];
           expect(datasourceId).to.be.a('string').that.is.not.empty;
           createWorkspace(datasourceId);
         });
