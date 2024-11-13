@@ -170,24 +170,24 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
       }
 
-      if (MDSEnabled) {
-        it('should correctly display the summary card', () => {
-          inputWorkspaceName(workspaceName);
-          cy.getElementByTestId(
-            'workspaceForm-workspaceDetails-descriptionInputText'
-          ).type('test_workspace_description.+~!');
-          cy.getElementByTestId('workspaceUseCase-essentials').click({
-            force: true,
-          });
-          inputDataSourceWhenMDSEnabled(dataSourceTitle);
-          cy.get('.workspaceCreateRightSidebar').within(() => {
-            cy.contains(workspaceName).should('exist');
-            cy.contains('test_workspace_description.+~!').should('exist');
-            cy.contains('Essentials').should('exist');
-            cy.contains(dataSourceTitle).should('exist');
-          });
+      it('should correctly display the summary card', () => {
+        inputWorkspaceName(workspaceName);
+        cy.getElementByTestId(
+          'workspaceForm-workspaceDetails-descriptionInputText'
+        ).type('test_workspace_description.+~!');
+        cy.getElementByTestId('workspaceUseCase-essentials').click({
+          force: true,
         });
-      }
+        inputDataSourceWhenMDSEnabled(dataSourceTitle);
+        cy.get('.workspaceCreateRightSidebar').within(() => {
+          cy.contains(workspaceName).should('exist');
+          cy.contains('test_workspace_description.+~!').should('exist');
+          cy.contains('Essentials').should('exist');
+          if (MDSEnabled) {
+            cy.contains(dataSourceTitle).should('exist');
+          }
+        });
+      });
     });
 
     describe('Validate workspace name and description', () => {
