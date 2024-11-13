@@ -5,7 +5,12 @@
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { ADMIN_AUTH } from '../../../../utils/commands';
-import { NONE_DASHBOARDS_ADMIN_USER } from '../../../../utils/dashboards/workspace-plugin/constants';
+import workspaceTestUser from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestUser.json';
+import workspaceTestRole from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestRole.json';
+import workspaceTestRoleMapping from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestRoleMapping.json';
+
+const NONE_DASHBOARDS_ADMIN_USERNAME = 'workspace-test';
+const WORKSPACE_TEST_ROLE_NAME = 'workspace-test-role';
 
 const miscUtils = new MiscUtils(cy);
 const workspaceName = 'test_workspace_320sdfouAz';
@@ -16,6 +21,17 @@ let workspaceFeatures = ['use-case-observability'];
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Workspace detail', () => {
     before(() => {
+      if (Cypress.env('SECURITY_ENABLED')) {
+        cy.createInternalUser(
+          NONE_DASHBOARDS_ADMIN_USERNAME,
+          workspaceTestUser
+        );
+        cy.createRole(WORKSPACE_TEST_ROLE_NAME, workspaceTestRole);
+        cy.createRoleMapping(
+          WORKSPACE_TEST_ROLE_NAME,
+          workspaceTestRoleMapping
+        );
+      }
       cy.deleteWorkspaceByName(workspaceName);
       cy.createWorkspace({
         name: workspaceName,
@@ -25,8 +41,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           permissions: {
             library_write: { users: ['%me%'] },
             write: { users: ['%me%'] },
-            library_read: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
-            read: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
+            library_read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
+            read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
           },
         },
       }).then((value) => (workspaceId = value));
@@ -34,6 +50,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     after(() => {
       cy.deleteWorkspaceById(workspaceId);
+      if (Cypress.env('SECURITY_ENABLED')) {
+        cy.deleteInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME);
+      }
     });
 
     describe('workspace details', () => {
@@ -163,8 +182,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           ADMIN_AUTH.newPassword = originalPassword;
         });
         it('should not able to update workspace meta for non workspace admin', () => {
-          ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USER.username;
-          ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.password;
+          ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USERNAME;
+          ADMIN_AUTH.newPassword = workspaceTestUser.password;
 
           // Visit workspace list page
           miscUtils.visitPage(`/app/workspace_list`);
@@ -200,8 +219,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             features: ['use-case-all'],
             settings: {
               permissions: {
-                library_write: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
-                write: { users: [NONE_DASHBOARDS_ADMIN_USER.username] },
+                library_write: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
+                write: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
               },
             },
           };
@@ -209,8 +228,8 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.createWorkspace(kibanaServerAdminWorkspace)
             .as('adminWorkspaceId')
             .then(() => {
-              ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USER.username;
-              ADMIN_AUTH.newPassword = NONE_DASHBOARDS_ADMIN_USER.password;
+              ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USERNAME;
+              ADMIN_AUTH.newPassword = workspaceTestUser.password;
             });
 
           // Visit workspace list page

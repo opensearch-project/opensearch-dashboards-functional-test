@@ -29,6 +29,14 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
   cy.wait(10000);
 });
 
+Cypress.Commands.add('deleteInternalUser', (userID) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`
+  );
+  cy.wait(10000);
+});
+
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
   cy.request(
     'PUT',
