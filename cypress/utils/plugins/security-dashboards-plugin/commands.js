@@ -46,6 +46,14 @@ Cypress.Commands.add('createRole', (roleID, roleJson) => {
   cy.wait(10000);
 });
 
+Cypress.Commands.add('deleteRole', (roleID) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`
+  );
+  cy.wait(10000);
+});
+
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
   cy.request(
     'PUT',

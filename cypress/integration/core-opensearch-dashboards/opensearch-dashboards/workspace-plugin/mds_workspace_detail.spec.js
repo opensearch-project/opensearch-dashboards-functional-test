@@ -52,6 +52,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.deleteWorkspaceById(workspaceId);
       if (Cypress.env('SECURITY_ENABLED')) {
         cy.deleteInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME);
+        cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
       }
     });
 
