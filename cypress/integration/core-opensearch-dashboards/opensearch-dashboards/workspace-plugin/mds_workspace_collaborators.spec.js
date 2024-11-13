@@ -72,7 +72,7 @@ if (
         .contains('span', 'Add collaborators')
         .click();
 
-      cy.wait(2000); // Intentional Wait
+      cy.contains('new_read_user');
 
       cy.get('table')
         .contains('td', 'new_read_user')
@@ -138,7 +138,7 @@ if (
         .click();
       cy.getElementByTestId('confirmModalConfirmButton').click();
 
-      cy.wait(2000); // Intentional Wait
+      cy.contains('read_user');
 
       cy.get('table')
         .contains('td', 'read_user')
@@ -189,7 +189,6 @@ if (
 
       cy.getElementByTestId('confirm-delete-button').click();
       cy.getElementByTestId('confirmModalConfirmButton').click();
-      cy.wait(2000); // Intentional Wait
 
       const expectedWorkspace = {
         name: workspaceName,
