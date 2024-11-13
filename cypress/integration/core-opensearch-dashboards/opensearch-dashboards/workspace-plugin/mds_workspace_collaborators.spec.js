@@ -190,6 +190,8 @@ if (
       cy.getElementByTestId('confirm-delete-button').click();
       cy.getElementByTestId('confirmModalConfirmButton').click();
 
+      cy.contains('read_user').should('not.exist');
+      cy.contains('admin_group').should('not.exist');
       const expectedWorkspace = {
         name: workspaceName,
         features: ['use-case-observability'],
