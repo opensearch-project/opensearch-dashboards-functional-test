@@ -62,3 +62,11 @@ Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
   );
   cy.wait(10000);
 });
+
+Cypress.Commands.add('deleteRoleMapping', (roleID) => {
+  cy.request(
+    'DELETE',
+    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`
+  );
+  cy.wait(10000);
+});

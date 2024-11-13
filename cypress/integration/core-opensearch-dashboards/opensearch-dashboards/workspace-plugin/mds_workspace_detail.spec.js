@@ -51,6 +51,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     after(() => {
       cy.deleteWorkspaceById(workspaceId);
       if (Cypress.env('SECURITY_ENABLED')) {
+        cy.deleteRoleMapping(WORKSPACE_TEST_ROLE_NAME);
         cy.deleteInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME);
         cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
       }
