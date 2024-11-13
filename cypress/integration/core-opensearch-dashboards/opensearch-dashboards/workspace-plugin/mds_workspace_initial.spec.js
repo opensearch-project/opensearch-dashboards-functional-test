@@ -112,9 +112,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       );
       cy.location('hash').should('include', 'useCase=Essentials');
 
-      cy.getElementByTestId('workspaceUseCase-essentials').click({
-        force: true,
-      });
+      cy.getElementByTestId('workspaceUseCase-essentials')
+        .get(`input[type="radio"]`)
+        .should('be.checked');
     });
 
     it('should navigate to workspace list page with use case filter', () => {
