@@ -71,14 +71,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       // this is depends on observability plugin been installed
       // cy.url().should('include', 'app/observability-overview');
 
-      cy.go('back');
       cy.get('.euiCard__footer')
         .contains('Security Analytics')
         .should('be.visible');
       // this is depends on security analytics plugin been installed
       // cy.url().should('include', 'app/sa_overview');
 
-      cy.go('back');
       cy.get('.euiCard__footer')
         .contains('Search')
         .should('be.visible')
