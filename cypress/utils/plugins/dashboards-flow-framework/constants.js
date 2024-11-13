@@ -10,7 +10,8 @@ import { BASE_PATH, BACKEND_BASE_PATH } from '../../base_constants';
  *****************************
  */
 
-const BASE_FF_PATH = BASE_PATH + '/app/search-studio#';
+const PLUGIN_NAME = 'opensearch-flow';
+const BASE_FF_PATH = BASE_PATH + `/app/${PLUGIN_NAME}#`;
 
 export const FF_URL = {
   WORKFLOWS: BASE_FF_PATH + '/workflows',
