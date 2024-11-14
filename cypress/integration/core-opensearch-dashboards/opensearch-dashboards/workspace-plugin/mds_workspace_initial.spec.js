@@ -222,10 +222,11 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
             WORKSPACE_TEST_ROLE_NAME,
             workspaceTestRoleMapping
           );
-          ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USERNAME;
-          ADMIN_AUTH.newPassword = workspaceTestUser.password;
         });
         beforeEach(() => {
+          // Login as non OSD admin user
+          ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USERNAME;
+          ADMIN_AUTH.newPassword = workspaceTestUser.password;
           // Visit workspace initial page
           miscUtils.visitPage(`/app/home`);
         });
