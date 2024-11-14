@@ -43,30 +43,33 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       it('should contain correct content', () => {
-        // contains initial page title and description
+        // Contain initial page title and description
         cy.contains('Welcome to OpenSearch').should('exist');
         cy.contains('My workspaces').should('exist');
         cy.contains(
           'Collaborate on use-case based projects with workspaces. Select a workspace to get started.'
         ).should('exist');
 
-        // contains five use case title
+        // Contain five use case title
         cy.contains('Observability').should('exist');
         cy.contains('Security Analytics').should('exist');
         cy.contains('Search').should('exist');
         cy.contains('Essentials').should('exist');
         cy.contains('Analytics').should('exist');
 
-        // contains no workspace message
+        // Contain no workspace message
         cy.contains('No workspaces').should('exist');
         cy.contains(
           'Create a workspace or request a workspace owner to add you as a collaborator.'
         ).should('exist');
 
-        // contains created workspaces
+        // Contain created workspaces
         cy.contains(workspaceName).should('exist');
+        cy.contains(
+          'Gain visibility into system health, performance, and reliability through monitoring of logs, metrics and traces.'
+        ).should('not.exist');
 
-        // contains correct link
+        // Contain correct link
         cy.contains('a', 'Learn more from documentation').should('exist');
         cy.get(
           'a[href="https://opensearch.org/docs/latest/opensearch/index/"]'
@@ -81,7 +84,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           '_blank'
         );
 
-        // contain left bottom button
+        // Contain left bottom button
         cy.get('[id$="popoverForSettingsIcon"]').should('exist');
         cy.getElementByTestId('openDevToolsModal').should('exist');
         if (Cypress.env('SECURITY_ENABLED')) {
@@ -237,12 +240,15 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         });
 
         it('should show correct no workspaces content', () => {
+          cy.contains('Welcome to OpenSearch').should('exist');
+
+          // Contain correct no workspaces message
+          cy.contains('No workspaces').should('exist');
           cy.contains(
             'Request a workspace owner to add you as a collaborator.'
           ).should('exist');
-        });
 
-        it('should not show create workspace button', () => {
+          // Not contain the create buttons
           cy.getElementByTestId(
             'workspace-initial-card-createWorkspace-button'
           ).should('not.exist');
