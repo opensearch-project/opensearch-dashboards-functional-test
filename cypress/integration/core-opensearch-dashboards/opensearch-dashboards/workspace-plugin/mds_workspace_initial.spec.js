@@ -211,8 +211,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         const originalUser = ADMIN_AUTH.username;
         const originalPassword = ADMIN_AUTH.password;
         before(() => {
-          ADMIN_AUTH.newUser = originalUser;
-          ADMIN_AUTH.newPassword = originalPassword;
           cy.createInternalUser(
             NONE_DASHBOARDS_ADMIN_USERNAME,
             workspaceTestUser
