@@ -137,7 +137,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     it('Short url should be able to be generated multiple times and preserve workspace info', () => {
       cy.visit(`${BASE_PATH}/w/${sourceWorkspaceId}/app/visualize`);
-      cy.getElementByTestId('visListingTitleLink-[eCommerce]-Markdown').click();
+      cy.contains(/\[eCommerce\] Markdown/).click();
       cy.getElementByTestId('shareTopNavButton')
         .click()
         .getElementByTestId('sharePanel-Permalinks')
@@ -165,7 +165,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           cy.contains('Workspace assets');
           cy.visit(shortUrl);
           cy.location('pathname').should('include', `/w/${sourceWorkspaceId}`);
-          cy.contains('[eCommerce] Markdown');
+          cy.contains(/\[eCommerce\] Markdown/);
         });
     });
   });
