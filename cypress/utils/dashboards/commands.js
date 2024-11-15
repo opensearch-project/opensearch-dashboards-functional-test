@@ -9,6 +9,7 @@ import './vis_type_table/commands';
 import './vis_type_vega/commands';
 import './vis-augmenter/commands';
 import './data_explorer/commands';
+import './query_enhancement/commands';
 
 Cypress.Commands.add('waitForLoader', () => {
   const opts = { log: false };
