@@ -64,6 +64,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       );
       cy.deleteWorkspaceByName(sourceWorkspaceName);
       cy.deleteWorkspaceByName(targetWorkspaceName);
+      if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        cy.deleteDataSource(datasourceId);
+      }
       sourceWorkspaceId = '';
       targetWorkspaceId = '';
     });
