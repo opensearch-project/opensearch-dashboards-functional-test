@@ -54,14 +54,12 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     after(() => {
+      // Uninstallation will delete the data index
+      // and workspace deletion will remove all the saved objects within the workspace,
+      // so calling `removeSampleDataForWorkspace` once is good enough.
       cy.removeSampleDataForWorkspace(
         'ecommerce',
         sourceWorkspaceId,
-        datasourceId
-      );
-      cy.removeSampleDataForWorkspace(
-        'ecommerce',
-        targetWorkspaceId,
         datasourceId
       );
       cy.deleteWorkspaceByName(sourceWorkspaceName);
