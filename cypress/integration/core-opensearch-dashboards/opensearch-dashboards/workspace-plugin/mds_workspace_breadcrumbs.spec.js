@@ -64,9 +64,16 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       miscUtils.visitPage(`w/${workspaceId}/app/workspace_detail`);
       // wait for page load
       cy.contains('h1', 'Workspace details');
-      cy.getElementByTestId('recentItemsSectionButton')
-        .should('exist')
-        .click({ force: true });
+      // waiting for page load completely
+      cy.getElementByTestId('recentItemsSectionButton').should(
+        'not.have.class',
+        'headerRecentItemsButton--loadingIndicator',
+        {
+          timeout: 10000,
+        }
+      );
+      cy.wait(1000);
+      cy.getElementByTestId('recentItemsSectionButton').click({ force: true });
 
       cy.get('.euiPopover__panel').within(() => {
         cy.getElementByTestId('breadcrumbs').within(() => {
@@ -97,7 +104,15 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       // check breadcrumbs in recent popover
-      cy.getElementByTestId('recentItemsSectionButton').should('exist').click();
+      cy.getElementByTestId('recentItemsSectionButton').should(
+        'not.have.class',
+        'headerRecentItemsButton--loadingIndicator',
+        {
+          timeout: 10000,
+        }
+      );
+      cy.wait(1000);
+      cy.getElementByTestId('recentItemsSectionButton').click({ force: true });
 
       cy.get('.euiPopover__panel').within(() => {
         cy.getElementByTestId('breadcrumbs').within(() => {
@@ -121,9 +136,15 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       });
 
       // check breadcrumbs in recent popover
-      cy.getElementByTestId('recentItemsSectionButton')
-        .should('exist')
-        .click({ force: true });
+      cy.getElementByTestId('recentItemsSectionButton').should(
+        'not.have.class',
+        'headerRecentItemsButton--loadingIndicator',
+        {
+          timeout: 10000,
+        }
+      );
+      cy.wait(1000);
+      cy.getElementByTestId('recentItemsSectionButton').click({ force: true });
 
       cy.get('.euiPopover__panel').within(() => {
         cy.getElementByTestId('breadcrumbs').within(() => {
