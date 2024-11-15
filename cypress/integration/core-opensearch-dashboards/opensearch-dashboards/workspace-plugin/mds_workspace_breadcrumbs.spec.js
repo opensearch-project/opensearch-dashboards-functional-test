@@ -43,7 +43,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     it('should show workspace name in breadcrumbs', () => {
-      miscUtils.visitPage(`w/${workspaceId}/app/dashboards`);
+      miscUtils.visitPage(`w/${workspaceId}/app/objects`);
 
       // get div with class newTopNavHeader
       cy.get('.newTopNavHeader').within(() => {
