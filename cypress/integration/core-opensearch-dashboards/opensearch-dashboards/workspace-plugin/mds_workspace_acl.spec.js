@@ -7,7 +7,6 @@ import { BASE_PATH } from '../../../../utils/base_constants';
 import { ADMIN_AUTH } from '../../../../utils/commands';
 import workspaceTestUser from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestUser.json';
 import workspaceTestRole from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestRole.json';
-import workspaceTestRoleMapping from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestRoleMapping.json';
 import { WORKSPACE_API_PREFIX } from '../../../../utils/dashboards/workspace-plugin/constants';
 
 let noPermissionWorkspaceName = 'acl_no_permission_workspace';
@@ -78,7 +77,9 @@ if (
 
       cy.createInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME, workspaceTestUser);
       cy.createRole(WORKSPACE_TEST_ROLE_NAME, workspaceTestRole);
-      cy.createRoleMapping(WORKSPACE_TEST_ROLE_NAME, workspaceTestRoleMapping);
+      cy.createRoleMapping(WORKSPACE_TEST_ROLE_NAME, {
+        users: [NONE_DASHBOARDS_ADMIN_USERNAME],
+      });
 
       if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.createDataSourceNoAuth().then((result) => {
