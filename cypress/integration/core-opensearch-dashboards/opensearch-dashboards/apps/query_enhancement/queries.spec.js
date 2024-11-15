@@ -14,12 +14,6 @@ const testFixtureHandler = new TestFixtureHandler(
   Cypress.env('openSearchUrl')
 );
 
-const indexSet = [
-  'logstash-2015.09.22',
-  'logstash-2015.09.21',
-  'logstash-2015.09.20',
-];
-
 describe('query enhancement queries', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';

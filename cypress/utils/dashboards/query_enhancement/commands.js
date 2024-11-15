@@ -31,9 +31,7 @@ Cypress.Commands.add('setSingleLineQueryEditor', (value, submit = true) => {
   }
 });
 
-Cypress.Commands.add('setQueryLanguage', (value, submit = true) => {
-  const opts = { log: false };
-
+Cypress.Commands.add('setQueryLanguage', (value) => {
   Cypress.log({
     name: 'setQueryLanguage',
     displayName: 'set language',
