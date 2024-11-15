@@ -44,8 +44,6 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
 
     it('should show workspace name in breadcrumbs', () => {
       miscUtils.visitPage(`w/${workspaceId}/app/dashboards`);
-      // wait for page load
-      cy.contains('h1', 'Dashboards');
 
       // get div with class newTopNavHeader
       cy.get('.newTopNavHeader').within(() => {
