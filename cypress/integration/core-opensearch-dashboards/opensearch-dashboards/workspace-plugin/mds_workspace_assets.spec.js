@@ -54,6 +54,16 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     after(() => {
+      cy.removeSampleDataForWorkspace(
+        'ecommerce',
+        sourceWorkspaceId,
+        datasourceId
+      );
+      cy.removeSampleDataForWorkspace(
+        'ecommerce',
+        targetWorkspaceId,
+        datasourceId
+      );
       cy.deleteWorkspaceByName(sourceWorkspaceName);
       cy.deleteWorkspaceByName(targetWorkspaceName);
       sourceWorkspaceId = '';
@@ -115,6 +125,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       );
     });
 
+    // TODO: this test case should be removed once index pattern access outside of workspace being blocked in the future.
     it('Should not show set as default button when outside workspace', () => {
       cy.request({
         url: `${BASE_PATH}/api/opensearch-dashboards/management/saved_objects/_find?workspaces=${targetWorkspaceId}&page=1&type=index-pattern`,
