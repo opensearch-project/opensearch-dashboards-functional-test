@@ -26,22 +26,22 @@ const getPolicy = (permission, userName) => ({
   },
 });
 
-const NONE_DASHBOARDS_ADMIN_USERNAME = 'workspace-acl-test';
+const NON_DASHBOARDS_ADMIN_USERNAME = 'workspace-acl-test';
 const WORKSPACE_TEST_ROLE_NAME = 'workspace-acl-test-role';
 
 const ACLPolicyMap = {
   [noPermissionWorkspaceName]: {},
   [readOnlyWorkspaceName]: {
-    ...getPolicy('read', NONE_DASHBOARDS_ADMIN_USERNAME),
-    ...getPolicy('library_read', NONE_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('read', NON_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('library_read', NON_DASHBOARDS_ADMIN_USERNAME),
   },
   [libraryWriteWorkspaceName]: {
-    ...getPolicy('read', NONE_DASHBOARDS_ADMIN_USERNAME),
-    ...getPolicy('library_write', NONE_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('read', NON_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('library_write', NON_DASHBOARDS_ADMIN_USERNAME),
   },
   [ownerWorkspaceName]: {
-    ...getPolicy('write', NONE_DASHBOARDS_ADMIN_USERNAME),
-    ...getPolicy('library_write', NONE_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('write', NON_DASHBOARDS_ADMIN_USERNAME),
+    ...getPolicy('library_write', NON_DASHBOARDS_ADMIN_USERNAME),
   },
 };
 
@@ -61,6 +61,21 @@ const setupWorkspace = (workspaceName, datasourceId) => {
     });
 };
 
+const setupAllTheWorkspaces = () => {
+  setupWorkspace(noPermissionWorkspaceName, datasourceId).then(
+    (value) => (noPermissionWorkspaceId = value)
+  );
+  setupWorkspace(readOnlyWorkspaceName, datasourceId).then(
+    (value) => (readOnlyWorkspaceId = value)
+  );
+  setupWorkspace(libraryWriteWorkspaceName, datasourceId).then(
+    (value) => (libraryWriteWorkspaceId = value)
+  );
+  setupWorkspace(ownerWorkspaceName, datasourceId).then(
+    (value) => (ownerWorkspaceId = value)
+  );
+};
+
 if (
   Cypress.env('WORKSPACE_ENABLED') &&
   Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
@@ -75,42 +90,20 @@ if (
       cy.deleteWorkspaceByName(libraryWriteWorkspaceName);
       cy.deleteWorkspaceByName(ownerWorkspaceName);
 
-      cy.createInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME, workspaceTestUser);
+      cy.createInternalUser(NON_DASHBOARDS_ADMIN_USERNAME, workspaceTestUser);
       cy.createRole(WORKSPACE_TEST_ROLE_NAME, workspaceTestRole);
       cy.createRoleMapping(WORKSPACE_TEST_ROLE_NAME, {
-        users: [NONE_DASHBOARDS_ADMIN_USERNAME],
+        users: [NON_DASHBOARDS_ADMIN_USERNAME],
       });
 
       if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.createDataSourceNoAuth().then((result) => {
           datasourceId = result[0];
           expect(datasourceId).to.be.a('string').that.is.not.empty;
-          setupWorkspace(noPermissionWorkspaceName, datasourceId).then(
-            (value) => (noPermissionWorkspaceId = value)
-          );
-          setupWorkspace(readOnlyWorkspaceName, datasourceId).then(
-            (value) => (readOnlyWorkspaceId = value)
-          );
-          setupWorkspace(libraryWriteWorkspaceName, datasourceId).then(
-            (value) => (libraryWriteWorkspaceId = value)
-          );
-          setupWorkspace(ownerWorkspaceName, datasourceId).then(
-            (value) => (ownerWorkspaceId = value)
-          );
+          setupAllTheWorkspaces(datasourceId);
         });
       } else {
-        setupWorkspace(noPermissionWorkspaceName, datasourceId).then(
-          (value) => (noPermissionWorkspaceId = value)
-        );
-        setupWorkspace(readOnlyWorkspaceName, datasourceId).then(
-          (value) => (readOnlyWorkspaceId = value)
-        );
-        setupWorkspace(libraryWriteWorkspaceName, datasourceId).then(
-          (value) => (libraryWriteWorkspaceId = value)
-        );
-        setupWorkspace(ownerWorkspaceName, datasourceId).then(
-          (value) => (ownerWorkspaceId = value)
-        );
+        setupAllTheWorkspaces(datasourceId);
       }
     });
 
@@ -133,13 +126,13 @@ if (
       ADMIN_AUTH.newUser = originalUser;
       ADMIN_AUTH.newPassword = originalPassword;
       cy.deleteRoleMapping(WORKSPACE_TEST_ROLE_NAME);
-      cy.deleteInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME);
+      cy.deleteInternalUser(NON_DASHBOARDS_ADMIN_USERNAME);
       cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
     });
 
     describe('Normal user', () => {
       beforeEach(() => {
-        ADMIN_AUTH.newUser = NONE_DASHBOARDS_ADMIN_USERNAME;
+        ADMIN_AUTH.newUser = NON_DASHBOARDS_ADMIN_USERNAME;
         ADMIN_AUTH.newPassword = workspaceTestUser.password;
       });
 
