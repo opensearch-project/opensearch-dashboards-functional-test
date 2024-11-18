@@ -108,6 +108,8 @@ if (
     });
 
     after(() => {
+      ADMIN_AUTH.newUser = originalUser;
+      ADMIN_AUTH.newPassword = originalPassword;
       cy.removeSampleDataForWorkspace(
         'ecommerce',
         ownerWorkspaceId,
@@ -123,8 +125,6 @@ if (
       readOnlyWorkspaceId = '';
       libraryWriteWorkspaceId = '';
 
-      ADMIN_AUTH.newUser = originalUser;
-      ADMIN_AUTH.newPassword = originalPassword;
       cy.deleteRoleMapping(WORKSPACE_TEST_ROLE_NAME);
       cy.deleteInternalUser(NON_DASHBOARDS_ADMIN_USERNAME);
       cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
