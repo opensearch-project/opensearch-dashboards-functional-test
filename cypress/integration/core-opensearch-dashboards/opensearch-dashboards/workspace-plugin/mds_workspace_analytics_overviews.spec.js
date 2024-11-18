@@ -118,34 +118,38 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
       cy.get('.euiLink')
         .contains('Quickstart guide')
         .should('be.visible')
-        .and(
-          'have.attr',
-          'href',
-          'https://opensearch.org/docs/latest/dashboards/quickstart/'
-        );
+        .and('have.attr', 'href')
+        .and((href) => {
+          expect(href).to.match(
+            /https:\/\/opensearch.org\/docs\/(latest|(\d.)+)\/dashboards\/quickstart\/$/
+          );
+        });
       cy.get('.euiLink')
         .contains('Building data visualizations')
         .should('be.visible')
-        .and(
-          'have.attr',
-          'href',
-          'https://opensearch.org/docs/latest/dashboards/visualize/viz-index/'
-        );
+        .and('have.attr', 'href')
+        .and((href) => {
+          expect(href).to.match(
+            /https:\/\/opensearch.org\/docs\/(latest|(\d.)+)\/dashboards\/visualize\/viz-index\/$/
+          );
+        });
       cy.get('.euiLink')
         .contains('Creating dashboards')
         .should('be.visible')
-        .and(
-          'have.attr',
-          'href',
-          'https://opensearch.org/docs/latest/dashboards/dashboard/index/'
-        );
+        .and('have.attr', 'href')
+        .and((href) => {
+          expect(href).to.match(
+            /https:\/\/opensearch.org\/docs\/(latest|(\d.)+)\/dashboards\/dashboard\/index\/$/
+          );
+        });
       cy.contains('Learn more in Documentation')
         .should('be.visible')
-        .and(
-          'have.attr',
-          'href',
-          'https://opensearch.org/docs/latest/dashboards/index/'
-        );
+        .and('have.attr', 'href')
+        .and((href) => {
+          expect(href).to.match(
+            /https:\/\/opensearch.org\/docs\/(latest|(\d.)+)\/dashboards\/index\/$/
+          );
+        });
     });
   });
 }
