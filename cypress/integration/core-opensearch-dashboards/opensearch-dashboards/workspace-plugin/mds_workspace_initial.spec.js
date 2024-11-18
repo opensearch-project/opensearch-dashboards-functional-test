@@ -70,10 +70,16 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         ).should('not.exist');
 
         // Contain correct link
-        cy.contains('a', 'Learn more from documentation').should('exist');
-        cy.get(
-          'a[href="https://opensearch.org/docs/latest/opensearch/index/"]'
-        ).should('have.attr', 'target', '_blank');
+        cy.contains('a', 'Learn more from documentation')
+          .should('exist')
+          .should('have.attr', 'target', '_blank')
+          .and('have.attr', 'href')
+          .and((href) => {
+            expect(href).to.match(
+              /https:\/\/opensearch.org\/docs\/(latest|(\d.)+)\/opensearch\/index\/$/
+            );
+          });
+
         cy.contains(
           'a',
           'Explore live demo environment at playground.opensearch.org'
