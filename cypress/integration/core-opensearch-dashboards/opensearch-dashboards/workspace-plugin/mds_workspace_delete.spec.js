@@ -157,6 +157,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         'DELETE',
         `/w/${workspace1Id}/api/workspaces/${workspace1Id}`
       ).as('deleteWorkspace1Request');
+      // Visit workspace detail page
       miscUtils.visitPage(`w/${workspace1Id}/app/workspace_detail`);
     });
 
