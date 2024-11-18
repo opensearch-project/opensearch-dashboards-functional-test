@@ -16,11 +16,10 @@ let workspace2Id;
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Delete Workspace(s) in 2 ways in workspace list page', () => {
     before(() => {
-      cy.deleteAllWorkspaces();
+      cy.deleteWorkspaceByName(workspace1Name);
+      cy.deleteWorkspaceByName(workspace2Name);
     });
     beforeEach(() => {
-      // Visit workspace list page
-      miscUtils.visitPage(`/app/workspace_list`);
       cy.createWorkspace({
         name: workspace1Name,
         description: workspace1Description,
@@ -54,10 +53,13 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
           'deleteWorkspace2Request'
         );
       });
+      // Visit workspace list page
+      miscUtils.visitPage(`/app/workspace_list`);
     });
 
     afterEach(() => {
-      cy.deleteAllWorkspaces();
+      cy.deleteWorkspaceByName(workspace1Name);
+      cy.deleteWorkspaceByName(workspace2Name);
     });
 
     describe('delete a workspace successfully using action buttons', () => {
