@@ -16,7 +16,6 @@ let workspace2Id;
 if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Delete Workspace(s) in 2 ways in workspace list page', () => {
     before(() => {
-      Cypress.config('defaultCommandTimeout', 60000);
       cy.deleteAllWorkspaces();
     });
     beforeEach(() => {
