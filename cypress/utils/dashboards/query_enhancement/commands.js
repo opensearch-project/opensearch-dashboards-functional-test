@@ -45,3 +45,8 @@ Cypress.Commands.add('setQueryLanguage', (value, submit = true) => {
     force: true,
   });
 });
+
+Cypress.Commands.add('setDatasource', (value) => {
+  cy.get(`[class~="datasetSelector__button"]`).click();
+  cy.get(`[data-test-subj="datasetOption-${value}"]`).click();
+});
