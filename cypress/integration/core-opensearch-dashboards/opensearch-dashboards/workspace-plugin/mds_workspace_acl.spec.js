@@ -115,10 +115,18 @@ if (
     });
 
     after(() => {
+      cy.removeSampleDataForWorkspace(
+        'ecommerce',
+        ownerWorkspaceId,
+        datasourceId
+      );
       cy.deleteWorkspaceByName(noPermissionWorkspaceName);
       cy.deleteWorkspaceByName(readOnlyWorkspaceName);
       cy.deleteWorkspaceByName(libraryWriteWorkspaceName);
       cy.deleteWorkspaceByName(ownerWorkspaceName);
+      if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        cy.deleteDataSource(datasourceId);
+      }
       readOnlyWorkspaceId = '';
       libraryWriteWorkspaceId = '';
 
