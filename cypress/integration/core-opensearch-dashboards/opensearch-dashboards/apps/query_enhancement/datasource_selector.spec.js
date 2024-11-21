@@ -8,6 +8,7 @@ import {
   TestFixtureHandler,
 } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
+import { cloneDeep } from 'lodash';
 
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
@@ -84,5 +85,71 @@ describe('Data source selector', () => {
     cy.get(
       '[data-test-subj="datasetSelectorButton"] .euiButton__content'
     ).should('contain', 'with-timefield');
+  });
+});
+
+describe('data source selector', () => {
+  before(() => {
+    // Creating additional index patterns
+    // logstash index pattern
+
+    cy.createIndexPattern(
+      'logstash-sample-1',
+      {
+        title: 'logstash-sample-1*',
+        timeFieldName: 'timestamp',
+      },
+      {
+        securitytenant: ['global'],
+      }
+    );
+    cy.createIndexPattern(
+      'logstash-sample-2',
+      {
+        title: 'logstash-sample-2*',
+        timeFieldName: 'timestamp',
+      },
+      {
+        securitytenant: ['global'],
+      }
+    );
+    cy.wait(5000); // Intentional Wait
+    cy.reload();
+  });
+  it('check data source selector options are ordered', function () {
+    const indexPatterns = [];
+    cy.get('[data-test-subj="datasetSelectorButton"]').click({ force: true });
+    cy.get('input[aria-label="Filter options"]')
+      .click()
+      .type('l')
+      .then(() => {
+        cy.get('[role="option"]')
+          .each((res) => {
+            indexPatterns.push(res.text());
+          })
+          .then(() => {
+            const sortedIndexPatterns = cloneDeep(indexPatterns);
+            sortedIndexPatterns.sort();
+
+            console.log(sortedIndexPatterns);
+
+            cy.wrap(indexPatterns).should('deep.equal', sortedIndexPatterns);
+          });
+      });
+  });
+
+  it('check filtering in data source selector ', function () {
+    cy.get('input[aria-label="Filter options"]')
+      .click()
+      .clear()
+      .type('logstash-sample')
+      .then(() => {
+        cy.get('[role="option"]').should('have.length', 2);
+      });
+  });
+
+  after(() => {
+    cy.deleteIndexPattern('logstash-sample-1');
+    cy.deleteIndexPattern('logstash-sample-2');
   });
 });

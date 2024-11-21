@@ -50,3 +50,13 @@ Cypress.Commands.add('setDatasource', (value) => {
   cy.get(`[class~="datasetSelector__button"]`).click();
   cy.get(`[data-test-subj="datasetOption-${value}"]`).click();
 });
+
+Cypress.Commands.add('prepareNewTest', (fromTime, toTime, interval) => {
+  cy.setTopNavDate(fromTime, toTime);
+  cy.waitForLoaderNewHeader();
+  // wait until the search has been finished
+  cy.waitForSearch();
+  cy.get('select').select(`${interval}`);
+  cy.waitForLoaderNewHeader();
+  cy.waitForSearch();
+});
