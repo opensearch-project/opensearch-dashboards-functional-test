@@ -188,50 +188,6 @@ describe('Transforms', () => {
     });
   });
 
-  describe('can be deleted', () => {
-    beforeEach(() => {
-      cy.createTransform(TRANSFORM_ID, sampleTransform);
-      cy.reload();
-    });
-
-    it('successfully', () => {
-      // Confirm we have our initial transform
-      cy.contains(TRANSFORM_ID);
-
-      // Disable transform
-      cy.get(`#_selection_column_${TRANSFORM_ID}-checkbox`).check({
-        force: true,
-      });
-      cy.get(`[data-test-subj="disableButton"]`).click({ force: true });
-      cy.contains(`"${TRANSFORM_ID}" is disabled`);
-
-      // Select checkbox for our transform job
-      cy.get(`#_selection_column_${TRANSFORM_ID}-checkbox`).check({
-        force: true,
-      });
-
-      // Click on Actions popover menu
-      cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
-
-      // Click Delete button
-      cy.get(`[data-test-subj="deleteButton"]`).click({ force: true });
-
-      // Type "delete" to confirm deletion
-      cy.get(`input[placeholder="delete"]`).type('delete', { force: true });
-
-      // Click the delete confirmation button in modal
-      cy.get(`[data-test-subj="confirmModalConfirmButton"]`).click();
-
-      // Confirm we got deleted toaster
-      cy.contains(`"${TRANSFORM_ID}" successfully deleted`);
-
-      // Confirm showing empty loading state
-      cy.contains(
-        'Transform jobs help you create a materialized view on top of existing data.'
-      );
-    });
-  });
-
   describe('can be enabled and disabled', () => {
     beforeEach(() => {
       cy.createTransform(TRANSFORM_ID, sampleTransform);
@@ -288,6 +244,50 @@ describe('Transforms', () => {
 
       // Confirm we get toaster saying transform job is enabled
       cy.contains(`"${TRANSFORM_ID}" is enabled`);
+    });
+  });
+
+  describe('can be deleted', () => {
+    beforeEach(() => {
+      cy.createTransform(TRANSFORM_ID, sampleTransform);
+      cy.reload();
+    });
+
+    it('successfully', () => {
+      // Confirm we have our initial transform
+      cy.contains(TRANSFORM_ID);
+
+      // Disable transform
+      cy.get(`#_selection_column_${TRANSFORM_ID}-checkbox`).check({
+        force: true,
+      });
+      cy.get(`[data-test-subj="disableButton"]`).click({ force: true });
+      cy.contains(`"${TRANSFORM_ID}" is disabled`);
+
+      // Select checkbox for our transform job
+      cy.get(`#_selection_column_${TRANSFORM_ID}-checkbox`).check({
+        force: true,
+      });
+
+      // Click on Actions popover menu
+      cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
+
+      // Click Delete button
+      cy.get(`[data-test-subj="deleteButton"]`).click({ force: true });
+
+      // Type "delete" to confirm deletion
+      cy.get(`input[placeholder="delete"]`).type('delete', { force: true });
+
+      // Click the delete confirmation button in modal
+      cy.get(`[data-test-subj="confirmModalConfirmButton"]`).click();
+
+      // Confirm we got deleted toaster
+      cy.contains(`"${TRANSFORM_ID}" successfully deleted`);
+
+      // Confirm showing empty loading state
+      cy.contains(
+        'Transform jobs help you create a materialized view on top of existing data.'
+      );
     });
   });
 });
