@@ -132,9 +132,8 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
-      (expectedJson) => {
-        cy.get('#tools_panel_id')
-          .should('be.visible');
+      () => {
+        cy.get('#tools_panel_id').should('be.visible');
       }
     );
     cy.getElementByDataTestId('searchPipelineButton')
@@ -171,9 +170,8 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
 
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/search_response').then(
-      (expectedSearchJson) => {
-        cy.get('#tools_panel_id')
-          .should('be.visible');
+      () => {
+        cy.get('#tools_panel_id').should('be.visible');
       }
     );
   });
