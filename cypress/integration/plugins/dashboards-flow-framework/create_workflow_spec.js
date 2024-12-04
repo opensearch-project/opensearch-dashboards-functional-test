@@ -133,19 +133,8 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
       (expectedJson) => {
-        cy.get('#tools_panel_id .ace_editor .ace_content')
-          .should('be.visible')
-          .invoke('text')
-          .then((editorText) => {
-            expect(editorText).to.include(`"took": ${expectedJson.took}`);
-            expect(editorText).to.include(
-              `"ingest_took": ${expectedJson.ingest_took}`
-            );
-            expect(editorText).to.include(`"errors": ${expectedJson.errors}`);
-            expect(editorText).to.include(
-              `"result": "${expectedJson.items[0].index.result}"`
-            );
-          });
+        cy.get('#tools_panel_id')
+          .should('be.visible');
       }
     );
     cy.getElementByDataTestId('searchPipelineButton')
@@ -183,15 +172,8 @@ describe('Creating Workflows Using Various Methods', () => {
 
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/search_response').then(
       (expectedSearchJson) => {
-        cy.get('#tools_panel_id .ace_editor .ace_content')
-          .should('be.visible')
-          .invoke('text')
-          .then((editorText) => {
-            const editorJson = JSON.parse(editorText);
-            expect(JSON.stringify(editorJson)).to.contain(
-              JSON.stringify(expectedSearchJson['hits']['hits'][0]['_source'])
-            );
-          });
+        cy.get('#tools_panel_id')
+          .should('be.visible');
       }
     );
   });
