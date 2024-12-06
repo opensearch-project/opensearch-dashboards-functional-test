@@ -18,6 +18,20 @@ export const WorkspaceDetailTestCases = () => {
   let workspaceDescription = 'This is a workspace description.';
   let workspaceId;
   let workspaceFeatures = ['use-case-observability'];
+  const workspaceBaseData = {
+    name: workspaceName,
+    description: workspaceDescription,
+    features: workspaceFeatures,
+    color: '#54B399',
+    settings: {
+      permissions: {
+        library_write: { users: ['%me%'] },
+        write: { users: ['%me%'] },
+        library_read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
+        read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
+      },
+    },
+  };
 
   if (Cypress.env('WORKSPACE_ENABLED')) {
     describe('Workspace detail', () => {
@@ -34,19 +48,9 @@ export const WorkspaceDetailTestCases = () => {
           );
         }
         cy.deleteWorkspaceByName(workspaceName);
-        cy.createWorkspace({
-          name: workspaceName,
-          description: workspaceDescription,
-          features: workspaceFeatures,
-          settings: {
-            permissions: {
-              library_write: { users: ['%me%'] },
-              write: { users: ['%me%'] },
-              library_read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
-              read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
-            },
-          },
-        }).then((value) => (workspaceId = value));
+        cy.createWorkspace(workspaceBaseData).then(
+          (value) => (workspaceId = value)
+        );
       });
 
       after(() => {
@@ -292,6 +296,106 @@ export const WorkspaceDetailTestCases = () => {
               cy.checkWorkspace(adminWorkspaceId, expectedWorkspace);
               cy.deleteWorkspaceById(adminWorkspaceId);
             });
+          });
+        });
+
+        describe('update with different privacy settings', () => {
+          before(() => {
+            // Visit workspace update page
+            miscUtils.visitPage(`w/${workspaceId}/app/workspace_detail`);
+          });
+
+          afterEach(() => {
+            cy.getElementByTestId(
+              'workspaceForm-workspaceDetails-edit'
+            ).click();
+            cy.getElementByTestId('workspacePrivacySettingSelector').click({
+              force: true,
+            });
+            cy.get('#private-to-collaborators').click({ force: true });
+            cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click(
+              { force: true }
+            );
+            cy.getElementByTestId(
+              'workspaceForm-bottomBar-updateButton'
+            ).should('not.exist');
+            cy.checkWorkspace(workspaceId, {
+              name: workspaceName,
+              description: workspaceDescription,
+              features: workspaceFeatures,
+              permissions: {
+                library_write: { users: ['%me%'] },
+                write: { users: ['%me%'] },
+                library_read: {
+                  users: [NONE_DASHBOARDS_ADMIN_USERNAME],
+                },
+                read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME] },
+              },
+            });
+          });
+
+          it('should able to update privacy setting to anyone can read', () => {
+            cy.getElementByTestId(
+              'workspaceForm-workspaceDetails-edit'
+            ).click();
+            cy.getElementByTestId('workspacePrivacySettingSelector').click({
+              force: true,
+            });
+            cy.get('#anyone-can-view').click({ force: true });
+            cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click(
+              { force: true }
+            );
+
+            cy.getElementByTestId(
+              'workspaceForm-bottomBar-updateButton'
+            ).should('not.exist');
+
+            const expectedWorkspace = {
+              name: workspaceName,
+              description: workspaceDescription,
+              features: workspaceFeatures,
+              permissions: {
+                library_write: { users: ['%me%'] },
+                write: { users: ['%me%'] },
+                library_read: {
+                  users: [NONE_DASHBOARDS_ADMIN_USERNAME, '*'],
+                },
+                read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME, '*'] },
+              },
+            };
+            cy.checkWorkspace(workspaceId, expectedWorkspace);
+          });
+
+          it('should able to update privacy setting to anyone can write', () => {
+            cy.getElementByTestId(
+              'workspaceForm-workspaceDetails-edit'
+            ).click();
+            cy.getElementByTestId('workspacePrivacySettingSelector').click({
+              force: true,
+            });
+            cy.get('#anyone-can-edit').click({ force: true });
+            cy.getElementByTestId('workspaceForm-bottomBar-updateButton').click(
+              { force: true }
+            );
+
+            cy.getElementByTestId(
+              'workspaceForm-bottomBar-updateButton'
+            ).should('not.exist');
+
+            const expectedWorkspace = {
+              name: workspaceName,
+              description: workspaceDescription,
+              features: workspaceFeatures,
+              permissions: {
+                library_write: { users: ['%me%', '*'] },
+                write: { users: ['%me%'] },
+                library_read: {
+                  users: [NONE_DASHBOARDS_ADMIN_USERNAME],
+                },
+                read: { users: [NONE_DASHBOARDS_ADMIN_USERNAME, '*'] },
+              },
+            };
+            cy.checkWorkspace(workspaceId, expectedWorkspace);
           });
         });
       }
