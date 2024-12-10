@@ -34,7 +34,7 @@ const makeTestNotebook = () => {
 
   cy.contains(`Notebook "${notebookName}" successfully created`);
 
-  cy.get('h1[data-test-subj="notebookTitle"]')
+  cy.get('[data-test-subj="notebookTitle"]')
     .contains(notebookName)
     .should('exist');
 
@@ -61,8 +61,7 @@ const deleteNotebook = (notebookName) => {
     .find('input[type="checkbox"]')
     .check();
 
-  cy.get('button[data-test-subj="notebookTableActionBtn"]').click();
-  cy.get('button[data-test-subj="deleteNotebookBtn"]').click();
+  cy.get('button[data-test-subj="deleteSelectedNotebooks"]').click();
 
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').focus();
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
