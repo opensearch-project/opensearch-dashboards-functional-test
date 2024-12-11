@@ -1,7 +1,7 @@
 {
   "total": 26,
   "data": {
-    "test": {
+    "test-selection": {
       "reserved": false,
       "hidden": false,
       "allowed_actions": ["data_access"],

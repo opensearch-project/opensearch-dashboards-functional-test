@@ -101,9 +101,7 @@ describe('ClusterMetricsMonitor', () => {
     beforeEach(() => {
       cy.deleteAllMonitors();
       cy.reload();
-    });
 
-    it('for the Cluster Health API', () => {
       // Confirm empty monitor list is loaded
       cy.contains('There are no existing monitors');
 
@@ -117,11 +115,15 @@ describe('ClusterMetricsMonitor', () => {
         force: true,
       });
 
+      // Wait for API types to load to reduce flakiness
+      cy.wait(5000);
+    });
+
+    it('for the Cluster Health API', () => {
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(SAMPLE_CLUSTER_METRICS_HEALTH_MONITOR);
 
-      // Wait for the API types to load and then type in the Cluster Health API
-      cy.wait(5000);
+      // Type in the Cluster Health API
       cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
         'cluster health{enter}'
       );
@@ -168,21 +170,12 @@ describe('ClusterMetricsMonitor', () => {
     });
 
     it('for the Nodes Stats API', () => {
-      // Confirm empty monitor list is loaded
-      cy.contains('There are no existing monitors');
-
-      // Go to create monitor page
-      cy.contains('Create monitor').click();
-
-      // Select ClusterMetrics radio card
-      cy.get('[data-test-subj="clusterMetricsMonitorRadioCard"]').click();
-
       // Wait for input to load and then type in the monitor name
       cy.get('input[name="name"]').type(
         SAMPLE_CLUSTER_METRICS_NODES_STATS_MONITOR
       );
 
-      // Wait for the API types to load and then type in the Cluster Health API
+      // Type in the Cluster Health API
       cy.get('[data-test-subj="clusterMetricsApiTypeComboBox"]').type(
         'nodes stats{enter}'
       );
@@ -449,8 +442,8 @@ describe('ClusterMetricsMonitor', () => {
           'ctx.results[0].number_of_pending_tasks >= 0'
         );
 
-        // Click update button to save monitor changes
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click save button to save monitor changes
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we can see only one row in the trigger list by checking <caption> element
         cy.contains('This table contains 1 row');

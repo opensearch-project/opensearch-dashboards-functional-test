@@ -54,6 +54,12 @@ const plugins = {
       ],
     },
   },
+  'dashboards-flow-framework': {
+    name: 'flowFrameworkDashboards',
+    default: {
+      videos: ['create_workflow_spec.js'],
+    },
+  },
   'anomaly-detection-dashboards-plugin': {
     name: 'anomalyDetectionDashboards',
     default: {

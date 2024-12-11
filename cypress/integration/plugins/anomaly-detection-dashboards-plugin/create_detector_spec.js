@@ -15,6 +15,7 @@ context('Create detector workflow', () => {
 
   // Index some sample data first
   beforeEach(() => {
+    cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
     cy.deleteAllIndices();
     cy.deleteADSystemIndices();
     cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {

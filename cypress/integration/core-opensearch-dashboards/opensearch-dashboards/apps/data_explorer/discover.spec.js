@@ -63,6 +63,33 @@ describe('discover app', { scrollBehavior: false }, () => {
 
   after(() => {});
 
+  describe('filters and queries', () => {
+    after(() => {
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
+      cy.getElementByTestId(`deleteFilter`).click();
+      cy.switchDiscoverTable('legacy');
+    });
+    it('should persist across refresh', function () {
+      // Set up query and filter
+      cy.setTopNavQuery('response:200');
+      cy.submitFilterFromDropDown('extension.raw', 'is one of', 'jpg');
+      cy.reload();
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
+        'be.visible'
+      );
+    });
+
+    it('should persist across switching table', function () {
+      cy.switchDiscoverTable('new');
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
+        'be.visible'
+      );
+      cy.clearTopNavQuery();
+    });
+  });
+
   describe('save search', () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
@@ -279,15 +306,12 @@ describe('discover app', { scrollBehavior: false }, () => {
             .should('be.visible')
             .clear()
             .type('2');
-
-          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Let auto refresh run
           cy.wait(100);
 
           // Close the auto refresh
-          cy.makeDatePickerMenuOpen();
           cy.getElementByTestId('superDatePickerToggleRefreshButton').click();
 
           // Check the timestamp of the last request, it should be different than the first timestamp

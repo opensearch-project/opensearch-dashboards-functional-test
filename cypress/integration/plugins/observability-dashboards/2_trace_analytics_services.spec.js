@@ -5,7 +5,12 @@
 
 /// <reference types="cypress" />
 
-import { SERVICE_NAME, setTimeFilter } from '../../../utils/constants';
+import {
+  SERVICE_NAME,
+  setTimeFilter,
+  delayTime,
+  TIMEOUT_DELAY,
+} from '../../../utils/constants';
 
 describe('Testing services table', () => {
   beforeEach(() => {
@@ -22,8 +27,18 @@ describe('Testing services table', () => {
       .first()
       .focus()
       .type(`${SERVICE_NAME}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
+      timeout: TIMEOUT_DELAY,
+    }).click();
     cy.contains(' (1)').should('exist');
+  });
+
+  it('Opens service flyout', () => {
+    cy.get('button[data-test-subj^="service-flyout-action-btn"]')
+      .first()
+      .click();
+    cy.wait(delayTime);
+    cy.get('span').contains('Overview').should('exist');
   });
 });
 
