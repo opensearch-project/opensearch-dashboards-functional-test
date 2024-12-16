@@ -61,7 +61,7 @@ const deleteNotebook = (notebookName) => {
     .find('input[type="checkbox"]')
     .check();
 
-  cy.get('button[data-test-subj="deleteSelectedNotebooks"]').click();
+  cy.get('[data-test-subj="deleteSelectedNotebooks"]').click();
 
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').focus();
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
