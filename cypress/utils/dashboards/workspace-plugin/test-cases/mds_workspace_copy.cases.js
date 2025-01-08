@@ -94,10 +94,7 @@ export const WorkspaceCopyTestCases = () => {
     });
   };
 
-  if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
-  ) {
+  if (Cypress.env('WORKSPACE_ENABLED')) {
     before(() => {
       cy.deleteWorkspaceByName(sourceWorkspaceName);
       cy.deleteWorkspaceByName(targetWorkspaceName);
@@ -142,28 +139,25 @@ export const WorkspaceCopyTestCases = () => {
       ).as('copyAssetsRequest');
     });
 
-    describe('Copy all assets', () => {
-      before(() => {
+    afterEach(() => {
+      cy.deleteWorkspaceByName(targetWorkspaceName);
+    });
+
+    describe('Copy function', () => {
+      beforeEach(() => {
         createTargetWorkspace(dataSourceId1);
         miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
       });
 
-      after(() => {
-        cy.deleteWorkspaceByName(targetWorkspaceName);
-      });
-
-      it('should pop up copy modal when user click the copy all button', () => {
+      it('should successfully copy all assets from source workspace to target workspace', () => {
+        // should pop up copy modal when user click the copy all button
         cy.getElementByTestId('duplicateObjects').should('exist').click();
         verifyDuplicateModalContent('14 assets');
-      });
-
-      it('should successfully copy all assets from source workspace to target workspace', () => {
         verifyDuplicateFunction(14, targetWorkspaceId);
       });
-    });
 
-    describe('Copy single asset', () => {
-      const clickSingleCopyButton = () => {
+      it('should successfully copy single asset from source workspace to target workspace', () => {
+        // should pop up copy modal when user click the single copy button
         cy.getElementByTestId('savedObjectsTable')
           .should('exist')
           .within(() => {
@@ -175,34 +169,17 @@ export const WorkspaceCopyTestCases = () => {
         cy.getElementByTestId('savedObjectsTableAction-duplicate')
           .should('exist')
           .click();
-      };
-
-      before(() => {
-        createTargetWorkspace(dataSourceId1);
-        miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
-      });
-
-      after(() => {
-        cy.deleteWorkspaceByName(targetWorkspaceName);
-      });
-
-      it('should pop up copy modal when user click the single copy button', () => {
-        clickSingleCopyButton();
         verifyDuplicateModalContent(
           `[eCommerce] Revenue Dashboard_${dataSourceTitle1}`
         );
-      });
-
-      it('should successfully copy single asset from source workspace to target workspace', () => {
         cy.get('#includeReferencesDeep').uncheck({
           force: true,
         });
         verifyDuplicateFunction(1, targetWorkspaceId);
       });
-    });
 
-    describe('Copy selected assets', () => {
-      const clickSelectedCopyButton = () => {
+      it('should successfully copy selected assets from source workspace to target workspace', () => {
+        // should pop up copy modal when user click the copy to button
         cy.getElementByTestId('savedObjectsTable')
           .find('tbody')
           .find('.euiCheckbox__input')
@@ -215,23 +192,7 @@ export const WorkspaceCopyTestCases = () => {
         cy.getElementByTestId('savedObjectsManagementDuplicate')
           .should('exist')
           .click();
-      };
-
-      before(() => {
-        createTargetWorkspace(dataSourceId1);
-        miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
-      });
-
-      after(() => {
-        cy.deleteWorkspaceByName(targetWorkspaceName);
-      });
-
-      it('should pop up copy modal when user click the copy to button', () => {
-        clickSelectedCopyButton();
         verifyDuplicateModalContent('2 assets');
-      });
-
-      it('should successfully copy selected assets from source workspace to target workspace', () => {
         verifyDuplicateFunction(14, targetWorkspaceId);
       });
     });
@@ -242,13 +203,8 @@ export const WorkspaceCopyTestCases = () => {
         miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
       });
 
-      after(() => {
-        cy.deleteWorkspaceByName(targetWorkspaceName);
-      });
-
       it('should not copy assets to target workspace without assigning related data source', () => {
         cy.getElementByTestId('duplicateObjects').should('exist').click();
-
         cy.getElementByTestId('savedObjectsDuplicateModal')
           .find('[data-test-subj="comboBoxToggleListButton"]')
           .should('exist')
@@ -276,12 +232,10 @@ export const WorkspaceCopyTestCases = () => {
             cy.contains(
               `The following assets can not be copied, some of the data sources they use are not associated with ${targetWorkspaceName}`
             );
-            cy.contains('Copy remaining 1 asset');
+            cy.contains('Copy remaining 1 asset').should('exist').click();
           });
-      });
 
-      it('should successfully copy remaining assets from source workspace to target workspace', () => {
-        cy.contains('Copy remaining 1 asset').should('exist').click();
+        // should successfully copy remaining assets from source workspace to target workspace
         cy.wait('@copyAssetsRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
           expect(interception.response.body.success).to.equal(true);
