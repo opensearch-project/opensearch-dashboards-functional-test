@@ -94,7 +94,10 @@ export const WorkspaceCopyTestCases = () => {
     });
   };
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (
+    Cypress.env('WORKSPACE_ENABLED') &&
+    Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  ) {
     before(() => {
       cy.deleteAllWorkspaces();
       cy.createDataSourceNoAuth({ title: dataSourceTitle1 }).then((result) => {
