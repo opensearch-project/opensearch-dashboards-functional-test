@@ -96,40 +96,52 @@ export const WorkspaceCopyTestCases = () => {
 
   if (Cypress.env('WORKSPACE_ENABLED')) {
     before(() => {
-      cy.deleteWorkspaceByName(sourceWorkspaceName);
-      cy.deleteWorkspaceByName(targetWorkspaceName);
+      cy.deleteAllWorkspaces();
       cy.createDataSourceNoAuth({ title: dataSourceTitle1 }).then((result) => {
         dataSourceId1 = result[0];
-        cy.createWorkspace({
-          name: sourceWorkspaceName,
-          features: ['use-case-observability'],
-          settings: {
-            permissions: {
-              library_write: { users: ['%me%'] },
-              write: { users: ['%me%'] },
-            },
-            dataSources: [dataSourceId1],
-          },
-        }).then((value) => {
-          sourceWorkspaceId = value;
-          // Import ecommerce sample data to source workspace.
-          cy.loadSampleDataForWorkspace(
-            'ecommerce',
-            sourceWorkspaceId,
-            dataSourceId1
-          );
-        });
       });
       cy.createDataSourceNoAuth({ title: dataSourceTitle2 }).then((result) => {
         dataSourceId2 = result[0];
       });
+
+      cy.wrap(null)
+        .should(() => {
+          expect(dataSourceId1).to.not.be.undefined;
+          expect(dataSourceId2).to.not.be.undefined;
+        })
+        .then(() => {
+          cy.createWorkspace({
+            name: sourceWorkspaceName,
+            features: ['use-case-observability'],
+            settings: {
+              permissions: {
+                library_write: { users: ['%me%'] },
+                write: { users: ['%me%'] },
+              },
+              dataSources: [dataSourceId1, dataSourceId2],
+            },
+          }).then((value) => {
+            sourceWorkspaceId = value;
+            // Import ecommerce sample data to dataSourceId1 of source workspace.
+            cy.loadSampleDataForWorkspace(
+              'ecommerce',
+              sourceWorkspaceId,
+              dataSourceId1
+            );
+          });
+        });
     });
 
     after(() => {
-      cy.deleteDataSource(dataSourceId1);
-      cy.deleteDataSource(dataSourceId2);
-      cy.deleteWorkspaceByName(sourceWorkspaceName);
-      cy.deleteWorkspaceByName(targetWorkspaceName);
+      cy.wrap(null).then(() => {
+        if (dataSourceId1) {
+          cy.deleteDataSource(dataSourceId1);
+        }
+        if (dataSourceId2) {
+          cy.deleteDataSource(dataSourceId2);
+        }
+      });
+      cy.deleteAllWorkspaces();
     });
 
     beforeEach(() => {
@@ -199,6 +211,12 @@ export const WorkspaceCopyTestCases = () => {
 
     describe('Partial copy assets', () => {
       before(() => {
+        // Import ecommerce sample data to dataSourceId2 of source workspace.
+        cy.loadSampleDataForWorkspace(
+          'ecommerce',
+          sourceWorkspaceId,
+          dataSourceId2
+        );
         createTargetWorkspace(dataSourceId2);
         miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
       });
@@ -221,7 +239,7 @@ export const WorkspaceCopyTestCases = () => {
         cy.wait('@copyAssetsRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
           expect(interception.response.body.success).to.equal(false);
-          expect(interception.response.body.successCount).to.equal(1);
+          expect(interception.response.body.successCount).to.equal(15);
         });
 
         cy.get('.euiFlyout')
@@ -232,21 +250,21 @@ export const WorkspaceCopyTestCases = () => {
             cy.contains(
               `The following assets can not be copied, some of the data sources they use are not associated with ${targetWorkspaceName}`
             );
-            cy.contains('Copy remaining 1 asset').should('exist').click();
+            cy.contains('Copy remaining 15 asset').should('exist').click();
           });
 
         // should successfully copy remaining assets from source workspace to target workspace
         cy.wait('@copyAssetsRequest').then((interception) => {
           expect(interception.response.statusCode).to.equal(200);
           expect(interception.response.body.success).to.equal(true);
-          expect(interception.response.body.successCount).to.equal(1);
+          expect(interception.response.body.successCount).to.equal(15);
         });
         cy.get('.euiFlyout')
           .should('be.visible')
           .within(() => {
             cy.contains('Copy assets to ' + targetWorkspaceName);
-            cy.contains('1 asset copied');
-            cy.contains('1 Successful');
+            cy.contains('15 assets copied');
+            cy.contains('15 Successful');
           });
         miscUtils.visitPage(`w/${targetWorkspaceId}/app/objects`);
 
@@ -255,7 +273,7 @@ export const WorkspaceCopyTestCases = () => {
         cy.getElementByTestId('savedObjectsTable')
           .find('tbody')
           .get('.euiTableRow')
-          .should('have.length', 1);
+          .should('have.length', 15);
       });
     });
   }
