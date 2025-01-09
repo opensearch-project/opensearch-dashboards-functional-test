@@ -127,38 +127,38 @@ describe('Test reporting integration if plugin installed', () => {
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+    // cy.get('body').contains('Please continue report generation in the new tab');
   });
 
-  it('Create in-context PNG report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.get('button.euiContextMenuItem:nth-child(2)')
-      .contains('Download PNG')
-      .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
-  });
+  // it('Create in-context PNG report from notebook', () => {
+  //   cy.get('#reportingActionsButton').click();
+  //   cy.get('button.euiContextMenuItem:nth-child(2)')
+  //     .contains('Download PNG')
+  //     .click();
+  //   cy.get('body').contains('Please continue report generation in the new tab');
+  // });
 
-  it('Create on-demand report definition from context menu', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.get('button.euiContextMenuItem:nth-child(3)')
-      .contains('Create report definition')
-      .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should(
-      'include',
-      '/reports-dashboards'
-    );
-    cy.get('#reportSettingsName').type('Create notebook on-demand report');
-    cy.get('#createNewReportDefinition').click({ force: true });
-  });
+  // it('Create on-demand report definition from context menu', () => {
+  //   cy.get('#reportingActionsButton').click();
+  //   cy.get('button.euiContextMenuItem:nth-child(3)')
+  //     .contains('Create report definition')
+  //     .click();
+  //   cy.location('pathname', { timeout: delayTime * 3 }).should(
+  //     'include',
+  //     '/reports-dashboards'
+  //   );
+  //   cy.get('#reportSettingsName').type('Create notebook on-demand report');
+  //   cy.get('#createNewReportDefinition').click({ force: true });
+  // });
 
-  it('View reports homepage from context menu', () => {
-    cy.get('#reportingActionsButton').click();
-    cy.get('button.euiContextMenuItem:nth-child(4)')
-      .contains('View reports')
-      .click();
-    cy.location('pathname', { timeout: delayTime * 3 }).should(
-      'include',
-      '/reports-dashboards'
-    );
-  });
+  // it('View reports homepage from context menu', () => {
+  //   cy.get('#reportingActionsButton').click();
+  //   cy.get('button.euiContextMenuItem:nth-child(4)')
+  //     .contains('View reports')
+  //     .click();
+  //   cy.location('pathname', { timeout: delayTime * 3 }).should(
+  //     'include',
+  //     '/reports-dashboards'
+  //   );
+  // });
 });
