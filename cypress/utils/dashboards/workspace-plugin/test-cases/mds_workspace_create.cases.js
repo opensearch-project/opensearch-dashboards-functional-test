@@ -156,6 +156,9 @@ export const WorkspaceCreateTestCases = () => {
             cy.deleteWorkspaceByName(workspaceName);
             inputWorkspaceName(workspaceName);
             inputDataSourceWhenMDSEnabled(dataSourceTitle);
+            cy.getElementByTestId('jumpToCollaboratorsCheckbox').click({
+              force: true,
+            });
             cy.getElementByTestId('workspaceForm-bottomBar-createButton').click(
               {
                 force: true,
@@ -171,6 +174,36 @@ export const WorkspaceCreateTestCases = () => {
                 'include',
                 `w/${workspaceId}/app/workspace_collaborators`
               );
+            });
+          });
+
+          it('should creating a workspace with privacy setting', () => {
+            cy.deleteWorkspaceByName(workspaceName);
+            inputWorkspaceName(workspaceName);
+            inputDataSourceWhenMDSEnabled(dataSourceTitle);
+            cy.get('#anyone-can-edit').click();
+            cy.getElementByTestId('jumpToCollaboratorsCheckbox')
+              .should('be.enabled')
+              .click({
+                force: true,
+              });
+            cy.getElementByTestId('workspaceForm-bottomBar-createButton').click(
+              {
+                force: true,
+              }
+            );
+
+            let workspaceId;
+            cy.wait('@createWorkspaceRequest').then((interception) => {
+              expect(interception.response.statusCode).to.equal(200);
+              workspaceId = interception.response.body.result.id;
+
+              cy.location('pathname', { timeout: 6000 }).should(
+                'include',
+                `w/${workspaceId}/app/workspace_collaborators`
+              );
+
+              cy.contains('Anyone can edit').should('be.exist');
             });
           });
         }
