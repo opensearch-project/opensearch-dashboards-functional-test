@@ -18,14 +18,25 @@ describe('Testing traces table', () => {
   });
 
   it('Sorts the traces table', () => {
-    cy.get('.euiTableRow').first().contains('-').should('exist');
+    cy.get(
+      '[data-test-subj="trace-groups-service-operation-accordian"]'
+    ).click();
+
+    cy.get('[data-test-subj="dashboard-table-trace-group-name-button"]').should(
+      'be.visible'
+    );
+
+    cy.get('.euiTableRow')
+      .first()
+      .contains('client_create_order')
+      .should('exist');
     cy.get('.euiTableCellContent').contains('Trace group').click();
     cy.get('.euiTableRow').first().contains('/**').should('exist');
   });
 
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('button[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
     cy.contains('03/25/2021 10:21:22').should('exist');
   });
