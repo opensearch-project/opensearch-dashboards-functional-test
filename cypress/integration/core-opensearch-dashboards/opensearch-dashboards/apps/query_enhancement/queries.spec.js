@@ -14,12 +14,6 @@ const testFixtureHandler = new TestFixtureHandler(
   Cypress.env('openSearchUrl')
 );
 
-const indexSet = [
-  'logstash-2015.09.22',
-  'logstash-2015.09.21',
-  'logstash-2015.09.20',
-];
-
 describe('query enhancement queries', { scrollBehavior: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
@@ -108,7 +102,7 @@ describe('query enhancement queries', { scrollBehavior: false }, () => {
         `source = timestamp-*`
       );
       cy.waitForSearch();
-      cy.getElementByTestId('queryResultCompleteMsg').click();
+      cy.getElementByTestId(`queryResultCompleteMsg`).should('be.visible');
       cy.get('[class="euiText euiText--small"]').then((text) => cy.log(text));
       cy.verifyHitCount(4);
 
