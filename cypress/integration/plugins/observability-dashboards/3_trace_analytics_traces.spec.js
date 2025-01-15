@@ -33,9 +33,7 @@ describe('Testing traces table', () => {
 
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
-    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
     cy.get('.euiTableCellContent')
       .eq(11)
