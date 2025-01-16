@@ -27,9 +27,7 @@ describe('Testing services table', () => {
       .first()
       .focus()
       .type(`${SERVICE_NAME}{enter}`);
-    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
   });
 
