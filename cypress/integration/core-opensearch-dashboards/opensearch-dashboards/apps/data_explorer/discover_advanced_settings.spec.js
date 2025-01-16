@@ -430,7 +430,7 @@ describe('discover_advanced_setting', () => {
     });
 
     it('check refresh data button is displayed when searchOnPageLoad is set as false', function () {
-      cy.get('.euiButton__text').contains('Refresh data').should('exist');
+      cy.get('[data-test-subj="discover-refreshDataButton"]').should('exist');
     });
 
     after(() => {
