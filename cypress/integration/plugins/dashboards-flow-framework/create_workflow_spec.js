@@ -118,7 +118,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('selectDataToImportButton')
       .should('be.visible')
       .click();
-    cy.get(`[data-text="Upload file"]`).should('be.visible').click();
+    cy.get(`[data-text="Upload a file"]`).should('be.visible').click();
     const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.json`;
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('updateSourceDataButton')
@@ -177,7 +177,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Create workflow from custom template', () => {
-    createPreset('Custom');
+    createPreset('Custom Search');
   });
 
   after(() => {
