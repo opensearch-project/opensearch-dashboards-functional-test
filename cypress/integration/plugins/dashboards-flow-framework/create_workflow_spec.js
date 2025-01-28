@@ -40,7 +40,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
-  it.skip('Import workflow with valid configuration', () => {
+  it('Import workflow with valid configuration', () => {
     CURRENT_TENANT.newTenant = 'global';
     cy.wait(20000);
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
@@ -67,7 +67,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
   });
 
-  it.skip('Attempt to import workflow with invalid configuration', () => {
+  it('Attempt to import workflow with invalid configuration', () => {
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
@@ -167,15 +167,15 @@ describe('Creating Workflows Using Various Methods', () => {
     // TODO: further search response validation can be completed when the UI is finalized in how it is displayed.
   });
 
-  it.skip('Create workflow from hybrid search template', () => {
+  it('Create workflow from hybrid search template', () => {
     createPreset('Hybrid Search');
   });
 
-  it.skip('Create workflow from multimodal template', () => {
+  it('Create workflow from multimodal template', () => {
     createPreset('Multimodal Search');
   });
 
-  it.skip('Create workflow from custom template', () => {
+  it('Create workflow from custom template', () => {
     createPreset('Custom Search');
   });
 
