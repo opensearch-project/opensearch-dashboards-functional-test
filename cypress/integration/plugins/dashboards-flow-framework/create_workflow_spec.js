@@ -177,7 +177,7 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Create workflow from custom template', () => {
-    createPreset('Custom');
+    createPreset('Custom Search');
   });
 
   after(() => {
