@@ -4,7 +4,10 @@
   "description": "A basic workflow containing the ingest pipeline, search pipeline, and index configurations for performing semantic search",
   "version": {
     "template": "1.0.0",
-    "compatibility": ["2.17.0", "3.0.0"]
+    "compatibility": [
+      "2.17.0",
+      "3.0.0"
+    ]
   },
   "workflows": {
     "provision": {
@@ -54,7 +57,7 @@
     }
   },
   "ui_metadata": {
-    "type": "Semantic search",
+    "type": "Semantic Search",
     "config": {
       "search": {
         "pipelineName": {
