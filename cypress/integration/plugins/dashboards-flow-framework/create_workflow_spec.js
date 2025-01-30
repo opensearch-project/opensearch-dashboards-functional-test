@@ -164,7 +164,6 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.getElementByTestId('updateSearchButton').should('be.visible').click();
-    cy.getElementByTestId('searchButton').should('be.visible').click();
     // TODO: further search response validation can be completed when the UI is finalized in how it is displayed.
   });
 
