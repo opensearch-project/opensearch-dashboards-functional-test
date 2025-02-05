@@ -138,7 +138,8 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create in-context PDF report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
+    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
       .click();
@@ -146,7 +147,8 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create in-context PNG report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
+    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
       .click();
@@ -154,7 +156,8 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create on-demand report definition from context menu', () => {
-    cy.get('#reportingActionsButton').click();
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
+    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
       .click();
@@ -167,7 +170,8 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('View reports homepage from context menu', () => {
-    cy.get('#reportingActionsButton').click();
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
+    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
       .click();
