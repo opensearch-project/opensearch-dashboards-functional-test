@@ -53,6 +53,8 @@ const makePopulatedParagraph = () => {
   cy.get('textarea[data-test-subj="editorArea-0"]').type(MARKDOWN_TEXT);
   cy.get('button[data-test-subj="runRefreshBtn-0"]').click();
   cy.get('textarea[data-test-subj="editorArea-0"]').should('not.exist');
+  cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
+  cy.get('code').contains('POST').should('exist');
 };
 
 const deleteNotebook = () => {
@@ -117,9 +119,6 @@ describe('Testing notebook actions', () => {
 
   it('Renders markdown', () => {
     makePopulatedParagraph();
-
-    cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
-    cy.get('code').contains('POST').should('exist');
     cy.get('td').contains('b2').should('exist');
   });
 });
@@ -132,6 +131,11 @@ describe('Test reporting integration if plugin installed', () => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
     makePopulatedParagraph();
+    cy.get('.euiContextMenuPanel').should('not.exist');
+    cy.get('button[data-test-subj="reporting-actions-button"]').should(
+      'be.visible'
+    );
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
   });
 
   after(() => {
@@ -139,29 +143,27 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('Create in-context PDF report from notebook', () => {
-    cy.get('button[data-test-subj="reporting-actions-button"]').click();
-    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
-      .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+      .click({ force: true });
+    cy.get('body')
+      .contains('Please continue report generation in the new tab')
+      .should('exist');
   });
 
   it('Create in-context PNG report from notebook', () => {
-    cy.get('button[data-test-subj="reporting-actions-button"]').click();
-    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
-      .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+      .click({ force: true });
+    cy.get('body')
+      .contains('Please continue report generation in the new tab')
+      .should('exist');
   });
 
   it('Create on-demand report definition from context menu', () => {
-    cy.get('button[data-test-subj="reporting-actions-button"]').click();
-    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
-      .click();
+      .click({ force: true });
     cy.location('pathname', { timeout: delayTime * 3 }).should(
       'include',
       '/reports-dashboards'
@@ -171,11 +173,9 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('View reports homepage from context menu', () => {
-    cy.get('button[data-test-subj="reporting-actions-button"]').click();
-    cy.get('.euiContextMenuPanel').should('be.visible');
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
-      .click();
+      .click({ force: true });
     cy.location('pathname', { timeout: delayTime * 3 }).should(
       'include',
       '/reports-dashboards'
