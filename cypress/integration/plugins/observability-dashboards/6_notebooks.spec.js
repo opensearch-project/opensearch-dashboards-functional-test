@@ -52,6 +52,7 @@ const makePopulatedParagraph = () => {
   cy.get('textarea[data-test-subj="editorArea-0"]').focus();
   cy.get('textarea[data-test-subj="editorArea-0"]').type(MARKDOWN_TEXT);
   cy.get('button[data-test-subj="runRefreshBtn-0"]').click();
+  cy.get('textarea[data-test-subj="editorArea-0"]').should('not.exist');
 };
 
 const deleteNotebook = () => {
@@ -116,7 +117,7 @@ describe('Testing notebook actions', () => {
 
   it('Renders markdown', () => {
     makePopulatedParagraph();
-    cy.get('textarea[data-test-subj="editorArea-0"]').should('not.exist');
+
     cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
     cy.get('code').contains('POST').should('exist');
     cy.get('td').contains('b2').should('exist');
