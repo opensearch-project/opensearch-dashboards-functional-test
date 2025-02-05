@@ -54,16 +54,8 @@ const makePopulatedParagraph = () => {
   cy.get('button[data-test-subj="runRefreshBtn-0"]').click();
 };
 
-const deleteNotebook = (notebookName) => {
-  moveToNotebookHome();
-
-  cy.contains('.euiTableRow', notebookName)
-    .find('input[type="checkbox"]')
-    .check();
-
-  cy.get('[data-test-subj="deleteSelectedNotebooks"]').click();
-
-  cy.get('input[data-test-subj="delete-notebook-modal-input"]').focus();
+const deleteNotebook = () => {
+  cy.get('button[data-test-subj="notebook-delete-icon"]').click();
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
   cy.get('button[data-test-subj="delete-notebook-modal-delete-button"]').should(
     'not.be.disabled'
@@ -71,9 +63,36 @@ const deleteNotebook = (notebookName) => {
   cy.get(
     'button[data-test-subj="delete-notebook-modal-delete-button"]'
   ).click();
+};
+
+const deleteAllNotebooks = () => {
+  cy.intercept('GET', '/api/observability/notebooks/savedNotebook').as(
+    'getNotebooks'
+  );
+  cy.intercept(
+    'DELETE',
+    '/api/observability/notebooks/note/savedNotebook/*'
+  ).as('deleteNotebook');
   moveToNotebookHome();
 
-  cy.contains('.euiTableRow', notebookName).should('not.exist');
+  cy.wait('@getNotebooks').then(() => {
+    cy.contains(' (4)').should('exist');
+  });
+
+  cy.get('input[data-test-subj="checkboxSelectAll"]').click();
+  cy.get('button[data-test-subj="deleteSelectedNotebooks"]')
+    .contains('Delete 4 notebooks')
+    .should('exist');
+  cy.get('button[data-test-subj="deleteSelectedNotebooks"]').click();
+  cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
+  cy.get('button[data-test-subj="delete-notebook-modal-delete-button"]').should(
+    'not.be.disabled'
+  );
+  cy.get(
+    'button[data-test-subj="delete-notebook-modal-delete-button"]'
+  ).click();
+
+  cy.wait('@deleteNotebook').its('response.statusCode').should('eq', 200);
 };
 
 describe('Testing notebook actions', () => {
@@ -83,9 +102,7 @@ describe('Testing notebook actions', () => {
   });
 
   afterEach(() => {
-    cy.get('@notebook').then((notebook) => {
-      deleteNotebook(notebook.name);
-    });
+    deleteNotebook();
   });
 
   it('Creates a code paragraph', () => {
@@ -116,10 +133,8 @@ describe('Test reporting integration if plugin installed', () => {
     makePopulatedParagraph();
   });
 
-  afterEach(() => {
-    cy.get('@notebook').then((notebook) => {
-      deleteNotebook(notebook.name);
-    });
+  after(() => {
+    deleteAllNotebooks();
   });
 
   it('Create in-context PDF report from notebook', () => {
