@@ -69,19 +69,15 @@ const deleteNotebook = () => {
 };
 
 const deleteAllNotebooks = () => {
-  cy.intercept('GET', '/api/observability/notebooks/savedNotebook').as(
-    'getNotebooks'
-  );
   cy.intercept(
     'DELETE',
     '/api/observability/notebooks/note/savedNotebook/*'
   ).as('deleteNotebook');
   moveToNotebookHome();
 
-  cy.wait('@getNotebooks').then(() => {
-    cy.contains(' (4)').should('exist');
-  });
+  cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist');
 
+  cy.get('input[data-test-subj="checkboxSelectAll"]').should('exist');
   cy.get('input[data-test-subj="checkboxSelectAll"]').click();
   cy.get('button[data-test-subj="deleteSelectedNotebooks"]')
     .contains('Delete 4 notebooks')
