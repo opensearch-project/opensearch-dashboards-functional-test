@@ -31,6 +31,7 @@ describe('Testing services table', () => {
   });
 
   it('Opens service flyout', () => {
+    cy.contains('6.42').should('exist');
     cy.get('button[data-test-subj^="service-flyout-action-btn"]')
       .first()
       .click();
