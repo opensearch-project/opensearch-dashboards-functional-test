@@ -124,7 +124,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
       .click();
-    cy.mockIngestion(() => {
+    cy.mockAllIngestActions(() => {
       cy.getElementByTestId('updateAndRunIngestButton')
         .should('be.visible')
         .click();
