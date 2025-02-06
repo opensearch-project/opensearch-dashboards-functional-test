@@ -124,6 +124,29 @@ Cypress.Commands.add('mockIngestion', (funcMockedOn) => {
   });
 });
 
+Cypress.Commands.add('mockAllIngestActions', (funcMockedOn) => {
+  cy.fixture(
+    FF_FIXTURE_BASE_PATH + 'semantic_search/simulate_pipeline_response.json'
+  ).then((simulatePipelineResponse) => {
+    cy.intercept('POST', /simulatePipeline/, {
+      statusCode: 200,
+      body: simulatePipelineResponse,
+    }).as('simulatePipelineRequest');
+    cy.fixture(
+      FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response.json'
+    ).then((ingestResponse) => {
+      cy.intercept('POST', INGEST_NODE_API_PATH, {
+        statusCode: 200,
+        body: ingestResponse,
+      }).as('ingestionRequest');
+      funcMockedOn();
+
+      cy.wait('@simulatePipelineRequest');
+      cy.wait('@ingestionRequest');
+    });
+  });
+});
+
 Cypress.Commands.add('mockSemanticSearchIndexSearch', (funcMockedOn) => {
   cy.fixture(
     FF_FIXTURE_BASE_PATH + 'semantic_search/search_response.json'
