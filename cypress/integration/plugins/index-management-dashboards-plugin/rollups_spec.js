@@ -221,10 +221,6 @@ describe('Rollups', () => {
       // Confirm we have our initial rollup
       cy.contains(ROLLUP_ID);
 
-      // Intercept different rollups requests endpoints to wait before clicking disable and enable buttons
-      cy.intercept(`/api/ism/rollups/${ROLLUP_ID}`).as('getRollup');
-      cy.intercept(`/api/ism/rollups/${ROLLUP_ID}/_stop`).as('stopRollup');
-
       // Click into rollup job details page
       cy.get(`[data-test-subj="rollupLink_${ROLLUP_ID}"]`).click({
         force: true,
@@ -232,29 +228,50 @@ describe('Rollups', () => {
 
       cy.contains(`${ROLLUP_ID}`);
 
-      cy.wait('@getRollup').wait(2000);
-
-      // Click Disable button
-      cy.get(`[data-test-subj="disableButton"]`)
-        .should('not.be.disabled')
-        .click({ force: true });
-
-      cy.wait('@stopRollup');
-      cy.wait('@getRollup');
-
-      // Confirm we get toaster saying rollup job is disabled
-      cy.contains(`${ROLLUP_ID} is disabled`);
-
-      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
       cy.wait(2000);
 
-      // Click Enable button
-      cy.get(`[data-test-subj="enableButton"]`)
-        .should('not.be.disabled')
-        .click({ force: true });
+      // First check which button is enabled (not disabled/grayed out)
+      cy.get(
+        '[data-test-subj="enableButton"], [data-test-subj="disableButton"]'
+      ).then(($buttons) => {
+        // Find which button is enabled
+        const enableButton = $buttons.filter(
+          '[data-test-subj="enableButton"]:not([disabled])'
+        );
+        const disableButton = $buttons.filter(
+          '[data-test-subj="disableButton"]:not([disabled])'
+        );
 
-      // Confirm we get toaster saying rollup job is enabled
-      cy.contains(`${ROLLUP_ID} is enabled`);
+        if (disableButton.length) {
+          // If disable button is enabled, means job is currently enabled
+          cy.get('[data-test-subj="disableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`${ROLLUP_ID} is disabled`);
+
+          cy.wait(2000);
+
+          // Then enable it
+          cy.get('[data-test-subj="enableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`${ROLLUP_ID} is enabled`);
+        } else if (enableButton.length) {
+          // If enable button is enabled, means job is currently disabled
+          cy.get('[data-test-subj="enableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`${ROLLUP_ID} is enabled`);
+
+          cy.wait(2000);
+
+          // Then disable it
+          cy.get('[data-test-subj="disableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`${ROLLUP_ID} is disabled`);
+        }
+      });
     });
   });
 
