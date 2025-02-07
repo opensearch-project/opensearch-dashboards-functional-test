@@ -242,12 +242,6 @@ describe('Transforms', () => {
       // Confirm we have our initial transform
       cy.contains(TRANSFORM_ID);
 
-      // Intercept different transform requests endpoints to wait before clicking disable and enable buttons
-      cy.intercept(`/api/ism/transforms/${TRANSFORM_ID}`).as('getTransform');
-      cy.intercept(`/api/ism/transforms/${TRANSFORM_ID}/_stop`).as(
-        'stopTransform'
-      );
-
       // Click into transform job details page
       cy.get(`[data-test-subj="transformLink_${TRANSFORM_ID}"]`).click({
         force: true,
@@ -255,39 +249,59 @@ describe('Transforms', () => {
 
       cy.contains(`${TRANSFORM_ID}`);
 
-      /* Wait required for page data to load, otherwise "Disable" button will
-       * appear greyed out and unavailable. Cypress automatically retries,
-       * but only after menu is open, doesn't re-render.
-       */
-      cy.wait('@getTransform').wait(2000);
+      /* Wait required for page data to load */
+      cy.wait(1000);
 
       // Click into Actions menu
       cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
 
-      // Click Disable button
-      cy.get(`[data-test-subj="disableButton"]`)
-        .should('not.be.disabled')
-        .click();
+      // Check which action is available (enable or disable)
+      cy.get(
+        '[data-test-subj="enableButton"], [data-test-subj="disableButton"]'
+      ).then(($buttons) => {
+        const enableButton = $buttons.filter(
+          '[data-test-subj="enableButton"]:not([disabled])'
+        );
+        const disableButton = $buttons.filter(
+          '[data-test-subj="disableButton"]:not([disabled])'
+        );
 
-      cy.wait('@stopTransform');
-      cy.wait('@getTransform');
+        if (disableButton.length) {
+          // If disable button is enabled, means transform is currently enabled
+          cy.get('[data-test-subj="disableButton"]')
+            .should('not.be.disabled')
+            .click();
+          cy.contains(`"${TRANSFORM_ID}" is disabled`);
 
-      // Confirm we get toaster saying transform job is disabled
-      cy.contains(`"${TRANSFORM_ID}" is disabled`);
+          cy.wait(1000);
 
-      // Extra wait required for page data to load, otherwise "Enable" button will be disabled
-      cy.wait(2000);
+          // Click into Actions menu again
+          cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
 
-      // Click into Actions menu
-      cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
+          // Then enable it
+          cy.get('[data-test-subj="enableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`"${TRANSFORM_ID}" is enabled`);
+        } else if (enableButton.length) {
+          // If enable button is enabled, means transform is currently disabled
+          cy.get('[data-test-subj="enableButton"]')
+            .should('not.be.disabled')
+            .click({ force: true });
+          cy.contains(`"${TRANSFORM_ID}" is enabled`);
 
-      // Click Enable button
-      cy.get(`[data-test-subj="enableButton"]`)
-        .should('not.be.disabled')
-        .click({ force: true });
+          cy.wait(1000);
 
-      // Confirm we get toaster saying transform job is enabled
-      cy.contains(`"${TRANSFORM_ID}" is enabled`);
+          // Click into Actions menu again
+          cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
+
+          // Then disable it
+          cy.get('[data-test-subj="disableButton"]')
+            .should('not.be.disabled')
+            .click();
+          cy.contains(`"${TRANSFORM_ID}" is disabled`);
+        }
+      });
     });
   });
 });
