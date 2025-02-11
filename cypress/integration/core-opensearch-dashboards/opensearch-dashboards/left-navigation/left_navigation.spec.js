@@ -40,6 +40,7 @@ if (isWorkspaceEnabled) {
         cy.contains(`${workspaceName}_${feature}`).should('exist');
         cy.get('.navGroupEnabledHomeIcon').should('exist');
         cy.get('input[type="search"]').should('exist');
+        cy.contains(/Manage workspace/).should('exist');
 
         // additional assertion according to different type of workspace
         callbackFn();
@@ -74,37 +75,40 @@ if (isWorkspaceEnabled) {
 
     it('features are visible inside left navigation analytics for analytics use case', () => {
       validateWorkspaceNavMenu('all', () => {
-        cy.contains('Visualize and report').should('exist');
-        cy.contains('Search').should('exist');
-        cy.contains('Manage workspace').should('exist');
+        cy.contains(/Visualize and report/).should('exist');
+        cy.contains(/Observability/).should('exist');
+        cy.contains(/Security Analytics/).should('exist');
+        cy.contains(/Search/).should('exist');
+        cy.contains(/Detect/).should('exist');
       });
     });
 
     it('features are visible inside left navigation analytics for essentials use case', () => {
-      validateWorkspaceNavMenu('essentials', () => {
-        cy.contains('Manage workspace').should('exist');
-      });
+      validateWorkspaceNavMenu('essentials', () => {});
     });
 
     it('features are visible inside left navigation analytics for search use case', () => {
       validateWorkspaceNavMenu('search', () => {
-        cy.contains('Visualize and report').should('exist');
-        cy.contains('Manage workspace').should('exist');
+        cy.contains(/Visualize and report/).should('exist');
+        isWorkspaceEnabled &&
+          cy.contains(/Compare search results/).should('exist');
       });
     });
 
     it('features are visible inside left navigation analytics for security analytics use case', () => {
       validateWorkspaceNavMenu('security-analytics', () => {
-        cy.contains('Visualize and report').should('exist');
-        cy.contains('Manage workspace').should('exist');
+        cy.contains(/Visualize and report/).should('exist');
+        cy.contains(/Threat detection/).should('exist');
+        cy.contains(/Detect/).should('exist');
+        cy.contains(/Alerting/).should('exist');
+        cy.contains(/Anomaly Detection/).should('exist');
       });
     });
 
     it('features are visible inside left navigation for observability use case', () => {
       validateWorkspaceNavMenu('observability', () => {
-        cy.contains('Visualize and report').should('exist');
-        cy.contains('Detect').should('exist');
-        cy.contains('Manage workspace').should('exist');
+        cy.contains(/Visualize and report/).should('exist');
+        cy.contains(/Detect/).should('exist');
       });
     });
 
@@ -127,7 +131,7 @@ if (isWorkspaceEnabled) {
     it('navigation search should only search use case related features when inside a workspace', () => {
       validateWorkspaceNavMenuSearch('visu', () => {
         cy.getElementByTestId('search-result-panel').within(() => {
-          cy.contains('Visualizations').should('exist');
+          cy.contains(/Visualizations/).should('exist');
         });
       });
     });
@@ -135,13 +139,17 @@ if (isWorkspaceEnabled) {
     it('navigation search should show be able to search dev tools and open it as modal', () => {
       validateWorkspaceNavMenuSearch('dev', () => {
         cy.getElementByTestId('search-result-panel').within(() => {
-          cy.contains('Dev Tools').should('exist');
-          cy.contains('Console').should('exist').click();
+          cy.contains(/Dev Tools/).should('exist');
+          cy.contains(/Console/)
+            .should('exist')
+            .click();
           cy.document().then((doc) => {
             // click on the page to remove welcome message
             cy.wrap(doc.body).click('center');
             // expect dev tool popover to be opened
-            cy.wrap(doc.body).contains('Dev Tools').should('exist');
+            cy.wrap(doc.body)
+              .contains(/Dev Tools/)
+              .should('exist');
           });
         });
       });
@@ -168,15 +176,19 @@ describe('Left navigation menu', () => {
       cy.get('.navToggleInLargeScreen').should('exist').click();
 
       // menu section should be able to expand/collapse, with inside items display/hide corectly
-      cy.contains('Visualizations').should('exist');
+      cy.contains(/Visualizations/).should('exist');
 
       // collapse the menu section and expect content to be hidden
-      cy.contains('Visualize and report').should('exist').click();
-      cy.contains('Visualizations').should('not.exist');
+      cy.contains(/Visualize and report/)
+        .should('exist')
+        .click();
+      cy.contains(/Visualizations/).should('not.exist');
 
       // expand the menu section and expect content to be visible
-      cy.contains('Visualize and report').should('exist').click();
-      cy.contains('Visualizations').should('exist');
+      cy.contains(/Visualize and report/)
+        .should('exist')
+        .click();
+      cy.contains(/Visualizations/).should('exist');
     };
     if (isWorkspaceEnabled) {
       createWorkspace('all').then(() => {
@@ -233,7 +245,9 @@ describe('Left navigation menu', () => {
     const validateRecentHistory = () => {
       // expand the navigation menu
       cy.get('.navToggleInLargeScreen').should('exist').click();
-      cy.contains('Visualizations').should('exist').click();
+      cy.contains(/Visualizations/)
+        .should('exist')
+        .click();
 
       let visualizationName;
       cy.getElementByTestId('itemsInMemTable').within(() => {
@@ -253,7 +267,7 @@ describe('Left navigation menu', () => {
       cy.get('.headerRecentItemsButton').should('exist').click();
       cy.get('div[role="dialog"]').within(() => {
         // dialog displays correct visited content
-        cy.contains('Recent assets').should('exist');
+        cy.contains(/Recent assets/).should('exist');
         cy.contains(visualizationName).should('exist');
       });
 
@@ -262,7 +276,9 @@ describe('Left navigation menu', () => {
 
       // back to dashboard
       cy.get('.left-navigation-wrapper').within(() => {
-        cy.contains('Dashboards').should('exist').click();
+        cy.contains(/Dashboards/)
+          .should('exist')
+          .click();
       });
 
       cy.wait(1000);
