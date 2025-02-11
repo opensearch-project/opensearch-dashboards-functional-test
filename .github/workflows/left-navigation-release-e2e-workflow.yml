@@ -22,7 +22,7 @@ jobs:
     with:
       test-name: left navigation workspace enabled with security
       test-command: env CYPRESS_WORKSPACE_ENABLED=true CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
-      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=true --opensearch_security.multitenancy.enabled=false --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=true --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
       artifact-name-suffix: '-workspace-enabled-with-security'
   tests-workspace-enabled-without-security:
     needs: changes
@@ -41,7 +41,7 @@ jobs:
     with:
       test-name: left navigation workspace disabled with security
       test-command: env CYPRESS_WORKSPACE_ENABLED=false CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
-      osd-serve-args: --workspace.enabled=false --savedObjects.permission.enabled=true --opensearch_security.multitenancy.enabled=false --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
+      osd-serve-args: --workspace.enabled=false --savedObjects.permission.enabled=true --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
       artifact-name-suffix: '-workspace-disabled-with-security'
   tests-workspace-disabled-without-security:
     needs: changes
