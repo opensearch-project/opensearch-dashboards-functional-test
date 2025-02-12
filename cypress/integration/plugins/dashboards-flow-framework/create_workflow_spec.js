@@ -205,6 +205,8 @@ function createPreset(presetName) {
         .clear()
         .type(presetName.toLowerCase().replace(/\s/g, ''));
     });
+  cy.getElementByDataTestId('selectDeployedModel').should('be.visible').click();
+  cy.get('.euiSuperSelect__item').contains('BedRock').click();
   cy.getElementByDataTestId('quickConfigureCreateButton')
     .should('be.visible')
     .click();
