@@ -73,7 +73,7 @@ if (isWorkspaceEnabled) {
       }
     });
 
-    it('features are visible inside left navigation analytics for analytics use case', () => {
+    it('features are visible inside left navigation for analytics use case', () => {
       validateWorkspaceNavMenu('all', () => {
         cy.contains(/Visualize and report/).should('exist');
         cy.contains(/Observability/).should('exist');
@@ -83,11 +83,11 @@ if (isWorkspaceEnabled) {
       });
     });
 
-    it('features are visible inside left navigation analytics for essentials use case', () => {
+    it('features are visible inside left navigation for essentials use case', () => {
       validateWorkspaceNavMenu('essentials', () => {});
     });
 
-    it('features are visible inside left navigation analytics for search use case', () => {
+    it('features are visible inside left navigation for search use case', () => {
       validateWorkspaceNavMenu('search', () => {
         cy.contains(/Visualize and report/).should('exist');
         isWorkspaceEnabled &&
@@ -95,7 +95,7 @@ if (isWorkspaceEnabled) {
       });
     });
 
-    it('features are visible inside left navigation analytics for security analytics use case', () => {
+    it('features are visible inside left navigation for security analytics use case', () => {
       validateWorkspaceNavMenu('security-analytics', () => {
         cy.contains(/Visualize and report/).should('exist');
         cy.contains(/Threat detection/).should('exist');
@@ -261,7 +261,9 @@ describe('Left navigation menu', () => {
           });
       });
 
-      cy.wait(1000);
+      // wait for the page to be loaded
+      cy.get('.visualize').should('exist');
+      cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
 
       // open recent history dialog
       cy.get('.headerRecentItemsButton').should('exist').click();
@@ -271,23 +273,22 @@ describe('Left navigation menu', () => {
         cy.contains(visualizationName).should('exist');
       });
 
-      // click recent history button again to close the dialog
-      cy.get('.headerRecentItemsButton').click();
-
       // back to dashboard
       cy.get('.left-navigation-wrapper').within(() => {
         cy.contains(/Dashboards/)
           .should('exist')
-          .click();
+          .click({ force: true });
       });
 
-      cy.wait(1000);
+      // wait for the page to be loaded
+      cy.get('.application').should('exist');
+      cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
 
       // open recent history dialog again
       cy.get('.headerRecentItemsButton').should('exist').click();
       cy.get('div[role="dialog"]').within(() => {
         // click recent visited visualization in the dialog
-        cy.contains(visualizationName).should('exist').click();
+        cy.contains(visualizationName).should('exist').click({ force: true });
       });
 
       // should go back to the visualization screen just visited
