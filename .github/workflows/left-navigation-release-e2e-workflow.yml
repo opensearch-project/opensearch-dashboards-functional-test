@@ -1,0 +1,55 @@
+name: Left Navigation Release tests workflow in Bundled OpenSearch Dashboards
+on:
+  pull_request:
+    branches: ['**']
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.filter.outputs.tests }}
+    steps:
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tests:
+              - 'cypress/**/left-navigation/**'
+  tests-workspace-enabled-with-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: left navigation workspace enabled with security
+      test-command: env CYPRESS_WORKSPACE_ENABLED=true CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=true --opensearch_security.multitenancy.enabled=false --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
+      artifact-name-suffix: '-workspace-enabled-with-security'
+  tests-workspace-enabled-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: left navigation workspace enabled without security
+      test-command: env CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
+      osd-serve-args: --workspace.enabled=true --savedObjects.permission.enabled=false --uiSettings.overrides.home:useNewHomePage=true
+      security-enabled: false
+      artifact-name-suffix: '-workspace-enabled-without-security'
+  tests-workspace-disabled-with-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: left navigation workspace disabled with security
+      test-command: env CYPRESS_WORKSPACE_ENABLED=false CYPRESS_SAVED_OBJECTS_PERMISSION_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
+      osd-serve-args: --workspace.enabled=false --savedObjects.permission.enabled=true --opensearch_security.multitenancy.enabled=false --opensearchDashboards.dashboardAdmin.users='["admin"]' --uiSettings.overrides.home:useNewHomePage=true
+      artifact-name-suffix: '-workspace-disabled-with-security'
+  tests-workspace-disabled-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: left navigation workspace disabled without security
+      test-command: env CYPRESS_WORKSPACE_ENABLED=false yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/left-navigation/*'
+      osd-serve-args: --workspace.enabled=false --savedObjects.permission.enabled=false --uiSettings.overrides.home:useNewHomePage=true
+      security-enabled: false
+      artifact-name-suffix: '-workspace-disabled-without-security'
