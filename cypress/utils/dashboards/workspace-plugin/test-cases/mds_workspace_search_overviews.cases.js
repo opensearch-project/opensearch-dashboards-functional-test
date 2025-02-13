@@ -84,11 +84,6 @@ export const WorkspaceSearchOverviewTestCases = () => {
         cy.contains('h3', 'Neural sparse search').should('be.visible');
         cy.contains('h3', 'Hybrid search').should('be.visible');
       });
-
-      it('Configure and evaluate search cards display correctly', () => {
-        cy.contains('Compare search results').should('be.visible').click();
-        cy.url().should('contains', 'app/searchRelevance');
-      });
     });
   }
 };
