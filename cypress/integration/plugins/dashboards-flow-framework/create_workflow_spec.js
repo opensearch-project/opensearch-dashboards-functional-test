@@ -168,15 +168,15 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Create workflow from hybrid search template', () => {
-    createPreset('Hybrid Search');
+    createPreset('Hybrid Search', true);
   });
 
   it('Create workflow from multimodal template', () => {
-    createPreset('Multimodal Search');
+    createPreset('Multimodal Search', true);
   });
 
   it('Create workflow from custom template', () => {
-    createPreset('Custom Search');
+    createPreset('Custom Search', false);
   });
 
   after(() => {
@@ -188,7 +188,7 @@ describe('Creating Workflows Using Various Methods', () => {
 });
 
 // Reusable fn to check the preset exists, and able to create it, and navigate to its details page.
-function createPreset(presetName) {
+function createPreset(presetName, containsModels = false) {
   cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
     .should('be.visible')
     .click();
@@ -205,8 +205,12 @@ function createPreset(presetName) {
         .clear()
         .type(presetName.toLowerCase().replace(/\s/g, ''));
     });
-  cy.getElementByDataTestId('selectDeployedModel').should('be.visible').click();
-  cy.get('.euiSuperSelect__item').contains('BedRock').click();
+  if (containsModels) {
+    cy.getElementByDataTestId('selectDeployedModel')
+      .should('be.visible')
+      .click();
+    cy.get('.euiSuperSelect__item').contains('BedRock').click();
+  }
   cy.getElementByDataTestId('quickConfigureCreateButton')
     .should('be.visible')
     .click();
