@@ -6,6 +6,10 @@
 /// <reference types="cypress" />
 
 import { setTimeFilter, TRACE_ID } from '../../../utils/constants';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
+
+dayjs.extend(customParseFormat);
 
 describe('Testing traces table', () => {
   beforeEach(() => {
