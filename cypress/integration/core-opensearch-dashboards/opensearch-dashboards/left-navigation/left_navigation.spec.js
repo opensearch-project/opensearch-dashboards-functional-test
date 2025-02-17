@@ -267,11 +267,13 @@ describe('Left navigation menu', () => {
 
       // open recent history dialog
       cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]').within(() => {
-        // dialog displays correct visited content
-        cy.contains(/Recent assets/).should('exist');
-        cy.contains(visualizationName).should('exist');
-      });
+      cy.get('div[role="dialog"][data-autofocus="true"]')
+        .should('have.class', 'euiPanel')
+        .within(() => {
+          // dialog displays correct visited content
+          cy.contains(/Recent assets/).should('exist');
+          cy.contains(visualizationName).should('exist');
+        });
 
       // back to dashboard
       cy.get('.left-navigation-wrapper').within(() => {
@@ -283,10 +285,14 @@ describe('Left navigation menu', () => {
       // wait for the page to be loaded
       cy.get('.application').should('exist');
       cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
+      // wait for the dashboards list loaded, avoid flaky loading icon
+      cy.getElementByTestId('dashboardLandingPage').within(() => {
+        cy.get('.euiBasicTable .euiTableRow').should('exist');
+      });
 
       // open recent history dialog again
       cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]').within(() => {
+      cy.get('div[role="dialog"][data-autofocus="true"]').within(() => {
         // click recent visited visualization in the dialog
         cy.contains(visualizationName).should('exist').click({ force: true });
       });
