@@ -68,6 +68,8 @@ describe('Testing traces table', () => {
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
     cy.get('.euiButton__text').contains('Refresh').click();
+    cy.intercept('POST', '/_dashboards/api/observability/trace_analytics/query').as('queryResult');
+    cy.wait('@queryResult');
     cy.contains(' (1)').should('exist');
     cy.get('.euiTableCellContent')
       .eq(11)
