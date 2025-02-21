@@ -41,7 +41,11 @@ describe('Creating visualizations', () => {
   });
 
   it('Create first visualization in event analytics', () => {
-    cy.intercept('POST', '**/_dashboards/api/saved_objects/observability-visualization').as('saveVisualization');
+    cy.intercept(
+      "POST",
+      "**/_dashboards/api/saved_objects/observability-visualization",
+    ).as("saveVisualization");
+    
     cy.get('[id^=autocomplete-textarea]').focus().type(PPL_VISUALIZATIONS[0], {
       delay: 50,
     });
@@ -113,7 +117,7 @@ describe('Testing panels table', () => {
 
   it('Deletes panels', () => {
     cy.get('.euiTableRow').should('exist');
-    cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist')
+    cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist');
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]')
       .trigger('mouseover')
       .click();
