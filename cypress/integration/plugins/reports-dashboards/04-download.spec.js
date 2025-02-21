@@ -32,7 +32,7 @@ describe('Cypress', () => {
       'generateReport'
     );
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
+      waitForGetTenant: false,
     });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
@@ -44,7 +44,6 @@ describe('Cypress', () => {
       .contains('PDF')
       .click({ force: true });
     cy.wait('@generateReport').its('response.statusCode').should('eq', 200);
-    });
   });
 
   it('Download pdf from in-context menu', () => {
@@ -113,7 +112,7 @@ describe('Cypress', () => {
     // create an on-demand report definition
 
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
+      waitForGetTenant: false,
     });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
