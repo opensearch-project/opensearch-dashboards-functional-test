@@ -61,9 +61,11 @@ describe('Creating visualizations', () => {
       .type(PPL_VISUALIZATIONS_NAMES[0], {
         delay: 50,
       });
+    cy.intercept('POST', '/_dashboards/api/observability/event_analytics/saved_objects/vis').as('savedVisFetch');
     cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]')
       .trigger('mouseover')
       .click();
+    cy.wait('@savedVisFetch');
     cy.wait(delay);
     cy.get('.euiToastHeader__title').contains('successfully').should('exist');
   });
@@ -133,10 +135,12 @@ describe('Testing panels table', () => {
       .trigger('mouseover')
       .click();
     cy.wait(delay);
+    cy.intercept('POST', '/_dashboards/api/observability/operational_panels/panels/clone').as('clonePanel');
     cy.get('.euiButton__text')
       .contains('Duplicate')
       .trigger('mouseover')
       .click();
+    cy.wait('@clonePanel');
     cy.wait(delay);
 
     cy.get('.euiCheckbox__input[title="Select this row"]')
