@@ -41,6 +41,7 @@ describe('Creating visualizations', () => {
   });
 
   it('Create first visualization in event analytics', () => {
+    cy.intercept('POST', '**/_dashboards/api/saved_objects/observability-visualization').as('saveVisualization');
     cy.get('[id^=autocomplete-textarea]').focus().type(PPL_VISUALIZATIONS[0], {
       delay: 50,
     });
@@ -64,8 +65,7 @@ describe('Creating visualizations', () => {
     cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]')
       .trigger('mouseover')
       .click();
-    cy.wait(delay);
-    cy.get('.euiToastHeader__title').contains('successfully').should('exist');
+    cy.wait('@saveVisualization').its('response.statusCode').should('eq', 200);
   });
 });
 
@@ -112,6 +112,8 @@ describe('Testing panels table', () => {
   });
 
   it('Deletes panels', () => {
+    cy.get('.euiTableRow').should('exist');
+    cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist')
     cy.get('.euiCheckbox__input[data-test-subj="checkboxSelectAll"]')
       .trigger('mouseover')
       .click();
