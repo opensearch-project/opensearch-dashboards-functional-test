@@ -42,8 +42,8 @@ describe('Creating visualizations', () => {
 
   it('Create first visualization in event analytics', () => {
     cy.intercept(
-      "POST",
-      "**/_dashboards/api/saved_objects/observability-visualization",
+      'POST',
+      '**/_dashboards/api/saved_objects/observability-visualization',
     ).as("saveVisualization");
     
     cy.get('[id^=autocomplete-textarea]').focus().type(PPL_VISUALIZATIONS[0], {
