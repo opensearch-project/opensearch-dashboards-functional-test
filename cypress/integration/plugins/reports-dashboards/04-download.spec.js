@@ -28,6 +28,9 @@ describe('Cypress', () => {
   });
 
   it('Download from reporting homepage', () => {
+    cy.intercept('GET', `${BASE_PATH}/api/reporting/generateReport/*`).as(
+      'generateReport'
+    );
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
@@ -40,12 +43,7 @@ describe('Cypress', () => {
     cy.get('[id="landingPageOnDemandDownload"]')
       .contains('PDF')
       .click({ force: true });
-    cy.get('body').then(($body) => {
-      if ($body.find('#downloadInProgressLoadingModal').length > 0) {
-        return;
-      } else {
-        assert(false);
-      }
+    cy.wait('@generateReport').its('response.statusCode').should('eq', 200);
     });
   });
 
