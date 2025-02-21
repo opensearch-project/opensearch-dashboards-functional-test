@@ -5,11 +5,11 @@
 
 import { BASE_PATH } from '../../../utils/constants';
 
-export const TIMEOUT = 100000;
+export const TIMEOUT = 10000;
 
 export function visitReportingLandingPage() {
   cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-    waitForGetTenant: true,
+    waitForGetTenant: false,
   });
   cy.location('pathname', { timeout: TIMEOUT }).should(
     'include',
