@@ -31,7 +31,7 @@ describe('Cypress', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
-    cy.intercept('GET', '/_dashboards/api/reporting/generateReport/*').as(
+    cy.intercept('GET', `${BASE_PATH}/api/reporting/generateReport/*`).as(
       'generateReport'
     );
 
