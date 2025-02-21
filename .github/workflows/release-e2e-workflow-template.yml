@@ -8,6 +8,12 @@ on:
       test-command:
         required: true
         type: string
+      osd-serve-args:
+        required: false
+        type: string
+      security-enabled:
+        required: false
+        type: string
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -31,13 +37,31 @@ jobs:
         working-directory: cypress-test
         run: |
           echo "VERSION=$(yarn --silent pkg-version)" >> $GITHUB_ENV
+      - name: Get security setups
+        run: |
+          SECURITY_ENABLED=${{ inputs.security-enabled }}
+          if [ "$SECURITY_ENABLED" != 'false' ]; then
+              echo "SECURITY_ENABLED=true" >> $GITHUB_ENV
+          else
+              echo "SECURITY_ENABLED=false" >> $GITHUB_ENV
+          fi
       - name: Get and run OpenSearch
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
-          ./opensearch-tar-install.sh &
-          timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+          if [ "$SECURITY_ENABLED" = 'false' ]; then
+              echo "Remove OpenSearch Security"
+              [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
+              ./opensearch-tar-install.sh &
+              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' http://localhost:9200)" != "200" ]]; do sleep 5; done'
+              curl http://localhost:9200
+          else
+              echo "Keep OpenSearch Security"
+              ./opensearch-tar-install.sh &
+              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:admin -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
+              curl https://localhost:9200 -u admin:admin --insecure
+          fi
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
@@ -45,7 +69,7 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}-linux-x64/package.json').engines.node).match(/[.0-9]+/)[0]")"
+          echo "::set-output name=node_version::$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")"
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -54,8 +78,20 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
-          bin/opensearch-dashboards serve &
-          timeout 300 bash -c 'while [[ "$(curl -s -u admin:admin -k localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+          if [ "$SECURITY_ENABLED" = 'false' ]; then
+              echo "Remove Dashboards Security"
+              ./bin/opensearch-dashboards-plugin remove securityDashboards
+              sed -i /^opensearch_security/d config/opensearch_dashboards.yml
+              sed -i 's/https/http/' config/opensearch_dashboards.yml
+              bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
+              timeout 300 bash -c 'while [[ "$(curl http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+              curl http://localhost:5601/api/status
+          else
+              echo "Keep Dashboards Security"
+              bin/opensearch-dashboards serve ${{ inputs.osd-serve-args }} &
+              timeout 300 bash -c 'while [[ "$(curl -u admin:admin -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
+              curl http://localhost:5601/api/status -u admin:admin --insecure
+          fi
       - name: Get Cypress version
         id: cypress_version
         run: |
