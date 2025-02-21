@@ -31,7 +31,9 @@ describe('Cypress', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
-    cy.intercept('GET', '/_dashboards/api/reporting/generateReport/*').as('generateReport');
+    cy.intercept('GET', '/_dashboards/api/reporting/generateReport/*').as(
+      'generateReport'
+    );
 
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
@@ -43,7 +45,6 @@ describe('Cypress', () => {
       .contains('PDF')
       .click({ force: true });
     cy.wait('@generateReport').its('response.statusCode').should('eq', 200);
-
   });
 
   it('Download pdf from in-context menu', () => {
