@@ -91,9 +91,7 @@ describe('Cypress', () => {
     cy.wait(5000);
 
     // open saved search list
-    cy.get(
-      'button.euiButtonEmpty:nth-child(3) > span:nth-child(1) > span:nth-child(1)'
-    ).click({ force: true });
+    cy.get('[data-test-subj="discoverOpenButton"]').click({ force: true });
     cy.wait(5000);
 
     // click first entry
