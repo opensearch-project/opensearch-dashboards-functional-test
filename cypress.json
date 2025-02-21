@@ -2,7 +2,7 @@
   "defaultCommandTimeout": 60000,
   "requestTimeout": 60000,
   "responseTimeout": 60000,
-  "baseUrl": "https://search-integ-test-2-7-lqxwgidktrjjm6oqwjgo2cd754.us-east-1.es-staging.amazonaws.com/_dashboards",
+  "baseUrl": "http://localhost:5601",
   "reporter": "cypress-multi-reporters",
   "reporterOptions": {
     "configFile": "reporter-config.json"
