@@ -53,7 +53,7 @@ jobs:
       - name: Get Cypress version
         id: cypress_version
         run: |
-          echo "::set-output name=cypress_version::$(cat ./monterey-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
+          echo "::set-output name=cypress_version::$(cat ./monetery-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
       - name: Cache Cypress
         id: cache-cypress
         uses: actions/cache@v1
