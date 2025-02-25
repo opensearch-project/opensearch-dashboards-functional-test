@@ -17,6 +17,24 @@ describe('Cypress', () => {
 
     cy.wait(12500);
 
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/dashboard`
+    ).as('dashboard');
+
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/visualization`
+    ).as('visualization');
+
+    cy.intercept('GET', `${BASE_PATH}/api/reporting/getReportSource/search`).as(
+      'search'
+    );
+
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.get('#reportDefinitionDetailsLink').first().click({ force: true });
 
     cy.get('#editReportDefinitionButton').should('exist');
@@ -26,14 +44,23 @@ describe('Cypress', () => {
     cy.url().should('include', 'edit');
 
     cy.wait(1000);
+    cy.wait('@dashboard');
+    cy.wait('@visualization');
+    cy.wait('@search');
+    cy.wait('@notebook');
 
     // update the report name
-    cy.get('#reportSettingsName').type(' update name');
+    cy.get('#reportSettingsName').type('{selectall}{backspace} update name');
 
     // update report description
-    cy.get('#reportSettingsDescription').type(' update description');
+    cy.get('#reportSettingsDescription').type(
+      '{selectall}{backspace} update description'
+    );
 
-    cy.get('#editReportDefinitionButton').click({ force: true });
+    cy.get('#editReportDefinitionButton')
+      .contains('Save Changes')
+      .trigger('mouseover')
+      .click({ force: true });
 
     cy.wait(12500);
 
@@ -52,6 +79,24 @@ describe('Cypress', () => {
 
     cy.wait(12500);
 
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/dashboard`
+    ).as('dashboard');
+
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/visualization`
+    ).as('visualization');
+
+    cy.intercept('GET', `${BASE_PATH}/api/reporting/getReportSource/search`).as(
+      'search'
+    );
+
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.get('#reportDefinitionDetailsLink').first().click();
 
     cy.get('#editReportDefinitionButton').should('exist');
@@ -61,12 +106,20 @@ describe('Cypress', () => {
     cy.url().should('include', 'edit');
 
     cy.wait(1000);
+
+    cy.wait('@dashboard');
+    cy.wait('@visualization');
+    cy.wait('@search');
+    cy.wait('@notebook');
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(2)').click({
       force: true,
     });
 
     cy.get('#Schedule').check({ force: true });
-    cy.get('#editReportDefinitionButton').click({ force: true });
+    cy.get('#editReportDefinitionButton')
+      .contains('Save Changes')
+      .trigger('mouseover')
+      .click({ force: true });
 
     cy.wait(12500);
 
@@ -85,6 +138,24 @@ describe('Cypress', () => {
 
     cy.wait(12500);
 
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/dashboard`
+    ).as('dashboard');
+
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/reporting/getReportSource/visualization`
+    ).as('visualization');
+
+    cy.intercept('GET', `${BASE_PATH}/api/reporting/getReportSource/search`).as(
+      'search'
+    );
+
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.get('#reportDefinitionDetailsLink').first().click();
 
     cy.get('#editReportDefinitionButton').should('exist');
@@ -95,11 +166,19 @@ describe('Cypress', () => {
 
     cy.wait(1000);
 
+    cy.wait('@dashboard');
+    cy.wait('@visualization');
+    cy.wait('@search');
+    cy.wait('@notebook');
+
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(1)').click({
       force: true,
     });
 
-    cy.get('#editReportDefinitionButton').click({ force: true });
+    cy.get('#editReportDefinitionButton')
+      .contains('Save Changes')
+      .trigger('mouseover')
+      .click({ force: true });
 
     cy.wait(12500);
 

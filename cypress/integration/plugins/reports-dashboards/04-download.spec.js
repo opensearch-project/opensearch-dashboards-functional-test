@@ -28,13 +28,12 @@ describe('Cypress', () => {
   });
 
   it('Download from reporting homepage', () => {
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
-    });
     cy.intercept('GET', `${BASE_PATH}/api/reporting/generateReport/*`).as(
       'generateReport'
     );
-
+    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+      waitForGetTenant: true,
+    });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
       '/reports-dashboards'
@@ -112,6 +111,8 @@ describe('Cypress', () => {
   it('Download from Report definition details page', () => {
     // create an on-demand report definition
 
+    cy.intercept('POST', '/_dashboards/api/reporting/generateReport/*').as('generateReport');
+
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
@@ -135,8 +136,6 @@ describe('Cypress', () => {
 
     cy.get('#generateReportFromDetailsFileFormat').click({ force: true });
 
-    cy.get('.euiToastHeader__title')
-      .contains('Successfully generated report')
-      .should('exist');
+    cy.wait('@generateReport').its('response.statusCode').should('eq', 200);
   });
 });
