@@ -111,7 +111,9 @@ describe('Cypress', () => {
   it('Download from Report definition details page', () => {
     // create an on-demand report definition
 
-    cy.intercept('POST', '/_dashboards/api/reporting/generateReport/*').as('generateReport');
+    cy.intercept('POST', '/_dashboards/api/reporting/generateReport/*').as(
+      'generateReport'
+    );
 
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
