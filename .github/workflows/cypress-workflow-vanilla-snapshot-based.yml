@@ -53,8 +53,7 @@ jobs:
       - name: Get Cypress version
         id: cypress_version
         run: |
-          cypress_version_temp=$(cat ./monetery-test/package.json | jq -r '.devDependencies.cypress')
-          echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
+          echo "::set-output name=cypress_version::$(cat ./monterey-test/package.json | jq '.devDependencies.cypress' | tr -d '"')"
       - name: Cache Cypress
         id: cache-cypress
         uses: actions/cache@v1
