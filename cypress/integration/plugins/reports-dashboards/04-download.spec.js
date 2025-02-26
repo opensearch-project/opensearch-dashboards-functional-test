@@ -111,6 +111,10 @@ describe('Cypress', () => {
   it('Download from Report definition details page', () => {
     // create an on-demand report definition
 
+    cy.intercept('POST', '/_dashboards/api/reporting/generateReport/*').as(
+      'generateReport'
+    );
+
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
       waitForGetTenant: true,
     });
@@ -134,6 +138,6 @@ describe('Cypress', () => {
 
     cy.get('#generateReportFromDetailsFileFormat').click({ force: true });
 
-    cy.get('#downloadInProgressLoadingModal');
+    cy.wait('@generateReport').its('response.statusCode').should('eq', 200);
   });
 });
