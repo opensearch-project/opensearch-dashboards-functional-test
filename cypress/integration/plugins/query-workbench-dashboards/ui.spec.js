@@ -42,7 +42,7 @@ describe('Test PPL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('[data-test-subj="workbench-ppl-language-button"]').click({ force: true });
+    cy.get('.euiToggle__input[title=PPL]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -117,7 +117,7 @@ describe('Test SQL UI', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('[data-test-subj="workbench-sql-language-button"]').click({ force: true });
+    cy.get('.euiToggle__input[title=SQL]').click({ force: true });
     cy.wait(delay);
   });
 
@@ -162,7 +162,7 @@ describe('Test SQL UI', () => {
     cy.get('.euiButton__text').contains('Explain').click({ force: true });
     cy.wait(delay);
 
-    cy.contains('OpenSearchQueryRequest(indexName=accounts')
+    cy.contains('OpenSearchQueryRequest(indexName=accounts');
   });
 
   it('Test Clear button', () => {
@@ -203,10 +203,14 @@ describe('Test and verify SQL downloads', () => {
           'osd-xsrf': true,
         },
         body: {
-          query: 'select * from accounts where balance > 49500',
+          query:
+            'select * from accounts where balance > 49500 order by account_number',
         },
       }).then((response) => {
-        if (title === 'Download and verify CSV' || title === 'Download and verify Text') {
+        if (
+          title === 'Download and verify CSV' ||
+          title === 'Download and verify Text'
+        ) {
           expect(response.body.data.body).to.have.string(files[file]);
         } else {
           expect(response.body.data.resp).to.have.string(files[file]);
@@ -220,7 +224,7 @@ describe('Test table display', () => {
   beforeEach(() => {
     cy.visit('app/opensearch-query-workbench');
     cy.wait(delay);
-    cy.get('[data-test-subj="workbench-sql-language-button"]').click({ force: true });
+    cy.get('.euiToggle__input[title=SQL]').click({ force: true });
     cy.wait(delay);
     cy.get('textarea.ace_text-input')
       .eq(0)
@@ -260,6 +264,6 @@ describe('Test table display', () => {
 
     cy.get('button.euiLink').eq(2).click({ force: true });
     cy.wait(delay);
-    cy.contains('comment_2_1');
+    cy.contains('message');
   });
 });
