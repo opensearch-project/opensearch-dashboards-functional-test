@@ -382,7 +382,12 @@ describe('Testing paragraphs', () => {
 
 describe('clean up all test data', () => {
   it('Delete visualizations from event analytics', () => {
+    cy.intercept(
+      'GET',
+      '*/api/observability/event_analytics/saved_objects?*'
+    ).as('savedObjSearch');
     moveToEventsHome();
+    cy.wait('@savedObjSearch');
     cy.get('[data-test-subj="tablePaginationPopoverButton"]')
       .trigger('mouseover')
       .click();

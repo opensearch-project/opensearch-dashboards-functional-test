@@ -41,6 +41,11 @@ describe('Creating visualizations', () => {
   });
 
   it('Create first visualization in event analytics', () => {
+    cy.intercept(
+      'POST',
+      '/_dashboards/api/observability/event_analytics/saved_objects/vis'
+    ).as('savedVisFetch');
+    cy.intercept('POST', '/_dashboards/api/ppl/search').as('searchFinished');
     cy.get('[id^=autocomplete-textarea]').focus().type(PPL_VISUALIZATIONS[0], {
       delay: 50,
     });
@@ -52,6 +57,7 @@ describe('Creating visualizations', () => {
       .trigger('mouseover')
       .click();
     cy.wait(delay * 2);
+    cy.wait('@searchFinished');
     cy.get('[data-test-subj="eventExplorer__saveManagementPopover"]')
       .trigger('mouseover')
       .click();
@@ -61,7 +67,6 @@ describe('Creating visualizations', () => {
       .type(PPL_VISUALIZATIONS_NAMES[0], {
         delay: 50,
       });
-    cy.intercept('POST', '/_dashboards/api/observability/event_analytics/saved_objects/vis').as('savedVisFetch');
     cy.get('[data-test-subj="eventExplorer__querySaveConfirm"]')
       .trigger('mouseover')
       .click();
@@ -135,7 +140,10 @@ describe('Testing panels table', () => {
       .trigger('mouseover')
       .click();
     cy.wait(delay);
-    cy.intercept('POST', '/_dashboards/api/observability/operational_panels/panels/clone').as('clonePanel');
+    cy.intercept(
+      'POST',
+      '/_dashboards/api/observability/operational_panels/panels/clone'
+    ).as('clonePanel');
     cy.get('.euiButton__text')
       .contains('Duplicate')
       .trigger('mouseover')
