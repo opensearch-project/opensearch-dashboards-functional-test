@@ -83,6 +83,7 @@ describe('Test PPL UI', () => {
   });
 
   it('Test full screen view', () => {
+    cy.route2('**/api/sql_console/pplquery').as('pplQuery');
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
     cy.get('.euiTitle').contains('Query Workbench').should('exist');
 
@@ -90,6 +91,7 @@ describe('Test PPL UI', () => {
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
     cy.wait(delay);
+    cy.wait('@pplQuery');
     cy.get('.euiButton__text').contains('Full screen view').click({ force: true });
 
     cy.get('.euiTitle').should('not.exist');
