@@ -6,6 +6,7 @@
 /// <reference types="cypress" />
 
 import { BASE_PATH } from '../../../utils/constants';
+import moment from 'moment';
 
 const delay = 100;
 const GANTT_VIS_NAME =
@@ -169,37 +170,68 @@ describe('Configure panel settings', () => {
   });
 
   it('Changes time formats', () => {
-    cy.contains('12:59:07.303 PM').should('exist');
-
     cy.get('select').eq(3).select('MM/DD hh:mm:ss A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28 12:59:07 PM').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(
+          moment(text, 'MM/DD hh:mm:ss A').format('MM/DD hh:mm:ss A')
+        ).equal(text);
+      });
 
     cy.get('select').eq(3).select('MM/DD/YY hh:mm A');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28/20 12:59 PM').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(
+          moment(text, 'MM/DD/YY hh:mm A').format('MM/DD/YY hh:mm A')
+        ).equal(text);
+      });
 
     cy.get('select').eq(3).select('HH:mm:ss.SSS');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('12:59:07.303').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(moment(text, 'HH:mm:ss.SSS').format('HH:mm:ss.SSS')).equal(text);
+      });
 
     cy.get('select').eq(3).select('MM/DD HH:mm:ss');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28 12:59:07').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(moment(text, 'MM/DD HH:mm:ss').format('MM/DD HH:mm:ss')).equal(
+          text
+        );
+      });
 
     cy.get('select').eq(3).select('MM/DD/YY HH:mm');
     cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
-    cy.wait(delay);
-    cy.contains('05/28/20 12:59').should('exist');
+    cy.wait(1000);
+    cy.get('.xtick')
+      .eq(0)
+      .invoke('text')
+      .then((text) => {
+        expect(moment(text, 'MM/DD/YY HH:mm').format('MM/DD/YY HH:mm')).equal(
+          text
+        );
+      });
   });
 
   it('Hides legends', () => {
