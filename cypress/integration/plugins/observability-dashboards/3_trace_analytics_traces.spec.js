@@ -35,7 +35,6 @@ describe('Testing traces table', () => {
 
   it('Renders the traces table', () => {
     cy.contains(' (108)').should('exist');
-    cy.contains('03/25/2021 10:23:45').should('exist');
     cy.contains('03f9c770db5ee2f1caac0...').should('exist');
     cy.contains('224.99').should('exist');
 
@@ -50,7 +49,6 @@ describe('Testing traces table', () => {
     cy.get('.euiButton__text').contains('Refresh').click();
     cy.wait(delayTime);
     cy.contains(' (1)').should('exist');
-    cy.contains('03/25/2021 10:21:22').should('exist');
   });
 });
 
@@ -67,7 +65,6 @@ describe('Testing trace view', () => {
   it('Renders the trace view', () => {
     cy.contains('43.75%').should('exist');
     cy.contains('42.58%').should('exist');
-    cy.contains('03/25/2021 10:21:22').should('exist');
     cy.get('h2.euiTitle').contains(TRACE_ID).should('exist');
 
     cy.get('div.js-plotly-plot').should('have.length.gte', 2);

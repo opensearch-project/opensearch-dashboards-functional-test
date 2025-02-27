@@ -74,19 +74,19 @@ jobs:
           command: yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/vanilla-opensearch-dashboards/*.js'
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: cypress-screenshots
           path: monetery-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-videos
           path: monetery-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: cypress-results
