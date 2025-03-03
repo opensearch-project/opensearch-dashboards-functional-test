@@ -13,6 +13,8 @@ const miscUtils = new MiscUtils(cy);
 
 describe('Verify the presence of import custom map tab in region map plugin', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     CURRENT_TENANT.newTenant = 'global';
     cy.deleteAllIndices();
     miscUtils.addSampleData();
