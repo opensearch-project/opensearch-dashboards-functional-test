@@ -69,6 +69,7 @@ describe('discover tab', () => {
       // add this line to address flakiness in Cypress:
       // ensures stable switching to the new Discover table format.
       cy.switchDiscoverTable('new');
+      cy.waitForSearch();
       const expectedHitCount = '11,156';
       cy.setTopNavQuery('type:apache');
       cy.verifyHitCount(expectedHitCount);
