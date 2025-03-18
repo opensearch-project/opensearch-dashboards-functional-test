@@ -47,7 +47,6 @@ describe('discover tab', () => {
     );
     cy.waitForLoader();
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   after(() => {});
@@ -60,35 +59,24 @@ describe('discover tab', () => {
     });
 
     it('the search term should be highlighted in the field data', function () {
-      cy.getElementByTestId('dataGridWrapper')
+      cy.getElementByTestId('discoverTable')
         .get('mark')
-        .should('have.length', 100);
+        .should('have.length', 50);
     });
 
     it('search type:apache should show the correct hit count', () => {
-      // add this line to address flakiness in Cypress:
-      // ensures stable switching to the new Discover table format.
-      cy.switchDiscoverTable('new');
-      cy.waitForSearch();
       const expectedHitCount = '11,156';
       cy.setTopNavQuery('type:apache');
       cy.verifyHitCount(expectedHitCount);
     });
 
     it('doc view should show Time and _source columns', function () {
-      // add this line to address flakiness in Cypress:
-      // ensures stable switching to the new Discover table format.
-      cy.switchDiscoverTable('new');
-      cy.getElementByTestId('dataGridHeaderCell-@timestamp').should(
-        'be.visible'
-      );
-      cy.getElementByTestId('dataGridHeaderCell-_source').should('be.visible');
+      cy.getElementByTestId('docTableHeader-@timestamp').should('be.visible');
+      cy.getElementByTestId('docTableHeader-_source').should('be.visible');
     });
 
     it('doc view should sort ascending', function () {
-      cy.getElementByTestId(
-        'dataGridHeaderCellActionButton-@timestamp'
-      ).click();
+      cy.getElementByTestId('docTableHeaderFieldSort_@timestamp').click();
     });
 
     it('a bad syntax query should show an error message', function () {
