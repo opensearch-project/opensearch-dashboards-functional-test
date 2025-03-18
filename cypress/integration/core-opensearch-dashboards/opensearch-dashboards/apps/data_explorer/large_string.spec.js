@@ -40,12 +40,6 @@ describe('test large strings', () => {
     });
   });
 
-  beforeEach(() => {
-    cy.window().then((win) =>
-      win.localStorage.setItem('discover:newExpereince', true)
-    );
-  });
-
   it('verify the large string book present', function () {
     // Go to the Discover page
     miscUtils.visitPage('app/data-explorer/discover#/');
@@ -53,7 +47,7 @@ describe('test large strings', () => {
 
     const ExpectedDoc = 'Project Gutenberg EBook of Hamlet';
 
-    cy.get('[data-test-subj="dataGridRowCell"]:nth-child(3) span')
+    cy.get('[data-test-subj="docTableField"]')
       .invoke('text')
       .then((text) => {
         const hasTheText = text.includes(ExpectedDoc);

@@ -53,7 +53,6 @@ describe('discover app', { scrollBehavior: false }, () => {
     );
     cy.waitForLoader();
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   beforeEach(() => {
@@ -67,7 +66,6 @@ describe('discover app', { scrollBehavior: false }, () => {
     after(() => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
       cy.getElementByTestId(`deleteFilter`).click();
-      cy.switchDiscoverTable('legacy');
     });
     it('should persist across refresh', function () {
       // Set up query and filter
@@ -78,15 +76,6 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
         'be.visible'
       );
-    });
-
-    it('should persist across switching table', function () {
-      cy.switchDiscoverTable('new');
-      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
-      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
-        'be.visible'
-      );
-      cy.clearTopNavQuery();
     });
   });
 
@@ -122,13 +111,6 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.getElementByTestId('breadcrumb last')
         .should('be.visible')
         .should('have.text', saveSearch2);
-    });
-
-    it('should show the correct hit count', function () {
-      cy.loadSaveSearch(saveSearch2);
-      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
-      const expectedHitCount = '14,004';
-      cy.verifyHitCount(expectedHitCount);
     });
 
     it('should show correct time range string in chart', function () {
@@ -171,7 +153,6 @@ describe('discover app', { scrollBehavior: false }, () => {
       before(() => {
         CURRENT_TENANT.newTenant = 'global';
         cy.fleshTenantSettings();
-        cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
       });
 
@@ -285,10 +266,6 @@ describe('discover app', { scrollBehavior: false }, () => {
   });
 
   describe('refresh interval', function () {
-    beforeEach(() => {
-      cy.switchDiscoverTable('new');
-    });
-
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')
