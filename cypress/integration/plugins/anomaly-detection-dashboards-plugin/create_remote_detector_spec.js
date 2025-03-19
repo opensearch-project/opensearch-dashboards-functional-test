@@ -18,13 +18,6 @@ context('Create remote detector workflow', () => {
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
   const TEST_REMOTE_INDEX = 'followCluster:sample-ad-index';
-  const remoteClusterSettings = {
-    persistent: {
-      'cluster.remote.followCluster': {
-        seeds: ['127.0.0.1:9301'],
-      },
-    },
-  };
 
   // Clean up created resources
   afterEach(() => {
@@ -35,7 +28,7 @@ context('Create remote detector workflow', () => {
   describe('Remote cluster tests', () => {
     before(function () {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-      // Use `cy.exec()` to check cluster health before running tests
+
       cy.exec(
         `
             node -e "
@@ -49,34 +42,59 @@ context('Create remote detector workflow', () => {
       ).then((result) => {
         if (result.code !== 0) {
           Cypress.log({
-            name: 'Cluster Health',
-            message:
-              'Remote cluster is unavailable - skipping all remote detector tests',
+            message: 'Remote cluster is unavailable - skipping tests',
           });
-          this.skip(); // Skip the entire test suite
+          this.skip(); // Skip all tests if the cluster isn't available
         }
+
+        cy.request(
+          `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`
+        ).then((response) => {
+          Cypress.log({
+            message: `Cluster health response: ${JSON.stringify(
+              response.body
+            )}`,
+          });
+
+          if (!response.body || !response.body.cluster_name) {
+            Cypress.log({ message: 'Cluster name not found - skipping tests' });
+            this.skip();
+          }
+          Cypress.env('remoteClusterName', response.body.cluster_name);
+        });
       });
     });
 
-    // apply remote cluster settings after cluster health check passes
     before(function () {
+      const remoteClusterName = Cypress.env('remoteClusterName');
+
+      const remoteClusterSettings = {
+        persistent: {
+          [`cluster.remote.${remoteClusterName}`]: {
+            seeds: ['127.0.0.1:9301'],
+          },
+        },
+      };
+
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
+
       cy.request({
         method: 'PUT',
         url: `${BACKEND_BASE_PATH}/_cluster/settings`,
         headers: {
           'content-type': 'application/json',
-          'osd-xsrf': true, // If your backend requires this header
+          'osd-xsrf': true,
         },
         body: remoteClusterSettings,
       }).then((response) => {
-        cy.log('Cluster settings update response:', response);
+        Cypress.log({ message: 'Cluster settings updated successfully' });
         expect(response.status).to.eq(200);
       });
+
       cy.wait(5000);
     });
 
-    // Index some sample data in follower cluster (remote)
+    // Index some sample data in local and follower cluster (remote)
     beforeEach(() => {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
       const remoteEndpointTestData = `${Cypress.env(
@@ -138,6 +156,8 @@ context('Create remote detector workflow', () => {
 
     it('Full creation - based on remote index', () => {
       // Define detector step
+      const remoteClusterName = Cypress.env('remoteClusterName');
+
       cy.visit(AD_URL.CREATE_AD);
       cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
       cy.getElementByTestId('detectorNameTextInput').type(
@@ -151,7 +171,7 @@ context('Create remote detector workflow', () => {
       cy.getElementByTestId('clustersFilter').click();
       cy.contains(
         '.euiComboBoxOption__content',
-        'followCluster (Remote)'
+        `${remoteClusterName} (Remote)`
       ).click();
 
       cy.wait(3000);
@@ -160,7 +180,7 @@ context('Create remote detector workflow', () => {
       cy.wait(1000);
       cy.contains(
         '.euiComboBoxOption__content',
-        'followCluster:sample-ad-index'
+        `${remoteClusterName}:sample-ad-index`
       ).click();
 
       selectTopItemFromFilter('timestampFilter', false);
@@ -208,6 +228,8 @@ context('Create remote detector workflow', () => {
     });
 
     it('Full creation - based on multiple indexes', () => {
+      const remoteClusterName = Cypress.env('remoteClusterName');
+
       // Define detector step
       cy.visit(AD_URL.CREATE_AD);
       cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
@@ -220,23 +242,26 @@ context('Create remote detector workflow', () => {
 
       cy.getElementByTestId('clustersFilter').click();
       cy.getElementByTestId('clustersFilter').click();
+
       cy.contains(
         '.euiComboBoxOption__content',
-        'followCluster (Remote)'
+        `${remoteClusterName} (Remote)`
       ).click();
 
       cy.wait(3000);
 
       cy.getElementByTestId('indicesFilter').click();
       cy.wait(1000);
+
       cy.contains(
         '.euiComboBoxOption__content',
-        'followCluster:sample-ad-index'
+        `${remoteClusterName}:sample-ad-index`
       ).click();
       cy.contains('.euiComboBoxOption__content', 'sample-ad-index').click();
+
       cy.contains(
         '.euiComboBoxOption__content',
-        'followCluster:sample-ad-index-two'
+        `${remoteClusterName}:sample-ad-index-two`
       ).click();
 
       selectTopItemFromFilter('timestampFilter', false);
@@ -297,8 +322,10 @@ context('Create remote detector workflow', () => {
       cy.contains('span.euiTableCellContent__text', 'Data connection').should(
         'be.visible'
       );
+      cy.contains(`${remoteClusterName} (Remote)`).should('be.visible');
+
       cy.contains('followCluster (Remote)').should('be.visible');
-      cy.contains('leaderCluster (Local)').should('be.visible');
+      cy.contains('(Local)').should('be.visible');
       cy.contains('sample-ad-index').should('be.visible');
 
       cy.getElementByTestId('euiFlyoutCloseButton').click();
@@ -326,8 +353,8 @@ context('Create remote detector workflow', () => {
       cy.contains('span.euiTableCellContent__text', 'Data connection').should(
         'be.visible'
       );
-      cy.contains('followCluster (Remote)').should('be.visible');
-      cy.contains('leaderCluster (Local)').should('be.visible');
+      cy.contains(`${remoteClusterName} (Remote)`).should('be.visible');
+      cy.contains('(Local)').should('be.visible');
       cy.contains('sample-ad-index').should('be.visible');
     });
   });
