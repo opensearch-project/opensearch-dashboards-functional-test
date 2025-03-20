@@ -17,7 +17,7 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
-  const TEST_REMOTE_INDEX = 'followCluster:sample-ad-index';
+  //const TEST_REMOTE_INDEX = 'followCluster:sample-ad-index';
 
   // Clean up created resources
   afterEach(() => {
@@ -97,6 +97,9 @@ context('Create remote detector workflow', () => {
     // Index some sample data in local and follower cluster (remote)
     beforeEach(() => {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
+      cy.deleteAllIndices();
+      cy.deleteADSystemIndices();
+      cy.wait(3000);
       const remoteEndpointTestData = `${Cypress.env(
         'remoteDataSourceNoAuthUrl'
       )}/${TEST_INDEX_NAME}/_bulk`;
@@ -168,20 +171,20 @@ context('Create remote detector workflow', () => {
       );
 
       cy.getElementByTestId('clustersFilter').click();
-      cy.getElementByTestId('clustersFilter').click();
       cy.contains(
         '.euiComboBoxOption__content',
         `${remoteClusterName} (Remote)`
       ).click();
 
-      cy.wait(3000);
+      cy.wait(500);
 
-      cy.getElementByTestId('indicesFilter').click();
-      cy.wait(1000);
+      cy.getElementByTestId('indicesFilter').type('sample-ad-index');
+      cy.wait(500);
       cy.contains(
         '.euiComboBoxOption__content',
         `${remoteClusterName}:sample-ad-index`
       ).click();
+      cy.wait(1500);
 
       selectTopItemFromFilter('timestampFilter', false);
 
@@ -213,7 +216,9 @@ context('Create remote detector workflow', () => {
       cy.getElementByTestId('detectorDescriptionCell').contains(
         TEST_DETECTOR_DESCRIPTION
       );
-      cy.getElementByTestId('indexNameCell').contains(TEST_REMOTE_INDEX);
+      cy.getElementByTestId('indexNameCell').contains(
+        `${remoteClusterName}:sample-ad-index`
+      );
       cy.getElementByTestId('timestampNameCell').contains(TEST_TIMESTAMP_NAME);
       cy.getElementByTestId('featureTable').contains(TEST_FEATURE_NAME);
 
@@ -251,18 +256,24 @@ context('Create remote detector workflow', () => {
       cy.wait(3000);
 
       cy.getElementByTestId('indicesFilter').click();
-      cy.wait(1000);
 
-      cy.contains(
-        '.euiComboBoxOption__content',
-        `${remoteClusterName}:sample-ad-index`
-      ).click();
-      cy.contains('.euiComboBoxOption__content', 'sample-ad-index').click();
+      cy.getElementByTestId('indicesFilter').type('sample-ad-index');
+      cy.wait(500);
+      cy.get('.euiComboBoxOption__content')
+        .contains(`${remoteClusterName}:sample-ad-index`)
+        .click();
 
-      cy.contains(
-        '.euiComboBoxOption__content',
-        `${remoteClusterName}:sample-ad-index-two`
-      ).click();
+      cy.getElementByTestId('indicesFilter').click();
+      cy.getElementByTestId('indicesFilter').type('sample-ad-index');
+      cy.wait(500);
+      cy.get('.euiComboBoxOption__content').contains('sample-ad-index').click();
+
+      cy.getElementByTestId('indicesFilter').click();
+      cy.getElementByTestId('indicesFilter').type('sample-ad-index-two');
+      cy.wait(500);
+      cy.get('.euiComboBoxOption__content')
+        .contains(`${remoteClusterName}:sample-ad-index-two`)
+        .click();
 
       selectTopItemFromFilter('timestampFilter', false);
 
@@ -324,7 +335,6 @@ context('Create remote detector workflow', () => {
       );
       cy.contains(`${remoteClusterName} (Remote)`).should('be.visible');
 
-      cy.contains('followCluster (Remote)').should('be.visible');
       cy.contains('(Local)').should('be.visible');
       cy.contains('sample-ad-index').should('be.visible');
 
