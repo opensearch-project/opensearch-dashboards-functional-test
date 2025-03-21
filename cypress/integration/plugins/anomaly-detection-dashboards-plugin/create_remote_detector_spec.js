@@ -68,54 +68,45 @@ context('Create remote detector workflow', () => {
     before(function () {
       const remoteClusterName = Cypress.env('remoteClusterName');
 
-      const remoteClusterSettings = {
-        persistent: {
-          [`cluster.remote.${remoteClusterName}`]: {
-            seeds: ['127.0.0.1:9301'],
-          },
-        },
-      };
-
-      cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-
-      cy.request({
-        method: 'PUT',
-        url: `${BACKEND_BASE_PATH}/_cluster/settings`,
-        headers: {
-          'content-type': 'application/json',
-          'osd-xsrf': true,
-        },
-        body: remoteClusterSettings,
-      }).then((response) => {
-        Cypress.log({ message: 'Cluster settings updated successfully' });
-        expect(response.status).to.eq(200);
-      });
-
-      cy.wait(5000);
       const remoteSettings = `${Cypress.env(
         'remoteDataSourceNoAuthUrl'
       )}/_cluster/settings?include_defaults=true`;
-      cy.request(
-        {
-          method: 'GET',
-          form: false,
-          url: remoteSettings,
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',
-            'osd-xsrf': true,
-          },
+
+      cy.request({
+        method: 'GET',
+        form: false,
+        url: remoteSettings,
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
         },
-        1000
-      ).then((response) => {
+      }).then((response) => {
+        const remoteTransportPort = response.body.defaults.transport.port;
+
         Cypress.log({
-          message: `transport port: ${JSON.stringify(
-            response.body.defaults.transport.port
-          )}`,
+          message: `transport port: ${remoteTransportPort}`,
         });
 
-        if (response.body.defaults.transport.port != 9301) {
-          this.skip();
-        }
+        const remoteClusterSettings = {
+          persistent: {
+            [`cluster.remote.${remoteClusterName}`]: {
+              seeds: [`127.0.0.1:${remoteTransportPort}`],
+            },
+          },
+        };
+
+        cy.request({
+          method: 'PUT',
+          url: `${BACKEND_BASE_PATH}/_cluster/settings`,
+          headers: {
+            'content-type': 'application/json',
+            'osd-xsrf': true,
+          },
+          body: remoteClusterSettings,
+        }).then((putResponse) => {
+          Cypress.log({ message: 'Cluster settings updated successfully' });
+          expect(putResponse.status).to.eq(200);
+        });
       });
     });
 
@@ -144,9 +135,10 @@ context('Create remote detector workflow', () => {
             },
             body: data,
           },
-          1000
+          2000
         );
       });
+      cy.wait(1000);
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_remote_test_data.txt').then(
         (data) => {
           cy.request(
