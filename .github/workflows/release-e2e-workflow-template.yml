@@ -76,6 +76,7 @@ jobs:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
+          transport_port: 9301
       - uses: ./.github/actions/start-opensearch
         with:
           opensearch-version: ${{ env.VERSION }}
@@ -120,7 +121,7 @@ jobs:
           echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
