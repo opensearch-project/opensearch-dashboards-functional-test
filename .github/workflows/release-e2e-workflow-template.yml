@@ -76,6 +76,7 @@ jobs:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
+          transport_port: 9301
       - uses: ./.github/actions/start-opensearch
         with:
           opensearch-version: ${{ env.VERSION }}
