@@ -17,7 +17,6 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
-  //const TEST_REMOTE_INDEX = 'followCluster:sample-ad-index';
 
   // Clean up created resources
   afterEach(() => {
@@ -206,7 +205,7 @@ context('Create remote detector workflow', () => {
       selectTopItemFromFilter('timestampFilter', false);
 
       cy.getElementByTestId('defineDetectorNextButton').click();
-      // cy.wait(5000);
+      cy.wait(1000);
       cy.getElementByTestId('defineOrEditDetectorTitle').should('not.exist');
       cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
         'exist'
@@ -270,15 +269,7 @@ context('Create remote detector workflow', () => {
         `${remoteClusterName} (Remote)`
       ).click();
 
-      cy.wait(3000);
-
-      cy.getElementByTestId('indicesFilter').click();
-
-      cy.getElementByTestId('indicesFilter').type(TEST_INDEX_NAME);
-      cy.wait(500);
-      cy.get('.euiComboBoxOption__content')
-        .contains(`${remoteClusterName}:${TEST_INDEX_NAME}`)
-        .click();
+      cy.wait(1000);
 
       cy.getElementByTestId('indicesFilter').click();
       cy.getElementByTestId('indicesFilter').type(TEST_INDEX_NAME);
@@ -286,10 +277,14 @@ context('Create remote detector workflow', () => {
       cy.get('.euiComboBoxOption__content').contains(TEST_INDEX_NAME).click();
 
       cy.getElementByTestId('indicesFilter').click();
-      cy.getElementByTestId('indicesFilter').type(TEST_SECOND_INDEX_NAME);
-      cy.wait(500);
+      cy.wait(1000);
+
+      cy.getElementByTestId('indicesFilter').type('sample-ad-index-t');
+      cy.wait(1000);
+
       cy.get('.euiComboBoxOption__content')
         .contains(`${remoteClusterName}:${TEST_SECOND_INDEX_NAME}`)
+        .should('exist')
         .click();
 
       selectTopItemFromFilter('timestampFilter', false);
