@@ -31,11 +31,6 @@ inputs:
     description: 'Transport port to run OpenSearch transport layer. Leave empty to use the default config (9300-9400)'
     required: false
     default: '9300-9400'
-    
-  cluster_name:
-      description: 'The name given to the created cluster'
-      required: false
-      default: 'openesarch'
 
 runs:
   using: "composite"
@@ -144,8 +139,6 @@ runs:
         echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "http.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "transport.port: ${{ inputs.transport_port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
-        echo "cluster.name: ${{ inputs.cluster_name }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
-
       shell: bash
       working-directory: ${{ inputs.port }}
 
