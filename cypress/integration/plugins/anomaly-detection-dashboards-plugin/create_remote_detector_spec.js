@@ -105,6 +105,29 @@ context('Create remote detector workflow', () => {
         }).then((putResponse) => {
           Cypress.log({ message: 'Cluster settings updated successfully' });
           expect(putResponse.status).to.eq(200);
+          cy.request({
+            method: 'GET',
+            url: `${BACKEND_BASE_PATH}/_remote/info`,
+            headers: {
+              'content-type': 'application/json',
+              'osd-xsrf': true,
+            },
+          }).then((remoteInfoResponse) => {
+            Cypress.log({
+              message: `Remote info response: ${JSON.stringify(
+                remoteInfoResponse.body
+              )}`,
+            });
+            const clusterNames = Object.keys(remoteInfoResponse.body);
+            cy.task(
+              'log',
+              `remote info log: ${JSON.stringify(remoteInfoResponse.body)}`
+            );
+            expect(
+              clusterNames.length,
+              'at least one remote cluster exists'
+            ).to.be.greaterThan(0);
+          });
         });
       });
     });
@@ -135,7 +158,15 @@ context('Create remote detector workflow', () => {
             body: data,
           },
           2000
-        );
+        ).then((sampleRemoteDataResponse) => {
+          cy.task(
+            'log',
+            `sampleRemoteDataResponse log: ${JSON.stringify(
+              sampleRemoteDataResponse.body
+            )}`
+          );
+          expect(sampleRemoteDataResponse.status).to.eq(200);
+        });
       });
       cy.wait(1000);
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_remote_test_data.txt').then(
@@ -152,7 +183,16 @@ context('Create remote detector workflow', () => {
               body: data,
             },
             1000
-          );
+          ).then((sampleRemoteDataTwoResponse) => {
+            cy.task(
+              'log',
+              `sampleRemoteDataTwoResponse log: ${JSON.stringify(
+                sampleRemoteDataTwoResponse.body
+              )}`
+            );
+
+            expect(sampleRemoteDataTwoResponse.status).to.eq(200);
+          });
         }
       );
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
@@ -169,7 +209,27 @@ context('Create remote detector workflow', () => {
             method: 'POST',
           },
           body: data,
+        }).then((sampleDataResponse) => {
+          cy.task(
+            'log',
+            `sampleDataResponse log: ${JSON.stringify(sampleDataResponse.body)}`
+          );
+          expect(sampleDataResponse.status).to.eq(200);
         });
+      });
+      cy.request({
+        method: 'GET',
+        url: `${BACKEND_BASE_PATH}/_resolve/index/*:*`,
+        headers: {
+          'content-type': 'application/json',
+          'osd-xsrf': true,
+        },
+      }).then((resolveIndexResponse) => {
+        cy.task(
+          'log',
+          `resolveIndexResponse: ${JSON.stringify(resolveIndexResponse.body)}`
+        );
+        expect(resolveIndexResponse.status).to.eq(200);
       });
     });
 
