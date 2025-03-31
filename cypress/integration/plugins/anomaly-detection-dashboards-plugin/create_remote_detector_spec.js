@@ -17,6 +17,20 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
+  const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
+    'remoteDataSourceBasicAuthUsername'
+  );
+  const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env(
+    'remoteDataSourceBasicAuthPassword'
+  );
+  const isSecure = Cypress.env('SECURITY_ENABLED');
+  const remoteBaseUrl = isSecure
+    ? Cypress.env('remoteDataSourceBasicAuthUrl')
+    : Cypress.env('remoteDataSourceNoAuthUrl');
+  const auth = isSecure
+    ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
+    : '';
+  const insecureOption = isSecure ? '--insecure' : '';
 
   // Clean up created resources
   afterEach(() => {
@@ -27,58 +41,56 @@ context('Create remote detector workflow', () => {
   describe('Remote cluster tests', () => {
     before(function () {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-
       cy.exec(
-        `
-            node -e "
-            require('http')
-              .get('${Cypress.env(
-                'remoteDataSourceNoAuthUrl'
-              )}/_cluster/health', res => process.exit(res.statusCode === 200 ? 0 : 1))
-              .on('error', () => process.exit(1));
-            "`,
+        `curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
         { failOnNonZeroExit: false }
       ).then((result) => {
+        cy.task('log', `curl response: ${JSON.stringify(result)}`);
+        cy.task(
+          'log',
+          `curl request: curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`
+        );
+        console.log(`curl response: ${JSON.stringify(result)}`);
         if (result.code !== 0) {
           Cypress.log({
-            message: 'Remote cluster is unavailable - skipping tests',
+            message: 'Remote cluster is unavailable — skipping tests',
           });
-          this.skip(); // Skip all tests if the cluster isn't available
+          this.skip();
         }
-
-        cy.request(
-          `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`
-        ).then((response) => {
-          Cypress.log({
-            message: `Cluster health response: ${JSON.stringify(
-              response.body
-            )}`,
-          });
-
-          if (!response.body || !response.body.cluster_name) {
-            Cypress.log({ message: 'Cluster name not found - skipping tests' });
-            this.skip();
-          }
-          Cypress.env('remoteClusterName', response.body.cluster_name);
-        });
       });
-    });
 
-    before(function () {
-      const remoteClusterName = Cypress.env('remoteClusterName');
+      let remoteClusterName = 'opensearch';
+      // make a cluster health call to get the remote cluster name
+      cy.request('GET', `${remoteBaseUrl}/_cluster/health`).then((response) => {
+        Cypress.log({
+          message: `Cluster health response: ${JSON.stringify(response.body)}`,
+        });
+        cy.task(
+          'log',
+          `cluster health response: ${JSON.stringify(response.body)}`
+        );
 
-      const remoteSettings = `${Cypress.env(
-        'remoteDataSourceNoAuthUrl'
-      )}/_cluster/settings?include_defaults=true`;
+        cy.task('log', `remote url for cluster health call: ${remoteBaseUrl}`);
 
+        cy.task(
+          'log',
+          `response.body.cluster_name: ${response.body.cluster_name}`
+        );
+
+        if (!response.body || !response.body.cluster_name) {
+          Cypress.log({ message: 'Cluster name not found - skipping tests' });
+          this.skip();
+        }
+        Cypress.env('remoteClusterName', response.body.cluster_name);
+        remoteClusterName = response.body.cluster_name;
+      });
+
+      const remoteSettings = `${remoteBaseUrl}/_cluster/settings?include_defaults=true`;
+      cy.task('log', `remoteClusterName1: ${remoteClusterName}`);
+      // make a get cluster setting to the remote cluster
       cy.request({
         method: 'GET',
-        form: false,
         url: remoteSettings,
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          'osd-xsrf': true,
-        },
       }).then((response) => {
         const remoteTransportPort = response.body.defaults.transport.port;
 
@@ -86,6 +98,7 @@ context('Create remote detector workflow', () => {
           message: `transport port: ${remoteTransportPort}`,
         });
 
+        cy.task('log', `remoteClusterName2: ${remoteClusterName}`);
         const remoteClusterSettings = {
           persistent: {
             [`cluster.remote.${remoteClusterName}`]: {
@@ -94,12 +107,13 @@ context('Create remote detector workflow', () => {
           },
         };
 
+        cy.task('log', `remoteTransportPort: ${remoteTransportPort}`);
+
         cy.request({
           method: 'PUT',
           url: `${BACKEND_BASE_PATH}/_cluster/settings`,
           headers: {
             'content-type': 'application/json',
-            'osd-xsrf': true,
           },
           body: remoteClusterSettings,
         }).then((putResponse) => {
@@ -113,6 +127,10 @@ context('Create remote detector workflow', () => {
               'osd-xsrf': true,
             },
           }).then((remoteInfoResponse) => {
+            cy.task(
+              'log',
+              `remoteInfoTwo: ${JSON.stringify(remoteInfoResponse.body)}`
+            );
             Cypress.log({
               message: `Remote info response: ${JSON.stringify(
                 remoteInfoResponse.body
@@ -123,6 +141,7 @@ context('Create remote detector workflow', () => {
               'log',
               `remote info log: ${JSON.stringify(remoteInfoResponse.body)}`
             );
+
             expect(
               clusterNames.length,
               'at least one remote cluster exists'
@@ -138,12 +157,8 @@ context('Create remote detector workflow', () => {
       cy.deleteAllIndices();
       cy.deleteADSystemIndices();
       cy.wait(3000);
-      const remoteEndpointTestData = `${Cypress.env(
-        'remoteDataSourceNoAuthUrl'
-      )}/${TEST_INDEX_NAME}/_bulk`;
-      const remoteEndpointTestDataTwo = `${Cypress.env(
-        'remoteDataSourceNoAuthUrl'
-      )}/${TEST_SECOND_INDEX_NAME}/_bulk`;
+      const remoteEndpointTestData = `${remoteBaseUrl}/${TEST_INDEX_NAME}/_bulk`;
+      const remoteEndpointTestDataTwo = `${remoteBaseUrl}/${TEST_SECOND_INDEX_NAME}/_bulk`;
 
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
         cy.request(
