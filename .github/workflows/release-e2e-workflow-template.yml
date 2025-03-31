@@ -90,7 +90,7 @@ jobs:
         id: versions
         run: |
           node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")
-          echo "node_version=$node_version_temp" >> $GITHUB_ENV
+          echo "node_version=20.18.3" >> $GITHUB_ENV
       - name: Setup node
         uses: actions/setup-node@v1
         with:
@@ -120,7 +120,7 @@ jobs:
           echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v1
+        uses: actions/cache@v3
         with:
           path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
