@@ -17,20 +17,20 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
-  const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
-    'remoteDataSourceBasicAuthUsername'
-  );
-  const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env(
-    'remoteDataSourceBasicAuthPassword'
-  );
+  // const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
+  //   'remoteDataSourceBasicAuthUsername'
+  // );
+  // const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env(
+  //   'remoteDataSourceBasicAuthPassword'
+  // );
   const isSecure = Cypress.env('SECURITY_ENABLED');
   const remoteBaseUrl = isSecure
     ? Cypress.env('remoteDataSourceBasicAuthUrl')
     : Cypress.env('remoteDataSourceNoAuthUrl');
-  const auth = isSecure
-    ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
-    : '';
-  const insecureOption = isSecure ? '--insecure' : '';
+  // const auth = isSecure
+  //   ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
+  //   : '';
+  // const insecureOption = isSecure ? '--insecure' : '';
 
   // Clean up created resources
   afterEach(() => {
@@ -41,23 +41,23 @@ context('Create remote detector workflow', () => {
   describe('Remote cluster tests', () => {
     before(function () {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-      cy.exec(
-        `curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
-        { failOnNonZeroExit: false }
-      ).then((result) => {
-        cy.task('log', `curl response: ${JSON.stringify(result)}`);
-        cy.task(
-          'log',
-          `curl request: curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`
-        );
-        console.log(`curl response: ${JSON.stringify(result)}`);
-        if (result.code !== 0) {
-          Cypress.log({
-            message: 'Remote cluster is unavailable — skipping tests',
-          });
-          this.skip();
-        }
-      });
+      // cy.exec(
+      //   `curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
+      //   { failOnNonZeroExit: false }
+      // ).then((result) => {
+      //   cy.task('log', `curl response: ${JSON.stringify(result)}`);
+      //   cy.task(
+      //     'log',
+      //     `curl request: curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`
+      //   );
+      //   console.log(`curl response: ${JSON.stringify(result)}`);
+      //   if (result.code !== 0) {
+      //     Cypress.log({
+      //       message: 'Remote cluster is unavailable — skipping tests',
+      //     });
+      //     this.skip();
+      //   }
+      // });
 
       let remoteClusterName = 'opensearch';
       // make a cluster health call to get the remote cluster name
