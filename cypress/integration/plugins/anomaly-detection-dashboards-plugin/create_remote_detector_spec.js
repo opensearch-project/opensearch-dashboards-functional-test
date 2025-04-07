@@ -17,22 +17,20 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
-  // const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
-  //   'remoteDataSourceBasicAuthUsername'
-  // );
-  // const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env(
-  //   'remoteDataSourceBasicAuthPassword'
-  // );
+  const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
+    'remoteDataSourceBasicAuthUsername'
+  );
+  const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env('password');
   const isSecure = Cypress.env('SECURITY_ENABLED');
   const remoteBaseUrl = isSecure
     ? Cypress.env('remoteDataSourceBasicAuthUrl')
     : Cypress.env('remoteDataSourceNoAuthUrl');
-  // const auth = isSecure
-  //   ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
-  //   : '';
-  // const insecureOption = isSecure ? '--insecure' : '';
+  const auth = isSecure
+    ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
+    : '';
+  const insecureOption = isSecure ? '--insecure' : '';
 
-  // Clean up created resources
+  //Clean up created resources
   afterEach(() => {
     cy.deleteAllIndices();
     cy.deleteADSystemIndices();
@@ -41,23 +39,17 @@ context('Create remote detector workflow', () => {
   describe('Remote cluster tests', () => {
     before(function () {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-      // cy.exec(
-      //   `curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
-      //   { failOnNonZeroExit: false }
-      // ).then((result) => {
-      //   cy.task('log', `curl response: ${JSON.stringify(result)}`);
-      //   cy.task(
-      //     'log',
-      //     `curl request: curl --silent --fail --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`
-      //   );
-      //   console.log(`curl response: ${JSON.stringify(result)}`);
-      //   if (result.code !== 0) {
-      //     Cypress.log({
-      //       message: 'Remote cluster is unavailable — skipping tests',
-      //     });
-      //     this.skip();
-      //   }
-      // });
+      cy.exec(
+        `curl --silent --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
+        { failOnNonZeroExit: false }
+      ).then((result) => {
+        if (!result.stdout || !result.stdout.trim()) {
+          Cypress.log({
+            message: 'Remote cluster is unavailable — skipping tests',
+          });
+          this.skip();
+        }
+      });
 
       let remoteClusterName = 'opensearch';
       // make a cluster health call to get the remote cluster name
@@ -159,7 +151,6 @@ context('Create remote detector workflow', () => {
       cy.wait(3000);
       const remoteEndpointTestData = `${remoteBaseUrl}/${TEST_INDEX_NAME}/_bulk`;
       const remoteEndpointTestDataTwo = `${remoteBaseUrl}/${TEST_SECOND_INDEX_NAME}/_bulk`;
-
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
         cy.request(
           {
@@ -210,6 +201,7 @@ context('Create remote detector workflow', () => {
           });
         }
       );
+
       cy.fixture(AD_FIXTURE_BASE_PATH + 'sample_test_data.txt').then((data) => {
         cy.request({
           method: 'POST',
@@ -280,7 +272,22 @@ context('Create remote detector workflow', () => {
       selectTopItemFromFilter('timestampFilter', false);
 
       cy.getElementByTestId('defineDetectorNextButton').click();
-      cy.wait(1000);
+      cy.wait(1500);
+      cy.getElementByTestId('defineOrEditDetectorTitle').should('not.exist');
+      cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
+        'exist'
+      );
+
+      // Go back to create detector page to view that cluster selection didn't disappear
+      cy.contains('span.euiButton__text', 'Previous').click({ force: true });
+      cy.wait(1500);
+      cy.getElementByTestId('clustersFilter').should(
+        'contain',
+        `${remoteClusterName} (Remote)`
+      );
+
+      cy.getElementByTestId('defineDetectorNextButton').click();
+      cy.wait(1500);
       cy.getElementByTestId('defineOrEditDetectorTitle').should('not.exist');
       cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
         'exist'
@@ -430,7 +437,7 @@ context('Create remote detector workflow', () => {
 
       cy.getElementByTestId('createDetectorButton').click();
 
-      cy.wait(3500);
+      cy.wait(5500);
 
       // Lands on the config page by default.
       cy.getElementByTestId('detectorSettingsHeader').should('exist');
