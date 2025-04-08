@@ -57,18 +57,6 @@ context('Create remote detector workflow', () => {
         Cypress.log({
           message: `Cluster health response: ${JSON.stringify(response.body)}`,
         });
-        cy.task(
-          'log',
-          `cluster health response: ${JSON.stringify(response.body)}`
-        );
-
-        cy.task('log', `remote url for cluster health call: ${remoteBaseUrl}`);
-
-        cy.task(
-          'log',
-          `response.body.cluster_name: ${response.body.cluster_name}`
-        );
-
         if (!response.body || !response.body.cluster_name) {
           Cypress.log({ message: 'Cluster name not found - skipping tests' });
           this.skip();
@@ -78,7 +66,6 @@ context('Create remote detector workflow', () => {
       });
 
       const remoteSettings = `${remoteBaseUrl}/_cluster/settings?include_defaults=true`;
-      cy.task('log', `remoteClusterName1: ${remoteClusterName}`);
       // make a get cluster setting to the remote cluster
       cy.request({
         method: 'GET',
@@ -90,7 +77,6 @@ context('Create remote detector workflow', () => {
           message: `transport port: ${remoteTransportPort}`,
         });
 
-        cy.task('log', `remoteClusterName2: ${remoteClusterName}`);
         const remoteClusterSettings = {
           persistent: {
             [`cluster.remote.${remoteClusterName}`]: {
@@ -119,21 +105,12 @@ context('Create remote detector workflow', () => {
               'osd-xsrf': true,
             },
           }).then((remoteInfoResponse) => {
-            cy.task(
-              'log',
-              `remoteInfoTwo: ${JSON.stringify(remoteInfoResponse.body)}`
-            );
             Cypress.log({
               message: `Remote info response: ${JSON.stringify(
                 remoteInfoResponse.body
               )}`,
             });
             const clusterNames = Object.keys(remoteInfoResponse.body);
-            cy.task(
-              'log',
-              `remote info log: ${JSON.stringify(remoteInfoResponse.body)}`
-            );
-
             expect(
               clusterNames.length,
               'at least one remote cluster exists'
@@ -165,12 +142,6 @@ context('Create remote detector workflow', () => {
           },
           2000
         ).then((sampleRemoteDataResponse) => {
-          cy.task(
-            'log',
-            `sampleRemoteDataResponse log: ${JSON.stringify(
-              sampleRemoteDataResponse.body
-            )}`
-          );
           expect(sampleRemoteDataResponse.status).to.eq(200);
         });
       });
@@ -190,13 +161,6 @@ context('Create remote detector workflow', () => {
             },
             1000
           ).then((sampleRemoteDataTwoResponse) => {
-            cy.task(
-              'log',
-              `sampleRemoteDataTwoResponse log: ${JSON.stringify(
-                sampleRemoteDataTwoResponse.body
-              )}`
-            );
-
             expect(sampleRemoteDataTwoResponse.status).to.eq(200);
           });
         }
@@ -232,10 +196,6 @@ context('Create remote detector workflow', () => {
           'osd-xsrf': true,
         },
       }).then((resolveIndexResponse) => {
-        cy.task(
-          'log',
-          `resolveIndexResponse: ${JSON.stringify(resolveIndexResponse.body)}`
-        );
         expect(resolveIndexResponse.status).to.eq(200);
       });
     });
