@@ -8,7 +8,7 @@ jobs:
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v4
       id: filter
       with:
         filters: |
