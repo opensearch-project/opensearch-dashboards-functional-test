@@ -249,7 +249,7 @@ Cypress.Commands.add('viewDataSourceAggregatedView', (dataSourceTitle) => {
 
 Cypress.Commands.add('createDataSourceNoAuthWithTitle', (title) => {
   miscUtils.visitPage(
-    'app/management/opensearch-dashboards/dataSources/create'
+    'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
   );
 
   cy.intercept('POST', '/api/saved_objects/data-source').as(

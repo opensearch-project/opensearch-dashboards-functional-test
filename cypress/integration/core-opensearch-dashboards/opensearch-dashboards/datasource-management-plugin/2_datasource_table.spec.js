@@ -479,7 +479,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.getElementByTestId('createDataSourceButton').first().click();
         cy.location('pathname').should(
           'eq',
-          '/app/management/opensearch-dashboards/dataSources/create'
+          '/app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
         );
       });
     });
