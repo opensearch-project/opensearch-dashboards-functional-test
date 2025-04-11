@@ -75,9 +75,7 @@ const deleteAllNotebooks = () => {
   ).as('deleteNotebook');
 
   cy.wait(delayTime * 3);
-
   moveToNotebookHome();
-
   cy.wait(delayTime * 3);
 
   cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist');
