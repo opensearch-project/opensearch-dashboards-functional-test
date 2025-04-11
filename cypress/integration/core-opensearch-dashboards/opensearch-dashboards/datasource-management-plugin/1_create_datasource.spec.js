@@ -32,7 +32,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     beforeEach(() => {
       // Visit OSD create page
       miscUtils.visitPage(
-        'app/management/opensearch-dashboards/dataSources/create'
+        'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
       );
 
       cy.intercept('POST', '/api/saved_objects/data-source').as(
