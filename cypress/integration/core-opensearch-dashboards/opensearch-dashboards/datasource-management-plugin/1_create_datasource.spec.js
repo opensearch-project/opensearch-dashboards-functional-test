@@ -386,11 +386,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
       });
 
-      it('cancel button should redirect to datasource creation page', () => {
+      it('cancel button should redirect to centralized datasource creation page', () => {
         cy.getElementByTestId('cancelCreateDataSourceButton').click();
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
-          'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
+          'app/management/opensearch-dashboards/dataSources/create'
         );
       });
     });
