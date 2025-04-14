@@ -27,7 +27,14 @@ export const VB_PATH_FIXTURE = 'dashboard/opensearch_dashboards/visBuilder/';
 export const VB_PATH_INDEX_DATA = VB_PATH_FIXTURE + VB_INDEX_DATA;
 export const VB_PATH_SO_DATA = VB_PATH_FIXTURE + VB_SO_DATA;
 
+export const VISUALIZATION_SO_DATA = 'visualization_saved_objects.ndjson';
+export const VISUALIZATION_PATH_SO_DATA =
+  VB_PATH_FIXTURE + VISUALIZATION_SO_DATA;
+
 // App URL Paths
+export const VISUALIZE_APP_PATH = '/app/visualize';
+export const VISUALIZE_APP_URL = `${BASE_PATH}${VISUALIZE_APP_PATH}`;
+
 export const VB_APP_PATH = '/app/vis-builder';
 export const VB_APP_URL = `${BASE_PATH}${VB_APP_PATH}`;
 
