@@ -35,15 +35,15 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       );
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
-      // Common text to wait for to confirm page loaded, give up to 120 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).as(
-        'chatInput'
-      );
-      cy.get('@chatInput').should('be.length', 1);
 
+      cy.wait(120000);
+
+      // enable to toggle and show Chatbot
+      cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+
+      // click suggestions to generate response
+      cy.contains('What are the indices in my cluster?').click();
       cy.wait(10000);
-
-      cy.get('@chatInput').click().type(`${QUESTION}{enter}`);
 
       // should have a LLM Response
       cy.contains(FINAL_ANSWER);
