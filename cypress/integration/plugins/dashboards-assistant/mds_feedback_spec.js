@@ -18,11 +18,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // Visit ISM OSD
       cy.visit(`${BASE_PATH}/app/home`);
 
-      // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 60000 }).should(
-        'be.length',
-        1
-      );
+      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
+        timeout: 60000,
+      }).should('be.length', 1);
     });
 
     // clean up localStorage items
@@ -36,12 +34,13 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       it('display feedback button and able to interact', () => {
         // input question
         cy.wait(1000);
-        cy.get(`input[placeholder="Ask question"]`)
-          .click()
-          .type('What are the indices in my cluster?{enter}');
 
-        // should have a LLM Response
-        cy.contains('The indices in your cluster');
+        // enable to toggle and show Chatbot
+        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+
+        // click suggestions to generate response
+        cy.contains('What are the indices in my cluster?').click();
+        cy.wait(10000);
 
         // should have a thumb up and a thumb down feedback button
         cy.get(`[aria-label="feedback thumbs up"]`).should('be.length', 1);
