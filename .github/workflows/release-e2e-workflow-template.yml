@@ -17,6 +17,10 @@ on:
       artifact-name-suffix:
         required: false
         type: string
+      multi-opensearch-enabled:
+        required: false
+        type: boolean
+        default: true
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -72,11 +76,13 @@ jobs:
               curl https://localhost:9200 -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true

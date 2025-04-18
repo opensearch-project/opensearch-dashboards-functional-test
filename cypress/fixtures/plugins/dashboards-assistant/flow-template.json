@@ -25,7 +25,7 @@
                   "x-amz-content-sha256": "required",
                   "content-type": "application/json"
                 },
-                "method": "GET",
+                "method": "POST",
                 "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
                 "action_type": "predict",
                 "url": "http://127.0.0.1:3000"
@@ -61,12 +61,12 @@
           }
         },
         {
-          "id": "cat_index_tool",
+          "id": "list_index_tool",
           "type": "create_tool",
           "previous_node_inputs": {},
           "user_inputs": {
-            "type": "CatIndexTool",
-            "name": "CatIndexTool",
+            "type": "ListIndexTool",
+            "name": "ListIndexTool",
             "description": "Use this tool to get OpenSearch index information: (health, status, index, uuid, primary count, replica count, docs.count, docs.deleted, store.size, primary.store.size).",
             "parameters": {
               "index": ".kibana"
@@ -77,7 +77,7 @@
           "id": "sub_agent",
           "type": "register_agent",
           "previous_node_inputs": {
-            "cat_index_tool": "tools",
+            "list_index_tool": "tools",
             "register_model_2": "model_id"
           },
           "user_inputs": {
