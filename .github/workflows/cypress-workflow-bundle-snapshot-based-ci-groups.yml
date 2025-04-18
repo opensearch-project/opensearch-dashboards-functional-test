@@ -9,6 +9,7 @@ on:
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
 
   push:
     branches: ['**']
@@ -19,6 +20,7 @@ on:
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/cypress-workflow-bundle-snapshot-based-ci-groups.yml'
 
 env:
   CI_GROUPS: "1,2,3,4,5,6,7,8,9"
@@ -104,7 +106,7 @@ jobs:
   #   with:
   #     test-name: "osd:ciGroup${{ matrix.ciGroup }}"
   #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec '${{ matrix.specs }}'
-  
+
   # tests-without-security-windows:
   #   needs: ["get_spec"]
   #   strategy:
