@@ -66,6 +66,7 @@ describe('discover app', { scrollBehavior: false }, () => {
     after(() => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
       cy.getElementByTestId(`deleteFilter`).click();
+      cy.clearTopNavQuery(); // clear the query before we proceed
     });
     it('should persist across refresh', function () {
       // Set up query and filter
