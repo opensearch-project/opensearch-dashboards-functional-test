@@ -17,7 +17,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
 
-      cy.wait(120000);
+      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
+        timeout: 60000,
+      }).should('be.length', 1);
     });
 
     describe('sidecar spec', () => {

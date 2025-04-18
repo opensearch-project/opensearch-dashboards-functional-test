@@ -30,7 +30,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
       // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.wait(120000);
+      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
+        timeout: 60000,
+      }).should('be.length', 1);
 
       // Open assistant flyout
       // The flyout button will be detached and can't be clicked, add 10s delayed fix it.
