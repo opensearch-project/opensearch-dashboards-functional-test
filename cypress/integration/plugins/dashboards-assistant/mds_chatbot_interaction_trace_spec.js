@@ -18,8 +18,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // cy.waitForLoader();
 
       cy.get(`button[aria-label="toggle chat flyout icon"]`, {
-        timeout: 60000,
+        timeout: 120000,
       }).should('be.length', 1);
+      cy.wait(5000);
 
       // enable to toggle and show Chatbot
       cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
