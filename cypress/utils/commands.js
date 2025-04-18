@@ -292,6 +292,21 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('checkClusterHealth', () => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`,
+      failOnStatusCode: false,
+    })
+    .then((response) => {
+      return response.status === 200;
+    })
+    .catch(() => {
+      return false;
+    });
+});
+
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
   if (policyID != null) {
