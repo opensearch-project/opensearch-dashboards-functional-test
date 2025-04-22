@@ -10,10 +10,14 @@ export const FLOW_FRAMEWORK_API = {
   ROOT: WORKFLOW_API_PREFIX,
   PROVISION: `${WORKFLOW_API_PREFIX}/<workflow_id>/_provision`,
   DEPROVISION: `${WORKFLOW_API_PREFIX}/<workflow_id>/_deprovision`,
+  STATUS: `${WORKFLOW_API_PREFIX}/<workflow_id>/_status`,
 };
 
 export const ASSISTANT_AGENT_NAME = {
   CHAT: 'os_chat',
+  TEXT2VEGA: 'os_text2vega',
+  TEXT2VEGA_WITH_INSTRUCTIONS: 'os_text2vega_with_instructions',
+  QUERY_ASSISTANT_PPL: 'os_query_assist_ppl',
 };
 
 export const ML_COMMONS_API = {

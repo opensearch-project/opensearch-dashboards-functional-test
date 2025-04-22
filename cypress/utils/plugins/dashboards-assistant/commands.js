@@ -4,7 +4,12 @@
  */
 
 import { get } from 'lodash';
+
 import chatFlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/chat.json';
+import t2vJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega.json';
+import t2vInstructionsJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega-with-instructions.json';
+import queryAssistPPLJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/query-assist-ppl.json';
+
 import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
 import {
   ML_COMMONS_API,
@@ -29,6 +34,21 @@ const agents = [
     type: 'os_chat_root_agent',
     agentName: ASSISTANT_AGENT_NAME.CHAT,
     flowTemplateJSON: chatFlowTemplateJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.TEXT2VEGA,
+    flowTemplateJSON: t2vJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.TEXT2VEGA_WITH_INSTRUCTIONS,
+    flowTemplateJSON: t2vInstructionsJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.QUERY_ASSISTANT_PPL,
+    flowTemplateJSON: queryAssistPPLJSON,
   },
 ];
 
@@ -125,7 +145,10 @@ Cypress.Commands.add(
           .requestPollUntil(
             {
               method: 'GET',
-              url: `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.ROOT}/${workflowId}/_status?all=true`,
+              url: `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.STATUS.replace(
+                '<workflow_id>',
+                workflowId
+              )}?all=true`,
             },
             (resp) => {
               const { state, provisioning_progress: provisioningProgress } =
