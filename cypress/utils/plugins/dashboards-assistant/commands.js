@@ -182,7 +182,7 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
+Cypress.Commands.add('putAgentIdConfig', ({ agentName, agentId }) => {
   const endpoint = `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
     '<agent_name>',
     agentName
