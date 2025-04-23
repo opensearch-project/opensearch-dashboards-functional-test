@@ -183,6 +183,10 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
+  const endpoint = `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
+    '<agent_name>',
+    agentName
+  )}`;
   // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
     Cypress.env('SECURITY_ENABLED') &&
@@ -190,29 +194,18 @@ Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
-        '<agent_name>',
-        agentName
-      )}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
     );
   } else {
-    return cy.request(
-      'PUT',
-      `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
-        '<agent_name>',
-        agentName
-      )}`,
-      {
-        type,
-        configuration: {
-          agent_id: agentId,
-        },
-      }
-    );
+    return cy.request('PUT', endpoint);
   }
 });
 
 Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
+  const endpoint = `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
+    '<agent_name>',
+    agentName
+  )}`;
   // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
     Cypress.env('SECURITY_ENABLED') &&
@@ -220,19 +213,10 @@ Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
-        '<agent_name>',
-        agentName
-      )}'  -H 'Content-Type: application/json'`
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`
     );
   } else {
-    return cy.request(
-      'DELETE',
-      `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
-        '<agent_name>',
-        agentName
-      )}`
-    );
+    return cy.request('DELETE', endpoint);
   }
 });
 
