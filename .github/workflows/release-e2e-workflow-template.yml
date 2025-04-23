@@ -81,13 +81,15 @@ jobs:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
+          transport_port: 9301
       - uses: ./.github/actions/start-opensearch
         if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
-          admin-password: admin
+          admin-password: myStrongPassword123!
           port: 9202
+          transport_port: 9302
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
