@@ -197,7 +197,12 @@ Cypress.Commands.add('putAgentIdConfig', ({ agentName, agentId }) => {
       `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
     );
   } else {
-    return cy.request('PUT', endpoint);
+    return cy.request('PUT', endpoint, {
+      type,
+      configuration: {
+        agent_id: agentId,
+      },
+    });
   }
 });
 
