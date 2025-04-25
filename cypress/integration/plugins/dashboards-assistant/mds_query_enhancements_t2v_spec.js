@@ -156,9 +156,7 @@ function textToVisualizationTestCases(url) {
         // should generate a pie chart
         if (interception.response.body.layer) {
           expect(interception.response.body).to.have.property('layer');
-          expect(interception.response.body.layer[0]).should(
-            'not.be.undefined'
-          );
+          expect(interception.response.body.layer[0]).to.not.be.undefined;
           expect(interception.response.body.layer[0].mark).to.eq('arc');
         } else {
           expect(interception.response.body).to.have.property('mark');
