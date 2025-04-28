@@ -301,3 +301,32 @@ Cypress.Commands.add('clearDataSourceForAssistant', () => {
     cy.deleteAllDataSources();
   }
 });
+
+Cypress.Commands.add('openAssistantChatbot', () => {
+  const maxAttempts = 5;
+  let attempts = 0;
+
+  function attemptOpen() {
+    if (attempts >= maxAttempts) {
+      throw new Error(`Failed to open chatbot after ${maxAttempts} attempts`);
+    }
+
+    attempts++;
+
+    cy.get('button[aria-label="toggle chat flyout icon"]', { timeout: 60000 })
+      .should('exist')
+      .and('be.visible')
+      .click();
+
+    cy.wait(500); // Wait for if flyout disappear
+    cy.get('body').then(($body) => {
+      if (!$body.find('.llm-chat-flyout').is(':visible')) {
+        cy.wait(1000); // Wait before trying again
+        attemptOpen();
+      }
+    });
+  }
+
+  attemptOpen();
+  cy.get('.llm-chat-flyout').should('exist').and('be.visible');
+});
