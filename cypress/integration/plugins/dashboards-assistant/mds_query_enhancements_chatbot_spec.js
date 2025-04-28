@@ -15,7 +15,9 @@ const askQuestion = (question) => {
     expect(interception.response.statusCode).to.eq(200);
     expect(interception.response.body).to.have.property('interactions');
 
-    const responseText = interception.response.body.interactions?.[0]?.response;
+    expect(interception.response.body.interactions).to.exist;
+    expect(interception.response.body.interactions[0]).to.exist;
+    const responseText = interception.response.body.interactions[0].response;
     expect(responseText).to.exist;
     cy.contains(responseText)
       .scrollIntoView()
