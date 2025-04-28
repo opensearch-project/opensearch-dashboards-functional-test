@@ -17,13 +17,8 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.visit(`${BASE_PATH}/app/home`);
       // cy.waitForLoader();
 
-      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
-        timeout: 120000,
-      }).should('be.length', 1);
-      cy.wait(5000);
-
       // enable to toggle and show Chatbot
-      cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+      cy.openAssistantChatbot();
 
       // click suggestions to generate response
       cy.contains('What are the indices in my cluster?').click();

@@ -24,11 +24,8 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     describe('sidecar spec', () => {
       it('open sidecar and render normally, support show and hide', () => {
-        // The header may render multiple times, wait for UI to be stable
-        cy.wait(5000);
-
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
         cy.get('[class~="chatbot-sidecar"]').should('be.visible');
         cy.get('[class~="chatbot-sidecar"]').should(
           'have.css',
