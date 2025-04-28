@@ -1,5 +1,9 @@
+/*
+ * Copyright OpenSearch Contributors
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 const workspaceName = 'chatbot-test-workspace';
-const dataSourceTitle = Cypress.env('dataSourceTitle');
 const question = 'Hello assistant, what are the indices in my cluster?';
 
 const askQuestion = (question) => {
