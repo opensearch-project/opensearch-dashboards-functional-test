@@ -64,6 +64,11 @@ function alertSummaryTestCases(url) {
         cy.createMonitor(sampleQueryLevelMonitorForAlertSummary, dataSourceUrl);
         // Waiting for alert to be triggered
         cy.wait(80000);
+
+        cy.visit(`${url}/w/${workspaceId}/app/monitors#`);
+        cy.contains(sampleQueryLevelMonitorForAlertSummary.name, {
+          timeout: 60000,
+        });
       });
     });
 
