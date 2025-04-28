@@ -88,25 +88,7 @@ function addChatbotTestCase(url) {
         .should('be.visible')
         .should('be.enabled');
 
-      // Create a new conversation
-      cy.get('[aria-label="toggle chat context menu"]')
-        .should('be.visible')
-        .and('be.enabled')
-        .click();
-      cy.get('.euiContextMenuItem')
-        .contains('New conversation')
-        .should('be.visible')
-        .click({ force: true });
-
-      // Confirm the current conversation is new
-      cy.get('.llm-chat-flyout-body').within(() => {
-        cy.get('[aria-label="chat message bubble"]')
-          .should('have.length', 1)
-          .first()
-          .within(() => {
-            cy.get('[aria-label="chat welcome message"]').should('exist');
-          });
-      });
+      cy.startNewAssistantConversation();
     });
 
     it('should return a response after asking a question', () => {

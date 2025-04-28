@@ -26,6 +26,8 @@ const openChatBotAndSendMessage = () => {
   // enable to toggle and show Chatbot
   cy.openAssistantChatbot();
 
+  cy.startNewAssistantConversation();
+
   // click suggestions to generate response
   cy.contains('What are the indices in my cluster?').click();
 
