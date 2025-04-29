@@ -130,7 +130,7 @@
           }
         },
         {
-          "id": "root_agent",
+          "id": "os_chat",
           "type": "register_agent",
           "previous_node_inputs": {
             "agent_tool": "tools",
