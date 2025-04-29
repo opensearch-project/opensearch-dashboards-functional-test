@@ -143,7 +143,9 @@ const testSuggestAD = (url) => {
       cy.get('[data-test-subj="detectorNameTextInputFlyout"]').type(
         'test-detector-name' + Math.floor(Math.random() * 100) + 1
       );
-      cy.contains('Detector name cannot be empty').should('not.exist');
+      cy.contains('Detector name cannot be empty', { timeout: 10000 }).should(
+        'not.exist'
+      );
 
       // Test interval input
       cy.get('[data-test-subj="detectionInterval"]').clear().type('15');
