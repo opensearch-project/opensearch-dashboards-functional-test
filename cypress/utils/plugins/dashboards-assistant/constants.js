@@ -18,6 +18,10 @@ export const ASSISTANT_AGENT_NAME = {
   TEXT2VEGA: 'os_text2vega',
   TEXT2VEGA_WITH_INSTRUCTIONS: 'os_text2vega_with_instructions',
   QUERY_ASSISTANT_PPL: 'os_query_assist_ppl',
+  DATA2SUMMARY: 'os_data2summary',
+  SUGGEST_AD: 'os_suggest_ad',
+  SUMMARY: 'os_summary',
+  SUMMARY_WITH_LOG_PATTERN: 'os_summary_with_log_pattern',
 };
 
 export const ML_COMMONS_API = {

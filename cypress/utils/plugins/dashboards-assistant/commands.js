@@ -9,6 +9,10 @@ import chatFlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant
 import t2vJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega.json';
 import t2vInstructionsJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega-with-instructions.json';
 import queryAssistPPLJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/query-assist-ppl.json';
+import data2summaryJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/data2summary.json';
+import suggestADJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/suggest-ad.json';
+import summaryJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/summary.json';
+import summaryWithLogPatternJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/summary_with_log_pattern.json';
 
 import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
 import {
@@ -49,6 +53,26 @@ const agents = [
     type: 'os_assistant_agent',
     agentName: ASSISTANT_AGENT_NAME.QUERY_ASSISTANT_PPL,
     flowTemplateJSON: queryAssistPPLJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.DATA2SUMMARY,
+    flowTemplateJSON: data2summaryJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUGGEST_AD,
+    flowTemplateJSON: suggestADJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUMMARY,
+    flowTemplateJSON: summaryJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUMMARY_WITH_LOG_PATTERN,
+    flowTemplateJSON: summaryWithLogPatternJSON,
   },
 ];
 

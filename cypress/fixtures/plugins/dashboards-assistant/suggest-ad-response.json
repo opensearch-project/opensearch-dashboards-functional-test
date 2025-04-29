@@ -1,0 +1,6 @@
+{
+    "completion":
+      "{\"index\":\"opensearch_dashboards_sample_data_logs\",\"categoryField\":\"ip\",\"aggregationField\":\"bytes,memory,machine.ram\",\"aggregationMethod\":\"sum,avg,max\",\"dateFields\":\"utc_time,timestamp\"}",
+    "stop_reason": "stop_sequence",
+    "stop": "\n\nHuman:"
+  }
