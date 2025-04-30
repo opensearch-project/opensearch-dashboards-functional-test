@@ -1,0 +1,98 @@
+{
+    "name": "Cypress-register-data2summary-agent",
+    "description": "Cypress Flow template",
+    "use_case": "REGISTER_AGENT",
+    "version": {
+      "template": "1.0.0",
+      "compatibility": ["2.12.0", "3.0.0"]
+    },
+    "workflows": {
+      "provision": {
+        "user_params": {},
+        "nodes": [
+          {
+            "id": "create_connector_1",
+            "type": "create_connector",
+            "previous_node_inputs": {},
+            "user_inputs": {
+              "version": "1",
+              "name": "Claude instant runtime data2summary Connector",
+              "protocol": "aws_sigv4",
+              "description": "The connector to BedRock service for claude model",
+              "actions": [
+                {
+                  "headers": {
+                    "x-amz-content-sha256": "required",
+                    "content-type": "application/json"
+                  },
+                  "method": "POST",
+                  "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
+                  "action_type": "predict",
+                  "url": "http://127.0.0.1:3000"
+                }
+              ],
+              "credential": {
+                "access_key": "<key>",
+                "secret_key": "<value>"
+              },
+              "parameters": {
+                "endpoint": "bedrock-runtime.us-west-2.amazonaws.com",
+                "content_type": "application/json",
+                "auth": "Sig_V4",
+                "max_tokens_to_sample": "8000",
+                "service_name": "bedrock",
+                "temperature": "0.0001",
+                "response_filter": "$.completion",
+                "region": "us-west-2",
+                "anthropic_version": "bedrock-2023-05-31"
+              }
+            }
+          },
+          {
+            "id": "register_model_2",
+            "type": "register_remote_model",
+            "previous_node_inputs": {
+              "create_connector_1": "connector_id"
+            },
+            "user_inputs": {
+              "description": "test model",
+              "deploy": true,
+              "name": "claude-instant-data2summary"
+            }
+          },
+          {
+            "id": "ml_model_tool",
+            "type": "create_tool",
+            "previous_node_inputs": {
+              "register_model_2": "model_id"
+            },
+            "user_inputs": {
+              "parameters": {
+                "prompt": "data2summary instruction agent prompt"
+              },
+              "description": "A general tool to answer any question.",
+              "alias": "language_model_tool",
+              "include_output_in_agent_response": true,
+              "name": "data2summaryModelTool",
+              "type": "MLModelTool"
+            }
+          },
+          {
+            "id": "os_data2summary",
+            "type": "register_agent",
+            "previous_node_inputs": {
+              "register_model_2": "model_id",
+              "ml_model_tool": "tools"
+            },
+            "user_inputs": {
+              "parameters": {},
+              "type": "flow",
+              "name": "Query discover Summary Agent",
+              "description": "this is a discover result summary agent",
+              "tools_order": ["ml_model_tool"]
+            }
+          }
+        ]
+      }
+    }
+  }

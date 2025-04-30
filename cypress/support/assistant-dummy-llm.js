@@ -9,6 +9,10 @@ const suggestionJson = require('../fixtures/plugins/dashboards-assistant/suggest
 const queryAssistPPLJson = require('../fixtures/plugins/dashboards-assistant/query-assist-ppl-response.json');
 const text2vegaJson = require('../fixtures/plugins/dashboards-assistant/text2vega-response.json');
 const text2vegaInstructionsJson = require('../fixtures/plugins/dashboards-assistant/text2vega-with-instructions-response.json');
+const data2summaryJSON = require('../fixtures/plugins/dashboards-assistant/data2summary-response.json');
+const suggestADJSON = require('../fixtures/plugins/dashboards-assistant/suggest-ad-response.json');
+const summaryJSON = require('../fixtures/plugins/dashboards-assistant/summary-response.json');
+const summaryWithLogPatternJSON = require('../fixtures/plugins/dashboards-assistant/summary-with-log-pattern-response.json');
 
 const MATCH_AGENT_FRAMEWORK_PROMPT =
   'Assistant is designed to be able to assist with a wide range of tasks';
@@ -40,6 +44,22 @@ const mockResponses = [
   {
     contents: ['t2v instruction agent prompt'],
     responseJSON: text2vegaInstructionsJson,
+  },
+  {
+    contents: ['data2summary instruction agent prompt'],
+    responseJSON: data2summaryJSON,
+  },
+  {
+    contents: ['suggest_ad instruction agent prompt'],
+    responseJSON: suggestADJSON,
+  },
+  {
+    contents: ['alert summary instruction agent prompt'],
+    responseJSON: summaryJSON,
+  },
+  {
+    contents: ['alert summary with log pattern instruction agent prompt'],
+    responseJSON: summaryWithLogPatternJSON,
   },
 ];
 
