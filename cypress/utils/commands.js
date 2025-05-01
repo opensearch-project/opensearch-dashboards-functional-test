@@ -372,6 +372,15 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   });
 });
 
+// Adding this command to force merge all segments and remove results inconsistency due to concurrent searches
+// Refer https://github.com/opensearch-project/OpenSearch/issues/18149 for more details
+Cypress.Commands.add('forceMergeSegments', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('openSearchUrl')}/_forcemerge?max_num_segments=1`,
+  });
+});
+
 Cypress.Commands.add('importSavedObjects', (fixturePath, overwrite = true) => {
   const sendImportRequest = (ndjson) => {
     const url = `${Cypress.config().baseUrl}/api/saved_objects/_import?${
