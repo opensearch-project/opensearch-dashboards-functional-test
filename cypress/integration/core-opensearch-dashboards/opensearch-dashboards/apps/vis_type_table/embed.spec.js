@@ -63,6 +63,7 @@ describe('table visualization in embedded mode', () => {
     cy.deleteIndexPattern(TABLE_INDEX_PATTERN);
     cy.bulkUploadDocs(TABLE_PATH_INDEX_DATA);
     cy.importSavedObjects(TABLE_PATH_SO_DATA);
+    cy.forceMergeSegments();
     // Load table visualization
     cy.visit(`${BASE_PATH}/app/visualize`);
     cy.get('input[type="search"]').type(`${TABLE_BASIC_VIS_TITLE}{enter}`);

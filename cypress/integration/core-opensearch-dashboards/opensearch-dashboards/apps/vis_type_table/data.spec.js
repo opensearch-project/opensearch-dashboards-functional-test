@@ -192,6 +192,7 @@ describe('table visualization data', () => {
         timestamp: '2022-08-30T23:20:41.280Z',
         username: 'missing',
       });
+      cy.forceMergeSegments();
       cy.reload();
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,001']);
