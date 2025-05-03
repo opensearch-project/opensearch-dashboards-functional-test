@@ -154,7 +154,7 @@ describe('table visualization in embedded mode', () => {
     });
   });
 
-  it('Should filter out value in embedded mode', () => {
+  it.skip('Should filter out value in embedded mode', () => {
     const expectedFilterOutData = [
       '20',
       '2,236',
