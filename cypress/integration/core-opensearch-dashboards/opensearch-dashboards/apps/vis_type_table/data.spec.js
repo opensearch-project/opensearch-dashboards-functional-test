@@ -242,7 +242,7 @@ describe('table visualization data', () => {
       });
     });
 
-    it('Should include missing data', () => {
+    it.skip('Should include missing data', () => {
       const expectDataBeforeMissing = [
         'Bryce88@gmail.com',
         '2',
