@@ -21,7 +21,7 @@ describe('Add flights dataset saved object', function () {
     cy.get(
       '[data-test-subj="advancedSetting-editField-home:useNewHomePage"]'
     ).then(($switch) => {
-      if ($switch.attr('disabled') === 'disabled') {
+      if ($switch.prop('disabled')) {
         cy.log('Switch is disabled and cannot be changed.');
         this.skip(); // Skip all tests in this suite
       } else if ($switch.attr('aria-checked') === 'false') {
@@ -43,7 +43,7 @@ describe('Add flights dataset saved object', function () {
     cy.get(
       '[data-test-subj="advancedSetting-editField-home:useNewHomePage"]'
     ).then(($switch) => {
-      if ($switch.attr('disabled') === 'disabled') {
+      if ($switch.prop('disabled')) {
         cy.log('Switch is disabled and cannot be changed.');
       } else if ($switch.attr('aria-checked') === 'true') {
         cy.wrap($switch).click();

@@ -165,6 +165,16 @@ const plugins = {
       ],
     },
   },
+  'query-insights-dashboards': {
+    name: 'queryInsightsDashboards',
+    default: {
+      videos: [
+        '1_top_queries.cy.js',
+        '2_query_details.cy.js',
+        '3_configurations.cy.js',
+      ],
+    },
+  },
 };
 
 // eslint-disable-next-line no-unused-vars

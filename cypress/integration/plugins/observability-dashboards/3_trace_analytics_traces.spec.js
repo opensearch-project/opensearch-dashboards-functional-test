@@ -5,11 +5,7 @@
 
 /// <reference types="cypress" />
 
-import {
-  setTimeFilter,
-  TRACE_ID,
-  TIMEOUT_DELAY,
-} from '../../../utils/constants';
+import { setTimeFilter, TRACE_ID } from '../../../utils/constants';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 
@@ -33,9 +29,7 @@ describe('Testing traces table', () => {
 
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
-    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]', {
-      timeout: TIMEOUT_DELAY,
-    }).click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
     cy.get('.euiTableCellContent')
       .eq(11)
