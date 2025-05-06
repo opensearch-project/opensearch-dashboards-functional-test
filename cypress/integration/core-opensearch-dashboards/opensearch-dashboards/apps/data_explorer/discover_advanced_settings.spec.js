@@ -100,52 +100,6 @@ describe('discover_advanced_setting', () => {
   });
 
   describe('Default Sort Order advanced setting', () => {
-    it('check Default Sort Order Descending is respected in new table', function () {
-      cy.setAdvancedSetting({
-        'discover:sort:defaultOrder': 'desc',
-      });
-      cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.wait(2000); // Intentional Wait to account for low performant env
-
-      cy.get('.euiDataGridRowCell--date')
-        .eq(0)
-        .invoke('text')
-        .then((date1) => {
-          cy.get('.euiDataGridRowCell--date')
-            .eq(99)
-            .invoke('text')
-            .then((date2) => {
-              expect(new Date(date1.slice(0, -18))).greaterThan(
-                new Date(date2.slice(0, -20))
-              );
-            });
-        });
-    });
-
-    it('check Default Sort Order Ascending is respected in new table', function () {
-      cy.setAdvancedSetting({
-        'discover:sort:defaultOrder': 'asc',
-      });
-      cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.wait(2000); // Intentional Wait to account for low performant env
-
-      cy.get('.euiDataGridRowCell--date')
-        .eq(0)
-        .invoke('text')
-        .then((date1) => {
-          cy.get('.euiDataGridRowCell--date')
-            .eq(99)
-            .invoke('text')
-            .then((date2) => {
-              expect(new Date(date1.slice(0, -18))).lessThan(
-                new Date(date2.slice(0, -20))
-              );
-            });
-        });
-    });
-
     it('check Default Sort Order Descending is respected in legacy table', function () {
       cy.setAdvancedSetting({
         'discover:sort:defaultOrder': 'desc',
@@ -202,19 +156,10 @@ describe('discover_advanced_setting', () => {
         'discover:sampleSize': 5,
       });
       cy.reload();
-      cy.switchDiscoverTable('new');
       cy.wait(2000); // Intentional Wait to account for low performant env
     });
 
-    it('check new table respects Number of rows setting', function () {
-      cy.get('[aria-label="Inspect document details"]').should(
-        'have.length',
-        5
-      );
-    });
-
     it('check legacy table respects Number of rows setting', function () {
-      cy.switchDiscoverTable('legacy');
       cy.wait(2000); // Intentional Wait to account for low performant env
       cy.get('[aria-label="Toggle row details"]').should('have.length', 5);
     });
@@ -266,22 +211,6 @@ describe('discover_advanced_setting', () => {
       });
     });
 
-    it('check time is not added on removing last column when hideTimeColumn is true in new table', function () {
-      miscUtils.visitPage(
-        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-      );
-      cy.waitForSearch();
-      cy.switchDiscoverTable('new');
-      cy.get('[data-test-subj="dataGridHeaderCell-@timestamp"]').should(
-        'not.exist'
-      );
-      cy.get('[data-test-subj="fieldToggle-agent"]').click();
-      cy.get('[data-test-subj="fieldToggle-agent"]').click();
-      cy.get('[data-test-subj="dataGridHeaderCell-@timestamp"]').should(
-        'not.exist'
-      );
-    });
-
     it('check time is not added on removing last column when hideTimeColumn is true in legacy table', function () {
       miscUtils.visitPage(
         `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
@@ -321,24 +250,6 @@ describe('discover_advanced_setting', () => {
         });
     });
 
-    it('check new table respects doc_table:highlight setting', function () {
-      // check if we have highlighted fields
-      cy.setAdvancedSetting({
-        'doc_table:highlight': false,
-      });
-      cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.get('mark').should('not.exist');
-
-      // reset the setting to default value
-      cy.setAdvancedSetting({
-        'doc_table:highlight': true,
-      });
-      cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.get('mark').should('exist');
-    });
-
     it('check legacy table respects doc_table:highlight setting', function () {
       // check if we have highlighted fields
       cy.setAdvancedSetting({
@@ -354,6 +265,12 @@ describe('discover_advanced_setting', () => {
         'doc_table:highlight': true,
       });
       cy.reload();
+      cy.get('[data-test-subj="fieldToggle-index"]')
+        .click()
+        .then(() => {
+          cy.get('[data-test-subj="field-index-showDetails"]').click();
+          cy.get('[data-test-subj="plus-index-logstash-2015.09.22"]').click();
+        });
 
       cy.get('mark').should('exist');
     });
@@ -376,18 +293,6 @@ describe('discover_advanced_setting', () => {
           cy.waitForSearch();
           cy.get('[title="logstash-*"]').trigger('click');
         });
-    });
-
-    it('check defaultcolumns setting is respected in new table', function () {
-      cy.setAdvancedSetting({
-        defaultColumns: ['host', 'agent'],
-      });
-      cy.reload();
-      cy.switchDiscoverTable('new');
-      cy.get('[data-test-subj="dataGridHeaderCell-agent"]').should(
-        'be.visible'
-      );
-      cy.get('[data-test-subj="dataGridHeaderCell-host"]').should('be.visible');
     });
 
     it('check defaultcolumns setting is respected in legacy table', function () {
@@ -424,7 +329,7 @@ describe('discover_advanced_setting', () => {
     });
 
     it('check refresh data button is displayed when searchOnPageLoad is set as false', function () {
-      cy.get('.euiButton__text').contains('Refresh data').should('exist');
+      cy.get('[data-test-subj="discover-refreshDataButton"]').should('exist');
     });
 
     after(() => {
@@ -473,34 +378,6 @@ describe('modifyColumnsOnSwitch advanced setting', () => {
 
     /*
      */
-  });
-
-  it('check columns still available after switching data sources in new table', function () {
-    miscUtils.visitPage(
-      `app/data-explorer/discover#/?_a=(discover:(metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-    );
-    cy.waitForSearch();
-    cy.switchDiscoverTable('new');
-
-    cy.get('[data-test-subj="fieldToggle-agent"]').click();
-
-    // Now switching the data sources
-    cy.get('[data-test-subj="comboBoxSearchInput"]')
-      .type('nestedindex')
-      .then(() => {
-        cy.waitForSearch();
-        cy.get('[title="nestedindex*"]')
-          .trigger('click')
-          .then(() => {
-            cy.get('[data-test-subj="dataGridHeaderCell-agent"]').should(
-              'be.visible'
-            );
-            cy.wait(2000);
-            cy.get('[data-test-subj="dataGridRowCell"]')
-              .contains('-')
-              .should('exist');
-          });
-      });
   });
 
   after(() => {

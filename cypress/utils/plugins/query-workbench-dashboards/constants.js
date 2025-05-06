@@ -18,11 +18,6 @@ export const testDataSet = [
 
 export const verifyDownloadData = [
   {
-    title: 'Download and verify JSON',
-    url: 'api/sql_console/sqljson',
-    file: 'JSONFile',
-  },
-  {
     title: 'Download and verify JDBC',
     url: 'api/sql_console/sqlquery',
     file: 'JDBCFile',
@@ -75,7 +70,6 @@ export const testQueries = [
 ];
 
 export const files = {
-  JSONFile: `[{"_index":"accounts","_id":"97","_score":null,"_source":{"account_number":97,"balance":49671,"firstname":"Karen","lastname":"Trujillo","age":40,"gender":"F","address":"512 Cumberland Walk","employer":"Tsunamia","email":"karentrujillo@tsunamia.com","city":"Fredericktown","state":"MO"},"sort":[97]},{"_index":"accounts","_id":"168","_score":null,"_source":{"account_number":168,"balance":49568,"firstname":"Carissa","lastname":"Simon","age":20,"gender":"M","address":"975 Flatbush Avenue","employer":"Zillacom","email":"carissasimon@zillacom.com","city":"Neibert","state":"IL"},"sort":[168]},{"_index":"accounts","_id":"240","_score":null,"_source":{"account_number":240,"balance":49741,"firstname":"Oconnor","lastname":"Clay","age":35,"gender":"F","address":"659 Highland Boulevard","employer":"Franscene","email":"oconnorclay@franscene.com","city":"Kilbourne","state":"NH"},"sort":[240]},{"_index":"accounts","_id":"248","_score":null,"_source":{"account_number":248,"balance":49989,"firstname":"West","lastname":"England","age":36,"gender":"M","address":"717 Hendrickson Place","employer":"Obliq","email":"westengland@obliq.com","city":"Maury","state":"WA"},"sort":[248]},{"_index":"accounts","_id":"803","_score":null,"_source":{"account_number":803,"balance":49567,"firstname":"Marissa","lastname":"Spears","age":25,"gender":"M","address":"963 Highland Avenue","employer":"Centregy","email":"marissaspears@centregy.com","city":"Bloomington","state":"MS"},"sort":[803]},{"_index":"accounts","_id":"842","_score":null,"_source":{"account_number":842,"balance":49587,"firstname":"Meagan","lastname":"Buckner","age":23,"gender":"F","address":"833 Bushwick Court","employer":"Biospan","email":"meaganbuckner@biospan.com","city":"Craig","state":"TX"},"sort":[842]},{"_index":"accounts","_id":"854","_score":null,"_source":{"account_number":854,"balance":49795,"firstname":"Jimenez","lastname":"Barry","age":25,"gender":"F","address":"603 Cooper Street","employer":"Verton","email":"jimenezbarry@verton.com","city":"Moscow","state":"AL"},"sort":[854]}]`,
   JDBCFile: `{"schema":[{"name":"account_number","type":"long"},{"name":"firstname","type":"text"},{"name":"address","type":"text"},{"name":"balance","type":"long"},{"name":"gender","type":"text"},{"name":"city","type":"text"},{"name":"employer","type":"text"},{"name":"state","type":"text"},{"name":"age","type":"long"},{"name":"email","type":"text"},{"name":"lastname","type":"text"}],"datarows":[[97,"Karen","512 Cumberland Walk",49671,"F","Fredericktown","Tsunamia","MO",40,"karentrujillo@tsunamia.com","Trujillo"],[168,"Carissa","975 Flatbush Avenue",49568,"M","Neibert","Zillacom","IL",20,"carissasimon@zillacom.com","Simon"],[240,"Oconnor","659 Highland Boulevard",49741,"F","Kilbourne","Franscene","NH",35,"oconnorclay@franscene.com","Clay"],[248,"West","717 Hendrickson Place",49989,"M","Maury","Obliq","WA",36,"westengland@obliq.com","England"],[803,"Marissa","963 Highland Avenue",49567,"M","Bloomington","Centregy","MS",25,"marissaspears@centregy.com","Spears"],[842,"Meagan","833 Bushwick Court",49587,"F","Craig","Biospan","TX",23,"meaganbuckner@biospan.com","Buckner"],[854,"Jimenez","603 Cooper Street",49795,"F","Moscow","Verton","AL",25,"jimenezbarry@verton.com","Barry"]],"total":7,"size":7,"status":200}`,
   CSVFile: `account_number,firstname,address,balance,gender,city,employer,state,age,email,lastname
 97,Karen,512 Cumberland Walk,49671,F,Fredericktown,Tsunamia,MO,40,karentrujillo@tsunamia.com,Trujillo

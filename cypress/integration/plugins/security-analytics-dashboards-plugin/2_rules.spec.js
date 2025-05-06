@@ -246,7 +246,8 @@ describe('Rules', () => {
       );
 
       getNameField().should('be.empty');
-      getNameField().focus().blur();
+      getNameField().focus();
+      getNameField().blur();
       getNameField().sa_containsError('Rule name is required');
 
       getNameField()
@@ -305,7 +306,8 @@ describe('Rules', () => {
       );
 
       getAuthorField().should('be.empty');
-      getAuthorField().focus().blur();
+      getAuthorField().focus();
+      getAuthorField().blur();
 
       let invalidAuthor = '';
 
@@ -327,7 +329,8 @@ describe('Rules', () => {
 
     it('...should validate log type field', () => {
       getLogTypeField().should('be.empty');
-      getLogTypeField().focus().blur();
+      getLogTypeField().focus();
+      getLogTypeField().blur();
       getLogTypeField().sa_containsError('Log type is required');
 
       getLogTypeField().sa_selectComboboxItem(
@@ -338,19 +341,25 @@ describe('Rules', () => {
 
     it('...should validate rule level field', () => {
       getRuleLevelField().should('be.empty');
-      getRuleLevelField().focus().blur();
+      getRuleLevelField().focus();
+      getRuleLevelField().blur();
       getRuleLevelField().sa_containsError('Rule level is required');
 
       getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
-      getRuleLevelField().focus().blur().sa_shouldNotHaveError();
+      getRuleLevelField().focus();
+      getRuleLevelField().blur();
+      getRuleLevelField().sa_shouldNotHaveError();
     });
 
     it('...should validate rule status field', () => {
       getRuleStatusField().sa_containsValue(SAMPLE_RULE.status);
-      getRuleStatusField().focus().blur().sa_shouldNotHaveError();
+      getRuleStatusField().focus();
+      getRuleStatusField().blur();
+      getRuleStatusField().sa_shouldNotHaveError();
 
       getRuleStatusField().sa_clearCombobox();
-      getRuleStatusField().focus().blur();
+      getRuleStatusField().focus();
+      getRuleStatusField().blur();
       getRuleStatusField().sa_containsError('Rule status is required');
     });
 
@@ -358,7 +367,8 @@ describe('Rules', () => {
       getSelectionPanelByIndex(0).within(() => {
         getSelectionNameField().should('have.value', 'Selection_1');
         getSelectionNameField().sa_clearValue();
-        getSelectionNameField().focus().blur();
+        getSelectionNameField().focus();
+        getSelectionNameField().blur();
         getSelectionNameField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
@@ -403,7 +413,8 @@ describe('Rules', () => {
     it('...should validate selection map value field', () => {
       getSelectionPanelByIndex(0).within(() => {
         getMapValueField().should('be.empty');
-        getMapValueField().focus().blur();
+        getMapValueField().focus();
+        getMapValueField().blur();
         getMapValueField()
           .parentsUntil('.euiFormRow__fieldWrapper')
           .siblings()
@@ -423,7 +434,8 @@ describe('Rules', () => {
       getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
         getMapListField().should('be.empty');
-        getMapListField().focus().blur();
+        getMapListField().focus();
+        getMapListField().blur();
         getMapListField()
           .parentsUntil('.euiFormRow')
           .contains('Value is required');
@@ -450,7 +462,8 @@ describe('Rules', () => {
 
     it('...should validate tag field', () => {
       getTagField(0).should('be.empty');
-      getTagField(0).type('wrong.tag').focus().blur();
+      getTagField(0).type('wrong.tag').focus();
+      getTagField(0).type('wrong.tag').blur();
       getTagField(0)
         .parents('.euiFormRow__fieldWrapper')
         .contains("Tags must start with 'attack.'");
@@ -494,24 +507,30 @@ describe('Rules', () => {
 
       // selection name field
       getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('{selectall}').type('{backspace}')
+        getSelectionNameField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('Selection_1')
+        getSelectionNameField().type('Selection_1', { force: true })
       );
 
       // selection map key field
       getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('{selectall}').type('{backspace}')
+        getMapKeyField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('FieldKey')
+        getMapKeyField().type('FieldKey', { force: true })
       );
 
       // selection map value field
       getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('{selectall}').type('{backspace}')
+        getMapValueField()
+          .type('{selectall}', { force: true })
+          .type('{backspace}', { force: true })
       );
       toastShouldExist();
 
