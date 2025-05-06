@@ -54,7 +54,6 @@ describe.skip('saved queries saved objects', () => {
 
     // Set time filter
     cy.setTopNavDate(fromTime, toTime);
-    cy.switchDiscoverTable('new');
 
     // Set up query and filter
     cy.setTopNavQuery('response:200');
@@ -64,10 +63,6 @@ describe.skip('saved queries saved objects', () => {
   });
 
   describe('saved query management component functionality', function () {
-    beforeEach(() => {
-      cy.switchDiscoverTable('new');
-    });
-
     it('should show the saved query management component when there are no saved queries', () => {
       cy.getElementByTestId('saved-query-management-popover-button').click();
       cy.getElementByTestId('saved-query-management-popover')

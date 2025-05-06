@@ -11,6 +11,8 @@ const miscUtils = new MiscUtils(cy);
 
 describe('Add flights dataset saved object', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     CURRENT_TENANT.newTenant = 'global';
     cy.deleteAllIndices();
     miscUtils.addSampleData();
@@ -26,6 +28,7 @@ describe('Add flights dataset saved object', () => {
     cy.contains(
       '[Flights] Flights Status on Maps Destination Location'
     ).click();
+    cy.wait(1000);
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',
       'Flights On Time'

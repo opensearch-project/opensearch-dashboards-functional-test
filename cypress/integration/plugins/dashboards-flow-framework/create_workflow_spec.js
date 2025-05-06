@@ -119,7 +119,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.get(`[data-text="Upload a file"]`).should('be.visible').click();
-    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.json`;
+    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.jsonl`;
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
