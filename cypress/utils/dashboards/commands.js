@@ -42,6 +42,22 @@ Cypress.Commands.add('setTopNavQuery', (value, submit = true) => {
   }
 });
 
+Cypress.Commands.add('clearTopNavQuery', (submit = true) => {
+  const opts = { log: false };
+
+  Cypress.log({
+    name: 'clearTopNavQuery',
+    displayName: 'clear query',
+    message: 'clearing query field',
+  });
+
+  cy.getElementByTestId('queryInput', opts).clear(opts).blur(opts);
+
+  if (submit) {
+    cy.updateTopNav(opts);
+  }
+});
+
 Cypress.Commands.add('setTopNavDate', (start, end, submit = true) => {
   const opts = { log: false };
 

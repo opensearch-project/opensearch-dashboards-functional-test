@@ -166,6 +166,7 @@ describe('Bucket-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_EXTRACTION_QUERY_MONITOR);
 
       // Wait for input to load and then type in the index name
+      cy.contains('Select clusters');
       cy.get('#index').type('*{enter}', { force: true });
 
       // Input extraction query
@@ -225,6 +226,7 @@ describe('Bucket-Level Monitors', () => {
 
       // Wait for input to load and then type in the index name
       // Pressing enter at the end to create combo box entry and trigger change events for time field below
+      cy.contains('Select clusters');
       cy.get('#index').type(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, {
         force: true,
       });
@@ -324,8 +326,8 @@ describe('Bucket-Level Monitors', () => {
         // Add a trigger
         addTriggerToVisualEditorMonitor(SAMPLE_TRIGGER, 0, SAMPLE_ACTION, true);
 
-        // Click update button to save monitor changes
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click save button to save monitor changes
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we can see only one row in the trigger list by checking <caption> element
         cy.contains('This table contains 1 row');
@@ -342,6 +344,9 @@ describe('Bucket-Level Monitors', () => {
 
         // Click Edit button
         cy.contains('Edit').click({ force: true });
+
+        // Wait for page to load
+        cy.contains('Select clusters');
 
         // Click on the Index field and type in multiple index names to replicate the bug
         cy.get('#index')
@@ -362,8 +367,8 @@ describe('Bucket-Level Monitors', () => {
           timeout: ALERTING_PLUGIN_TIMEOUT,
         });
 
-        // Click the update button
-        cy.get('button').contains('Update').last().click({ force: true });
+        // Click the save button
+        cy.get('button').contains('Save').last().click({ force: true });
 
         // Confirm we're on the Monitor Details page by searching for the History element
         cy.contains('History', { timeout: ALERTING_PLUGIN_TIMEOUT });

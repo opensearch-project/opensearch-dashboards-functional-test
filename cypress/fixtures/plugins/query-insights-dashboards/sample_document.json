@@ -1,0 +1,43 @@
+{
+  "@timestamp": "2099-11-15T13:12:00",
+  "message": "this is document 0",
+  "user": {
+    "id": "user1",
+    "name": "John Doe",
+    "email": "john.doe@example.com",
+    "roles": ["admin", "editor"]
+  },
+  "request": {
+    "method": "GET",
+    "url": "/api/v1/resource",
+    "status": 200,
+    "response_time_ms": 123,
+    "headers": {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+      "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5..."
+    }
+  },
+  "location": {
+    "ip": "192.168.1.1",
+    "city": "Seattle",
+    "region": "Washington",
+    "country": "US"
+  },
+  "application": {
+    "name": "OpenSearch Dashboard",
+    "version": "2.8.0",
+    "environment": "production"
+  },
+  "event": {
+    "id": "event123",
+    "type": "user_action",
+    "outcome": "success",
+    "reason": null
+  },
+  "tags": ["login", "dashboard", "analytics"],
+  "metrics": {
+    "cpu_usage": 2.4,
+    "memory_usage": 512,
+    "disk_space_remaining": 1048576
+  }
+}

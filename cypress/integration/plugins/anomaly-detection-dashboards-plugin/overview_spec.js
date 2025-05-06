@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { AD_URL } from '../../../utils/constants';
+import { AD_URL } from '../../../utils/plugins/anomaly-detection-dashboards-plugin/constants';
 
 context('Overview page', () => {
   function validatePageElements() {

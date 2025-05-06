@@ -5,21 +5,18 @@
 
 import { BASE_PATH } from '../../../utils/constants';
 import { CURRENT_TENANT } from '../../../utils/commands';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
+const miscUtils = new MiscUtils(cy);
 
 describe('Documents layer', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     CURRENT_TENANT.newTenant = 'global';
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
-      retryOnStatusCodeFailure: true,
-      timeout: 60000,
-    });
-    cy.wait(5000);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
-      timeout: 60000,
-    })
-      .contains(/(Add|View) data/)
-      .click();
-    cy.wait(60000);
+    cy.deleteAllIndices();
+    miscUtils.addSampleData();
+    cy.wait(15000);
   });
 
   const uniqueName = 'saved-map-' + Date.now().toString();
@@ -31,7 +28,7 @@ describe('Documents layer', () => {
     cy.get("button[data-test-subj='addLayerButton']", {
       timeout: 120000,
     }).click();
-    cy.contains('Documents', { timeout: 120000 }).click();
+    cy.wait(10000).contains('Documents', { timeout: 120000 }).click();
     cy.contains('Select index pattern', { timeout: 120000 }).wait(3000).click({
       force: true,
     });
@@ -76,10 +73,6 @@ describe('Documents layer', () => {
     cy.wait(30000);
     cy.visit(`${BASE_PATH}/app/maps-dashboards`);
     cy.wait(10000);
-    cy.get('[data-test-subj="mapListingPage"]', { timeout: 120000 }).should(
-      'contain',
-      uniqueName
-    );
     cy.contains(uniqueName).click();
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',
@@ -88,10 +81,6 @@ describe('Documents layer', () => {
   });
 
   after(() => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
-    cy.wait(5000);
-    cy.get('button[data-test-subj="removeSampleDataSetflights"]')
-      .should('be.visible')
-      .click();
+    miscUtils.removeSampleData();
   });
 });

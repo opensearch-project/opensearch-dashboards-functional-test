@@ -34,13 +34,13 @@ const getCreateDetectorButton = () => cy.sa_getButtonByText('Create detector');
 
 const validateAlertPanel = (alertName) =>
   cy
-    .sa_getElementByText('.euiTitle', 'Alert triggers')
+    .sa_getElementByText('.euiText', 'Alert triggers')
     .parentsUntil('.euiPanel')
     .siblings()
     .eq(2)
     .within(() => cy.sa_getElementByText('button', alertName));
 
-const dataSourceLabel = 'Select or input source indexes or index patterns';
+const dataSourceLabel = 'Select indexes/aliases';
 
 const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
@@ -98,9 +98,9 @@ const validateFieldMappingsTable = (message = '') => {
 
 const editDetectorDetails = (detectorName, panelTitle) => {
   cy.sa_urlShouldContain('detector-details').then(() => {
-    cy.sa_getElementByText('.euiTitle', detectorName);
-    cy.sa_getElementByText('.euiPanel .euiTitle', panelTitle);
-    cy.sa_getElementByText('.euiPanel .euiTitle', panelTitle)
+    cy.sa_getElementByText('.euiText', detectorName);
+    cy.sa_getElementByText('.euiPanel .euiText', panelTitle);
+    cy.sa_getElementByText('.euiPanel .euiText', panelTitle)
       .parent()
       .siblings()
       .within(() => cy.get('button').contains('Edit').click());
@@ -128,7 +128,7 @@ const validateAutomaticFieldMappingsPanel = (mappings) =>
 const validatePendingFieldMappingsPanel = (mappings) => {
   cy.get('.editFieldMappings').within(() => {
     // Pending field mappings
-    cy.sa_getElementByText('.euiTitle', 'Pending field mappings')
+    cy.sa_getElementByText('.euiText', 'Pending field mappings')
       .parents('.euiPanel')
       .within(() => {
         cy.sa_getElementByTestSubject('pending-mapped-fields-table')
@@ -143,7 +143,7 @@ const fillDetailsForm = (
   dataSource,
   isCustomDataSource = false
 ) => {
-  getNameField().type(detectorName);
+  getNameField().type(detectorName, { force: true });
 
   if (isCustomDataSource) {
     getDataSourceField()
@@ -153,9 +153,11 @@ const fillDetailsForm = (
     getDataSourceField().sa_selectComboboxItem(dataSource);
   }
 
-  getDataSourceField().focus().blur();
+  getDataSourceField().focus();
+  getDataSourceField().blur();
   getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
-  getLogTypeField().focus().blur();
+  getLogTypeField().focus();
+  getLogTypeField().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
@@ -210,7 +212,7 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
         .should('contain', detectorId)
         .then(() => {
           // Confirm detector state
-          cy.sa_getElementByText('.euiTitle', detectorName);
+          cy.sa_getElementByText('.euiText', detectorName);
           cy.sa_getElementByText('.euiHealth', 'Active').then(() => {
             cy.sa_validateDetailsItem('Detector name', detectorName);
             cy.sa_validateDetailsItem('Description', '-');
@@ -283,7 +285,8 @@ describe('Detectors', () => {
 
     it('...should validate name field', () => {
       getNameField().should('be.empty');
-      getNameField().focus().blur();
+      getNameField().focus();
+      getNameField().blur();
       getNameField()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
@@ -409,7 +412,8 @@ describe('Detectors', () => {
       fillDetailsForm(detectorName, cypressIndexDns);
 
       getDataSourceField().sa_selectComboboxItem(cypressIndexWindows);
-      getDataSourceField().focus().blur();
+      getDataSourceField().focus();
+      getDataSourceField().blur();
 
       cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
         .should('be.visible')
@@ -478,7 +482,7 @@ describe('Detectors', () => {
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Active rules');
-      cy.sa_getElementByText('.euiTitle', 'Detection rules (14)');
+      cy.sa_getElementByText('.euiText', 'Detection rules (14)');
 
       cy.sa_getInputByPlaceholder('Search...')
         .type(`${cypressDNSRule}`)
@@ -490,11 +494,11 @@ describe('Detectors', () => {
         .find('.euiTableCellContent button')
         .click();
 
-      cy.sa_getElementByText('.euiTitle', 'Detection rules (13)');
+      cy.sa_getElementByText('.euiText', 'Detection rules (13)');
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
       cy.sa_urlShouldContain('detector-details').then(() => {
-        cy.sa_getElementByText('.euiTitle', detectorName);
-        cy.sa_getElementByText('.euiPanel .euiTitle', 'Active rules (13)');
+        cy.sa_getElementByText('.euiText', detectorName);
+        cy.sa_getElementByText('.euiPanel .euiText', 'Active rules (13)');
       });
     });
 
