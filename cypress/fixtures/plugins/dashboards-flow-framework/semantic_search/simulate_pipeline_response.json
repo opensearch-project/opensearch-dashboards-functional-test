@@ -1,0 +1,158 @@
+{
+    "docs": [
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_f3cdc2fc4c373d50",
+                        "_source": {
+                            "item_text": [
+                                "purpul high heels"
+                            ],
+                            "item_price": 150
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052476732Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_ef32c6e3aea5ba0c",
+                        "_source": {
+                            "item_text": [
+                                "pair of jordans"
+                            ],
+                            "item_price": 250
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052485265Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_0b6355fa93f0ea3d",
+                        "_source": {
+                            "item_text": [
+                                "baseball cleats"
+                            ],
+                            "item_price": 85
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052487251Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_421a6a0714e06776",
+                        "_source": {
+                            "item_text": [
+                                "red pants"
+                            ],
+                            "item_price": 95
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052488989Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_831d3b110de17a2c",
+                        "_source": {
+                            "item_text": [
+                                "blue skirt"
+                            ],
+                            "item_price": 55
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052494905Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_d665b2eba6aaa1b3",
+                        "_source": {
+                            "item_text": [
+                                "orange tank top"
+                            ],
+                            "item_price": 30
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052497Z"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "processor_results": [
+                {
+                    "processor_type": "ml_inference",
+                    "status": "success",
+                    "doc": {
+                        "_index": "knn_index_1bb84aa",
+                        "_id": "_f6fba11d465ddf31",
+                        "_source": {
+                            "item_text": [
+                                "maroon shorts"
+                            ],
+                            "item_price": 35
+                        },
+                        "_ingest": {
+                            "pipeline": "ingest_pipeline_380a8d4a2822af03",
+                            "timestamp": "2025-02-05T18:36:09.052516292Z"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

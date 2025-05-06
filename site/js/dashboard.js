@@ -54,6 +54,12 @@ const plugins = {
       ],
     },
   },
+  'dashboards-flow-framework': {
+    name: 'flowFrameworkDashboards',
+    default: {
+      videos: ['create_workflow_spec.js'],
+    },
+  },
   'anomaly-detection-dashboards-plugin': {
     name: 'anomalyDetectionDashboards',
     default: {
@@ -166,6 +172,16 @@ const plugins = {
         '2_rules.spec.js',
         '3_alerts.spec.js',
         '4_findings.spec.js',
+      ],
+    },
+  },
+  'query-insights-dashboards': {
+    name: 'queryInsightsDashboards',
+    default: {
+      videos: [
+        '1_top_queries.cy.js',
+        '2_query_details.cy.js',
+        '3_configurations.cy.js',
       ],
     },
   },
