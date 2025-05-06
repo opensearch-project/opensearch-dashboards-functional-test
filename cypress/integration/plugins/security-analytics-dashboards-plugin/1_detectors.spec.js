@@ -128,7 +128,7 @@ const validateAutomaticFieldMappingsPanel = (mappings) =>
 const validatePendingFieldMappingsPanel = (mappings) => {
   cy.get('.editFieldMappings').within(() => {
     // Pending field mappings
-    cy.sa_getElementByText('.euiTitle', 'Pending field mappings')
+    cy.sa_getElementByText('.euiText', 'Pending field mappings')
       .parents('.euiPanel')
       .within(() => {
         cy.sa_getElementByTestSubject('pending-mapped-fields-table')
@@ -143,7 +143,7 @@ const fillDetailsForm = (
   dataSource,
   isCustomDataSource = false
 ) => {
-  getNameField().type(detectorName);
+  getNameField().type(detectorName, { force: true });
 
   if (isCustomDataSource) {
     getDataSourceField()
@@ -153,9 +153,11 @@ const fillDetailsForm = (
     getDataSourceField().sa_selectComboboxItem(dataSource);
   }
 
-  getDataSourceField().focus().blur();
+  getDataSourceField().focus();
+  getDataSourceField().blur();
   getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
-  getLogTypeField().focus().blur();
+  getLogTypeField().focus();
+  getLogTypeField().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
@@ -283,7 +285,8 @@ describe('Detectors', () => {
 
     it('...should validate name field', () => {
       getNameField().should('be.empty');
-      getNameField().focus().blur();
+      getNameField().focus();
+      getNameField().blur();
       getNameField()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
@@ -409,7 +412,8 @@ describe('Detectors', () => {
       fillDetailsForm(detectorName, cypressIndexDns);
 
       getDataSourceField().sa_selectComboboxItem(cypressIndexWindows);
-      getDataSourceField().focus().blur();
+      getDataSourceField().focus();
+      getDataSourceField().blur();
 
       cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
         .should('be.visible')
@@ -478,7 +482,7 @@ describe('Detectors', () => {
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Active rules');
-      cy.sa_getElementByText('.euiTitle', 'Detection rules (14)');
+      cy.sa_getElementByText('.euiText', 'Detection rules (14)');
 
       cy.sa_getInputByPlaceholder('Search...')
         .type(`${cypressDNSRule}`)
