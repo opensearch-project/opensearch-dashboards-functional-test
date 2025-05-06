@@ -1,0 +1,5 @@
+{
+  "completion": "{\"title\":\"Number of Visitors by Week\",\"description\":\"A pie chart showing the number of visitors grouped by week.\",\"layer\":[{\"mark\":\"arc\",\"encoding\":{\"theta\":{\"field\":\"visitors\",\"type\":\"quantitative\"},\"color\":{\"field\":\"week\",\"type\":\"ordinal\"}}}]}",
+  "stop_reason": "stop_sequence",
+  "stop": "\n\nHuman:"
+}

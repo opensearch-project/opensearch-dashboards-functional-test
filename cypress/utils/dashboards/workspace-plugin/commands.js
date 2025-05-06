@@ -51,6 +51,7 @@ Cypress.Commands.add('createWorkspace', ({ settings, ...workspace } = {}) => {
     body: {
       attributes: {
         ...workspace,
+        features: workspace.features || ['use-case-observability'],
         description: workspace.description || 'test_description',
       },
       settings,

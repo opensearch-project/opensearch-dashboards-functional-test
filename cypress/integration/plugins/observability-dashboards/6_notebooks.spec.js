@@ -34,7 +34,7 @@ const makeTestNotebook = () => {
 
   cy.contains(`Notebook "${notebookName}" successfully created`);
 
-  cy.get('h1[data-test-subj="notebookTitle"]')
+  cy.get('[data-test-subj="notebookTitle"]')
     .contains(notebookName)
     .should('exist');
 
@@ -52,19 +52,13 @@ const makePopulatedParagraph = () => {
   cy.get('textarea[data-test-subj="editorArea-0"]').focus();
   cy.get('textarea[data-test-subj="editorArea-0"]').type(MARKDOWN_TEXT);
   cy.get('button[data-test-subj="runRefreshBtn-0"]').click();
+  cy.get('textarea[data-test-subj="editorArea-0"]').should('not.exist');
+  cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
+  cy.get('code').contains('POST').should('exist');
 };
 
-const deleteNotebook = (notebookName) => {
-  moveToNotebookHome();
-
-  cy.contains('.euiTableRow', notebookName)
-    .find('input[type="checkbox"]')
-    .check();
-
-  cy.get('button[data-test-subj="notebookTableActionBtn"]').click();
-  cy.get('button[data-test-subj="deleteNotebookBtn"]').click();
-
-  cy.get('input[data-test-subj="delete-notebook-modal-input"]').focus();
+const deleteNotebook = () => {
+  cy.get('button[data-test-subj="notebook-delete-icon"]').click();
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
   cy.get('button[data-test-subj="delete-notebook-modal-delete-button"]').should(
     'not.be.disabled'
@@ -72,9 +66,35 @@ const deleteNotebook = (notebookName) => {
   cy.get(
     'button[data-test-subj="delete-notebook-modal-delete-button"]'
   ).click();
-  moveToNotebookHome();
+};
 
-  cy.contains('.euiTableRow', notebookName).should('not.exist');
+const deleteAllNotebooks = () => {
+  cy.intercept(
+    'DELETE',
+    '/api/observability/notebooks/note/savedNotebook/*'
+  ).as('deleteNotebook');
+
+  cy.wait(delayTime * 3);
+  moveToNotebookHome();
+  cy.wait(delayTime * 3);
+
+  cy.get('[data-test-subj="globalLoadingIndicator"]').should('not.exist');
+
+  cy.get('input[data-test-subj="checkboxSelectAll"]').should('exist');
+  cy.get('input[data-test-subj="checkboxSelectAll"]').click();
+  cy.get('button[data-test-subj="deleteSelectedNotebooks"]')
+    .contains('Delete 4 notebooks')
+    .should('exist');
+  cy.get('button[data-test-subj="deleteSelectedNotebooks"]').click();
+  cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
+  cy.get('button[data-test-subj="delete-notebook-modal-delete-button"]').should(
+    'not.be.disabled'
+  );
+  cy.get(
+    'button[data-test-subj="delete-notebook-modal-delete-button"]'
+  ).click();
+
+  cy.wait('@deleteNotebook').its('response.statusCode').should('eq', 200);
 };
 
 describe('Testing notebook actions', () => {
@@ -84,9 +104,7 @@ describe('Testing notebook actions', () => {
   });
 
   afterEach(() => {
-    cy.get('@notebook').then((notebook) => {
-      deleteNotebook(notebook.name);
-    });
+    deleteNotebook();
   });
 
   it('Creates a code paragraph', () => {
@@ -100,9 +118,6 @@ describe('Testing notebook actions', () => {
 
   it('Renders markdown', () => {
     makePopulatedParagraph();
-    cy.get('textarea[data-test-subj="editorArea-0"]').should('not.exist');
-    cy.get(`a[href="${SAMPLE_URL}"]`).should('exist');
-    cy.get('code').contains('POST').should('exist');
     cy.get('td').contains('b2').should('exist');
   });
 });
@@ -110,40 +125,44 @@ describe('Testing notebook actions', () => {
 describe('Test reporting integration if plugin installed', () => {
   beforeEach(() => {
     let notebookName = makeTestNotebook();
+    cy.wrap({ name: notebookName }).as('notebook');
     cy.get('body').then(($body) => {
       skipOn($body.find('#reportingActionsButton').length <= 0);
     });
     makePopulatedParagraph();
-    cy.wrap({ name: notebookName }).as('notebook');
+    cy.get('.euiContextMenuPanel').should('not.exist');
+    cy.get('button[data-test-subj="reporting-actions-button"]').should(
+      'be.visible'
+    );
+    cy.get('button[data-test-subj="reporting-actions-button"]').click();
   });
 
-  afterEach(() => {
-    cy.get('@notebook').then((notebook) => {
-      deleteNotebook(notebook.name);
-    });
+  after(() => {
+    deleteAllNotebooks();
   });
 
   it('Create in-context PDF report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(1)')
       .contains('Download PDF')
-      .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+      .click({ force: true });
+    cy.get('body')
+      .contains('Please continue report generation in the new tab')
+      .should('exist');
   });
 
   it('Create in-context PNG report from notebook', () => {
-    cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(2)')
       .contains('Download PNG')
-      .click();
-    cy.get('body').contains('Please continue report generation in the new tab');
+      .click({ force: true });
+    cy.get('body')
+      .contains('Please continue report generation in the new tab')
+      .should('exist');
   });
 
   it('Create on-demand report definition from context menu', () => {
-    cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(3)')
       .contains('Create report definition')
-      .click();
+      .click({ force: true });
     cy.location('pathname', { timeout: delayTime * 3 }).should(
       'include',
       '/reports-dashboards'
@@ -153,10 +172,9 @@ describe('Test reporting integration if plugin installed', () => {
   });
 
   it('View reports homepage from context menu', () => {
-    cy.get('#reportingActionsButton').click();
     cy.get('button.euiContextMenuItem:nth-child(4)')
       .contains('View reports')
-      .click();
+      .click({ force: true });
     cy.location('pathname', { timeout: delayTime * 3 }).should(
       'include',
       '/reports-dashboards'
