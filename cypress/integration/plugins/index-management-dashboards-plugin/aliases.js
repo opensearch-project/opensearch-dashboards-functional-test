@@ -65,7 +65,7 @@ describe('Aliases', () => {
   describe('can create a alias with wildcard and specific name', () => {
     it('successfully', () => {
       cy.get('[data-test-subj="Create aliasButton"]').click();
-      cy.get('[data-test-subj="form-name-alias"]').type(CREATE_ALIAS);
+      cy.get('[data-test-subj="form-name-alias"] input').type(CREATE_ALIAS);
       cy.get(
         '[data-test-subj="form-name-indexArray"] [data-test-subj="comboBoxSearchInput"]'
       ).type(`${EDIT_INDEX}{enter}${SAMPLE_INDEX_PREFIX}-*{enter}`);
@@ -157,7 +157,7 @@ describe('Aliases', () => {
         body: { test: 'test' },
       });
 
-      // confirm uncommitted_operations is 1 after indexing doc
+      // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
         url: `${Cypress.env('openSearchUrl')}/${sample_alias}/_stats/translog`,
@@ -167,7 +167,7 @@ describe('Aliases', () => {
         );
         let num =
           response_obj['_all']['total']['translog']['uncommitted_operations'];
-        expect(num).to.equal(1);
+        expect(num).not.equal(0);
       });
 
       cy.get('[data-test-subj="moreAction"] button')

@@ -14,7 +14,7 @@
     "remoteDataSourceNoAuthUrl": "http://localhost:9201",
     "remoteDataSourceBasicAuthUrl": "https://localhost:9202",
     "remoteDataSourceBasicAuthUsername": "admin",
-    "remoteDataSourceBasicAuthPassword": "admin",
+    "remoteDataSourceBasicAuthPassword": "myStrongPassword123!",
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
     "MULTITENANCY_ENABLED": true,
@@ -34,5 +34,30 @@
       "clipboard": "allow"
     },
     "UIMETRIC_ENABLED": false
-  }
+  },
+  "clientCertificates": [
+    {
+      "url": "https://localhost:9200/.opendistro-ism*",
+      "ca": ["cypress/resources/root-ca.pem"],
+      "certs": [
+        {
+          "cert": "cypress/resources/kirk.pem",
+          "key": "cypress/resources/kirk-key.pem",
+          "passphrase": ""
+        }
+      ]
+    },
+    {
+      "url": "https://localhost:9200/.opendistro-ism-config/_update_by_query/",
+      "ca": ["cypress/resources/root-ca.pem"],
+      "certs": [
+        {
+          "cert": "cypress/resources/kirk.pem",
+          "key": "cypress/resources/kirk-key.pem",
+          "passphrase": ""
+        }
+      ]
+    }
+  ]
+
 }

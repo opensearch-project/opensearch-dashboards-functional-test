@@ -5,31 +5,22 @@
 
 import { BASE_PATH } from '../../../utils/constants';
 import { CURRENT_TENANT } from '../../../utils/commands';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+
+const miscUtils = new MiscUtils(cy);
 
 describe('Add flights dataset saved object', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     CURRENT_TENANT.newTenant = 'global';
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
-      retryOnStatusCodeFailure: true,
-      timeout: 60000,
-    });
-    cy.wait(5000);
-    cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
-      timeout: 60000,
-    })
-      .contains(/Add data/)
-      .click();
-    cy.wait(60000);
+    cy.deleteAllIndices();
+    miscUtils.addSampleData();
+    cy.wait(15000);
   });
 
   after(() => {
-    cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`);
-    cy.wait(5000);
-    cy.get('button[data-test-subj="removeSampleDataSetflights"]', {
-      timeout: 120000,
-    })
-      .should('be.visible')
-      .click();
+    miscUtils.removeSampleData();
   });
 
   it('check if maps saved object of flights dataset can be found and open', () => {

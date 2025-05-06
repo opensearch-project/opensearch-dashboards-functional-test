@@ -23,9 +23,14 @@ inputs:
     required: false
 
   port:
-    description: 'Port to run OpenSearch. Leave empty to use the default config (9200)'
+    description: 'HTTP port to run OpenSearch. Leave empty to use the default config (9200)'
     required: false
     default: '9200'
+
+  transport_port:
+    description: 'Transport port to run OpenSearch transport layer. Leave empty to use the default config (9300-9400)'
+    required: false
+    default: '9300-9400'
 
 runs:
   using: "composite"
@@ -128,11 +133,12 @@ runs:
       shell: bash
       working-directory: ${{ inputs.port }}
 
-    - name: Use more space
+    - name: Use more space and update ports
       run: |
         echo '' >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "cluster.routing.allocation.disk.threshold_enabled: false" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
         echo "http.port: ${{ inputs.port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
+        echo "transport.port: ${{ inputs.transport_port }}" >> ./opensearch-${{ inputs.opensearch-version }}-SNAPSHOT${{ inputs.port }}/config/opensearch.yml
       shell: bash
       working-directory: ${{ inputs.port }}
 
