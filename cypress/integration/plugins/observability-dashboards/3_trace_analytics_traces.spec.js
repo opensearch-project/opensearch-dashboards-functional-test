@@ -6,6 +6,10 @@
 /// <reference types="cypress" />
 
 import { setTimeFilter, TRACE_ID } from '../../../utils/constants';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import dayjs from 'dayjs';
+
+dayjs.extend(customParseFormat);
 
 describe('Testing traces table', () => {
   beforeEach(() => {
@@ -25,7 +29,7 @@ describe('Testing traces table', () => {
 
   it('Searches correctly', () => {
     cy.get('input[type="search"]').focus().type(`${TRACE_ID}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
     cy.contains('03/25/2021 10:21:22').should('exist');
   });

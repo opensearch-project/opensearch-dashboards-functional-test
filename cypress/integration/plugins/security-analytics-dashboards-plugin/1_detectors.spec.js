@@ -153,9 +153,11 @@ const fillDetailsForm = (
     getDataSourceField().sa_selectComboboxItem(dataSource);
   }
 
-  getDataSourceField().focus().blur();
+  getDataSourceField().focus();
+  getDataSourceField().blur();
   getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(cypressLogTypeDns));
-  getLogTypeField().focus().blur();
+  getLogTypeField().focus();
+  getLogTypeField().blur();
 };
 
 const createDetector = (detectorName, dataSource, expectFailure) => {
@@ -283,7 +285,8 @@ describe('Detectors', () => {
 
     it('...should validate name field', () => {
       getNameField().should('be.empty');
-      getNameField().focus().blur();
+      getNameField().focus();
+      getNameField().blur();
       getNameField()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
@@ -409,7 +412,8 @@ describe('Detectors', () => {
       fillDetailsForm(detectorName, cypressIndexDns);
 
       getDataSourceField().sa_selectComboboxItem(cypressIndexWindows);
-      getDataSourceField().focus().blur();
+      getDataSourceField().focus();
+      getDataSourceField().blur();
 
       cy.get('[data-test-subj="define-detector-diff-log-types-warning"]')
         .should('be.visible')

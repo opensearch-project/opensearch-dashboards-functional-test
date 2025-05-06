@@ -139,10 +139,7 @@ Cypress.Commands.add('visitDataSourcesListingPage', () => {
   miscUtils.visitPage('app/management/opensearch-dashboards/dataSources');
 
   // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-  cy.contains(
-    'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
-    { timeout: 60000 }
-  );
+  cy.contains('Create and manage data source connections.', { timeout: 60000 });
 });
 
 Cypress.Commands.add(
@@ -249,7 +246,7 @@ Cypress.Commands.add('viewDataSourceAggregatedView', (dataSourceTitle) => {
 
 Cypress.Commands.add('createDataSourceNoAuthWithTitle', (title) => {
   miscUtils.visitPage(
-    'app/management/opensearch-dashboards/dataSources/create'
+    'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
   );
 
   cy.intercept('POST', '/api/saved_objects/data-source').as(

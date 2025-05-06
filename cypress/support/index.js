@@ -34,6 +34,7 @@ import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
+import '../utils/plugins/query-insights-dashboards/commands';
 
 import 'cypress-real-events';
 
@@ -72,11 +73,11 @@ if (
 ) {
   before(() => {
     cy.addAssistantRequiredSettings();
-    cy.readOrRegisterRootAgent();
+    cy.prepareAssistantAgents();
     cy.startDummyServer();
   });
   after(() => {
-    cy.cleanRootAgent();
+    cy.cleanProvisionedAgents();
     cy.stopDummyServer();
   });
 }
@@ -93,14 +94,14 @@ if (
     const originalBackendEndpoint = currentBackendEndpoint.get();
     currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
     cy.addAssistantRequiredSettings();
-    cy.readOrRegisterRootAgent();
+    cy.prepareAssistantAgents();
     currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.startDummyServer();
   });
   after(() => {
     const originalBackendEndpoint = currentBackendEndpoint.get();
     currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
-    cy.cleanRootAgent();
+    cy.cleanProvisionedAgents();
     currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.stopDummyServer();
   });

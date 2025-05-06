@@ -53,7 +53,6 @@ describe('discover app', { scrollBehavior: false }, () => {
     );
     cy.waitForLoader();
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   beforeEach(() => {
@@ -69,7 +68,7 @@ describe('discover app', { scrollBehavior: false }, () => {
     after(() => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
       cy.getElementByTestId(`deleteFilter`).click();
-      cy.switchDiscoverTable('legacy');
+      cy.clearTopNavQuery(); // clear the query before we proceed
     });
     it('should persist across refresh', function () {
       // Set up query and filter
@@ -80,15 +79,6 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
         'be.visible'
       );
-    });
-
-    it('should persist across switching table', function () {
-      cy.switchDiscoverTable('new');
-      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
-      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
-        'be.visible'
-      );
-      cy.clearTopNavQuery();
     });
   });
 
@@ -188,7 +178,6 @@ describe('discover app', { scrollBehavior: false }, () => {
       before(() => {
         CURRENT_TENANT.newTenant = 'global';
         cy.fleshTenantSettings();
-        cy.switchDiscoverTable('new');
         cy.setTopNavDate(fromTime, toTime);
       });
 
@@ -302,10 +291,6 @@ describe('discover app', { scrollBehavior: false }, () => {
   });
 
   describe('refresh interval', function () {
-    beforeEach(() => {
-      cy.switchDiscoverTable('new');
-    });
-
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')

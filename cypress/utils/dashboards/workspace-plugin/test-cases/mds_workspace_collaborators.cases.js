@@ -5,6 +5,21 @@
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
+const updatePrivacySetting = (settingId) => {
+  cy.getElementByTestId('workspaceCollaborators-privacySetting-edit').click();
+  cy.getElementByTestId('workspacePrivacySettingSelector').click({
+    force: true,
+  });
+  cy.get(`#${settingId}`).click({ force: true });
+  cy.getElementByTestId('workspaceCollaborators-privacySetting-save').click({
+    force: true,
+  });
+
+  cy.getElementByTestId('workspaceCollaborators-privacySetting-save').should(
+    'not.exist'
+  );
+};
+
 export const WorkspaceCollaboratorsTestCases = () => {
   const miscUtils = new MiscUtils(cy);
   const workspaceName = 'test_workspace_collaborators';
@@ -208,6 +223,108 @@ export const WorkspaceCollaboratorsTestCases = () => {
           },
         };
         cy.checkWorkspace(workspaceId, expectedWorkspace);
+      });
+
+      it('should change to "anyone can read" successfully', () => {
+        updatePrivacySetting('anyone-can-view');
+
+        const expectedWorkspace = {
+          name: workspaceName,
+          features: ['use-case-observability'],
+          description: 'test_description',
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            library_read: {
+              users: ['read_user', '*'],
+            },
+            read: {
+              users: ['read_user', '*'],
+            },
+          },
+        };
+        cy.checkWorkspace(workspaceId, expectedWorkspace);
+      });
+
+      it('should change to "anyone can edit" successfully', () => {
+        updatePrivacySetting('anyone-can-edit');
+
+        const expectedWorkspace = {
+          name: workspaceName,
+          features: ['use-case-observability'],
+          description: 'test_description',
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`, '*'],
+              groups: ['admin_group'],
+            },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            library_read: {
+              users: ['read_user'],
+            },
+            read: {
+              users: ['read_user', '*'],
+            },
+          },
+        };
+        cy.checkWorkspace(workspaceId, expectedWorkspace);
+      });
+
+      it('should change back to "private to collaborators" successfully', () => {
+        updatePrivacySetting('anyone-can-view');
+        cy.checkWorkspace(workspaceId, {
+          name: workspaceName,
+          features: ['use-case-observability'],
+          description: 'test_description',
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            library_read: {
+              users: ['read_user', '*'],
+            },
+            read: {
+              users: ['read_user', '*'],
+            },
+          },
+        });
+
+        updatePrivacySetting('private-to-collaborators');
+        cy.checkWorkspace(workspaceId, {
+          name: workspaceName,
+          features: ['use-case-observability'],
+          description: 'test_description',
+          permissions: {
+            library_write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            write: {
+              users: [`${Cypress.env('username')}`],
+              groups: ['admin_group'],
+            },
+            library_read: {
+              users: ['read_user'],
+            },
+            read: {
+              users: ['read_user'],
+            },
+          },
+        });
       });
     });
   }
