@@ -4,7 +4,10 @@
   "description": "A basic workflow containing the ingest pipeline, search pipeline, and index configurations for performing semantic search",
   "version": {
     "template": "1.0.0",
-    "compatibility": ["2.17.0", "3.0.0"]
+    "compatibility": [
+      "2.17.0",
+      "3.0.0"
+    ]
   },
   "workflows": {
     "provision": {
@@ -15,7 +18,7 @@
           "type": "create_ingest_pipeline",
           "previous_node_inputs": {},
           "user_inputs": {
-            "configurations": "{\"description\":\"An ingest pipeline\",\"processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"item_text\"}],\"output_map\":[{\"my_embedding\":\"embedding\"}],\"full_response_path\":false,\"ignore_missing\":false,\"ignore_failure\":false,\"model_config\":{}}}]}",
+            "configurations": "{\"description\":\"An ingest pipeline\",\"processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"item_text\"}],\"output_map\":[{\"my_embedding\":\"embedding\"}],\"full_response_path\":false,\"ignore_missing\":true,\"ignore_failure\":true,\"model_config\":{}}}]}",
             "pipeline_id": "ingest_pipeline_4112b7671c507097"
           }
         },
@@ -24,7 +27,7 @@
           "type": "create_search_pipeline",
           "previous_node_inputs": {},
           "user_inputs": {
-            "configurations": "{\"request_processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"query.term.item_text.value\"}],\"output_map\":[{\"vector\":\"embedding\"}],\"query_template\":\"{\\n  \\\"_source\\\": {\\n    \\\"excludes\\\": [\\n      \\\"my_embedding\\\"\\n    ]\\n  },\\n  \\\"query\\\": {\\n    \\\"knn\\\": {\\n      \\\"my_embedding\\\": {\\n        \\\"vector\\\": ${vector},\\n        \\\"k\\\": 10\\n      }\\n    }\\n  }\\n}\",\"full_response_path\":false,\"ignore_missing\":false,\"ignore_failure\":false,\"model_config\":{}}}],\"response_processors\":[],\"phase_results_processors\":[]}",
+            "configurations": "{\"request_processors\":[{\"ml_inference\":{\"model_id\":\"jUssbZIBtUlObUc3aHho\",\"input_map\":[{\"inputText\":\"query.term.item_text.value\"}],\"output_map\":[{\"vector\":\"embedding\"}],\"query_template\":\"{\\n  \\\"_source\\\": {\\n    \\\"excludes\\\": [\\n      \\\"my_embedding\\\"\\n    ]\\n  },\\n  \\\"query\\\": {\\n    \\\"knn\\\": {\\n      \\\"my_embedding\\\": {\\n        \\\"vector\\\": ${vector},\\n        \\\"k\\\": 10\\n      }\\n    }\\n  }\\n}\",\"full_response_path\":false,\"ignore_missing\":true,\"ignore_failure\":true,\"model_config\":{}}}],\"response_processors\":[],\"phase_results_processors\":[]}",
             "pipeline_id": "search_pipeline_bbfed4e51c5f8b65"
           }
         },
@@ -54,7 +57,7 @@
     }
   },
   "ui_metadata": {
-    "type": "Semantic search",
+    "type": "Semantic Search",
     "config": {
       "search": {
         "pipelineName": {
@@ -132,12 +135,12 @@
                 {
                   "id": "ignore_missing",
                   "type": "boolean",
-                  "value": false
+                  "value": true
                 },
                 {
                   "id": "ignore_failure",
                   "type": "boolean",
-                  "value": false
+                  "value": true
                 },
                 {
                   "id": "max_prediction_tasks",
@@ -221,12 +224,12 @@
                 {
                   "id": "ignore_missing",
                   "type": "boolean",
-                  "value": false
+                  "value": true
                 },
                 {
                   "id": "ignore_failure",
                   "type": "boolean",
-                  "value": false
+                  "value": true
                 },
                 {
                   "id": "max_prediction_tasks",

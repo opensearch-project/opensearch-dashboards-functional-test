@@ -292,6 +292,21 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('checkClusterHealth', () => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`,
+      failOnStatusCode: false,
+    })
+    .then((response) => {
+      return response.status === 200;
+    })
+    .catch(() => {
+      return false;
+    });
+});
+
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
   if (policyID != null) {
@@ -354,6 +369,15 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   cy.request({
     method: 'POST',
     url: `${Cypress.env('openSearchUrl')}/_all/_refresh`,
+  });
+});
+
+// Adding this command to force merge all segments and remove results inconsistency due to concurrent searches
+// Refer https://github.com/opensearch-project/OpenSearch/issues/18149 for more details
+Cypress.Commands.add('forceMergeSegments', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('openSearchUrl')}/_forcemerge?max_num_segments=1`,
   });
 });
 
@@ -595,6 +619,32 @@ Cypress.Commands.add('loadSampleData', (type) => {
   });
 });
 
+Cypress.Commands.add(
+  'loadSampleDataForWorkspace',
+  (type, workspaceId, datasourceId) => {
+    cy.request({
+      method: 'POST',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
+    });
+  }
+);
+
+Cypress.Commands.add(
+  'removeSampleDataForWorkspace',
+  (type, workspaceId, datasourceId) => {
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
+    });
+  }
+);
+
 Cypress.Commands.add('fleshTenantSettings', () => {
   if (Cypress.env('SECURITY_ENABLED')) {
     // Use xhr request is good enough to flesh tenant
@@ -639,6 +689,41 @@ Cypress.Commands.add(
       cy.getElementByTestId('dataSourceSelectorComboBox')
         .last('button')
         .click();
+    }
+  }
+);
+
+Cypress.Commands.add(
+  'selectTopRightNavigationDataSource',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectableButton').click();
+    cy.getElementByTestId('dataSourceSelectable').find('input').clear();
+    cy.getElementByTestId('dataSourceSelectable')
+      .find('input')
+      .type(dataSourceTitle);
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiSelectableListItem')
+        .contains(dataSourceTitle)
+        .closest('.euiSelectableListItem');
+    }
+
+    if (dataSourceElement) {
+      dataSourceElement.then(($element) => {
+        if ($element.attr('aria-selected') === 'false') {
+          dataSourceElement.click();
+        } else {
+          // Close data source picker manually if data source already selected
+          cy.getElementByTestId('dataSourceSelectableButton').click();
+        }
+      });
+    }
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId('dataSourceSelectableButton').click();
     }
   }
 );

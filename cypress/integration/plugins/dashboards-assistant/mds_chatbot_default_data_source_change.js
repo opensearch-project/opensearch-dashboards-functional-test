@@ -23,17 +23,13 @@ const manualSetDefaultDataSource = (dataSourceTitle) => {
 };
 
 const openChatBotAndSendMessage = () => {
-  // Common text to wait for to confirm page loaded, give up to 120 seconds for initial load
-  cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).as(
-    'chatInput'
-  );
-  cy.get('@chatInput').should('be.length', 1);
+  cy.wait(5000);
 
-  cy.wait(1000);
+  // enable to toggle and show Chatbot
+  cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
 
-  cy.get('@chatInput').click();
-
-  cy.get('@chatInput').type('What are the indices in my cluster?{enter}');
+  // click suggestions to generate response
+  cy.contains('What are the indices in my cluster?').click();
 
   // should have a LLM Response
   cy.contains(
@@ -69,7 +65,7 @@ if (
       // The header may render multiple times, wait for UI to be stable
       cy.wait(5000);
       // enable to toggle and show Chatbot
-      cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+      cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
       cy.get('.llm-chat-flyout button[aria-label="history"]')
         .should('be.visible')
         .click();

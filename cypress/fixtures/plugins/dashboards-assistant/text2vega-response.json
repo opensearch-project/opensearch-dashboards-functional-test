@@ -1,0 +1,5 @@
+{
+  "completion": "{\"title\":\"Number of Visitors by Week\",\"description\":\"Number of visitors grouped by week\",\"mark\":\"bar\",\"encoding\":{\"x\":{\"field\":\"visitors\",\"type\":\"quantitative\"},\"y\":{\"field\":\"week\",\"type\":\"nominal\"}}}",
+  "stop_reason": "stop_sequence",
+  "stop": "\n\nHuman:"
+}

@@ -19,7 +19,7 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import '../utils/commands';
+import * as commands from '../utils/commands';
 import '../utils/dashboards/commands';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
@@ -34,13 +34,14 @@ import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
-import { currentBackendEndpoint } from '../utils/commands';
+import '../utils/plugins/query-insights-dashboards/commands';
 
 import 'cypress-real-events';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
+const { currentBackendEndpoint } = commands;
 const resizeObserverLoopErrRe = /^[^(ResizeObserver loop limit exceeded)]/;
 Cypress.on('uncaught:exception', (err) => {
   /* returning false here prevents Cypress from failing the test */
@@ -72,11 +73,11 @@ if (
 ) {
   before(() => {
     cy.addAssistantRequiredSettings();
-    cy.readOrRegisterRootAgent();
+    cy.prepareAssistantAgents();
     cy.startDummyServer();
   });
   after(() => {
-    cy.cleanRootAgent();
+    cy.cleanProvisionedAgents();
     cy.stopDummyServer();
   });
 }
@@ -93,14 +94,14 @@ if (
     const originalBackendEndpoint = currentBackendEndpoint.get();
     currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
     cy.addAssistantRequiredSettings();
-    cy.readOrRegisterRootAgent();
+    cy.prepareAssistantAgents();
     currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.startDummyServer();
   });
   after(() => {
     const originalBackendEndpoint = currentBackendEndpoint.get();
     currentBackendEndpoint.set(currentBackendEndpoint.REMOTE_NO_AUTH);
-    cy.cleanRootAgent();
+    cy.cleanProvisionedAgents();
     currentBackendEndpoint.set(originalBackendEndpoint, false);
     cy.stopDummyServer();
   });

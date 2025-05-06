@@ -26,11 +26,12 @@ describe('Testing services table', () => {
       .first()
       .focus()
       .type(`${SERVICE_NAME}{enter}`);
-    cy.get('.euiButton__text').contains('Refresh').click();
+    cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
   });
 
   it('Opens service flyout', () => {
+    cy.contains('6.42').should('exist');
     cy.get('button[data-test-subj^="service-flyout-action-btn"]')
       .first()
       .click();

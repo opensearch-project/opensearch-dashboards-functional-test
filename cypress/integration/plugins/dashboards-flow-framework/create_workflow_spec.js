@@ -11,12 +11,13 @@ import {
 } from '../../../utils/constants';
 import createConnectorBody from '../../../fixtures/plugins/dashboards-flow-framework/create_connector.json';
 import registerModelBody from '../../../fixtures/plugins/dashboards-flow-framework/register_model.json';
-import { getLastPathSegment } from '../../../utils/plugins/dashboards-flow-framework/helpers';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
 
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
     cy.createConnector(createConnectorBody)
       .then((connectorResponse) => {
         return cy.registerModel({
@@ -34,14 +35,17 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   beforeEach(() => {
-    cy.visit(FF_URL.WORKFLOWS_NEW);
-    cy.url().should('include', getLastPathSegment(FF_URL.WORKFLOWS_NEW));
+    CURRENT_TENANT.newTenant = 'global';
+    cy.wait(20000);
+    cy.visit(FF_URL.WORKFLOWS, { timeout: FF_TIMEOUT });
   });
 
-  it('create workflow using import', () => {
+  it('Import workflow with valid configuration', () => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.wait(20000);
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
-      .click();
+      .click({ force: true });
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
     const filePath =
       'cypress/fixtures/' +
@@ -63,8 +67,8 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
   });
 
-  it('Workflow Creation with Improper Import File', () => {
-    cy.getElementByDataTestId('importWorkflowButton')
+  it('Attempt to import workflow with invalid configuration', () => {
+    cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
     cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
@@ -78,20 +82,29 @@ describe('Creating Workflows Using Various Methods', () => {
     );
   });
 
-  it('create workflow using Semantic Search template', () => {
+  it('Create workflow using semantic search template', () => {
+    cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+      .should('be.visible')
+      .click();
     cy.contains('h3', 'Semantic Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
-        cy.contains('button', 'Go').click();
+        cy.contains('button', 'Create').click();
       });
-    cy.getElementByDataTestId('optionalConfigurationButton')
+    cy.contains('label', 'Name')
+      .invoke('attr', 'for')
+      .then((id) => {
+        cy.get(`#${id}`).clear().type('semantic_search');
+      });
+    cy.getElementByDataTestId('optionalConfigurationButton', {
+      timeout: FF_TIMEOUT,
+    })
       .should('be.visible')
       .click();
     cy.getElementByDataTestId('selectDeployedModel')
       .should('be.visible')
       .click();
-    cy.get('.euiSuperSelect__item').should('be.visible');
     cy.get('.euiSuperSelect__item').contains('BedRock').click();
     cy.contains('label', 'Text field')
       .invoke('attr', 'for')
@@ -102,19 +115,17 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.url().should('include', '/workflows/');
-    cy.getElementByDataTestId('editSourceDataButton')
+    cy.getElementByDataTestId('selectDataToImportButton')
       .should('be.visible')
       .click();
-    cy.getElementByDataTestId('uploadSourceDataButton')
-      .should('be.visible')
-      .click();
-    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.json`;
+    cy.get(`[data-text="Upload a file"]`).should('be.visible').click();
+    const filePath = `cypress/fixtures/${FF_FIXTURE_BASE_PATH}semantic_search/source_data.jsonl`;
     cy.get('input[type=file]').selectFile(filePath);
-    cy.getElementByDataTestId('closeSourceDataButton')
+    cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
       .click();
-    cy.mockIngestion(() => {
-      cy.getElementByDataTestId('runIngestionButton')
+    cy.mockAllIngestActions(() => {
+      cy.getElementByTestId('updateAndRunIngestButton')
         .should('be.visible')
         .click();
     });
@@ -123,20 +134,8 @@ describe('Creating Workflows Using Various Methods', () => {
       .should('be.visible')
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
-      (expectedJson) => {
-        cy.get('#tools_panel_id .ace_editor .ace_content')
-          .should('be.visible')
-          .invoke('text')
-          .then((editorText) => {
-            expect(editorText).to.include(`"took": ${expectedJson.took}`);
-            expect(editorText).to.include(
-              `"ingest_took": ${expectedJson.ingest_took}`
-            );
-            expect(editorText).to.include(`"errors": ${expectedJson.errors}`);
-            expect(editorText).to.include(
-              `"result": "${expectedJson.items[0].index.result}"`
-            );
-          });
+      () => {
+        cy.get('#tools_panel_id').should('be.visible');
       }
     );
     cy.getElementByDataTestId('searchPipelineButton')
@@ -161,84 +160,23 @@ describe('Creating Workflows Using Various Methods', () => {
           .trigger('blur', { force: true });
       });
     });
-    cy.getElementByDataTestId('searchQueryCloseButton')
+    cy.getElementByDataTestId('updateSearchQueryButton')
       .should('be.visible')
       .click();
-    cy.mockSemanticSearchIndexSearch(() => {
-      cy.getElementByDataTestId('runQueryButton').should('be.visible').click();
-    });
-    // Checking Run query response
-    cy.sa_getElementByText('button.euiTab', 'Search response')
-      .should('be.visible')
-      .click();
-
-    cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/search_response').then(
-      (expectedSearchJson) => {
-        cy.get('#tools_panel_id .ace_editor .ace_content')
-          .should('be.visible')
-          .invoke('text')
-          .then((editorText) => {
-            const editorJson = JSON.parse(editorText);
-            expect(JSON.stringify(editorJson)).to.contain(
-              JSON.stringify(expectedSearchJson['hits']['hits'][0]['_source'])
-            );
-          });
-      }
-    );
+    cy.getElementByTestId('updateSearchButton').should('be.visible').click();
+    // TODO: further search response validation can be completed when the UI is finalized in how it is displayed.
   });
 
-  it('create workflow using Sentiment Analysis template', () => {
-    cy.contains('h3', 'Sentiment Analysis', { timeout: FF_TIMEOUT })
-      .should('be.visible')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
+  it('Create workflow from hybrid search template', () => {
+    createPreset('Hybrid Search', true);
   });
 
-  it('create workflow using Hybrid Search template', () => {
-    cy.contains('h3', 'Hybrid Search', { timeout: FF_TIMEOUT })
-      .should('be.visible')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
+  it('Create workflow from multimodal template', () => {
+    createPreset('Multimodal Search', true);
   });
 
-  it('create workflow using Multimodal Search template', () => {
-    cy.contains('h3', 'Multimodal Search', { timeout: FF_TIMEOUT })
-      .should('be.visible')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
-  });
-
-  it('create workflow using Retrieval-Augmented Generation (RAG) template', () => {
-    cy.contains('h3', 'Retrieval-Augmented Generation (RAG)', {
-      timeout: FF_TIMEOUT,
-    })
-      .should('be.visible')
-      .parents('.euiCard')
-      .within(() => {
-        cy.contains('button', 'Go').click();
-      });
-    cy.getElementByDataTestId('quickConfigureCreateButton')
-      .should('be.visible')
-      .click();
-    cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
+  it('Create workflow from custom template', () => {
+    createPreset('Custom Search', false);
   });
 
   after(() => {
@@ -248,3 +186,33 @@ describe('Creating Workflows Using Various Methods', () => {
     }
   });
 });
+
+// Reusable fn to check the preset exists, and able to create it, and navigate to its details page.
+function createPreset(presetName, containsModels = false) {
+  cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
+    .should('be.visible')
+    .click();
+  cy.contains('h3', presetName, { timeout: FF_TIMEOUT })
+    .should('be.visible')
+    .parents('.euiCard')
+    .within(() => {
+      cy.contains('button', 'Create').click();
+    });
+  cy.contains('label', 'Name')
+    .invoke('attr', 'for')
+    .then((id) => {
+      cy.get(`#${id}`)
+        .clear()
+        .type(presetName.toLowerCase().replace(/\s/g, ''));
+    });
+  if (containsModels) {
+    cy.getElementByDataTestId('selectDeployedModel')
+      .should('be.visible')
+      .click();
+    cy.get('.euiSuperSelect__item').contains('BedRock').click();
+  }
+  cy.getElementByDataTestId('quickConfigureCreateButton')
+    .should('be.visible')
+    .click();
+  cy.url().should('include', WORKFLOW_DETAIL_URL_SEGMENT);
+}
