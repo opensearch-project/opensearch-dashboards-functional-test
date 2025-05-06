@@ -33,10 +33,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     });
 
     it('should successfully load the page', () => {
-      cy.contains(
-        'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.',
-        TIMEOUT_OPTS
-      );
+      cy.contains('Create and manage data source connections.', TIMEOUT_OPTS);
     });
 
     describe('Empty State', () => {
@@ -120,7 +117,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Get the datasource table header and click it to sort sscending first
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Title'
+          'Data source'
         );
 
         // Confirm we have ds_a in view and not ds_z
@@ -133,7 +130,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Get the datasource table header and click it to sort descending first
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Title'
+          'Data source'
         );
 
         // Confirm we have ds_z in view and not ds_a
@@ -143,7 +140,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // sort to ascending order for next steps
         cy.getColumnHeaderByNameAndClickForSorting(
           tableHeadIdentifier,
-          'Title'
+          'Data source'
         );
       });
     });
@@ -294,20 +291,16 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
     });
     describe('Selection & Deletion', () => {
-      it('should not select any rows by default & delete button should be disabled', () => {
+      it('should not select any rows by default & delete button should not exist', () => {
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
-        );
-        cy.getElementByTestId('deleteDataSourceConnections').should(
-          'contain.text',
-          'Delete  '
+          'not.exist'
         );
       });
 
       it('should verify simple selection & un-selection of rows', () => {
         // Verify that delete button is disabled
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
         // Select first 2 rows
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
@@ -317,10 +310,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           .eq(1)
           .check();
 
-        // Verify tha delete button is not disabled & displays expected text
-        cy.getElementByTestId('deleteDataSourceConnections').should(
-          'not.be.disabled'
-        );
+        // Verify tha delete button exists & displays expected text
+        cy.getElementByTestId('deleteDataSourceConnections').should('exist');
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
           'Delete 2 connections'
@@ -334,13 +325,13 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           .eq(1)
           .uncheck();
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
       });
 
       it('should select single row & perform delete', () => {
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
         cy.contains('ds_a').should('exist');
 
@@ -357,15 +348,15 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.getElementByTestId('deleteDataSourceConnections').click();
         cy.getElementByTestId('confirmModalConfirmButton').click();
         cy.contains('ds_a').should('not.exist');
+        // after deletion, delete button should not exist since there is no row being selected
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'contain.text',
-          'Delete  '
+          'not.exist'
         );
       });
 
       it('should select multiple rows & perform delete', () => {
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
         cy.contains('ds_b').should('exist');
 
@@ -395,9 +386,9 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.getElementByTestId('deleteDataSourceConnections').click();
         cy.getElementByTestId('confirmModalConfirmButton').click();
         cy.contains('ds_b').should('not.exist');
+        // after deletion, delete button should not exist since there is no row being selected
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'contain.text',
-          'Delete  '
+          'not.exist'
         );
         cy.get('li.euiPagination__item').should(($li) => {
           expect($li).to.have.length(2); // 2 pages
@@ -419,9 +410,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           'contain.text',
           'Delete 10 connections'
         );
-        cy.getElementByTestId('deleteDataSourceConnections').should(
-          'not.be.disabled'
-        );
+        cy.getElementByTestId('deleteDataSourceConnections').should('exist');
 
         // sort by description column
         cy.getColumnHeaderByNameAndClickForSorting(
@@ -430,7 +419,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
       });
 
@@ -449,7 +438,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.getElementByTestId('pagination-button-next').click();
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
       });
 
@@ -468,7 +457,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get(searchFieldIdentifier).focus().clear().type('ds_z');
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
-          'be.disabled'
+          'not.exist'
         );
       });
     });
@@ -476,10 +465,13 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     /* Create button*/
     describe('create button', () => {
       it('should navigate to create data source on button click', () => {
+        // should vist the centralized creation page first
         cy.getElementByTestId('createDataSourceButton').first().click();
+        // clicking the 'opensearch' card button
+        cy.getElementByTestId('datasource_card_opensearch').first().click();
         cy.location('pathname').should(
           'eq',
-          '/app/management/opensearch-dashboards/dataSources/create'
+          '/app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
         );
       });
     });

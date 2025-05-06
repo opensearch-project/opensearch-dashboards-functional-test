@@ -11,6 +11,8 @@ const miscUtils = new MiscUtils(cy);
 
 describe('Add map to dashboard', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     CURRENT_TENANT.newTenant = 'global';
     cy.deleteAllIndices();
     miscUtils.addSampleData();

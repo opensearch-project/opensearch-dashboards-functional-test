@@ -133,38 +133,3 @@ Cypress.Commands.add('deleteSaveQuery', (name) => {
   });
   cy.getElementByTestId('confirmModalConfirmButton').click();
 });
-
-Cypress.Commands.add('switchDiscoverTable', (name) => {
-  cy.getElementByTestId('discoverOptionsButton')
-    .then(($button) => {
-      cy.wrap($button).click({ force: true });
-
-      cy.getElementByTestId('discoverOptionsLegacySwitch').then(
-        ($switchButton) => {
-          if (name === 'new') {
-            cy.wrap($switchButton).click({ force: true });
-          }
-          if (name === 'legacy') {
-            cy.wrap($switchButton).click({ force: true });
-          }
-          cy.waitForLoader();
-        }
-      );
-    })
-    .then(() => {
-      checkForElementVisibility();
-    });
-});
-
-function checkForElementVisibility() {
-  cy.getElementsByTestIds('queryInput')
-    .should('be.visible')
-    .then(($element) => {
-      if ($element.is(':visible')) {
-        return;
-      } else {
-        cy.wait(500); // Wait for half a second before checking again
-        checkForElementVisibility(); // Recursive call
-      }
-    });
-}

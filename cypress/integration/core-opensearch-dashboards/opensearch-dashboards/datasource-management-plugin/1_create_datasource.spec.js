@@ -32,7 +32,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     beforeEach(() => {
       // Visit OSD create page
       miscUtils.visitPage(
-        'app/management/opensearch-dashboards/dataSources/create'
+        'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
       );
 
       cy.intercept('POST', '/api/saved_objects/data-source').as(
@@ -360,7 +360,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     describe('Cancel button and create data source button', () => {
       it('validate if create data source button is disabled when first visit this page', () => {
         miscUtils.visitPage(
-          'app/management/opensearch-dashboards/dataSources/create'
+          'app/management/opensearch-dashboards/dataSources/configure/OpenSearch'
         );
         cy.getElementByTestId('createDataSourceButton').should('be.disabled');
       });
@@ -386,11 +386,11 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
       });
 
-      it('cancel button should redirect to datasource listing page', () => {
+      it('cancel button should redirect to centralized datasource creation page', () => {
         cy.getElementByTestId('cancelCreateDataSourceButton').click();
         cy.location('pathname', { timeout: 6000 }).should(
           'include',
-          'app/management/opensearch-dashboards/dataSources'
+          'app/management/opensearch-dashboards/dataSources/create'
         );
       });
     });

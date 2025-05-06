@@ -37,7 +37,6 @@ describe('date_nanos', () => {
 
     cy.setTopNavDate(fromTime, toTime);
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   after(() => {
@@ -48,8 +47,8 @@ describe('date_nanos', () => {
 
   it('should show a timestamp with nanoseconds in the first result row', function () {
     cy.verifyTimeConfig(fromTime, toTime);
-    cy.get(`[data-test-subj="dataGridRowCell"]`)
-      .eq(1)
+    cy.get(`[data-test-subj="osdDocTableCellDataField"]`)
+      .eq(0)
       .contains('Sep 22, 2019 @ 16:50:13.253123345');
   });
 });

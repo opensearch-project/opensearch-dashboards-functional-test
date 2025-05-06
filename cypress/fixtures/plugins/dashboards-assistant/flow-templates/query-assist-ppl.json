@@ -1,0 +1,97 @@
+{
+  "name": "Cypress-register-query-assist-ppl-agent",
+  "description": "Cypress Flow template",
+  "use_case": "REGISTER_AGENT",
+  "version": {
+    "template": "1.0.0",
+    "compatibility": ["2.12.0", "3.0.0"]
+  },
+  "workflows": {
+    "provision": {
+      "user_params": {},
+      "nodes": [
+        {
+          "id": "create_connector_1",
+          "type": "create_connector",
+          "previous_node_inputs": {},
+          "user_inputs": {
+            "version": "1",
+            "name": "Claude instant runtime T2V with instructions Connector",
+            "protocol": "aws_sigv4",
+            "description": "The connector to BedRock service for claude model",
+            "actions": [
+              {
+                "headers": {
+                  "x-amz-content-sha256": "required",
+                  "content-type": "application/json"
+                },
+                "method": "POST",
+                "request_body": "{\"prompt\":\"${parameters.prompt}\", \"max_tokens_to_sample\":${parameters.max_tokens_to_sample}, \"temperature\":${parameters.temperature},  \"anthropic_version\":\"${parameters.anthropic_version}\" }",
+                "action_type": "predict",
+                "url": "http://127.0.0.1:3000"
+              }
+            ],
+            "credential": {
+              "access_key": "<key>",
+              "secret_key": "<value>"
+            },
+            "parameters": {
+              "endpoint": "bedrock-runtime.us-west-2.amazonaws.com",
+              "content_type": "application/json",
+              "auth": "Sig_V4",
+              "max_tokens_to_sample": "8000",
+              "service_name": "bedrock",
+              "temperature": "0.0001",
+              "response_filter": "$.completion",
+              "region": "us-west-2",
+              "anthropic_version": "bedrock-2023-05-31"
+            }
+          }
+        },
+        {
+          "id": "register_model_2",
+          "type": "register_remote_model",
+          "previous_node_inputs": {
+            "create_connector_1": "connector_id"
+          },
+          "user_inputs": {
+            "description": "test model",
+            "deploy": true,
+            "name": "claude-instant-t2v-with-instructions"
+          }
+        },
+        {
+          "id": "ppl_tool",
+          "type": "create_tool",
+          "previous_node_inputs": {
+            "register_model_2": "model_id"
+          },
+          "user_inputs": {
+            "type": "PPLTool",
+            "name": "TransferQuestionToPPLAndExecuteTool",
+            "description": "Use this tool to transfer natural language to generate PPL and execute PPL to query inside. Use this tool after you know the index name, otherwise, call IndexRoutingTool first. The input parameters are: {index:IndexName, question:UserQuestion}",
+            "parameters": {
+                "model_type": "FINETUNE",
+                "execute": false
+            }
+          }
+        },
+        {
+          "id": "os_query_assist_ppl",
+          "type": "register_agent",
+          "previous_node_inputs": {
+            "register_model_2": "model_id",
+            "ppl_tool": "tools"
+          },
+          "user_inputs": {
+            "parameters": {},
+            "type": "flow",
+            "name": "t2vega with instructions agent",
+            "description": "this is the t2vega with instructions agent",
+            "tools_order": ["ppl_tool"]
+          }
+        }
+      ]
+    }
+  }
+}

@@ -17,6 +17,10 @@ on:
       artifact-name-suffix:
         required: false
         type: string
+      multi-opensearch-enabled:
+        required: false
+        type: boolean
+        default: true
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
@@ -72,16 +76,20 @@ jobs:
               curl https://localhost:9200 -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
+          transport_port: 9301
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
-          admin-password: admin
+          admin-password: myStrongPassword123!
           port: 9202
+          transport_port: 9302
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
@@ -120,7 +128,7 @@ jobs:
           echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v1
+        uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
