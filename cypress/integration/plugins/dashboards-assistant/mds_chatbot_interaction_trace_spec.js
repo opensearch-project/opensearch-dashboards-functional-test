@@ -17,18 +17,16 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.visit(`${BASE_PATH}/app/home`);
       // cy.waitForLoader();
 
-      // Common text to wait for to confirm page loaded, give up to 120 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).as(
-        'chatInput'
-      );
-      cy.get('@chatInput').should('be.length', 1);
+      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
+        timeout: 120000,
+      }).should('be.length', 1);
+      cy.wait(5000);
 
-      cy.wait(1000);
+      // enable to toggle and show Chatbot
+      cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
 
-      cy.get('@chatInput')
-        .click()
-        .type('What are the indices in my cluster?{enter}');
-
+      // click suggestions to generate response
+      cy.contains('What are the indices in my cluster?').click();
       // should have a LLM Response
       cy.contains(
         'The indices in your cluster are the names listed in the response obtained from using a tool to get information about the OpenSearch indices.'
@@ -76,7 +74,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('@tracePage')
           .find('.euiAccordion')
           // tool name
-          .contains('Step 2 - CatIndexTool')
+          .contains('Step 2 - ListIndexTool')
           .click({ force: true });
 
         // tool output

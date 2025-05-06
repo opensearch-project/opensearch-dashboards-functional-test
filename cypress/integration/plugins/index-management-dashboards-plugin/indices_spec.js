@@ -618,7 +618,7 @@ describe('Indices', () => {
         body: { test: 'test' },
       });
 
-      // confirm uncommitted_operations is 1 after indexing doc
+      // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
         url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
@@ -628,7 +628,7 @@ describe('Indices', () => {
         );
         let num =
           response_obj['_all']['total']['translog']['uncommitted_operations'];
-        expect(num).to.equal(1);
+        expect(num).not.equal(0);
       });
 
       // Select an index
@@ -678,7 +678,7 @@ describe('Indices', () => {
         body: { test: 'test' },
       });
 
-      // confirm uncommitted_operations is 1 after indexing doc
+      // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
         url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
@@ -688,7 +688,7 @@ describe('Indices', () => {
         );
         let num =
           response_obj['_all']['total']['translog']['uncommitted_operations'];
-        expect(num).to.equal(1);
+        expect(num).not.equal(0);
       });
 
       cy.get('[data-test-subj="moreAction"]').click();

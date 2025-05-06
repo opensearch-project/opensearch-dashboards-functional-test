@@ -50,7 +50,7 @@ describe('Cypress', () => {
     });
 
     // download PDF
-    cy.get('#generatePDF > span:nth-child(1) > span:nth-child(2)').click({
+    cy.get('#generatePDF').click({
       force: true,
     });
 

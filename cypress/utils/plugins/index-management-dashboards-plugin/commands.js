@@ -68,7 +68,7 @@ Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
       'POST',
       `${Cypress.env('openSearchUrl')}/${
         IM_CONFIG_INDEX.OPENDISTRO_ISM_CONFIG
-      }/_update_by_query`,
+      }/_update_by_query/`,
       body
     );
   });
