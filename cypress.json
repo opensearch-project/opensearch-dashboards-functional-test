@@ -14,7 +14,7 @@
     "remoteDataSourceNoAuthUrl": "http://localhost:9201",
     "remoteDataSourceBasicAuthUrl": "https://localhost:9202",
     "remoteDataSourceBasicAuthUsername": "admin",
-    "remoteDataSourceBasicAuthPassword": "admin",
+    "remoteDataSourceBasicAuthPassword": "myStrongPassword123!",
     "SECURITY_ENABLED": false,
     "AGGREGATION_VIEW": false,
     "MULTITENANCY_ENABLED": true,

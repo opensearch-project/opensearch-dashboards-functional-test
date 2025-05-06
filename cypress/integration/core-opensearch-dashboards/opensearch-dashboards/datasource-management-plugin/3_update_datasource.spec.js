@@ -58,9 +58,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     });
 
     it('should successfully load the listing page & have 2 records in table', () => {
-      cy.contains(
-        'Create and manage data source connections to help you retrieve data from multiple OpenSearch compatible sources.'
-      );
+      cy.contains('Create and manage data source connections.');
       // Confirm we have 2 rows in the table
       cy.get('tbody > tr').should(($tr) => {
         expect($tr).to.have.length(2);

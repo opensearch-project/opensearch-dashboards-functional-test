@@ -1,0 +1,17 @@
+{
+  "cluster_permissions": ["*"],
+  "index_permissions": [
+    {
+      "index_patterns": ["*"],
+      "fls": [],
+      "masked_fields": [],
+      "allowed_actions": ["*"]
+    }
+  ],
+  "tenant_permissions": [
+    {
+      "tenant_patterns": ["*"],
+      "allowed_actions": ["kibana_all_write"]
+    }
+  ]
+}

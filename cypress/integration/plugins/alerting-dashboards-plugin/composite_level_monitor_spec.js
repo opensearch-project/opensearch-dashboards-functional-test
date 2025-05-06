@@ -172,6 +172,7 @@ describe('CompositeLevelMonitor', () => {
 
     it('by visual editor', () => {
       // Verify edit page
+      cy.contains('Edit').click({ force: true });
       cy.contains('Edit monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
       cy.get('input[name="name"]').type('_edited');
 
@@ -201,7 +202,7 @@ describe('CompositeLevelMonitor', () => {
         'updateMonitorRequest',
         'PUT'
       );
-      cy.get('button').contains('Update').click({ force: true });
+      cy.get('button').contains('Save').click({ force: true });
 
       // Wait for monitor to be created
       cy.wait('@updateMonitorRequest').then(() => {

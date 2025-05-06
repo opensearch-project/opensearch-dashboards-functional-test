@@ -1,0 +1,6 @@
+{
+  "completion":
+    "source=opensearch_dashboards_sample_data_ecommerce| eval week = WEEK_OF_YEAR(`order_date`) | stats DISTINCT_COUNT(`customer_id`) as visitors by week | sort week",
+  "stop_reason": "stop_sequence",
+  "stop": "\n\nHuman:"
+}

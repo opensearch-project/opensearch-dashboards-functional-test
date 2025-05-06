@@ -46,8 +46,6 @@ describe('discover doc table', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
-    cy.switchDiscoverTable('new');
-    cy.waitForSearch();
   });
 
   after(() => {});
@@ -58,15 +56,13 @@ describe('discover doc table', () => {
 
       cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
 
-      cy.getElementByTestId('dataGridHeaderCell-phpmemory').should(
-        'be.visible'
-      );
+      cy.getElementByTestId('docTableHeader-phpmemory').should('be.visible');
     });
 
     it('should remove columns from the table', function () {
       cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
 
-      cy.getElementByTestId('dataGridHeaderCell-phpmemory').should('not.exist');
+      cy.getElementByTestId('docTableHeader-phpmemory').should('not.exist');
     });
   });
 });
