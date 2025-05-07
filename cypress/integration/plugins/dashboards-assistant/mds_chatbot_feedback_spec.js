@@ -32,11 +32,10 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     describe('conversation feedback', () => {
       it('display feedback button and able to interact', () => {
-        // input question
-        cy.wait(1000);
-
         // enable to toggle and show Chatbot
-        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
+
+        cy.startNewAssistantConversation();
 
         // click suggestions to generate response
         cy.contains('What are the indices in my cluster?').click();

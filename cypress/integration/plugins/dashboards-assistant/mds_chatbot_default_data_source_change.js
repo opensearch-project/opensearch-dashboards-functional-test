@@ -23,10 +23,10 @@ const manualSetDefaultDataSource = (dataSourceTitle) => {
 };
 
 const openChatBotAndSendMessage = () => {
-  cy.wait(5000);
-
   // enable to toggle and show Chatbot
-  cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+  cy.openAssistantChatbot();
+
+  cy.startNewAssistantConversation();
 
   // click suggestions to generate response
   cy.contains('What are the indices in my cluster?').click();
@@ -62,10 +62,10 @@ if (
     });
 
     it('should reload history with new data source id', function () {
-      // The header may render multiple times, wait for UI to be stable
       cy.wait(5000);
       // enable to toggle and show Chatbot
-      cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+      cy.openAssistantChatbot();
+
       cy.get('.llm-chat-flyout button[aria-label="history"]')
         .should('be.visible')
         .click();
