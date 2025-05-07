@@ -1,0 +1,6 @@
+{
+    "completion":
+      "Here is a summary of the alert:\n\nThe alert is triggered by a monitor that checks the \"opensearch_dashboards_sample_data_logs\" index every minute. The monitor has a query-level trigger that is activated when the total number of hits in the index is greater than 0.\n\nThe active alert shows that there are 101 active alerts, with no acknowledged or errored alerts. The alert was first triggered on 04/27/25 at 10:43 am CST, and the last notification was sent at 04/27/25 4:33 pm CST. The alert severity is set to \"1\".\n\nThe value that triggered the alert is 18, and the alert query DSL is provided.\n\nBased on the log pattern output, there are three main patterns detected:\n1. GET requests to \"/opensearch\", \"/logging\", \"/enterprise\" with responses of 200 and 404.\n2. GET requests to \"/app-search\" and \"/enterprise-search\" with 200 responses.\n3. GET requests to CSS files like \"/styles/pretty-layout.css\" and \"/styles/semantic-ui.css\" with 200 responses.\n\nThere does not appear to be any immediate common pattern or trend in the log output, but the outlier could be the 404 response for the \"/enterprise\" request.",
+    "stop_reason": "stop_sequence",
+    "stop": "\n\nHuman:"
+  }
