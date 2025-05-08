@@ -8,7 +8,6 @@ import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/help
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
     let restoreShowHome;
-    let restoreNewThemeModal;
     let dataSourceId;
 
     before(() => {
@@ -21,12 +20,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         'home:welcome:show',
         'false'
       );
-      // Hide new theme modal
-      restoreNewThemeModal = setStorageItem(
-        localStorage,
-        'home:newThemeModal:show',
-        'false'
-      );
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
 
@@ -37,9 +30,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.clearDataSourceForAssistant();
       if (restoreShowHome) {
         restoreShowHome();
-      }
-      if (restoreNewThemeModal) {
-        restoreNewThemeModal();
       }
       // Close assistant flyout
       cy.get('button[aria-label="toggle chat flyout icon"]').click();
