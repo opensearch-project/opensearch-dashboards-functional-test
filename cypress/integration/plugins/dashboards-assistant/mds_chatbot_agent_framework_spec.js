@@ -29,11 +29,10 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
 
     describe('Interact with Agent framework', () => {
       it('toggle Chatbot and enable to interact', () => {
-        // The header may render multiple times, wait for UI to be stable
-        cy.wait(5000);
-
         // enable to toggle and show Chatbot
-        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
+
+        cy.startNewAssistantConversation();
 
         // click suggestions to generate response
         cy.contains('What are the indices in my cluster?').click();

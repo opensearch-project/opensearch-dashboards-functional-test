@@ -40,12 +40,10 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         timeout: 60000,
       }).should('be.length', 1);
 
-      // The header may render multiple times, wait for UI to be stable
-      cy.wait(5000);
       // enable to toggle and show Chatbot
-      cy.get(`button[aria-label="toggle chat flyout icon"]`).click({
-        force: true,
-      });
+      cy.openAssistantChatbot();
+
+      cy.startNewAssistantConversation();
 
       // click suggestions to generate response
       cy.contains('What are the indices in my cluster?').click();

@@ -325,3 +325,54 @@ Cypress.Commands.add('clearDataSourceForAssistant', () => {
     cy.deleteAllDataSources();
   }
 });
+
+Cypress.Commands.add('openAssistantChatbot', () => {
+  const maxAttempts = 5;
+  let attempts = 0;
+
+  function attemptOpen() {
+    if (attempts >= maxAttempts) {
+      throw new Error(`Failed to open chatbot after ${maxAttempts} attempts`);
+    }
+
+    attempts++;
+
+    cy.get('button[aria-label="toggle chat flyout icon"]', { timeout: 60000 })
+      .should('exist')
+      .and('be.visible')
+      .click();
+
+    cy.wait(500); // Wait for if flyout disappear
+    cy.get('body').then(($body) => {
+      if (!$body.find('.llm-chat-flyout').is(':visible')) {
+        cy.wait(1000); // Wait before trying again
+        attemptOpen();
+      }
+    });
+  }
+
+  attemptOpen();
+  cy.get('.llm-chat-flyout').should('exist').and('be.visible');
+});
+
+Cypress.Commands.add('startNewAssistantConversation', () => {
+  // Create a new conversation
+  cy.get('[aria-label="toggle chat context menu"]')
+    .should('be.visible')
+    .and('be.enabled')
+    .click();
+  cy.get('.euiContextMenuItem')
+    .contains('New conversation')
+    .should('be.visible')
+    .click({ force: true });
+
+  // Confirm the current conversation is new
+  cy.get('.llm-chat-flyout-body').within(() => {
+    cy.get('[aria-label="chat message bubble"]')
+      .should('have.length', 1)
+      .first()
+      .within(() => {
+        cy.get('[aria-label="chat welcome message"]').should('exist');
+      });
+  });
+});
