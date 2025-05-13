@@ -60,7 +60,9 @@ describe('discover app', { scrollBehavior: false }, () => {
     cy.fleshTenantSettings();
   });
 
-  after(() => {});
+  after(() => {
+    cy.deleteSavedObjectByType('save-search');
+  });
 
   describe('filters and queries', () => {
     after(() => {
@@ -84,25 +86,40 @@ describe('discover app', { scrollBehavior: false }, () => {
     const saveSearch1 = 'Save Search # 1';
     const saveSearch2 = 'Modified Save Search # 1';
 
-    it('should show correct time range string by timepicker', function () {
-      cy.verifyTimeConfig(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
-      cy.waitForLoader();
-    });
-
     it('save search should display save search name in breadcrumb', function () {
       cy.log('save search should display save search name in breadcrumb');
+      // Set up query and filter
+      cy.setTopNavQuery('response:200');
+      cy.submitFilterFromDropDown('extension.raw', 'is one of', 'jpg');
       cy.saveSearch(saveSearch1);
       cy.getElementByTestId('breadcrumb last')
         .should('be.visible')
         .should('have.text', saveSearch1);
     });
 
-    it('load save search should show save search name in breadcrumb', function () {
+    it('load save search should show save search name in breadcrumb, and show the correct query and filter', function () {
+      // Change time filter to something other than default time filter
+      const fromTime = 'Sep 20, 2015 @ 00:00:00.000';
+      const toTime = 'Sep 21, 2015 @ 00:00:00.000';
+      cy.setTopNavDate(fromTime, toTime);
+
+      // Click new discover
+      cy.getElementByTestId('discoverNewButton').click();
       cy.loadSaveSearch(saveSearch1);
 
+      // Check if breadcrumb is updated
       cy.getElementByTestId('breadcrumb last')
         .should('be.visible')
         .should('have.text', saveSearch1);
+
+      // Check if the correct query and filter are updated
+      cy.getElementByTestId(`queryInput`).should('have.text', 'response:200');
+      cy.get('[data-test-subj~="filter-key-extension.raw"]').should(
+        'be.visible'
+      );
+
+      // Check that time filter should not be updated with loading saved search; the time filter that we changed before should still be persisted
+      cy.verifyTimeConfig(fromTime, toTime);
     });
 
     it('renaming a save search should modify name in breadcrumb', function () {
@@ -112,6 +129,13 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.getElementByTestId('breadcrumb last')
         .should('be.visible')
         .should('have.text', saveSearch2);
+    });
+
+    it('should show the correct hit count', function () {
+      cy.loadSaveSearch(saveSearch2);
+      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
+      const expectedHitCount = '8,366';
+      cy.verifyHitCount(expectedHitCount);
     });
 
     it('should show correct time range string in chart', function () {
@@ -135,11 +159,11 @@ describe('discover app', { scrollBehavior: false }, () => {
     it('should reload the saved search with persisted query to show the initial hit count', function () {
       // apply query some changes
       cy.setTopNavQuery('test');
-      cy.verifyHitCount('22');
+      cy.verifyHitCount('15');
 
       // reset to persisted state
       cy.getElementByTestId('resetSavedSearch').click();
-      const expectedHitCount = '14,004';
+      const expectedHitCount = '8,366';
       cy.verifyHitCount(expectedHitCount);
     });
   });
