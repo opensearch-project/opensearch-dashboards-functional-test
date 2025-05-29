@@ -133,14 +133,17 @@ describe('discover app', { scrollBehavior: false }, () => {
     });
 
     it('should reload the saved search with persisted query to show the initial hit count', function () {
+      // set current hit count as alias
+      cy.getElementByTestId('discoverQueryHits').invoke('text').as('hits');
       // apply query some changes
       cy.setTopNavQuery('test');
       cy.verifyHitCount('22');
 
       // reset to persisted state
       cy.getElementByTestId('resetSavedSearch').click();
-      const expectedHitCount = '14,004';
-      cy.verifyHitCount(expectedHitCount);
+      cy.get('@hits').then((hits) => {
+        cy.verifyHitCount(hits);
+      });
     });
   });
 
