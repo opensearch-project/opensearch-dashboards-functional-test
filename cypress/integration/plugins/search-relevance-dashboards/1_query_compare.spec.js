@@ -14,20 +14,28 @@ import {
   NO_RESULTS,
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
+import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Compare queries', () => {
   before(() => {
+    CURRENT_TENANT.newTenant = 'global';
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     const miscUtils = new MiscUtils(cy);
     cy.deleteAllIndices();
     miscUtils.addSampleData();
+    cy.wait(10000);
   });
 
   after(() => {
+    CURRENT_TENANT.newTenant = 'global';
     const miscUtils = new MiscUtils(cy);
     miscUtils.removeSampleData();
   });
 
   it('Should get comparison results', () => {
+    CURRENT_TENANT.newTenant = 'global';
+    cy.wait(10000);
     cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}/`);
 
     // Type search text in search box
