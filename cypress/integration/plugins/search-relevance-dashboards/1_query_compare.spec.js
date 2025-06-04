@@ -14,11 +14,9 @@ import {
   NO_RESULTS,
 } from '../../../utils/plugins/search-relevance-dashboards/constants';
 import { BASE_PATH } from '../../../utils/base_constants';
-import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Compare queries', () => {
   before(() => {
-    CURRENT_TENANT.newTenant = 'global';
     // visit base url
     cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     const miscUtils = new MiscUtils(cy);
@@ -28,16 +26,26 @@ describe('Compare queries', () => {
   });
 
   after(() => {
-    CURRENT_TENANT.newTenant = 'global';
     const miscUtils = new MiscUtils(cy);
     miscUtils.removeSampleData();
   });
 
   it('Should get comparison results', () => {
-    CURRENT_TENANT.newTenant = 'global';
-    cy.wait(10000);
-    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}/`);
+    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
 
+    // Check for euiCard__titleButton with fail-safe
+    cy.get('body').then(($body) => {
+      if ($body.find('.euiCard').length > 0) {
+        cy.visit(
+          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create`
+        );
+        cy.wait(10000);
+        cy.get('.euiCard__titleButton')
+          .contains('Single Query Comparison')
+          .click();
+        cy.wait(10000);
+      }
+    });
     // Type search text in search box
     cy.get('input[type="search"]').type(SAMPLE_SEARCH_TEXT, {
       force: true,
