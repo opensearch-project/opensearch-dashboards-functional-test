@@ -33,16 +33,12 @@ describe('Compare queries', () => {
   it('Should get comparison results', () => {
     cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
 
-    // Check for euiCard__titleButton with fail-safe
+    // Check for euiCard with fail-safe
     cy.get('body').then(($body) => {
       if ($body.find('.euiCard').length > 0) {
         cy.visit(
-          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create`
+          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
         );
-        cy.wait(10000);
-        cy.get('.euiCard__titleButton')
-          .contains('Single Query Comparison')
-          .click();
         cy.wait(10000);
       }
     });
