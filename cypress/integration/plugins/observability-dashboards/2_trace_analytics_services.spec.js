@@ -22,10 +22,8 @@ describe('Testing services table', () => {
   });
 
   it('Searches correctly', () => {
-    cy.get('input[type="search"]')
-      .first()
-      .focus()
-      .type(`${SERVICE_NAME}{enter}`);
+    cy.get('input[type="search"]').first().focus();
+    cy.get('input[type="search"]').first().type(`${SERVICE_NAME}{enter}`);
     cy.get('[data-test-subj="superDatePickerApplyTimeButton"]').click();
     cy.contains(' (1)').should('exist');
   });
