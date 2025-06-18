@@ -93,7 +93,7 @@ describe('Testing dashboard table', () => {
       .click();
     cy.wait(delayTime);
 
-    cy.contains(' (13)').should('exist');
+    cy.contains(' (123)').should('exist');
     cy.contains('client_create_order').should('exist');
 
     cy.get('.euiSideNavItemButton__label').contains('Trace analytics').click();
