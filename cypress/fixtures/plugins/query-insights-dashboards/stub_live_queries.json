@@ -1,0 +1,487 @@
+{
+  "ok": true,
+  "response": {
+    "live_queries": [
+      {
+        "timestamp": 1749187466964,
+        "id": "node-A1B2C3D4E5:3600",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-A1B2C3D4E5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 7990852130,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 89951,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3818,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466969,
+        "id": "4W2VTHIgQY-oB7dSrYz4B:3601",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "4W2VTHIgQY-oB7dSrYz4B",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 6412938258,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 113698,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2653,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466974,
+        "id": "node-X9Y8Z7W6:3602",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-X9Y8Z7W6",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 9633985711,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 65783,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3996,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466979,
+        "id": "node-P0Q9R8S7:3603",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-P0Q9R8S7",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 9530744641,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 84327,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3806,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466984,
+        "id": "4W2VTHIgQY-oB7dSrYz4:3604",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "4W2VTHIgQY-oB7dSrYz4",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 6084339201,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 99929,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 4364,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466989,
+        "id": "node-M2O3P4Q5:3605",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-M2O3P4Q5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5967857684,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 102069,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3952,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466994,
+        "id": "node-B2C3D4E5:3606",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-B2C3D4E5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 6454136095,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 86459,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3909,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187466999,
+        "id": "node-N2O3P4Q5:3607",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-N2O3P4Q5",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 8450990820,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 70640,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2119,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467004,
+        "id": "2VTHIgQY-oB7dSrYz4BQ:3608",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "2VTHIgQY-oB7dSrYz4BQ",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 7308762773,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 68275,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 4354,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467009,
+        "id": "node-X9Y8Z7W6V5:3609",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-X9Y8Z7W6V5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5167823987,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 113606,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2772,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467014,
+        "id": "de-M1N2O3P4Q5:3610",
+        "description": "indices[opensearch], search_type[Query_THEN_FETCH]",
+        "node_id": "de-M1N2O3P4Q5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5708789476,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 76950,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 4238,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467019,
+        "id": "no-P0Q9R8S7T6:3611",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "no-P0Q9R8S7T6",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 7501207171,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 115548,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3146,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467024,
+        "id": "4WTHIgQY-oB7dSrYz4BQ:3612",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "4WTHIgQY-oB7dSrYz4BQ",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 8887346819,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 41212,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2430,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467029,
+        "id": "4W2VTHQY-oB7dSrYz4BQ:3613",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "4W2VTHQY-oB7dSrYz4BQ",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5672726176,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 104855,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3759,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467034,
+        "id": "node-A1B2C4E5:3614",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-A1B2C4E5",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 9691523794,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 57877,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3231,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467039,
+        "id": "node-X8Z7W6V5:3615",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-X8Z7W6V5",
+        "is_cancelled": false,
+        "measurements": {
+          "latency": {
+            "number": 6840833580,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 82656,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 3428,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467044,
+        "id": "node-M1N2P4Q5:3616",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-M1N2P4Q5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5718519414,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 105825,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 4775,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467049,
+        "id": "node-A1B2C3E5:3617",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-A1B2C3E5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 6063407743,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 54160,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 4814,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467054,
+        "id": "4W2VTHIgQY-7dSrYz4BQ:3618",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "4W2VTHIgQY-7dSrYz4BQ",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 9215252980,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 65529,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2855,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      },
+      {
+        "timestamp": 1749187467059,
+        "id": "node-A1B2C3D4E5:3619",
+        "description": "indices[top_queries-2025.06.06-11009], search_type[QUERY_THEN_FETCH]",
+        "node_id": "node-A1B2C3D4E5",
+        "is_cancelled": true,
+        "measurements": {
+          "latency": {
+            "number": 5409476701,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "cpu": {
+            "number": 81905,
+            "count": 1,
+            "aggregationType": "NONE"
+          },
+          "memory": {
+            "number": 2357,
+            "count": 1,
+            "aggregationType": "NONE"
+          }
+        }
+      }
+    ]
+  }
+}
