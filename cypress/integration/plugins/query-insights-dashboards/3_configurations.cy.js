@@ -3,12 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
+
 
 const clearAll = () => {
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+  cy.disableTopQueries(METRICS.LATENCY);
+  cy.disableTopQueries(METRICS.CPU);
+  cy.disableTopQueries(METRICS.MEMORY);
 };
 
 const toggleMetricEnabled = async () => {
@@ -29,17 +30,13 @@ describe('Query Insights Configurations Page', () => {
    */
   it('should display the Configuration page with correct structure', () => {
     // Validate the page title
-    cy.get('h1')
-      .contains('Query insights - Configuration')
-      .should('be.visible');
+    cy.get('h1').contains('Query insights - Configuration').should('be.visible');
     // Validate the tabs
     cy.get('.euiTabs').should('be.visible');
-    cy.get('.euiTab').should('have.length', 2); // Two tabs: 'Top N queries' and 'Configuration'
+    cy.get('.euiTab').should('have.length', 3); // Three tabs: 'Top N queries', 'Live queries' and 'Configuration'
     cy.contains('button', 'Top N queries').should('be.visible');
-    cy.contains('button', 'Configuration').should(
-      'have.class',
-      'euiTab-isSelected'
-    );
+    cy.contains('button', 'Live queries').should('be.visible');
+    cy.contains('button', 'Configuration').should('have.class', 'euiTab-isSelected');
     // Validate the panels
     // 6 panels: Settings, Status, Group Settings, Group Status, Delete After Settings, Delete After Status
     cy.get('.euiPanel').should('have.length', 6);
@@ -106,11 +103,7 @@ describe('Query Insights Configurations Page', () => {
     // Locate the input for N
     cy.get('input[type="number"]').should('have.attr', 'value', '10'); // Default 10
     // Change the value to 50
-    cy.get('input[type="number"]')
-      .first()
-      .clear()
-      .type('50')
-      .should('have.value', '50');
+    cy.get('input[type="number"]').first().clear().type('50').should('have.value', '50');
     // Validate invalid input
     cy.get('input[type="number"]').first().clear().type('200'); // Enter value above max limit
     cy.get('.euiFormHelpText').should('contain.text', 'Max allowed limit 100');
@@ -141,10 +134,7 @@ describe('Query Insights Configurations Page', () => {
     cy.get('select#timeUnit')
       .select('HOURS')
       .then(() => {
-        cy.get('.euiFormHelpText').should(
-          'contain.text',
-          'Max allowed limit 24 hours'
-        ); // Ensure constraint message is shown
+        cy.get('.euiFormHelpText').should('contain.text', 'Max allowed limit 24 hours'); // Ensure constraint message is shown
       });
   });
 
@@ -156,9 +146,7 @@ describe('Query Insights Configurations Page', () => {
     cy.get('.euiPanel')
       .eq(1) // Selects the second panel (index 1)
       .within(() => {
-        cy.get('h2')
-          .contains('Statuses for configuration metrics')
-          .should('be.visible');
+        cy.get('h2').contains('Statuses for configuration metrics').should('be.visible');
       });
     // Validate metric statuses (Latency, CPU Usage, Memory)
     const metrics = ['Latency', 'CPU Usage', 'Memory'];
@@ -175,9 +163,7 @@ describe('Query Insights Configurations Page', () => {
     cy.get('.euiPanel')
       .eq(2)
       .within(() => {
-        cy.get('h2')
-          .contains('Top n queries grouping configuration settings')
-          .should('be.visible');
+        cy.get('h2').contains('Top n queries grouping configuration settings').should('be.visible');
       });
   });
 
@@ -209,9 +195,7 @@ describe('Query Insights Configurations Page', () => {
     cy.get('.euiPanel')
       .eq(3)
       .within(() => {
-        cy.get('h2')
-          .should('be.visible')
-          .and('have.text', 'Statuses for group by');
+        cy.get('h2').should('be.visible').and('have.text', 'Statuses for group by');
 
         const metrics = [{ name: 'Group By', status: 'Disabled' }];
 
