@@ -144,5 +144,56 @@ describe('Top Queries Details Page', () => {
     cy.get('#latency').trigger('mousemove', { clientX: 100, clientY: 100 });
   });
 
+  it('should get complete details of the query using verbose=true for query type', () => {
+    const to = new Date().toISOString();
+    const from = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+
+    return cy
+      .request({
+        method: 'GET',
+        url: `/api/top_queries/latency`,
+        qs: {
+          from: from,
+          to: to,
+          verbose: true,
+        },
+      })
+      .then((response) => {
+        expect(response.status).to.eq(200);
+        expect(response.body).to.have.property('ok', true);
+
+        cy.log('Response structure:', JSON.stringify(response.body, null, 2));
+
+        const responseData = response.body.response;
+        expect(responseData).to.have.property('top_queries');
+        expect(responseData.top_queries).to.be.an('array');
+        expect(responseData.top_queries.length).to.be.greaterThan(0);
+
+        const firstQuery = responseData.top_queries[0];
+        expect(firstQuery).to.include.all.keys([
+          'group_by',
+          'id',
+          'indices',
+          'labels',
+          'measurements',
+          'node_id',
+          'phase_latency_map',
+          'search_type',
+          'source',
+          'task_resource_usages',
+          'timestamp',
+          'total_shards',
+        ]);
+
+        expect(firstQuery.group_by).to.equal('NONE');
+        expect(firstQuery.indices).to.be.an('array');
+        expect(firstQuery.measurements).to.have.all.keys([
+          'cpu',
+          'latency',
+          'memory',
+        ]);
+      });
+  });
+
   after(() => clearAll());
 });

@@ -182,6 +182,7 @@ const plugins = {
         '1_top_queries.cy.js',
         '2_query_details.cy.js',
         '3_configurations.cy.js',
+        '4_group_details.cy.js',
       ],
     },
   },
