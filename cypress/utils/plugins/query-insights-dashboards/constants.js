@@ -14,3 +14,8 @@ export const QUERY_INSIGHTS_METRICS = {
   CPU: 'cpu',
   MEMORY: 'memory',
 };
+
+export const QUERY_INSIGHTS_ADMIN_AUTH = {
+  username: Cypress.env('username'),
+  password: Cypress.env('password'),
+};
