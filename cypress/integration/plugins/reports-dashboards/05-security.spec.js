@@ -69,7 +69,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains(username).should('exist');
     });
 
-    it.skip('verifies the user can access reporting', () => {
+    it('verifies the user can access reporting', () => {
       cy.visit(`${BASE_PATH}/logout`);
       cy.visit(BASE_PATH);
 

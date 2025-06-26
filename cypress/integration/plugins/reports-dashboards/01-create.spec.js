@@ -223,7 +223,7 @@ describe('Cypress', () => {
 
 function visitCreateReportDefinitionPage() {
   cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-    waitForGetTenant: true,
+    waitForGetTenant: false,
   });
   cy.location('pathname', { timeout: TIMEOUT }).should(
     'include',
