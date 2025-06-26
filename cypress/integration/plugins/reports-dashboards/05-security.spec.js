@@ -5,7 +5,7 @@
 
 import { BASE_PATH } from '../../../utils/constants';
 
-if (Cypress.env('security_enabled')) {
+if (Cypress.env('SECURITY_ENABLED')) {
   describe('Reporting Security - Internal User with reports_full_access', () => {
     const username = 'reportuser';
     const password = 'TestPassword123!';
@@ -27,7 +27,7 @@ if (Cypress.env('security_enabled')) {
     });
 
     it('creates a new role with reports_full_access permissions', () => {
-      Cypress.on('uncaught:exception', (err) => {
+      Cypress.on('uncaught:exception', () => {
         return false;
       });
 
