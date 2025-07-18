@@ -5,8 +5,6 @@
 
 import { BASE_PATH } from '../../../base_constants';
 import { ADMIN_AUTH } from '../../../commands';
-import workspaceTestUser from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestUser.json';
-import workspaceTestRole from '../../../../fixtures/dashboard/opensearch_dashboards/workspace/workspaceTestRole.json';
 
 export const UiSettingsTestCases = () => {
   let ownerWorkspaceName = 'owner_workspace';
@@ -14,9 +12,6 @@ export const UiSettingsTestCases = () => {
   let ownerWorkspaceId = '';
   let datasourceId1 = '';
   let datasourceId2 = '';
-
-  const NON_DASHBOARDS_ADMIN_USERNAME = 'workspace-uisetting-test';
-  const WORKSPACE_TEST_ROLE_NAME = 'workspace-uisetting-test-role';
 
   const setupWorkspace = (workspaceName, datasourceId) => {
     return cy
@@ -41,8 +36,6 @@ export const UiSettingsTestCases = () => {
 
   if (
     Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-    Cypress.env('SECURITY_ENABLED') &&
     Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     describe('Workspace UI Settings', () => {
@@ -51,13 +44,6 @@ export const UiSettingsTestCases = () => {
 
       before(() => {
         cy.deleteWorkspaceByName(ownerWorkspaceName);
-
-        cy.createInternalUser(NON_DASHBOARDS_ADMIN_USERNAME, workspaceTestUser);
-        cy.createRole(WORKSPACE_TEST_ROLE_NAME, workspaceTestRole);
-        cy.createRoleMapping(WORKSPACE_TEST_ROLE_NAME, {
-          users: [NON_DASHBOARDS_ADMIN_USERNAME],
-        });
-
         cy.deleteAllDataSources();
         cy.setAdvancedSetting({
           defaultDataSource: '',
@@ -86,9 +72,6 @@ export const UiSettingsTestCases = () => {
         cy.setAdvancedSetting({
           defaultDataSource: '',
         });
-        cy.deleteRoleMapping(WORKSPACE_TEST_ROLE_NAME);
-        cy.deleteInternalUser(NON_DASHBOARDS_ADMIN_USERNAME);
-        cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
       });
 
       describe('Default data source', () => {
@@ -148,7 +131,6 @@ export const UiSettingsTestCases = () => {
             } else if ($switch.attr('aria-checked') === 'true') {
               cy.wrap($switch).click();
               cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
-              cy.get('button.euiButton--primary.euiButton--small').click();
               cy.get($switch).should('have.attr', 'aria-checked', 'false');
             } else {
               cy.log('The switch is already on.');
@@ -163,7 +145,6 @@ export const UiSettingsTestCases = () => {
             } else if ($switch.attr('aria-checked') === 'false') {
               cy.wrap($switch).click();
               cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
-              cy.get('button.euiButton--primary.euiButton--small').click();
               cy.get($switch).should('have.attr', 'aria-checked', 'true');
             } else {
               cy.log('The switch is already on.');
@@ -214,9 +195,21 @@ export const UiSettingsTestCases = () => {
 
         it('Default index pattern in discover page should work as expected', () => {
           cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/discover`);
-          cy.get('div[data-test-subj="comboBoxInput"]')
-            .contains('span', 'opensearch_dashboards_sample_data_ecommerce')
+          cy.get('div[data-test-subj="comboBoxInput"] span')
+            .should('have.text', 'opensearch_dashboards_sample_data_logs')
             .click();
+
+          cy.get(
+            'div[data-test-subj="comboBoxOptionsList dataExplorerDSSelect-optionsList"]'
+          )
+            .contains('button', 'opensearch_dashboards_sample_data_ecommerce')
+            .click();
+
+          cy.get('div[data-test-subj="comboBoxInput"] span')
+            .contains('span', 'opensearch_dashboards_sample_data_ecommerce')
+            .should('exist');
+
+          cy.get('[data-test-subj="comboBoxToggleListButton"]').click();
 
           cy.get(
             'div[data-test-subj="comboBoxOptionsList dataExplorerDSSelect-optionsList"]'
@@ -224,21 +217,8 @@ export const UiSettingsTestCases = () => {
             .contains('button', 'opensearch_dashboards_sample_data_logs')
             .click();
 
-          cy.get('div[data-test-subj="comboBoxInput"]')
+          cy.get('div[data-test-subj="comboBoxInput"] span')
             .contains('span', 'opensearch_dashboards_sample_data_logs')
-            .should('exist');
-
-          cy.get('div[data-test-subj="comboBoxInput"]')
-            .contains('span', 'opensearch_dashboards_sample_data_ecommerce')
-            .click();
-          cy.get(
-            'div[data-test-subj="comboBoxOptionsList dataExplorerDSSelect-optionsList"]'
-          )
-            .contains('button', 'opensearch_dashboards_sample_data_ecommerce')
-            .click();
-
-          cy.get('div[data-test-subj="comboBoxInput"]')
-            .contains('span', 'opensearch_dashboards_sample_data_ecommerce')
             .should('exist');
         });
       });
