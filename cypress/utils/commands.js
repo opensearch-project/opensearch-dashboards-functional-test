@@ -778,3 +778,68 @@ Cypress.Commands.add('clearCache', () => {
   devToolsRequest(`/_forcemerge`, 'POST');
   cy.wait(5000);
 });
+
+Cypress.Commands.add('deleteForecastIndices', () => {
+  cy.log('Deleting forecast indices');
+  const url = `${Cypress.env('openSearchUrl')}/opensearch-forecast-result*`;
+  cy.request({
+    method: 'DELETE',
+    url: url,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  });
+
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_forecast/forecasters/_search`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request(
+          'POST',
+          `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+            hit._id
+          }/_stop`
+        ).then((response) => {
+          if (response.status === 200) {
+            cy.request(
+              'DELETE',
+              `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+                hit._id
+              }`
+            );
+          }
+        });
+      }
+    }
+  });
+});
+
+Cypress.Commands.add('setAbsoluteDate', (startDate, endDate) => {
+  cy.getElementByTestId('superDatePickerShowDatesButton').click();
+
+  // Set absolute start date
+  cy.getElementByTestId('superDatePickerAbsoluteTab').first().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .first()
+    .clear()
+    .type(startDate);
+
+  // Set absolute end date
+  cy.getElementByTestId('superDatePickerendDatePopoverButton').click();
+  cy.getElementByTestId('superDatePickerAbsoluteTab').last().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .last()
+    .clear()
+    .type(endDate);
+
+  // Click on the body to close the date picker popover
+  cy.get('body').click(0, 0);
+
+  // Apply the new date range
+  cy.getElementByTestId('superDatePickerApplyTimeButton').click();
+});

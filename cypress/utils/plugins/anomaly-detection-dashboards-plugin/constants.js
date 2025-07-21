@@ -84,3 +84,21 @@ export const DETECTOR_STATE = {
   RUNNING: 'Running',
   FEATURE_REQUIRED: 'Feature required',
 };
+
+const BASE_FORECAST_PATH = BASE_PATH + '/app/forecasting#';
+
+export const FORECAST_URL = {
+  FORECASTER_RESULT_PREFIX: BASE_FORECAST_PATH + '/forecasters/',
+  FORECASTER_LIST: BASE_FORECAST_PATH + '/forecasters',
+  CREATE_FORECASTER: BASE_FORECAST_PATH + '/create-forecaster',
+};
+
+const BASE_FORECAST_NODE_API_PATH = BASE_PATH + '/api/forecasting';
+
+export const FORECAST_NODE_API_PATH = {
+  GET_FORECASTERS: BASE_FORECAST_NODE_API_PATH + '/forecasters/_list*',
+};
+
+export function getForecastStopForecasterNodeApiPath(forecasterId) {
+  return BASE_FORECAST_NODE_API_PATH + '/forecasters/' + forecasterId + '/stop';
+}
