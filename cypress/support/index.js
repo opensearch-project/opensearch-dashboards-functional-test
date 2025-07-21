@@ -35,6 +35,7 @@ import '../utils/plugins/dashboards-assistant/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
 import '../utils/plugins/query-insights-dashboards/commands';
+import '../utils/plugins/banner/commands';
 
 import 'cypress-real-events';
 
