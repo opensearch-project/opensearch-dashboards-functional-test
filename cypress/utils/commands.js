@@ -842,9 +842,4 @@ Cypress.Commands.add('setAbsoluteDate', (startDate, endDate) => {
 
   // Apply the new date range
   cy.getElementByTestId('superDatePickerApplyTimeButton').click();
-
-  // Wait for the chart to reload with the new data
-  cy.contains('Loading forecast results...', { timeout: 180000 }).should(
-    'not.exist'
-  );
 });

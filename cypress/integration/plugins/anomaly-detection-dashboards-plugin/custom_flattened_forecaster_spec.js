@@ -225,23 +225,37 @@ context('Forecaster with custom flattened result index', () => {
 
     cy.get('body').then(($body) => {
       if ($body.text().includes('No forecast data available')) {
+        // We use a custom `cy.setAbsoluteDate` command here instead of the one from the
+        // opensearch-dashboards-test-library. The library's `setDateRange` function
+        // requires a `[data-test-subj="querySubmitButton"]` to be present, but on this
+        // page, that button is optional and not always visible, which causes test failures.
+        // See library implementation: https://github.com/opensearch-project/opensearch-dashboards-test-library/blob/main/common-utils/common-UI/common-UI.js#L23
         cy.setAbsoluteDate('2019-12-31 00:00:00', '2020-01-02 04:43:00');
+
+        // Wait for the chart to reload with the new data
+        cy.contains('Loading forecast results...', { timeout: 180000 }).should(
+          'not.exist'
+        );
       }
     });
 
     // Due to https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/pull/1058 not being merged into 3.1.0,
-    // the forecast chart is not visible. Skip this test for 3.1.0.
+    // the forecast chart is not visible. Skip this test for 3.1.0 and older versions.
     cy.request({
       method: 'GET',
       url: `${Cypress.env('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
-      const majorMinorVersion = fullVersion.split('.').slice(0, 2).join('.');
+      const versionParts = fullVersion.split('.').map(Number);
+      const major = versionParts[0] || 0;
+      const minor = versionParts[1] || 0;
+      const majorMinorVersion = `${major}.${minor}`;
+      const isVersionGreaterThan3_1 = major > 3 || (major === 3 && minor > 1);
 
-      if (majorMinorVersion !== '3.1') {
+      if (isVersionGreaterThan3_1) {
         cy.task(
           'log',
-          `Version is ${majorMinorVersion}, checking for forecast chart.`
+          `Version is ${majorMinorVersion} (> 3.1), checking for forecast chart.`
         );
         // Verify that the forecast chart is visible. The test will fail here
         // if the polling above times out and the chart is still not available.
@@ -254,7 +268,7 @@ context('Forecaster with custom flattened result index', () => {
       } else {
         cy.task(
           'log',
-          'Version is 3.1, skipping forecast chart visibility check.'
+          `Version is ${majorMinorVersion} (<= 3.1), skipping forecast chart visibility check.`
         );
       }
     });

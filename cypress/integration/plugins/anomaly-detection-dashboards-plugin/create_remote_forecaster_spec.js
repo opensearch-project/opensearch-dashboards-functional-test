@@ -252,15 +252,19 @@ context('Create remote forecaster workflow', () => {
         url: `${Cypress.env('openSearchUrl')}/`,
       }).then((response) => {
         const fullVersion = response.body.version.number;
-        const majorMinorVersion = fullVersion.split('.').slice(0, 2).join('.');
+        const versionParts = fullVersion.split('.').map(Number);
+        const major = versionParts[0] || 0;
+        const minor = versionParts[1] || 0;
+        const majorMinorVersion = `${major}.${minor}`;
 
-        if (majorMinorVersion === '3.1') {
+        if (major === 3 && minor === 1) {
+          cy.task('log', 'Version is 3.1, manually setting interval.');
           // Verify that the interval input field exists on the page.
           cy.get('input[name="interval"]').should('exist');
 
           cy.get('input[name="interval"]').clear().type('1440');
         } else {
-          cy.task('log', 'Version is not 3.1');
+          cy.task('log', `Version is ${majorMinorVersion} (not 3.1)`);
         }
       });
 

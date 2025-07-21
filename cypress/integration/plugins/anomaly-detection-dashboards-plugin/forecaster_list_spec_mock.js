@@ -7,16 +7,26 @@ import { AD_FIXTURE_BASE_PATH, FORECAST_URL } from '../../../utils/constants';
 
 describe('Forecaster list page mock', () => {
   before(function () {
+    // Get OpenSearch version.
     cy.request({
       method: 'GET',
       url: `${Cypress.env('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
-      const majorMinorVersion = fullVersion.split('.').slice(0, 2).join('.');
-      if (majorMinorVersion === '3.1') {
-        // This PR is not included in 3.1, so we would not see the "Cancel forecast"
-        // option when the forecaster is in an error state.
+      const versionParts = fullVersion.split('.').map(Number);
+      const major = versionParts[0] || 0;
+      const minor = versionParts[1] || 0;
+      const majorMinorVersion = `${major}.${minor}`;
+      const isVersion3_1_or_less = major < 3 || (major === 3 && minor <= 1);
+
+      if (isVersion3_1_or_less) {
+        // Forecasting features were introduced in 3.1. Also, a required PR
+        // is not included in 3.1, so we skip this test for versions 3.1 and older.
         // https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/pull/1054
+        cy.task(
+          'log',
+          `Version is ${majorMinorVersion} (<= 3.1), skipping test.`
+        );
         this.skip();
       }
     });
