@@ -15,6 +15,7 @@ jobs:
             tests:
               - 'cypress/**/ml-commons-dashboards/**'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/ml-commons-release-e2e-workflow.yml'
 
   tests:
     needs: changes
