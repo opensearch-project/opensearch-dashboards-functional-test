@@ -59,7 +59,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
     });
 
     it('Configure and evaluate search cards should display correctly', () => {
-      cy.contains('Compare search results').should('be.visible').click();
+      cy.contains('Search relevance').should('be.visible').click();
       cy.url().should('contains', 'app/searchRelevance');
     });
   });
