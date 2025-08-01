@@ -71,7 +71,7 @@ const deleteNotebook = () => {
 const deleteAllNotebooks = () => {
   cy.intercept(
     'DELETE',
-    '/api/observability/notebooks/note/savedNotebook/*'
+    `${BASE_PATH}/api/observability/notebooks/note/savedNotebook/**`
   ).as('deleteNotebook');
 
   cy.wait(delayTime * 3);
