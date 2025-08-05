@@ -7,8 +7,10 @@
  * Constants for banner plugin tests
  */
 
+export const BANNER_TIMEOUT = 60000;
+
 export const BANNER_SELECTORS = {
-  BANNER_CONTAINER: '.globalBanner',
+  BANNER_CONTAINER: '#pluginGlobalBanner',
   CALLOUT: '.euiCallOut--primary',
   CLOSE_BUTTON: '[data-test-subj="closeCallOutButton"]',
 };

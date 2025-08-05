@@ -6,7 +6,10 @@
 /** @type {Cypress.PluginConfig} */
 // / <reference types="cypress" />
 
-import { BANNER_SELECTORS } from '../../../utils/plugins/banner/constants';
+import {
+  BANNER_SELECTORS,
+  BANNER_TIMEOUT,
+} from '../../../utils/plugins/banner/constants';
 
 // Import commands
 import '../../../utils/plugins/banner/commands';
@@ -27,7 +30,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     cy.visit('/');
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
   });
 
   it('toggles banner visibility with banner:active setting', () => {
@@ -41,7 +44,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Banner should not be visible
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER).should('not.be.visible');
@@ -57,7 +60,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify the custom content is displayed
     cy.verifyBannerText(customContent);
@@ -71,7 +74,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify the warning color is applied
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -85,7 +88,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify the danger color is applied
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -99,7 +102,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify the primary color is applied
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -129,7 +132,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
       // Reload the page to apply settings
       cy.reload();
-      cy.contains('Home', { timeout: 10000 }).should('be.visible');
+      cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
       // Verify the icon has changed
       cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -156,7 +159,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify markdown is rendered
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -175,7 +178,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify markdown is not rendered
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)
@@ -198,7 +201,7 @@ describe('Banner Plugin Advanced Settings', () => {
 
     // Reload the page to apply settings
     cy.reload();
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
 
     // Verify all settings are applied correctly
     cy.get(BANNER_SELECTORS.BANNER_CONTAINER)

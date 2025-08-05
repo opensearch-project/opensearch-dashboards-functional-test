@@ -10,6 +10,7 @@ import {
   BANNER_SELECTORS,
   BANNER_TEXT,
   BANNER_LINKS,
+  BANNER_TIMEOUT,
 } from '../../../utils/plugins/banner/constants';
 
 // Import commands
@@ -20,8 +21,17 @@ describe('Banner Plugin', () => {
     // Set welcome screen tracking to false
     localStorage.setItem('home:welcome:show', 'false');
 
+    //clear advanced settings
+    cy.setAdvancedSetting({
+      'banner:active': null,
+      'banner:content': null,
+      'banner:color': null,
+      'banner:iconType': null,
+      'banner:useMarkdown': null,
+    });
+
     cy.visit('/');
-    cy.contains('Home', { timeout: 10000 }).should('be.visible');
+    cy.contains('Home', { timeout: BANNER_TIMEOUT }).should('be.visible');
   });
 
   it('displays the global banner with correct content', () => {
