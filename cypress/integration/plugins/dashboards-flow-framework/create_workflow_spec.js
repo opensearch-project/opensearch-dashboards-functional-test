@@ -23,14 +23,13 @@ describe('Creating Workflows Using Various Methods', () => {
         return cy.registerModel({
           body: {
             ...registerModelBody,
-            connector_id:
-              connectorResponse?.connector_id || 'test_connector_id',
+            connector_id: connectorResponse.connector_id || 'test_connector_id',
             function_name: 'remote',
           },
         });
       })
       .then((modelResponse) => {
-        modelId = modelResponse?.model_id;
+        modelId = modelResponse.model_id;
         return cy.deployMLCommonsModel(modelId);
       });
   });
