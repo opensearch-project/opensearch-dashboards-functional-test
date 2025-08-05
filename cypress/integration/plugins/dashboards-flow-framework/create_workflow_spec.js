@@ -30,7 +30,7 @@ describe('Creating Workflows Using Various Methods', () => {
         });
       })
       .then((modelResponse) => {
-        modelId = modelResponse.model_id;
+        modelId = modelResponse?.model_id;
         return cy.deployMLCommonsModel(modelId);
       });
   });

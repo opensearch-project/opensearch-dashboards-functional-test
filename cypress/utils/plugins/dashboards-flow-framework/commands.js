@@ -7,7 +7,6 @@ import {
   FF_FIXTURE_BASE_PATH,
   INGEST_NODE_API_PATH,
   SEARCH_MODELS_API_PATH,
-  SEARCH_NODE_API_PATH,
 } from '../../../utils/constants';
 
 Cypress.Commands.add('createConnector', (connectorBody) =>
