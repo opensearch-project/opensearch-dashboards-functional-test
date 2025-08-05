@@ -7,12 +7,14 @@
  * Banner plugin utility functions for Cypress tests
  */
 
+import { BANNER_SELECTORS } from './constants';
+
 /**
  * Verifies that the global banner is visible
  * @returns {Cypress.Chainable} Cypress chainable
  */
 export const verifyBannerVisible = () => {
-  return cy.get('#pluginGlobalBanner').should('be.visible');
+  return cy.get(BANNER_SELECTORS.BANNER_CONTAINER).should('be.visible');
 };
 
 /**
@@ -20,7 +22,7 @@ export const verifyBannerVisible = () => {
  * @returns {Cypress.Chainable} Cypress chainable
  */
 export const verifyBannerNotVisible = () => {
-  return cy.get('#pluginGlobalBanner').should('not.be.visible');
+  return cy.get(BANNER_SELECTORS.BANNER_CONTAINER).should('not.be.visible');
 };
 
 /**
@@ -28,7 +30,7 @@ export const verifyBannerNotVisible = () => {
  * @returns {Cypress.Chainable} Cypress chainable
  */
 export const closeBanner = () => {
-  return cy.get('[data-test-subj="closeCallOutButton"]').click();
+  return cy.get(BANNER_SELECTORS.CLOSE_BUTTON).click();
 };
 
 /**
@@ -37,7 +39,10 @@ export const closeBanner = () => {
  * @returns {Cypress.Chainable} Cypress chainable
  */
 export const verifyBannerText = (text) => {
-  return cy.get('#pluginGlobalBanner').contains(text).should('exist');
+  return cy
+    .get(BANNER_SELECTORS.BANNER_CONTAINER)
+    .contains(text)
+    .should('exist');
 };
 
 /**
@@ -48,7 +53,7 @@ export const verifyBannerText = (text) => {
  */
 export const verifyBannerLink = (linkText, href) => {
   return cy
-    .get('#pluginGlobalBanner')
+    .get(BANNER_SELECTORS.BANNER_CONTAINER)
     .find('a')
     .should('have.attr', 'href', href)
     .and('contain', linkText);

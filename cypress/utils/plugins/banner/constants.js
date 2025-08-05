@@ -8,7 +8,7 @@
  */
 
 export const BANNER_SELECTORS = {
-  BANNER_CONTAINER: '#pluginGlobalBanner',
+  BANNER_CONTAINER: '.globalBanner',
   CALLOUT: '.euiCallOut--primary',
   CLOSE_BUTTON: '[data-test-subj="closeCallOutButton"]',
 };
