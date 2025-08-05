@@ -1,0 +1,26 @@
+name: Banner Plugin Release tests workflow in Bundled OpenSearch Dashboards
+on:
+  pull_request:
+    branches: [ '**' ]
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      tests: ${{ steps.filter.outputs.tests }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          tests:
+            - 'cypress/**/banner/**'
+
+  tests:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Banner Plugin
+      test-command: yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/plugins/banner/*.js'
+      osd-serve-args: --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
+      security-enabled: false
