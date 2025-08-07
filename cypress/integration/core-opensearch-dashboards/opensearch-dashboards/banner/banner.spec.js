@@ -11,10 +11,10 @@ import {
   BANNER_TEXT,
   BANNER_LINKS,
   BANNER_TIMEOUT,
-} from '../../../utils/plugins/banner/constants';
+} from '../../../../utils/plugins/banner/constants';
 
 // Import commands
-import '../../../utils/plugins/banner/commands';
+import '../../../../utils/plugins/banner/commands';
 
 describe('Banner Plugin', () => {
   beforeEach(() => {

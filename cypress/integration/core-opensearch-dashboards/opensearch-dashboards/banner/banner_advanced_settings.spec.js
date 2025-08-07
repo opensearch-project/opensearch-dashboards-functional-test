@@ -9,10 +9,10 @@
 import {
   BANNER_SELECTORS,
   BANNER_TIMEOUT,
-} from '../../../utils/plugins/banner/constants';
+} from '../../../../utils/plugins/banner/constants';
 
 // Import commands
-import '../../../utils/plugins/banner/commands';
+import '../../../../utils/plugins/banner/commands';
 
 describe('Banner Plugin Advanced Settings', () => {
   beforeEach(() => {
