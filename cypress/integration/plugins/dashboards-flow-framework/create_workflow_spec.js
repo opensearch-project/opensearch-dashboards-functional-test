@@ -15,23 +15,27 @@ import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
+  var connectorId = '';
 
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    cy.createConnector(createConnectorBody)
-      .then((connectorResponse) => {
-        return cy.registerModel({
-          body: {
-            ...registerModelBody,
-            connector_id: connectorResponse.connector_id || 'test_connector_id',
-            function_name: 'remote',
-          },
-        });
-      })
-      .then((modelResponse) => {
-        modelId = modelResponse.model_id;
-        return cy.deployMLCommonsModel(modelId);
-      });
+    cy.createConnector(createConnectorBody).then((connectorResponse) => {
+      if (connectorResponse !== undefined) {
+        connectorId = connectorResponse.connector_id || '';
+        if (connectorId !== '') {
+          cy.registerModel({
+            body: {
+              ...registerModelBody,
+              connector_id: connectorResponse.connector_id,
+              function_name: 'remote',
+            },
+          }).then((modelResponse) => {
+            modelId = modelResponse.model_id;
+            return cy.deployMLCommonsModel(modelId);
+          });
+        }
+      }
+    });
   });
 
   beforeEach(() => {
@@ -152,15 +156,15 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 
   it('Create workflow from semantic search template', () => {
-    createPresetWithMockedModels('Semantic Search');
+    createPresetWithModels('Semantic Search', connectorId, modelId);
   });
 
   it('Create workflow from hybrid search template', () => {
-    createPresetWithMockedModels('Hybrid Search', true);
+    createPresetWithModels('Hybrid Search', connectorId, modelId);
   });
 
   it('Create workflow from multimodal template', () => {
-    createPresetWithMockedModels('Multimodal Search', true);
+    createPresetWithModels('Multimodal Search', connectorId, modelId);
   });
 
   after(() => {
@@ -172,10 +176,17 @@ describe('Creating Workflows Using Various Methods', () => {
   });
 });
 
-function createPresetWithMockedModels(presetName) {
-  cy.mockModelSearch(() => {
+/**
+ * Conditionally mock deployed models if there are missing ML resources (connector, model IDs)
+ */
+function createPresetWithModels(presetName, connectorId, modelId) {
+  if (connectorId !== '' && modelId !== '') {
     createPreset(presetName, true);
-  });
+  } else {
+    cy.mockModelSearch(() => {
+      createPreset(presetName, true);
+    });
+  }
 }
 
 // Reusable fn to check the preset exists, and able to create it, and navigate to its details page.
