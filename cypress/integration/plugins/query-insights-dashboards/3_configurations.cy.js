@@ -34,7 +34,7 @@ describe('Query Insights Configurations Page', () => {
       .should('be.visible');
     // Validate the tabs
     cy.get('.euiTabs').should('be.visible');
-    cy.get('.euiTab').should('have.length', 2); // Two tabs: 'Top N queries' and 'Configuration'
+    cy.get('.euiTab').should('have.length', 3); // Three tabs: 'Top N queries', 'Configuration' and 'Live Queries'
     cy.contains('button', 'Top N queries').should('be.visible');
     cy.contains('button', 'Configuration').should(
       'have.class',
