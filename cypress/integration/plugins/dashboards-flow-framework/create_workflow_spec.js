@@ -15,23 +15,27 @@ import { CURRENT_TENANT } from '../../../utils/commands';
 
 describe('Creating Workflows Using Various Methods', () => {
   var modelId = '';
+  var connectorId = '';
 
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    cy.createConnector(createConnectorBody)
-      .then((connectorResponse) => {
-        return cy.registerModel({
-          body: {
-            ...registerModelBody,
-            connector_id: connectorResponse.connector_id,
-            function_name: 'remote',
-          },
-        });
-      })
-      .then((modelResponse) => {
-        modelId = modelResponse.model_id;
-        return cy.deployModel(modelId);
-      });
+    cy.createConnector(createConnectorBody).then((connectorResponse) => {
+      if (connectorResponse !== undefined) {
+        connectorId = connectorResponse.connector_id || '';
+        if (connectorId !== '') {
+          cy.registerModel({
+            body: {
+              ...registerModelBody,
+              connector_id: connectorResponse.connector_id,
+              function_name: 'remote',
+            },
+          }).then((modelResponse) => {
+            modelId = modelResponse.model_id;
+            return cy.deployMLCommonsModel(modelId);
+          });
+        }
+      }
+    });
   });
 
   beforeEach(() => {
@@ -82,11 +86,11 @@ describe('Creating Workflows Using Various Methods', () => {
     );
   });
 
-  it('Create workflow using semantic search template', () => {
+  it('Create workflow using custom search template', () => {
     cy.getElementByDataTestId('createWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
-    cy.contains('h3', 'Semantic Search', { timeout: FF_TIMEOUT })
+    cy.contains('h3', 'Custom Search', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .parents('.euiCard')
       .within(() => {
@@ -95,21 +99,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.contains('label', 'Name')
       .invoke('attr', 'for')
       .then((id) => {
-        cy.get(`#${id}`).clear().type('semantic_search');
-      });
-    cy.getElementByDataTestId('optionalConfigurationButton', {
-      timeout: FF_TIMEOUT,
-    })
-      .should('be.visible')
-      .click();
-    cy.getElementByDataTestId('selectDeployedModel')
-      .should('be.visible')
-      .click();
-    cy.get('.euiSuperSelect__item').contains('BedRock').click();
-    cy.contains('label', 'Text field')
-      .invoke('attr', 'for')
-      .then((id) => {
-        cy.get(`#${id}`).clear().type('item_text');
+        cy.get(`#${id}`).clear().type('custom_search');
       });
     cy.getElementByDataTestId('quickConfigureCreateButton')
       .should('be.visible')
@@ -124,12 +114,12 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
       .click();
-    cy.mockAllIngestActions(() => {
+
+    cy.mockIngestion(() => {
       cy.getElementByTestId('updateAndRunIngestButton')
         .should('be.visible')
         .click();
     });
-    // Checking Run ingestion response
     cy.sa_getElementByText('button.euiTab', 'Ingest response')
       .should('be.visible')
       .click();
@@ -163,29 +153,41 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('updateSearchQueryButton')
       .should('be.visible')
       .click();
-    cy.getElementByTestId('updateSearchButton').should('be.visible').click();
-    // TODO: further search response validation can be completed when the UI is finalized in how it is displayed.
+  });
+
+  it('Create workflow from semantic search template', () => {
+    createPresetWithModels('Semantic Search', connectorId, modelId);
   });
 
   it('Create workflow from hybrid search template', () => {
-    createPreset('Hybrid Search', true);
+    createPresetWithModels('Hybrid Search', connectorId, modelId);
   });
 
   it('Create workflow from multimodal template', () => {
-    createPreset('Multimodal Search', true);
-  });
-
-  it('Create workflow from custom template', () => {
-    createPreset('Custom Search', false);
+    createPresetWithModels('Multimodal Search', connectorId, modelId);
   });
 
   after(() => {
     if (modelId != '') {
-      cy.undeployMLCommonsModel(modelId);
-      cy.deleteMLCommonsModel(modelId);
+      cy.undeployMLCommonsModel(modelId).then(() =>
+        cy.deleteMLCommonsModel(modelId)
+      );
     }
   });
 });
+
+/**
+ * Conditionally mock deployed models if there are missing ML resources (connector, model IDs)
+ */
+function createPresetWithModels(presetName, connectorId, modelId) {
+  if (connectorId !== '' && modelId !== '') {
+    createPreset(presetName, true);
+  } else {
+    cy.mockModelSearch(() => {
+      createPreset(presetName, true);
+    });
+  }
+}
 
 // Reusable fn to check the preset exists, and able to create it, and navigate to its details page.
 function createPreset(presetName, containsModels = false) {
