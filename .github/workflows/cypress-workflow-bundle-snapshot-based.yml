@@ -19,7 +19,7 @@ jobs:
     with:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_UIMETRIC_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --usageCollection.uiMetric.enabled=true
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --usageCollection.uiMetric.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
       artifact-name-suffix: '-with-security'
 
   tests-without-security:
@@ -27,6 +27,6 @@ jobs:
     with:
       test-name: Core Dashboards using Bundle Snapshot
       test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_UIMETRIC_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/*.js'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --usageCollection.uiMetric.enabled=true
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --usageCollection.uiMetric.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
       security-enabled: false
       artifact-name-suffix: '-without-security'
