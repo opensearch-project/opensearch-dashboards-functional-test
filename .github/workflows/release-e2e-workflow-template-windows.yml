@@ -104,7 +104,7 @@ jobs:
           echo "vis_builder.enabled: true" >> config/opensearch_dashboards.yml
           echo "data_source.enabled: true" >> config/opensearch_dashboards.yml
           echo "banner.enabled: true" >> config/opensearch_dashboards.yml
-          echo 'banner.content: "This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."' >> config/opensearch_dashboards.yml
+          echo 'banner.content: "This is an important announcement for all users. [Learn more](http://opensearch.org) about OpenSearch."' >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKeyName: 'changeme'" >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKeyNamespace: 'changeme'" >> config/opensearch_dashboards.yml
           # echo "data_source.encryption.wrappingKey: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]" >> config/opensearch_dashboards.yml
