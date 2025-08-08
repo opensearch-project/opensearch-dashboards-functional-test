@@ -16,6 +16,26 @@ import {
 import { selectTopItemFromFilter } from './helpers';
 
 Cypress.Commands.add(
+  'handleTenantDialog',
+  {
+    prevSubject: 'optional',
+  },
+  () => {
+    // Handles the optional "Select your tenant" pop-up
+    cy.get('body').then(($body) => {
+      // We look for an element containing "Select your tenant" to avoid being
+      // specific about which tag (e.g. h1, h2) is used for the title.
+      if ($body.find(':contains("Select your tenant")').length > 0) {
+        const confirmButton = $body.find('button:contains("Confirm")');
+        if (confirmButton.length) {
+          cy.wrap(confirmButton.first()).click();
+        }
+      }
+    });
+  }
+);
+
+Cypress.Commands.add(
   'mockGetDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
     cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
@@ -134,19 +154,6 @@ Cypress.Commands.add('createForecaster', (forecasterDetails) => {
     test = false,
     interval = 0,
   } = forecasterDetails;
-
-  // pop up for tenant selection
-  // Handles the optional "Select your tenant" pop-up
-  cy.get('body').then(($body) => {
-    // We look for an element containing "Select your tenant" to avoid being
-    // specific about which tag (e.g. h1, h2) is used for the title.
-    if ($body.find(':contains("Select your tenant")').length > 0) {
-      const confirmButton = $body.find('button:contains("Confirm")');
-      if (confirmButton.length) {
-        cy.wrap(confirmButton.first()).click();
-      }
-    }
-  });
 
   cy.getElementByTestId('defineOrEditForecasterTitle').should('exist');
   cy.getElementByTestId('forecasterNameTextInput').type(name);
