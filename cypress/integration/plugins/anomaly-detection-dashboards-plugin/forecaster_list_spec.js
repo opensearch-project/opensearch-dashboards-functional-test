@@ -80,7 +80,21 @@ context('list forecaster workflow', () => {
   const TEST_INDEX_NAME_2 = 'sample-forecast-index-2';
 
   beforeEach(() => {
-    cy.visit('/');
+    // Set the default tenant to 'global' to avoid the "Select your tenant" pop-up
+    // as the timing of the pop-up is not deterministic.
+    // I checked brownser'sDevTools → Application → Local Storage (and Session Storage)
+    //  → look for keys containing “security” and “tenant”. I found:
+    // opendistro::security::tenant::savedopendistro::security::tenant::saved:""""
+    // Just to be safe, instead of using the key directly, we use the following code
+    // to find the key and set the value to 'global'.
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        const key = Object.keys(win.localStorage).find(
+          (k) => k.includes('security') && k.includes('tenant')
+        );
+        if (key) win.localStorage.setItem(key, 'global');
+      },
+    });
 
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
@@ -157,10 +171,6 @@ context('list forecaster workflow', () => {
     }).should('be.visible');
     cy.contains('Forecasting').click();
 
-    // Handles the optional "Select your tenant" pop-up
-    // tenant dialog can appear at any time, so we need to handle it between each clicks
-    cy.handleTenantDialog();
-
     // Verify we're redirected to the forecasters list page
     // match ensures that the url ends with /forecasters
     cy.url().should('match', /\/forecasters$/);
@@ -168,10 +178,8 @@ context('list forecaster workflow', () => {
     // ========== Scenario: CREATE FORECASTER ==========
     // Verify the title contains the word "Forecasters"
     cy.contains('Forecasters (0)').should('exist');
-    cy.handleTenantDialog();
     // we have two create forecaster buttons, click any one of them
     cy.getElementByTestId('createForecasterButton').first().click();
-    cy.handleTenantDialog();
 
     // Call the new reusable command to create the forecaster
     cy.createForecaster({
@@ -421,10 +429,12 @@ context('list forecaster workflow', () => {
       buttonIndex,
       buttonCount
     ) => {
+      // after trying all buttons, return
       if (buttonIndex >= buttonCount) {
         cy.log(
           `Could not open the "${modalTestSubj}" modal after trying all buttons.`
         );
+        return;
       }
 
       cy.log(
@@ -450,9 +460,7 @@ context('list forecaster workflow', () => {
         }
 
         cy.log(
-          `  Inner loop: Attempt #${4 - retryCount} for button #${
-            buttonIndex + 1
-          }`
+          `  Inner loop: Attempt #${retryCount} for button #${buttonIndex + 1}`
         );
 
         // Always re-query for the button to ensure it's not detached
@@ -509,14 +517,15 @@ context('list forecaster workflow', () => {
               cy.log(`  Visible menu text: "${$visibleMenu.text()}"`);
               cy.get('body').click('topLeft', { force: true });
             }
-            cy.wait(500);
+            // Give the UX more time to render the menu.
+            cy.wait(2000);
             attemptClickSequence(retryCount - 1);
           }
         });
       };
 
       // Start the inner retry loop for the current button. Allow 3 retries.
-      attemptClickSequence(6);
+      attemptClickSequence(3);
     };
 
     // Define a helper to retry clicking a confirm button until its modal disappears.
