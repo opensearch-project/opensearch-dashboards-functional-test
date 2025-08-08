@@ -7,8 +7,7 @@ Cypress.Commands.add('tbGetAllTableDataFromVisualization', (total) => {
   let data = [];
   for (let i = 0; i < total; i++) {
     data.push([]);
-    cy.get('[class="visTable__group"]')
-      .eq(i)
+    cy.get(`[data-test-subj="visTableGroup${i}"]`)
       .find('[data-test-subj="dataGridWrapper"]')
       .find('[data-test-subj="dataGridRowCell"]')
       .find('[class="euiDataGridRowCell__truncate"]')
@@ -44,8 +43,7 @@ Cypress.Commands.add('tbGetTotalValueFromTable', () => {
 Cypress.Commands.add('tbSelectSortColumn', (tableIndex, colIndex, dir) => {
   expect(dir).to.be.oneOf(['asc', 'desc']);
   const dirIndex = dir == 'asc' ? 0 : 1;
-  cy.get('[class="visTable__group"]')
-    .eq(tableIndex)
+  cy.get(`[data-test-subj="visTableGroup${tableIndex}"]`)
     .find('[class="euiDataGridHeaderCell"]')
     .eq(colIndex)
     .find('[class="euiDataGridHeaderCell__button"]')
@@ -54,8 +52,7 @@ Cypress.Commands.add('tbSelectSortColumn', (tableIndex, colIndex, dir) => {
 });
 
 Cypress.Commands.add('tbGetColumnWidth', (tableIndex, colIndex, name) => {
-  cy.get('[class="visTable__group"]')
-    .eq(tableIndex)
+  cy.get(`[data-test-subj="visTableGroup${tableIndex}"]`)
     .find('[data-test-subj="dataGridHeader"]')
     .find('[class="euiDataGridHeaderCell"]')
     .eq(colIndex)
@@ -100,8 +97,7 @@ Cypress.Commands.add(
         .find(actionButton)
         .click({ force: true });
     } else {
-      cy.get('[class="visTable__group"]')
-        .eq(tableIndex)
+      cy.get(`[data-test-subj="visTableGroup${tableIndex}"]`)
         .find('[data-test-subj="dataGridWrapper"]')
         .find('[data-test-subj="dataGridRowCell"]')
         .eq(rowIndex * totalColumn + colIndex)
