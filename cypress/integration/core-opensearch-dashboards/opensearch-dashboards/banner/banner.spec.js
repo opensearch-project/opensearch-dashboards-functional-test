@@ -17,6 +17,13 @@ import {
 import '../../../../utils/plugins/banner/commands';
 
 describe('Banner Plugin', () => {
+  before(() => {
+    // Skip the entire test suite if BANNER_ENABLED is not true
+    if (Cypress.env('BANNER_ENABLED') !== true) {
+      this.skip();
+    }
+  });
+
   beforeEach(() => {
     // Set welcome screen tracking to false
     localStorage.setItem('home:welcome:show', 'false');
