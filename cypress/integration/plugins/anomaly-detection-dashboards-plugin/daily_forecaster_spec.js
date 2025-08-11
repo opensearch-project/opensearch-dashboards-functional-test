@@ -150,6 +150,9 @@ describe('Daily interval forecaster', () => {
 
     // Click 'Start test' button and trigger test again.
     cy.getElementByTestId('startCancelTestButton').click();
+    // In case previous test complete message hasn't disappeared, wait for it to disappear
+    // before checking for the new test complete message.
+    cy.contains('Initializing test', { timeout: 180000 }).should('be.visible');
     cy.contains('Test complete', { timeout: 180000 }).should('be.visible');
     cy.contains('Loading forecast results...', { timeout: 180000 }).should(
       'not.exist'
