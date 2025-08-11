@@ -133,6 +133,52 @@ Cypress.Commands.add('stopDetector', (detectorId) => {
 });
 
 /**
+ * Types a value into an EUI <EuiComboBox> (wrapper test-subj) and commits with Enter.
+ *
+ * Why not just `.type()` on the wrapper (e.g. `cy.getElementByTestId('timestampFilter').type(...)`)?
+ * - The test-subj is on the **wrapper <div>** (role="combobox"), not the <input>.
+ * - Cypress only types into “typeable” elements (see allowed list in the error we saw). A plain <div>
+ *   is not typeable and will throw (“requires a valid typeable element”).
+ * - In compressed combos, the inner input starts tiny/hidden and can be briefly **covered** by layout.
+ *   If we try to type before focusing/opening, we’ll get the “element is being covered” flake.
+ *
+ * Previously, we use `cy.getElementByTestId('indicesFilter').type(\`${index}{enter}\`)`, it works sometimes
+ * because:
+ * - EUI sometimes sets **tabindex="0"** on the combobox wrapper (state-dependent). Cypress treats
+ *   `[tabindex]` as typeable, so it doesn’t error.
+ * - When the wrapper has focus, EUI’s keyboard handlers can **redirect keystrokes** to the inner
+ *   search input (or focus it on first key), so characters appear as if we typed in the input.
+ * - This depends on timing/layout (focused vs not, expanded vs collapsed, overlapped vs not),
+ *   which is why it’s flaky: sometimes the wrapper has `tabindex` and focus → works; other times it
+ *   doesn’t → Cypress errors or characters get lost mid re-render.
+ *
+ * This helper makes it deterministic by (1) focusing/opening, (2) typing into the **actual input**,
+ * and (3) asserting the pill so we wait for EUI’s async render.
+ *
+ * @param {string} testSubj - data-test-subj on the EuiComboBox wrapper (e.g., 'timestampFilter')
+ * @param {string} value    - text to type; we hit Enter to commit it
+ */
+Cypress.Commands.add('typeInEuiCombo', (testSubj, value) => {
+  cy.getElementByTestId(testSubj) // Grab the combo *wrapper* (<div ... role="combobox">)
+    .scrollIntoView({ block: 'center' }) // Make sure it’s on screen (avoids actionability failures)
+    .click({ force: true }) // Focus/open the combo; force beats transient overlays/animations
+    .within(() => {
+      // Scope subsequent queries to *this* combo instance only
+      cy.get('input[data-test-subj="comboBoxSearchInput"]', { timeout: 10000 })
+        // ^ This is the real, editable <input> inside the wrapper.
+        //   (Typing on the wrapper would fail; typing here succeeds.)
+        .type(`${value}{enter}`, { force: true }); // Type the text and press Enter to commit the selection.
+      // force=true also handles the input being zero-width pre-focus.
+    });
+
+  // Assert a "pill" with the chosen value appears. This both waits for EUI to render and
+  // proves the keystrokes actually selected something (reduces flakiness).
+  cy.getElementByTestId(testSubj)
+    .find('.euiComboBoxPill')
+    .should('contain.text', value);
+});
+
+/**
  * Custom command to perform the full forecaster creation flow
  * from the 'Define forecaster' step onwards.
  * @param {object} forecasterDetails - The details for the new forecaster.
@@ -157,10 +203,9 @@ Cypress.Commands.add('createForecaster', (forecasterDetails) => {
 
   cy.getElementByTestId('defineOrEditForecasterTitle').should('exist');
   cy.getElementByTestId('forecasterNameTextInput').type(name);
-  cy.getElementByTestId('indicesFilter').type(`${index}{enter}`);
-
-  // Type the timestamp field directly
-  cy.getElementByTestId('timestampFilter').type(`${timestampField}{enter}`);
+  // Type in the index
+  cy.typeInEuiCombo('indicesFilter', index);
+  cy.typeInEuiCombo('timestampFilter', timestampField);
 
   // Type the feature field name and then the field to forecast
   cy.getElementByTestId('featureNameTextInput-0').type(featureField);
