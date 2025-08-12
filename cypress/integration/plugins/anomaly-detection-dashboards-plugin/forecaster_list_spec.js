@@ -18,6 +18,8 @@
 // ============================================================================
 
 import { AD_FIXTURE_BASE_PATH } from '../../../utils/constants';
+import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
+import { BASE_PATH } from '../../../utils/constants';
 
 const setupIndexWithData = (indexName) => {
   // Create index mapping first
@@ -79,23 +81,18 @@ context('list forecaster workflow', () => {
   const TEST_INDEX_NAME = 'sample-forecast-index';
   const TEST_INDEX_NAME_2 = 'sample-forecast-index-2';
 
-  beforeEach(() => {
-    // Set the default tenant to 'global' to avoid the "Select your tenant" pop-up
-    // as the timing of the pop-up is not deterministic.
-    // I checked brownser'sDevTools → Application → Local Storage (and Session Storage)
-    //  → look for keys containing “security” and “tenant”. I found:
-    // opendistro::security::tenant::savedopendistro::security::tenant::saved:""""
-    // Just to be safe, instead of using the key directly, we use the following code
-    // to find the key and set the value to 'global'.
-    cy.visit('/', {
-      onBeforeLoad(win) {
-        const key = Object.keys(win.localStorage).find(
-          (k) => k.includes('security') && k.includes('tenant')
-        );
-        if (key) win.localStorage.setItem(key, 'global');
-      },
-    });
+  let restoreTenantSwitchModal;
 
+  beforeEach(() => {
+    // disable the tenant switch modal
+    restoreTenantSwitchModal = setStorageItem(
+      sessionStorage,
+      'opendistro::security::tenant::show_popup',
+      'false'
+    );
+    // Visit OSD
+    // requrired otherwise we encounter connection issue in later test
+    cy.visit(`${BASE_PATH}/app/home`);
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
 
@@ -107,6 +104,9 @@ context('list forecaster workflow', () => {
   afterEach(() => {
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
+    if (restoreTenantSwitchModal) {
+      restoreTenantSwitchModal();
+    }
   });
 
   it('Full creation - based on real index', () => {
