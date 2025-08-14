@@ -192,3 +192,130 @@ describe('Query Insights Dashboard', () => {
       });
   });
 });
+describe('Query Insights Dashboard - Dynamic Columns change with Intercepted Top Queries', () => {
+  beforeEach(() => {
+    // load fixture from correct path
+    cy.fixture('plugins/query-insights-dashboards/stub_top_queries.json').then((stubResponse) => {
+      cy.intercept('GET', '**/api/top_queries/*', {
+        statusCode: 200,
+        body: stubResponse,
+      }).as('getTopQueries');
+    });
+
+    cy.waitForQueryInsightsPlugin();
+    cy.wait(2000);
+    cy.wait('@getTopQueries');
+  });
+
+  const testMetricSorting = (columnLabel, columnIndex) => {
+    cy.get('.euiTableHeaderCell').contains(columnLabel).click();
+    cy.wait(1000);
+
+    cy.get('.euiTableRow').then(($rows) => {
+      const values = [...$rows].map(($row) => {
+        const rawText = Cypress.$($row).find('td').eq(columnIndex).text().trim();
+        return parseFloat(rawText.replace(/[^\d.]/g, ''));
+      });
+      const sortedAsc = [...values].sort((a, b) => a - b);
+      expect(values).to.deep.equal(sortedAsc);
+    });
+
+    cy.get('.euiTableHeaderCell').contains(columnLabel).click();
+    cy.wait(1000);
+
+    cy.get('.euiTableRow').then(($rows) => {
+      const values = [...$rows].map(($row) => {
+        const rawText = Cypress.$($row).find('td').eq(columnIndex).text().trim();
+        return parseFloat(rawText.replace(/[^\d.]/g, ''));
+      });
+      const sortedDesc = [...values].sort((a, b) => b - a);
+      expect(values).to.deep.equal(sortedDesc);
+    });
+  };
+
+  it('should render only individual query-related headers when NONE filter is applied', () => {
+    cy.wait(1000);
+    cy.get('.euiFilterButton').contains('Type').click();
+    cy.get('.euiFilterSelectItem').contains('query').click();
+    cy.wait(1000);
+
+    const expectedHeaders = [
+      'Id',
+      'Type',
+      'Timestamp',
+      'Latency',
+      'CPU Time',
+      'Memory Usage',
+      'Indices',
+      'Search Type',
+      'Coordinator Node ID',
+      'Total Shards',
+    ];
+
+    cy.get('.euiTableHeaderCell').should('have.length', expectedHeaders.length);
+
+    cy.get('.euiTableHeaderCell').should(($headers) => {
+      const actualHeaders = $headers.map((index, el) => Cypress.$(el).text().trim()).get();
+      expect(actualHeaders).to.deep.equal(expectedHeaders);
+    });
+    testMetricSorting('Timestamp', 2);
+    testMetricSorting('Latency', 3);
+    testMetricSorting('CPU Time', 4);
+    testMetricSorting('Memory Usage', 5);
+  });
+
+  it('should render only group-related headers in the correct order when SIMILARITY filter is applied', () => {
+    cy.get('.euiFilterButton').contains('Type').click();
+    cy.get('.euiFilterSelectItem').contains('group').click();
+    cy.wait(1000);
+
+    const expectedHeaders = [
+      'Id',
+      'Type',
+      'Query Count',
+      'Average Latency',
+      'Average CPU Time',
+      'Average Memory Usage',
+    ];
+
+    cy.get('.euiTableHeaderCell').should(($headers) => {
+      const actualHeaders = $headers.map((index, el) => Cypress.$(el).text().trim()).get();
+      expect(actualHeaders).to.deep.equal(expectedHeaders);
+    });
+    testMetricSorting('Query Count', 2);
+    testMetricSorting('Average Latency', 3);
+    testMetricSorting('Average CPU Time', 4);
+    testMetricSorting('Average Memory Usage', 5);
+  });
+
+  it('should display both query and group data with proper headers when both are selected', () => {
+    cy.get('.euiFilterButton').contains('Type').click();
+    cy.get('.euiFilterSelectItem').contains('query').click();
+    cy.get('.euiFilterSelectItem').contains('group').click();
+    cy.wait(1000);
+
+    const expectedGroupHeaders = [
+      'Id',
+      'Type',
+      'Query Count',
+      'Timestamp',
+      'Avg Latency / Latency',
+      'Avg CPU Time / CPU Time',
+      'Avg Memory Usage / Memory Usage',
+      'Indices',
+      'Search Type',
+      'Coordinator Node ID',
+      'Total Shards',
+    ];
+    cy.get('.euiTableHeaderCell').should(($headers) => {
+      const actualHeaders = $headers.map((index, el) => Cypress.$(el).text().trim()).get();
+      expect(actualHeaders).to.deep.equal(expectedGroupHeaders);
+    });
+    testMetricSorting('Query Count', 2);
+    testMetricSorting('Timestamp', 3);
+    testMetricSorting('Avg Latency / Latency', 4);
+    testMetricSorting('Avg CPU Time / CPU Time', 5);
+    testMetricSorting('Avg Memory Usage / Memory Usage', 6);
+  });
+});
+
