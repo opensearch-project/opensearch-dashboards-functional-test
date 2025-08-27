@@ -22,7 +22,7 @@ Cypress.Commands.add('enableTopQueries', (metric) => {
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: true,
-        [`search.insights.top_queries.${metric}.window_size`]: '1m',
+        [`search.insights.top_queries.${metric}.window_size`]: '1h',
         [`search.insights.top_queries.${metric}.top_n_size`]: 100,
       },
     },
@@ -59,9 +59,9 @@ Cypress.Commands.add('enableGrouping', () => {
         'search.insights.top_queries.latency.top_n_size': 5,
         'search.insights.top_queries.cpu.top_n_size': 5,
         'search.insights.top_queries.memory.top_n_size': 5,
-        'search.insights.top_queries.latency.window_size': '1m',
-        'search.insights.top_queries.cpu.window_size': '1m',
-        'search.insights.top_queries.memory.window_size': '1m',
+        'search.insights.top_queries.latency.window_size': '1h',
+        'search.insights.top_queries.cpu.window_size': '1h',
+        'search.insights.top_queries.memory.window_size': '1h',
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
