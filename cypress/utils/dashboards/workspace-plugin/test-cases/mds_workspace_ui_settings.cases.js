@@ -4,7 +4,6 @@
  */
 
 import { BASE_PATH } from '../../../base_constants';
-import { ADMIN_AUTH } from '../../../commands';
 
 export const UiSettingsTestCases = () => {
   let ownerWorkspaceName = 'owner_workspace';
@@ -20,10 +19,6 @@ export const UiSettingsTestCases = () => {
         features: ['use-case-observability'],
         settings: {
           ...(datasourceId ? { dataSources: [datasourceId] } : {}),
-          permissions: {
-            library_write: { users: [workspaceName] },
-            write: { users: [workspaceName] },
-          },
         },
       })
       .then((value) => {
@@ -39,9 +34,6 @@ export const UiSettingsTestCases = () => {
     Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     describe('Workspace UI Settings', () => {
-      const originalUser = ADMIN_AUTH.username;
-      const originalPassword = ADMIN_AUTH.password;
-
       before(() => {
         cy.deleteWorkspaceByName(ownerWorkspaceName);
         cy.deleteAllDataSources();
@@ -63,8 +55,6 @@ export const UiSettingsTestCases = () => {
       });
 
       after(() => {
-        ADMIN_AUTH.newUser = originalUser;
-        ADMIN_AUTH.newPassword = originalPassword;
         cy.removeSampleDataForWorkspace('ecommerce', ownerWorkspaceId, '');
         cy.removeSampleDataForWorkspace('logs', ownerWorkspaceId, '');
         cy.deleteWorkspaceByName(ownerWorkspaceName);
