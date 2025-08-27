@@ -18,11 +18,15 @@ export const UiSettingsTestCases = () => {
         name: workspaceName,
         features: ['use-case-observability'],
         settings: {
+          permissions: {
+            library_write: { users: ['%me%'] },
+            write: { users: ['%me%'] },
+          },
           ...(datasourceId ? { dataSources: [datasourceId] } : {}),
         },
       })
       .then((value) => {
-        cy.loadSampleDataForWorkspace('logs', value, '');
+        cy.loadSampleDataForWorkspace('logs', value, datasourceId);
         cy.wrap(value);
       });
   };
