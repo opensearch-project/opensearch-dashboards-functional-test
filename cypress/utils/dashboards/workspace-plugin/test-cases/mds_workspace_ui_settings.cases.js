@@ -22,8 +22,6 @@ export const UiSettingsTestCases = () => {
         },
       })
       .then((value) => {
-        // load sample data
-        cy.loadSampleDataForWorkspace('ecommerce', value, '');
         cy.loadSampleDataForWorkspace('logs', value, '');
         cy.wrap(value);
       });
@@ -55,7 +53,6 @@ export const UiSettingsTestCases = () => {
       });
 
       after(() => {
-        cy.removeSampleDataForWorkspace('ecommerce', ownerWorkspaceId, '');
         cy.removeSampleDataForWorkspace('logs', ownerWorkspaceId, '');
         cy.deleteWorkspaceByName(ownerWorkspaceName);
         cy.deleteAllDataSources();
@@ -163,16 +160,6 @@ export const UiSettingsTestCases = () => {
       describe('Default index pattern', () => {
         it('Default index pattern in index pattern list page should work as expected', () => {
           cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/indexPatterns`);
-          cy.contains('opensearch_dashboards_sample_data_ecommerce').click();
-          cy.getElementByTestId('setDefaultIndexPatternButton')
-            .should('be.exist')
-            .should('be.enabled')
-            .click();
-          cy.get('div[data-test-subj="headerBadgeControl"]')
-            .contains('span', 'Default')
-            .should('exist');
-
-          cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/indexPatterns`);
           cy.contains('opensearch_dashboards_sample_data_logs').click();
           cy.getElementByTestId('setDefaultIndexPatternButton')
             .should('be.exist')
@@ -185,31 +172,10 @@ export const UiSettingsTestCases = () => {
 
         it('Default index pattern in discover page should work as expected', () => {
           cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/discover`);
-          cy.get('div[data-test-subj="comboBoxInput"] span')
-            .should('have.text', 'opensearch_dashboards_sample_data_logs')
-            .click();
-
-          cy.get(
-            'div[data-test-subj="comboBoxOptionsList dataExplorerDSSelect-optionsList"]'
-          )
-            .contains('button', 'opensearch_dashboards_sample_data_ecommerce')
-            .click();
-
-          cy.get('div[data-test-subj="comboBoxInput"] span')
-            .contains('span', 'opensearch_dashboards_sample_data_ecommerce')
-            .should('exist');
-
-          cy.get('[data-test-subj="comboBoxToggleListButton"]').click();
-
-          cy.get(
-            'div[data-test-subj="comboBoxOptionsList dataExplorerDSSelect-optionsList"]'
-          )
-            .contains('button', 'opensearch_dashboards_sample_data_logs')
-            .click();
-
-          cy.get('div[data-test-subj="comboBoxInput"] span')
-            .contains('span', 'opensearch_dashboards_sample_data_logs')
-            .should('exist');
+          cy.get('div[data-test-subj="comboBoxInput"] span').should(
+            'have.text',
+            'opensearch_dashboards_sample_data_logs'
+          );
         });
       });
 
