@@ -57,7 +57,11 @@ export const UiSettingsTestCases = () => {
       });
 
       after(() => {
-        cy.removeSampleDataForWorkspace('logs', ownerWorkspaceId, '');
+        cy.removeSampleDataForWorkspace(
+          'logs',
+          ownerWorkspaceId,
+          datasourceId1
+        );
         cy.deleteWorkspaceByName(ownerWorkspaceName);
         cy.deleteAllDataSources();
         cy.setAdvancedSetting({
@@ -176,8 +180,8 @@ export const UiSettingsTestCases = () => {
 
         it('Default index pattern in discover page should work as expected', () => {
           cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/discover`);
-          cy.get('div[data-test-subj="comboBoxInput"] span').should(
-            'have.text',
+          cy.get('button[data-test-subj="datasetSelectorButton"] span').should(
+            'include.text',
             'opensearch_dashboards_sample_data_logs'
           );
         });
