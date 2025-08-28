@@ -125,6 +125,7 @@ export const UiSettingsTestCases = () => {
               cy.log('Switch is disabled and cannot be changed.');
             } else if ($switch.attr('aria-checked') === 'true') {
               cy.wrap($switch).click();
+              cy.wait(500);
               cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
               cy.get($switch).should('have.attr', 'aria-checked', 'false');
             } else {
