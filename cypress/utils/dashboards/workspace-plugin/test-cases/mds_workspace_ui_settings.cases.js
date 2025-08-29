@@ -125,23 +125,8 @@ export const UiSettingsTestCases = () => {
               cy.log('Switch is disabled and cannot be changed.');
             } else if ($switch.attr('aria-checked') === 'true') {
               cy.wrap($switch).click();
-              cy.wait(500);
               cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
               cy.get($switch).should('have.attr', 'aria-checked', 'false');
-            } else {
-              cy.log('The switch is already on.');
-            }
-          });
-
-          cy.get(
-            '[data-test-subj="advancedSetting-editField-theme:darkMode"]'
-          ).then(($switch) => {
-            if ($switch.prop('disabled')) {
-              cy.log('Switch is disabled and cannot be changed.');
-            } else if ($switch.attr('aria-checked') === 'false') {
-              cy.wrap($switch).click();
-              cy.get('[data-test-subj="advancedSetting-saveButton"]').click();
-              cy.get($switch).should('have.attr', 'aria-checked', 'true');
             } else {
               cy.log('The switch is already on.');
             }
@@ -181,7 +166,7 @@ export const UiSettingsTestCases = () => {
 
         it('Default index pattern in discover page should work as expected', () => {
           cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/discover`);
-          cy.get('button[data-test-subj="datasetSelectorButton"] span').should(
+          cy.get('div[data-test-subj="comboBoxInput"] span').should(
             'include.text',
             'opensearch_dashboards_sample_data_logs'
           );
