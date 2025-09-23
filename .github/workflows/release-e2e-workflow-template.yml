@@ -121,18 +121,26 @@ jobs:
               timeout 300 bash -c 'while [[ "$(curl -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
+      - name: Enable WLM mode (cluster setting)
+        run: |
+          if [ "$SECURITY_ENABLED" = 'false' ]; then
+            OS="http://localhost:9200"
+            AUTH=""
+            TLS=""
+          else
+            OS="https://localhost:9200"
+            AUTH="-u admin:${OPENSEARCH_INITIAL_ADMIN_PASSWORD}"
+            TLS="--insecure"
+          fi
           
-          # Enable WLM mode
-          echo -e "\nEnabling WLM mode:"
-          curl -X PUT "http://localhost:9200/_cluster/settings" \
-          -H 'Content-Type: application/json' \
-          -d '{"persistent":{"wlm.workload_group.mode":"enabled"}}' | jq '.'
-
-          # Test WLM stats endpoint
-          echo -e "\nTesting WLM stats endpoint:"
-          curl -s http://localhost:9200/_wlm/workload_group | jq '.'
-          echo -e "\nTesting if wlm mode is enabled:"
-          curl -s http://localhost:9200/_cluster/settings | jq -r '.persistent.wlm.workload_group.mode'
+          echo -e "\nEnabling WLM mode on ${OS}:"
+          curl -sS $AUTH $TLS -X PUT "$OS/_cluster/settings" \
+            -H 'Content-Type: application/json' \
+            -d '{"persistent":{"wlm.workload_group.mode":"enabled"}}' | jq '.'
+          
+          echo -e "\nVerify WLM mode:"
+          curl -sS $AUTH $TLS "$OS/_cluster/settings?include_defaults=true&flat_settings=true" \
+            | jq -r '.persistent["wlm.workload_group.mode"] // .transient["wlm.workload_group.mode"] // "not set"'
       - name: Get Cypress version
         id: cypress_version
         run: |
