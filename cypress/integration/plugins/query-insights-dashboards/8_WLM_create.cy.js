@@ -34,13 +34,13 @@ describe('WLM Create Page', () => {
     cy.get('[data-testid="cpu-threshold-input"]').clear().type('150');
     cy.contains('Value must be between 0 and 100').should('exist');
 
-    cy.get('[data-testid="cpu-threshold-input"]').clear().type('-10');
+    cy.get('[data-testid="cpu-threshold-input"]').clear().type('0');
     cy.contains('Value must be between 0 and 100').should('exist');
 
     cy.get('[data-testid="memory-threshold-input"]').clear().type('101');
     cy.contains('Value must be between 0 and 100').should('exist');
 
-    cy.get('[data-testid="memory-threshold-input"]').clear().type('-1');
+    cy.get('[data-testid="memory-threshold-input"]').clear().type('0');
     cy.contains('Value must be between 0 and 100').should('exist');
   });
 
