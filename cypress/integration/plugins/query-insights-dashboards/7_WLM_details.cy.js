@@ -15,9 +15,10 @@ describe('WLM Details Page', () => {
       url: '/api/_wlm/workload_group',
       headers: { 'osd-xsrf': 'true' },
     }).then((res) => {
-      const groups = res.body?.workload_groups ?? [];
+      const groups =
+        res.body && res.body.workload_groups ? res.body.workload_groups : [];
       groups.forEach((g) => {
-        if (g.name !== 'DEFAUL_WORKLOAD_GROUP') {
+        if (g.name !== 'DEFAULT_WORKLOAD_GROUP') {
           cy.request({
             method: 'DELETE',
             url: `/api/_wlm/workload_group/${g.name}`,
@@ -92,8 +93,12 @@ describe('WLM Details Page', () => {
 
 describe('WLM Details – DEFAULT_WORKLOAD_GROUP', () => {
   it('should disable settings tab for DEFAULT_WORKLOAD_GROUP', () => {
-    cy.visit('/app/workload-management#/wlm-details?name=DEFAULT_WORKLOAD_GROUP');
+    cy.visit(
+      '/app/workload-management#/wlm-details?name=DEFAULT_WORKLOAD_GROUP'
+    );
     cy.get('[data-testid="wlm-tab-settings"]').click();
-    cy.contains('Settings are not available for the DEFAULT_WORKLOAD_GROUP').should('exist');
+    cy.contains(
+      'Settings are not available for the DEFAULT_WORKLOAD_GROUP'
+    ).should('exist');
   });
 });
