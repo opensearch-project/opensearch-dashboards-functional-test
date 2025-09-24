@@ -342,11 +342,14 @@ function dashboardAdminUiSettingsTestCases() {
 
 if (
   Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.env('SECURITY_ENABLED')
+) {
+  dashboardAdminUiSettingsTestCases();
+}
+
+if (
+  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
   Cypress.env('CYPRESS_DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   dashboardsAssistantFeatureFlagTestCases();
-
-  if (Cypress.env('SECURITY_ENABLED')) {
-    dashboardAdminUiSettingsTestCases();
-  }
 }
