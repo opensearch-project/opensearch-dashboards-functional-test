@@ -223,10 +223,8 @@ context('Create remote detector workflow', () => {
 
       cy.getElementByTestId('indicesFilter').type(TEST_INDEX_NAME);
       cy.wait(500);
-      cy.contains(
-        '.euiComboBoxOption__content',
-        `${remoteClusterName}:${TEST_INDEX_NAME}`
-      ).click();
+      cy.get(`button[title="${remoteClusterName}:${TEST_INDEX_NAME}"]`).click();
+
       cy.wait(1500);
 
       selectTopItemFromFilter('timestampFilter', false);
@@ -256,6 +254,17 @@ context('Create remote detector workflow', () => {
       // Configure model step
       cy.getElementByTestId('featureNameTextInput-0').type(TEST_FEATURE_NAME);
       selectTopItemFromFilter('featureFieldTextInput-0', false);
+
+      // Suggest parameters
+      cy.getElementByTestId('suggestParametersButton').click();
+      cy.getElementByTestId('suggestParametersDialogTitle').should('exist');
+      cy.getElementByTestId('generateSuggestionsButton').click();
+      cy.getElementByTestId('suggestedParametersResult').should('exist');
+      cy.getElementByTestId('useSuggestedParametersButton').click();
+
+      // The dialog should close and we're back on the model configuration page
+      cy.getElementByTestId('suggestParametersDialogTitle').should('not.exist');
+
       cy.getElementByTestId('configureModelNextButton').click();
       cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
         'not.exist'
@@ -324,10 +333,9 @@ context('Create remote detector workflow', () => {
       cy.getElementByTestId('indicesFilter').type('sample-ad-index-t');
       cy.wait(1000);
 
-      cy.get('.euiComboBoxOption__content')
-        .contains(`${remoteClusterName}:${TEST_SECOND_INDEX_NAME}`)
-        .should('exist')
-        .click();
+      cy.get(
+        `button[title="${remoteClusterName}:${TEST_SECOND_INDEX_NAME}"]`
+      ).click();
 
       selectTopItemFromFilter('timestampFilter', false);
 
@@ -353,6 +361,20 @@ context('Create remote detector workflow', () => {
         .contains('value')
         .should('exist')
         .click({ force: true });
+
+      // wait for feature field to be populated
+      // otherwise suggest API reports illegal arguments exception
+      cy.wait(500);
+
+      // Suggest parameters
+      cy.getElementByTestId('suggestParametersButton').click();
+      cy.getElementByTestId('suggestParametersDialogTitle').should('exist');
+      cy.getElementByTestId('generateSuggestionsButton').click();
+      cy.getElementByTestId('suggestedParametersResult').should('exist');
+      cy.getElementByTestId('useSuggestedParametersButton').click();
+
+      // The dialog should close and we're back on the model configuration page
+      cy.getElementByTestId('suggestParametersDialogTitle').should('not.exist');
 
       cy.getElementByTestId('configureModelNextButton').click();
       cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
