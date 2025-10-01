@@ -4,7 +4,6 @@
  */
 
 import { AD_FIXTURE_BASE_PATH, FORECAST_URL } from '../../../utils/constants';
-import { selectTopItemFromFilter } from '../../../utils/helpers';
 
 /*
  * Scenarios covered in this Cypress test:
@@ -89,6 +88,61 @@ context('edit forecaster workflow', () => {
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
   });
+
+  const selectTopItemFromFilter = (
+    dataTestSubjectName,
+    allowMultipleSelections = true
+  ) => {
+    cy.getElementByTestId(dataTestSubjectName)
+      .find('[data-test-subj=comboBoxToggleListButton]')
+      .click({ force: true });
+
+    clickFirstFilterItem();
+
+    cy.wait(1000);
+
+    // If multiple options can be selected, the combo box doesn't close after selecting an option.
+    // We manually close in this case, so the unselected items aren't visible on the page.
+    // This way, we can test whether or not filtering has worked as expected.
+    if (allowMultipleSelections) {
+      cy.getElementByTestId(dataTestSubjectName)
+        .find('[data-test-subj=comboBoxToggleListButton]')
+        .click();
+    }
+  };
+
+  /**
+   * Clicks the first option in the EUI filter popover and waits until the combo box pill reflects the selection.
+   * EUI renders the popover asynchronously, so the first click sometimes lands before the list (or the combo box pill)
+   * is ready. We retry up to six times with a short delay so the command behaves deterministically even on slower UI renders.
+   */
+  const clickFirstFilterItem = (attempt = 0) => {
+    const maxAttempts = 6;
+
+    return cy
+      .get('.euiFilterSelectItem')
+      .first()
+      .then(($item) => {
+        const chosen = $item.text().trim();
+        cy.wrap($item).click();
+
+        return cy
+          .get('[data-test-subj="categoryFieldComboBox"] .euiComboBoxPill')
+          .then(($pill) => {
+            if ($pill.length && $pill.text().includes(chosen)) {
+              return; // success
+            }
+
+            if (attempt >= maxAttempts - 1) {
+              throw new Error(
+                'Could not select a filter item after 6 attempts'
+              );
+            }
+
+            return cy.wait(500).then(() => clickFirstFilterItem(attempt + 1));
+          });
+      });
+  };
 
   it('Create, edit, and delete a forecaster', () => {
     // Define Forecaster step
