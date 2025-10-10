@@ -276,6 +276,10 @@ Cypress.Commands.add('getElementsByTestIds', (testIds, options = {}) => {
   return cy.get(selectors.join(','), options);
 });
 
+Cypress.Commands.add('getElementByDataTestId', (testId) => {
+  return cy.get(`[data-testid="${testId}"]`);
+});
+
 Cypress.Commands.add(
   'whenTestIdNotFound',
   (testIds, callbackFn, options = {}) => {
@@ -287,6 +291,21 @@ Cypress.Commands.add(
     });
   }
 );
+
+Cypress.Commands.add('checkClusterHealth', () => {
+  return cy
+    .request({
+      method: 'GET',
+      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`,
+      failOnStatusCode: false,
+    })
+    .then((response) => {
+      return response.status === 200;
+    })
+    .catch(() => {
+      return false;
+    });
+});
 
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
   cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
@@ -350,6 +369,15 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   cy.request({
     method: 'POST',
     url: `${Cypress.env('openSearchUrl')}/_all/_refresh`,
+  });
+});
+
+// Adding this command to force merge all segments and remove results inconsistency due to concurrent searches
+// Refer https://github.com/opensearch-project/OpenSearch/issues/18149 for more details
+Cypress.Commands.add('forceMergeSegments', () => {
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env('openSearchUrl')}/_forcemerge?max_num_segments=1`,
   });
 });
 
@@ -591,6 +619,32 @@ Cypress.Commands.add('loadSampleData', (type) => {
   });
 });
 
+Cypress.Commands.add(
+  'loadSampleDataForWorkspace',
+  (type, workspaceId, datasourceId) => {
+    cy.request({
+      method: 'POST',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
+    });
+  }
+);
+
+Cypress.Commands.add(
+  'removeSampleDataForWorkspace',
+  (type, workspaceId, datasourceId) => {
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/w/${workspaceId}/api/sample_data/${type}?data_source_id=${
+        datasourceId || ''
+      }`,
+    });
+  }
+);
+
 Cypress.Commands.add('fleshTenantSettings', () => {
   if (Cypress.env('SECURITY_ENABLED')) {
     // Use xhr request is good enough to flesh tenant
@@ -635,6 +689,41 @@ Cypress.Commands.add(
       cy.getElementByTestId('dataSourceSelectorComboBox')
         .last('button')
         .click();
+    }
+  }
+);
+
+Cypress.Commands.add(
+  'selectTopRightNavigationDataSource',
+  (dataSourceTitle, dataSourceId) => {
+    cy.getElementByTestId('dataSourceSelectableButton').click();
+    cy.getElementByTestId('dataSourceSelectable').find('input').clear();
+    cy.getElementByTestId('dataSourceSelectable')
+      .find('input')
+      .type(dataSourceTitle);
+    let dataSourceElement;
+    if (dataSourceId) {
+      dataSourceElement = cy.get(`#${dataSourceId}`);
+    } else if (dataSourceTitle) {
+      dataSourceElement = cy
+        .get('.euiSelectableListItem')
+        .contains(dataSourceTitle)
+        .closest('.euiSelectableListItem');
+    }
+
+    if (dataSourceElement) {
+      dataSourceElement.then(($element) => {
+        if ($element.attr('aria-selected') === 'false') {
+          dataSourceElement.click();
+        } else {
+          // Close data source picker manually if data source already selected
+          cy.getElementByTestId('dataSourceSelectableButton').click();
+        }
+      });
+    }
+    // Close data source picker manually if no data source element need to be clicked
+    if (!dataSourceElement) {
+      cy.getElementByTestId('dataSourceSelectableButton').click();
     }
   }
 );
@@ -688,4 +777,69 @@ Cypress.Commands.add('clearCache', () => {
   devToolsRequest(`/_flush`, 'POST');
   devToolsRequest(`/_forcemerge`, 'POST');
   cy.wait(5000);
+});
+
+Cypress.Commands.add('deleteForecastIndices', () => {
+  cy.log('Deleting forecast indices');
+  const url = `${Cypress.env('openSearchUrl')}/opensearch-forecast-result*`;
+  cy.request({
+    method: 'DELETE',
+    url: url,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  });
+
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_forecast/forecasters/_search`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request(
+          'POST',
+          `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+            hit._id
+          }/_stop`
+        ).then((response) => {
+          if (response.status === 200) {
+            cy.request(
+              'DELETE',
+              `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+                hit._id
+              }`
+            );
+          }
+        });
+      }
+    }
+  });
+});
+
+Cypress.Commands.add('setAbsoluteDate', (startDate, endDate) => {
+  cy.getElementByTestId('superDatePickerShowDatesButton').click();
+
+  // Set absolute start date
+  cy.getElementByTestId('superDatePickerAbsoluteTab').first().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .first()
+    .clear()
+    .type(startDate);
+
+  // Set absolute end date
+  cy.getElementByTestId('superDatePickerendDatePopoverButton').click();
+  cy.getElementByTestId('superDatePickerAbsoluteTab').last().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .last()
+    .clear()
+    .type(endDate);
+
+  // Click on the body to close the date picker popover
+  cy.get('body').click(0, 0);
+
+  // Apply the new date range
+  cy.getElementByTestId('superDatePickerApplyTimeButton').click();
 });

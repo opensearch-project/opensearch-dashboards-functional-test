@@ -17,9 +17,12 @@ import { BASE_PATH } from '../../../utils/base_constants';
 
 describe('Compare queries', () => {
   before(() => {
+    // visit base url
+    cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     const miscUtils = new MiscUtils(cy);
     cy.deleteAllIndices();
     miscUtils.addSampleData();
+    cy.wait(10000);
   });
 
   after(() => {
@@ -28,8 +31,17 @@ describe('Compare queries', () => {
   });
 
   it('Should get comparison results', () => {
-    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}/`);
+    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
 
+    // Check for euiCard with fail-safe
+    cy.get('body').then(($body) => {
+      if ($body.find('.euiCard').length > 0) {
+        cy.visit(
+          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
+        );
+        cy.wait(10000);
+      }
+    });
     // Type search text in search box
     cy.get('input[type="search"]').type(SAMPLE_SEARCH_TEXT, {
       force: true,

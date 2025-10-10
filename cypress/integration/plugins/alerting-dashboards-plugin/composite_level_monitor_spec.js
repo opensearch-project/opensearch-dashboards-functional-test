@@ -152,6 +152,9 @@ describe('CompositeLevelMonitor', () => {
             cy.visit(
               `${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/monitors/${createdMonitor._id}?action=update-monitor&type=workflow`
             );
+
+            // Adding 5 second wait to help reduce flakiness
+            cy.wait(5000);
           } else {
             cy.log(
               'Failed to get created monitor ',
@@ -169,12 +172,13 @@ describe('CompositeLevelMonitor', () => {
 
     it('by visual editor', () => {
       // Verify edit page
+      cy.contains('Edit').click({ force: true });
       cy.contains('Edit monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
       cy.get('input[name="name"]').type('_edited');
 
       cy.get('label').contains('Visual editor').click({ force: true });
 
-      cy.contains('Add another monitor').click();
+      cy.contains('Add another monitor').click({ force: true });
 
       cy.get('[id="associatedMonitorsList_2"]').type(
         'monitorThree{downArrow}{enter}',
@@ -198,7 +202,7 @@ describe('CompositeLevelMonitor', () => {
         'updateMonitorRequest',
         'PUT'
       );
-      cy.get('button').contains('Update').click({ force: true });
+      cy.get('button').contains('Save').click({ force: true });
 
       // Wait for monitor to be created
       cy.wait('@updateMonitorRequest').then(() => {

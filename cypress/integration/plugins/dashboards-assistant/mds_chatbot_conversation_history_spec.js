@@ -29,16 +29,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       );
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
-      // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 60000 }).should(
-        'be.length',
-        1
-      );
 
       // Open assistant flyout
-      // The flyout button will be detached and can't be clicked, add 10s delayed fix it.
-      cy.wait(10000);
-      cy.get('img[aria-label="toggle chat flyout icon"]').click();
+      cy.openAssistantChatbot();
     });
     after(() => {
       cy.clearDataSourceForAssistant();
@@ -49,7 +42,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         restoreNewThemeModal();
       }
       // Close assistant flyout
-      cy.get('img[aria-label="toggle chat flyout icon"]').click();
+      cy.get('button[aria-label="toggle chat flyout icon"]').click();
     });
 
     beforeEach(() => {

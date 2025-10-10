@@ -4,9 +4,23 @@
  */
 
 import { get } from 'lodash';
-import FlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-template.json';
+
+import chatFlowTemplateJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/chat.json';
+import t2vJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega.json';
+import t2vInstructionsJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/text2vega-with-instructions.json';
+import queryAssistPPLJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/query-assist-ppl.json';
+import data2summaryJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/data2summary.json';
+import suggestADJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/suggest-ad.json';
+import summaryJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/summary.json';
+import summaryWithLogPatternJSON from '../../../fixtures/plugins/dashboards-assistant/flow-templates/summary_with_log_pattern.json';
+
 import { BACKEND_BASE_PATH, BASE_PATH } from '../../constants';
-import { ML_COMMONS_API, ASSISTANT_API } from './constants';
+import {
+  ML_COMMONS_API,
+  ASSISTANT_API,
+  FLOW_FRAMEWORK_API,
+  ASSISTANT_AGENT_NAME,
+} from './constants';
 import clusterSettings from '../../../fixtures/plugins/dashboards-assistant/cluster_settings.json';
 import { apiRequest } from '../../helpers';
 import {
@@ -18,123 +32,185 @@ Cypress.Commands.add('addAssistantRequiredSettings', () => {
   cy.request('PUT', `${BACKEND_BASE_PATH}/_cluster/settings`, clusterSettings);
 });
 
-const agentParameters = {
-  connectorId: '',
-  modelId: '',
-  conversationalAgentId: '',
-  rootAgentId: '',
-};
+const provisionedWorkflows = [];
+const agents = [
+  {
+    type: 'os_chat_root_agent',
+    agentName: ASSISTANT_AGENT_NAME.CHAT,
+    flowTemplateJSON: chatFlowTemplateJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.TEXT2VEGA,
+    flowTemplateJSON: t2vJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.TEXT2VEGA_WITH_INSTRUCTIONS,
+    flowTemplateJSON: t2vInstructionsJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.QUERY_ASSISTANT_PPL,
+    flowTemplateJSON: queryAssistPPLJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.DATA2SUMMARY,
+    flowTemplateJSON: data2summaryJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUGGEST_AD,
+    flowTemplateJSON: suggestADJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUMMARY,
+    flowTemplateJSON: summaryJSON,
+  },
+  {
+    type: 'os_assistant_agent',
+    agentName: ASSISTANT_AGENT_NAME.SUMMARY_WITH_LOG_PATTERN,
+    flowTemplateJSON: summaryWithLogPatternJSON,
+  },
+];
 
-Cypress.Commands.add('readOrRegisterRootAgent', () => {
-  cy.request({
-    url: `${BACKEND_BASE_PATH}${ML_COMMONS_API.AGENT_CONFIG}`,
-    method: 'GET',
-    failOnStatusCode: false,
-  }).then((resp) => {
-    const agentId = get(resp, 'body.configuration.agent_id');
-    if (agentId) {
-      cy.log(`Already initialized agent: ${agentId}, skip the initialize step`);
-    } else {
-      cy.log(`Agent id not initialized yet, set up agent`);
-      return cy.registerRootAgent();
-    }
+Cypress.Commands.add('prepareAssistantAgents', () => {
+  agents.forEach((agent) => {
+    cy.readOrRegisterRootAgent(agent);
   });
 });
 
-Cypress.Commands.add('registerRootAgent', () => {
-  /**
-   * TODO use flow framework if the plugin get integrate in the future.
-   */
-  // cy.request(
-  //   'POST',
-  //   `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}`,
-  //   FlowTemplateJSON
-  // ).then((resp) => {
-  //   usingWorkflowId = resp.body.workflow_id;
-  //   if (usingWorkflowId) {
-  //     cy.request(
-  //       'POST',
-  //       `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_provision`
-  //     );
-  //     /**
-  //      * wait for 2s
-  //      */
-  //     cy.wait(2000);
-  //   } else {
-  //     throw new Error(resp);
-  //   }
-  // });
-  const nodesMap = {};
-  FlowTemplateJSON.workflows.provision.nodes.forEach((node) => {
-    nodesMap[node.type] = nodesMap[node.type] || [];
-    nodesMap[node.type].push(node);
-  });
-  cy.request(
-    'POST',
-    `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_CONNECTOR}`,
-    nodesMap.create_connector[0].user_inputs
-  )
-    .then((resp) => {
-      agentParameters.connectorId = resp.body.connector_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_MODEL}?deploy=true`,
-        {
-          ...nodesMap.register_remote_model[0].user_inputs,
-          connector_id: agentParameters.connectorId,
-          function_name: 'remote',
+Cypress.Commands.add(
+  'readOrRegisterRootAgent',
+  ({ type, agentName, flowTemplateJSON }) =>
+    cy
+      .request({
+        url: `${BACKEND_BASE_PATH}${ML_COMMONS_API.AGENT_CONFIG.replace(
+          '<agent_name>',
+          agentName
+        )}`,
+        method: 'GET',
+        failOnStatusCode: false,
+      })
+      .then((resp) => {
+        const agentId = get(resp, 'body.configuration.agent_id');
+        if (agentId) {
+          cy.log(
+            `Already initialized agent: ${agentId}, skip the initialize step`
+          );
+        } else {
+          cy.log(`Agent id not initialized yet, set up agent`);
+          return cy.registerAgent({
+            flowTemplateJSON,
+            agentName,
+            type,
+          });
         }
-      );
-    })
-    .then((resp) => {
-      agentParameters.modelId = resp.body.model_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
-        {
-          ...nodesMap.register_agent[0].user_inputs,
-          llm: {
-            parameters:
-              nodesMap.register_agent[0].user_inputs['llm.parameters'],
-            model_id: agentParameters.modelId,
-          },
-          tools: [nodesMap.create_tool[0]].map((item) => item.user_inputs),
-        }
-      );
-    })
-    .then((resp) => {
-      agentParameters.conversationalAgentId = resp.body.agent_id;
-      return cy.request(
-        'POST',
-        `${BACKEND_BASE_PATH}${ML_COMMONS_API.CREATE_AGENT}`,
-        {
-          ...nodesMap.register_agent[1].user_inputs,
-          tools: [
-            {
-              ...nodesMap.create_tool[1].user_inputs,
-              parameters: {
-                ...nodesMap.create_tool[1].user_inputs.parameters,
-                agent_id: agentParameters.conversationalAgentId,
-              },
-            },
-            {
-              ...nodesMap.create_tool[2].user_inputs,
-              parameters: {
-                ...nodesMap.create_tool[2].user_inputs.parameters,
-                model_id: agentParameters.modelId,
-              },
-            },
-          ],
-        }
-      );
-    })
-    .then((resp) => {
-      agentParameters.rootAgentId = resp.body.agent_id;
-      return cy.putRootAgentId(agentParameters.rootAgentId);
-    });
-});
+      })
+);
 
-Cypress.Commands.add('putRootAgentId', (agentId) => {
+Cypress.Commands.add(
+  'requestPollUntil',
+  (requestConfig, predicate, options = {}) => {
+    const { timeout = 30000, interval = 1000 } = options;
+    const startTime = Date.now();
+
+    const attempt = () => {
+      // Check if we've exceeded timeout
+      if (Date.now() - startTime > timeout) {
+        throw new Error(
+          `Timed out after ${timeout}ms waiting for condition to be true`
+        );
+      }
+
+      return cy.request(requestConfig).then((response) => {
+        // If predicate returns true, we're done
+        if (predicate(response)) {
+          return response;
+        }
+
+        // Otherwise wait and try again
+        cy.wait(interval);
+        return attempt();
+      });
+    };
+
+    return attempt();
+  }
+);
+
+Cypress.Commands.add(
+  'registerAgent',
+  ({ flowTemplateJSON, agentName, type }) => {
+    cy.request(
+      'POST',
+      `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.ROOT}`,
+      flowTemplateJSON
+    )
+      .then((resp) => {
+        return cy
+          .request(
+            'POST',
+            `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.PROVISION.replace(
+              '<workflow_id>',
+              resp.body.workflow_id
+            )}`
+          )
+          .then((resp) => {
+            const workflowId = resp.body.workflow_id;
+            provisionedWorkflows.push({ workflowId });
+            return workflowId;
+          });
+      })
+      .then((workflowId) =>
+        cy
+          .requestPollUntil(
+            {
+              method: 'GET',
+              url: `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.STATUS.replace(
+                '<workflow_id>',
+                workflowId
+              )}?all=true`,
+            },
+            (resp) => {
+              const { state, provisioning_progress: provisioningProgress } =
+                resp.body;
+              return state === 'COMPLETED' && provisioningProgress === 'DONE';
+            }
+          )
+          .then((resp) => {
+            const { resources_created: resourcesCreated } = resp.body;
+            const agentResource = resourcesCreated.find(
+              ({
+                workflow_step_id: workflowStepId,
+                resource_type: resourceType,
+              }) => resourceType === 'agent_id' && workflowStepId === agentName
+            );
+            if (!agentResource) {
+              return new Error(
+                `Unable to find agent for ${agentName} in workflow ${workflowId}`
+              );
+            }
+            const agentId = agentResource.resource_id;
+            provisionedWorkflows
+              .filter((workflow) => workflow.workflowId === workflowId)
+              .forEach((workflow) => {
+                workflow.agentName = agentName;
+              });
+            return agentId;
+          })
+      )
+      .then((agentId) => cy.putAgentIdConfig({ type, agentName, agentId }));
+  }
+);
+
+Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
+  const endpoint = `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
+    '<agent_name>',
+    agentName
+  )}`;
   // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
     Cypress.env('SECURITY_ENABLED') &&
@@ -142,35 +218,57 @@ Cypress.Commands.add('putRootAgentId', (agentId) => {
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
     );
   } else {
-    return cy.request(
-      'PUT',
-      `${BACKEND_BASE_PATH}${ML_COMMONS_API.UPDATE_ROOT_AGENT_CONFIG}`,
-      {
-        type: 'os_chat_root_agent',
-        configuration: {
-          agent_id: agentId,
-        },
-      }
-    );
+    return cy.request('PUT', endpoint, {
+      type,
+      configuration: {
+        agent_id: agentId,
+      },
+    });
   }
 });
 
-Cypress.Commands.add('cleanRootAgent', () => {
-  return;
+Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
+  const endpoint = `${BACKEND_BASE_PATH}${ML_COMMONS_API.ML_CONFIG_DOC.replace(
+    '<agent_name>',
+    agentName
+  )}`;
+  // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
+  if (
+    Cypress.env('SECURITY_ENABLED') &&
+    !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  ) {
+    // The .plugins-ml-config index is a system index and need to call the API by using certificate file
+    return cy.exec(
+      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`
+    );
+  } else {
+    return cy.request('DELETE', endpoint);
+  }
+});
+
+Cypress.Commands.add('cleanProvisionedAgents', () => {
+  for (let i = 0; i < provisionedWorkflows.length; i++) {
+    const workflow = provisionedWorkflows[i];
+    cy.request(
+      'POST',
+      `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.DEPROVISION.replace(
+        '<workflow_id>',
+        workflow.workflowId
+      )}`
+    );
+    if (workflow.agentName) {
+      cy.deleteAgentConfig({
+        agentName: workflow.agentName,
+      });
+    }
+  }
   /**
-   * TODO wait for flow framework to be built into snapshot.
+   * wait for 2s
    */
-  // cy.request(
-  //   'POST',
-  //   `${BACKEND_BASE_PATH}${FLOW_FRAMEWORK_API.CREATE_FLOW_TEMPLATE}/${usingWorkflowId}/_deprovision`
-  // );
-  // /**
-  //  * wait for 2s
-  //  */
-  // cy.wait(2000);
+  cy.wait(2000);
 });
 
 Cypress.Commands.add('startDummyServer', () => {
@@ -226,4 +324,55 @@ Cypress.Commands.add('clearDataSourceForAssistant', () => {
   if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     cy.deleteAllDataSources();
   }
+});
+
+Cypress.Commands.add('openAssistantChatbot', () => {
+  const maxAttempts = 5;
+  let attempts = 0;
+
+  function attemptOpen() {
+    if (attempts >= maxAttempts) {
+      throw new Error(`Failed to open chatbot after ${maxAttempts} attempts`);
+    }
+
+    attempts++;
+
+    cy.get('button[aria-label="toggle chat flyout icon"]', { timeout: 60000 })
+      .should('exist')
+      .and('be.visible')
+      .click();
+
+    cy.wait(500); // Wait for if flyout disappear
+    cy.get('body').then(($body) => {
+      if (!$body.find('.llm-chat-flyout').is(':visible')) {
+        cy.wait(1000); // Wait before trying again
+        attemptOpen();
+      }
+    });
+  }
+
+  attemptOpen();
+  cy.get('.llm-chat-flyout').should('exist').and('be.visible');
+});
+
+Cypress.Commands.add('startNewAssistantConversation', () => {
+  // Create a new conversation
+  cy.get('[aria-label="toggle chat context menu"]')
+    .should('be.visible')
+    .and('be.enabled')
+    .click();
+  cy.get('.euiContextMenuItem')
+    .contains('New conversation')
+    .should('be.visible')
+    .click({ force: true });
+
+  // Confirm the current conversation is new
+  cy.get('.llm-chat-flyout-body').within(() => {
+    cy.get('[aria-label="chat message bubble"]')
+      .should('have.length', 1)
+      .first()
+      .within(() => {
+        cy.get('[aria-label="chat welcome message"]').should('exist');
+      });
+  });
 });

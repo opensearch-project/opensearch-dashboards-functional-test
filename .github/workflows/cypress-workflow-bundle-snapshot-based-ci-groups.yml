@@ -8,6 +8,7 @@ on:
       - 'cypress/utils/dashboards/**'
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
 
   push:
     branches: ['**']
@@ -17,6 +18,7 @@ on:
       - 'cypress/utils/dashboards/**'
       - 'package.json'
       - '.github/actions/start-opensearch/action.yml'
+      - '.github/workflows/release-e2e-workflow-template.yml'
 
 env:
   CI_GROUPS: "1,2,3,4,5,6,7,8,9"
@@ -69,8 +71,9 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
+      artifact-name-suffix: "-with-security-ciGroup${{ matrix.ciGroup }}"
 
   tests-without-security:
     needs: ["get_spec"]
@@ -82,9 +85,11 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec '${{ matrix.specs }}'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-without-security --browser chromium --spec '${{ matrix.specs }}'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
       security-enabled: false
+      artifact-name-suffix: "-without-security-ciGroup${{ matrix.ciGroup }}"
+
 
   # Hold on windows test cases
   # https://github.com/opensearch-project/opensearch-dashboards-functional-test/actions/runs/9377445544/job/25819022121?pr=1352

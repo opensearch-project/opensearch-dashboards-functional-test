@@ -36,7 +36,6 @@ describe('date_nanos_mixed', () => {
     const toTime = 'Jan 1, 2019 @ 23:59:59.999';
     cy.setTopNavDate(fromTime, toTime);
     cy.waitForSearch();
-    cy.switchDiscoverTable('new');
   });
 
   after(() => {
@@ -46,20 +45,20 @@ describe('date_nanos_mixed', () => {
   });
 
   it('shows a list of records of indices with date & date_nanos fields in the right order', function () {
-    cy.get(`[data-test-subj="dataGridRowCell"]`)
-      .eq(1)
+    cy.get(`[data-test-subj="osdDocTableCellDataField"]`)
+      .eq(0)
       .contains('Jan 1, 2019 @ 04:10:30.124000000');
 
-    cy.get(`[data-test-subj="dataGridRowCell"]`)
-      .eq(4)
+    cy.get(`[data-test-subj="osdDocTableCellDataField"]`)
+      .eq(1)
       .contains('Jan 1, 2019 @ 04:10:30.123498765');
 
-    cy.get(`[data-test-subj="dataGridRowCell"]`)
-      .eq(7)
+    cy.get(`[data-test-subj="osdDocTableCellDataField"]`)
+      .eq(2)
       .contains('Jan 1, 2019 @ 04:10:30.123456789');
 
-    cy.get(`[data-test-subj="dataGridRowCell"]`)
-      .eq(10)
+    cy.get(`[data-test-subj="osdDocTableCellDataField"]`)
+      .eq(3)
       .contains('Jan 1, 2019 @ 04:10:30.123000000');
   });
 });

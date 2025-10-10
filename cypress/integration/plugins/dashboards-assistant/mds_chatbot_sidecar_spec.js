@@ -17,20 +17,15 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       // Visit OSD
       cy.visit(`${BASE_PATH}/app/home`);
 
-      // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
-      cy.get(`input[placeholder="Ask question"]`, { timeout: 120000 }).should(
-        'be.length',
-        1
-      );
+      cy.get(`button[aria-label="toggle chat flyout icon"]`, {
+        timeout: 60000,
+      }).should('be.length', 1);
     });
 
     describe('sidecar spec', () => {
       it('open sidecar and render normally, support show and hide', () => {
-        // The header may render multiple times, wait for UI to be stable
-        cy.wait(5000);
-
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
         cy.get('[class~="chatbot-sidecar"]').should('be.visible');
         cy.get('[class~="chatbot-sidecar"]').should(
           'have.css',
@@ -48,7 +43,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           .should('have.css', 'padding-right', '460px');
 
         // click toggle to call sidecar hide, sidecar will be hidden and paddingSize on header and wrapper will be zero.
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
         cy.get('[class~="chatbot-sidecar"]').should(
           'have.css',
           'display',
@@ -63,7 +58,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           .should('not.have.attr', 'padding-right');
 
         // click toggle to call sidecar show
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
         cy.get('[class~="chatbot-sidecar"]').should('be.visible');
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
@@ -80,7 +75,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.wait(5000);
 
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
         cy.get('[class~="chatbot-sidecar"]').should('be.visible');
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
@@ -117,7 +112,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.wait(5000);
 
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`img[aria-label="toggle chat flyout icon"]`).click();
+        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
         // switch to docked left
         cy.get('[id="sidecarModeIcon"]').click();
         cy.get('[data-test-subj="sidecar-mode-icon-menu-item-left"]').click();
