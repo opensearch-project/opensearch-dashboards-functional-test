@@ -3,14 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OPENSEARCH_DASHBOARDS_URL } from '../support/constants';
-import { getLogTypeLabel } from '../../public/pages/LogTypes/utils/helpers';
-import { setupIntercept } from '../support/helpers';
+import { OPENSEARCH_DASHBOARDS_URL, NODE_API } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/constants';
+import { getLogTypeLabel } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/helpers';
 import {
   detectionRuleNameError,
   detectionRuleDescriptionError,
   MAX_RULE_DESCRIPTION_LENGTH,
-} from '../../public/utils/validation';
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/public/utils/validation';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
@@ -191,7 +191,7 @@ describe('Rules', () => {
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
-      setupIntercept(cy, '/rules/_search', 'rulesSearch');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -484,7 +484,7 @@ describe('Rules', () => {
 
   describe('...should validate create rule flow', () => {
     beforeEach(() => {
-      setupIntercept(cy, '/rules/_search', 'rulesSearch');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
@@ -511,7 +511,7 @@ describe('Rules', () => {
         expect(yamlContent).to.include(SAMPLE_RULE.references);
       });
 
-      setupIntercept(cy, '/rules/_search', 'getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
       submitRule();
 
       // Wait for the success toast
@@ -569,7 +569,7 @@ describe('Rules', () => {
       getDescriptionField().type(SAMPLE_RULE.description);
       getDescriptionField().should('have.value', SAMPLE_RULE.description);
 
-      setupIntercept(cy, '/rules/_search', 'getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
       submitRule();
 
       cy.waitForPageLoad('rules', {
@@ -589,7 +589,7 @@ describe('Rules', () => {
     });
 
     it('...can be deleted', () => {
-      setupIntercept(cy, `/rules/_search`, 'getRules');
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
       cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
 
