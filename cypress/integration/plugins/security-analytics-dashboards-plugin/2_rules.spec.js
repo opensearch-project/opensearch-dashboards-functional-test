@@ -4,13 +4,14 @@
  */
 
 import { OPENSEARCH_DASHBOARDS_URL, NODE_API } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/constants';
-import { getLogTypeLabel } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
-import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/helpers';
 import {
+  getLogTypeLabel,
   detectionRuleNameError,
   detectionRuleDescriptionError,
-  MAX_RULE_DESCRIPTION_LENGTH,
-} from '../../../utils/plugins/security-analytics-dashboards-plugin/public/utils/validation';
+  MAX_RULE_DESCRIPTION_LENGTH
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers.js';
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/helpers';
+
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
