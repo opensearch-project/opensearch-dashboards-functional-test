@@ -3,15 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OPENSEARCH_DASHBOARDS_URL, NODE_API } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/constants';
+import { OPENSEARCH_DASHBOARDS_URL, NODE_API } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import {
   getLogTypeLabel,
   detectionRuleNameError,
   detectionRuleDescriptionError,
-  MAX_RULE_DESCRIPTION_LENGTH
+  MAX_RULE_DESCRIPTION_LENGTH,
 } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers.js';
-import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/support/helpers';
-
+import { setupIntercept } from '../../../utils/plugins/security-analytics-dashboards-plugin/helpers';
 
 const uniqueId = Cypress._.random(0, 1e6);
 const SAMPLE_RULE = {
