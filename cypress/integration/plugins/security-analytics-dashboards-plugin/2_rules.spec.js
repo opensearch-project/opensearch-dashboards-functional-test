@@ -49,7 +49,7 @@ const YAML_RULE_LINES = [
 
 const checkRulesFlyout = () => {
   // Search for the rule
-  cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
+  cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
 
   // Click the rule link to open the details flyout
   cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
@@ -164,8 +164,8 @@ const fillCreateForm = () => {
   getAuthorField().type(`${SAMPLE_RULE.author}`);
 
   // rule details
-  getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
-  getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
+  getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+  getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
 
   // rule detection
   getSelectionPanelByIndex(0).within(() => {
@@ -205,11 +205,11 @@ describe('Rules', () => {
     });
 
     it('...should validate rule name', () => {
-      getNameField().containsHelperText(detectionRuleNameError);
+      getNameField().sa_containsHelperText(detectionRuleNameError);
 
       getNameField().should('be.empty');
       getNameField().focus().blur();
-      getNameField().containsError('Rule name is required');
+      getNameField().sa_containsError('Rule name is required');
 
       getNameField()
         .type('{selectall}')
@@ -258,7 +258,7 @@ describe('Rules', () => {
     });
 
     it('...should validate author', () => {
-      getAuthorField().containsHelperText('Combine multiple authors separated with a comma');
+      getAuthorField().sa_containsHelperText('Combine multiple authors separated with a comma');
 
       getAuthorField().should('be.empty');
       getAuthorField().focus().blur();
@@ -270,7 +270,7 @@ describe('Rules', () => {
       }
 
       getAuthorField().focus().invoke('val', invalidAuthor).type('b').blur();
-      getAuthorField().containsError('Invalid author.');
+      getAuthorField().sa_containsError('Invalid author.');
 
       getAuthorField()
         .type('{selectall}')
@@ -285,35 +285,35 @@ describe('Rules', () => {
       getLogTypeField().should('be.empty');
       cy.get('[data-test-subj="comboBoxInput"]').first().click();
       cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
-      getLogTypeField().containsError('Log type is required');
+      getLogTypeField().sa_containsError('Log type is required');
 
-      getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
       getLogTypeField().focus().blur().shouldNotHaveError();
     });
 
     it('...should validate rule level field', () => {
       cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
       cy.get('[data-test-subj="comboBoxInput"]').first().click();
-      getRuleLevelField().containsError('Rule level is required');
+      getRuleLevelField().sa_containsError('Rule level is required');
 
-      getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
+      getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
       getRuleLevelField().focus().blur().shouldNotHaveError();
     });
 
     it('...should validate rule status field', () => {
-      getRuleStatusField().containsValue(SAMPLE_RULE.status);
+      getRuleStatusField().sa_containsValue(SAMPLE_RULE.status);
       getRuleStatusField().focus().blur().shouldNotHaveError();
 
       getRuleStatusField().clearCombobox();
       cy.get('[data-test-subj="comboBoxInput"]').eq(2).click();
       cy.get('[data-test-subj="comboBoxInput"]').first().click();
-      getRuleStatusField().containsError('Rule status is required');
+      getRuleStatusField().sa_containsError('Rule status is required');
     });
 
     it('...should validate selection', () => {
       getSelectionPanelByIndex(0).within(() => {
         getSelectionNameField().should('have.value', 'Selection_1');
-        getSelectionNameField().clearValue();
+        getSelectionNameField().sa_clearValue();
         getSelectionNameField().focus().blur();
         getSelectionNameField()
           .parentsUntil('.euiFormRow__fieldWrapper')
@@ -409,7 +409,7 @@ describe('Rules', () => {
         .parents('.euiFormRow__fieldWrapper')
         .contains("Tags must start with 'attack.'");
 
-      getTagField(0).clearValue().type('attack.tag');
+      getTagField(0).sa_clearValue().type('attack.tag');
       getTagField(0)
         .parents('.euiFormRow__fieldWrapper')
         .find('.euiFormErrorText')
@@ -421,28 +421,28 @@ describe('Rules', () => {
       fillCreateForm();
 
       // rule name field
-      getNameField().clearValue();
+      getNameField().sa_clearValue();
       toastShouldExist();
       getNameField().type('Rule name');
 
       // author field
-      getAuthorField().clearValue();
+      getAuthorField().sa_clearValue();
       getAuthorField().type('John Doe');
 
       // log field
       getLogTypeField().clearCombobox();
       toastShouldExist();
-      getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
 
       // severity field
       getRuleLevelField().clearCombobox();
       toastShouldExist();
-      getRuleLevelField().selectComboboxItem(SAMPLE_RULE.severity);
+      getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
 
       // status field
       getRuleStatusField().clearCombobox();
       toastShouldExist();
-      getRuleStatusField().selectComboboxItem(SAMPLE_RULE.status);
+      getRuleStatusField().sa_selectComboboxItem(SAMPLE_RULE.status);
 
       // selection name field
       getSelectionPanelByIndex(0).within(() =>
@@ -467,7 +467,7 @@ describe('Rules', () => {
       // selection map list field
       getSelectionPanelByIndex(0).within(() => {
         getListRadioField().click({ force: true });
-        getMapListField().clearValue();
+        getMapListField().sa_clearValue();
       });
       toastShouldExist();
       getSelectionPanelByIndex(0).within(() => {
@@ -476,9 +476,9 @@ describe('Rules', () => {
       });
 
       // tags field
-      getTagField(0).clearValue().type('wrong.tag');
+      getTagField(0).sa_clearValue().type('wrong.tag');
       toastShouldExist();
-      getTagField(0).clearValue().type('attack.tag');
+      getTagField(0).sa_clearValue().type('attack.tag');
     });
   });
 
@@ -534,7 +534,7 @@ describe('Rules', () => {
         contains: 'Detection rules',
       });
 
-      cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
+      cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
       cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
         force: true,
       });
@@ -558,9 +558,9 @@ describe('Rules', () => {
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
-      getLogTypeField().selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
       getLogTypeField()
-        .containsValue(SAMPLE_RULE.logType)
+        .sa_containsValue(SAMPLE_RULE.logType)
         .contains(getLogTypeLabel(SAMPLE_RULE.logType));
 
       SAMPLE_RULE.description += ' edited';
@@ -591,7 +591,7 @@ describe('Rules', () => {
     it('...can be deleted', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
 
-      cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
+      cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
 
       // Click the rule link to open the details flyout
       cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
@@ -615,7 +615,7 @@ describe('Rules', () => {
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);
-          cy.get(`input[placeholder="Search rules"]`).ospSearch(SAMPLE_RULE.name);
+          cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
           // Click the rule link to open the details flyout
           cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
         });
