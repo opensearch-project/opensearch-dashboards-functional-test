@@ -179,7 +179,7 @@ const fillCreateForm = () => {
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
     getTagField(idx).type(tag);
-    idx < SAMPLE_RULE.tags.length - 1 && cy.getButtonByText('Add tag').click({ force: true });
+    idx < SAMPLE_RULE.tags.length - 1 && cy.sa_getButtonByText('Add tag').click({ force: true });
   });
 
   getReferenceFieldByIndex(0).type(SAMPLE_RULE.references);
@@ -217,7 +217,7 @@ describe('Rules', () => {
         .type('*$&*#(#*($*($')
         .focus()
         .blur()
-        .shouldNotHaveError();
+        .sa_shouldNotHaveError();
 
       getNameField()
         .type('{selectall}')
@@ -225,7 +225,7 @@ describe('Rules', () => {
         .type('Rule name')
         .focus()
         .blur()
-        .shouldNotHaveError();
+        .sa_shouldNotHaveError();
     });
 
     it('...should validate rule description field', () => {
@@ -278,7 +278,7 @@ describe('Rules', () => {
         .type('Rule author (@)')
         .focus()
         .blur()
-        .shouldNotHaveError();
+        .sa_shouldNotHaveError();
     });
 
     it('...should validate log type field', () => {
@@ -288,7 +288,7 @@ describe('Rules', () => {
       getLogTypeField().sa_containsError('Log type is required');
 
       getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
-      getLogTypeField().focus().blur().shouldNotHaveError();
+      getLogTypeField().focus().blur().sa_shouldNotHaveError();
     });
 
     it('...should validate rule level field', () => {
@@ -297,14 +297,14 @@ describe('Rules', () => {
       getRuleLevelField().sa_containsError('Rule level is required');
 
       getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
-      getRuleLevelField().focus().blur().shouldNotHaveError();
+      getRuleLevelField().focus().blur().sa_shouldNotHaveError();
     });
 
     it('...should validate rule status field', () => {
       getRuleStatusField().sa_containsValue(SAMPLE_RULE.status);
-      getRuleStatusField().focus().blur().shouldNotHaveError();
+      getRuleStatusField().focus().blur().sa_shouldNotHaveError();
 
-      getRuleStatusField().clearCombobox();
+      getRuleStatusField().sa_clearCombobox();
       cy.get('[data-test-subj="comboBoxInput"]').eq(2).click();
       cy.get('[data-test-subj="comboBoxInput"]').first().click();
       getRuleStatusField().sa_containsError('Rule status is required');
@@ -430,17 +430,17 @@ describe('Rules', () => {
       getAuthorField().type('John Doe');
 
       // log field
-      getLogTypeField().clearCombobox();
+      getLogTypeField().sa_clearCombobox();
       toastShouldExist();
       getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
 
       // severity field
-      getRuleLevelField().clearCombobox();
+      getRuleLevelField().sa_clearCombobox();
       toastShouldExist();
       getRuleLevelField().sa_selectComboboxItem(SAMPLE_RULE.severity);
 
       // status field
-      getRuleStatusField().clearCombobox();
+      getRuleStatusField().sa_clearCombobox();
       toastShouldExist();
       getRuleStatusField().sa_selectComboboxItem(SAMPLE_RULE.status);
 
@@ -554,7 +554,7 @@ describe('Rules', () => {
       getNameField().type(SAMPLE_RULE.name);
       getNameField().should('have.value', SAMPLE_RULE.name);
 
-      getLogTypeField().clearCombobox();
+      getLogTypeField().sa_clearCombobox();
       SAMPLE_RULE.logType = 'dns';
       YAML_RULE_LINES[2] = `product: ${SAMPLE_RULE.logType}`;
       YAML_RULE_LINES[3] = `title: ${SAMPLE_RULE.name}`;
