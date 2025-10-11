@@ -129,12 +129,12 @@ const checkRulesFlyout = () => {
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
 const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
 const getImportRuleFilePicker = () => cy.get('[data-test-subj="import_rule_file_picker"]');
-const getNameField = () => cy.getFieldByLabel('Rule name');
-const getRuleStatusField = () => cy.getFieldByLabel('Rule Status');
-const getDescriptionField = () => cy.getFieldByLabel('Description - optional');
-const getAuthorField = () => cy.getFieldByLabel('Author');
-const getLogTypeField = () => cy.getFieldByLabel('Log type');
-const getRuleLevelField = () => cy.getFieldByLabel('Rule level (severity)');
+const getNameField = () => cy.sa_getFieldByLabel('Rule name');
+const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
+const getDescriptionField = () => cy.sa_getFieldByLabel('Description - optional');
+const getAuthorField = () => cy.sa_getFieldByLabel('Author');
+const getLogTypeField = () => cy.sa_getFieldByLabel('Log type');
+const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
 const getSelectionNameField = () => cy.get('[data-test-subj="selection_name"]');
