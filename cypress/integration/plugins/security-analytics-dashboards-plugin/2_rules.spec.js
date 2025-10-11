@@ -187,7 +187,6 @@ const fillCreateForm = () => {
 };
 
 describe('Rules', () => {
-  // before(() => cy.cleanUpTests());
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
@@ -482,7 +481,7 @@ describe('Rules', () => {
     });
   });
 
-describe('...should validate create rule flow', () => {
+  describe('...should validate create rule flow', () => {
   beforeEach(() => {
     setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
     // Visit Rules page
@@ -615,5 +614,6 @@ describe('...should validate create rule flow', () => {
         // Verify it doesn't exist
         cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
       });
+  });
   });
 });
