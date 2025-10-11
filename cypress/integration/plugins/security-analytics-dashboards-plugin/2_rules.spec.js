@@ -197,7 +197,7 @@ describe('Rules', () => {
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
       // Check that correct page is showing
-      cy.waitForPageLoad('rules', {
+      cy.sa_waitForPageLoad('rules', {
         contains: 'Detection rules',
       });
 
@@ -490,7 +490,7 @@ describe('Rules', () => {
       cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
       // Check that correct page is showing
-      cy.waitForPageLoad('rules', {
+      cy.sa_waitForPageLoad('rules', {
         contains: 'Detection rules',
       });
     });
@@ -519,7 +519,7 @@ describe('Rules', () => {
 
       cy.wait('@getRules');
 
-      cy.waitForPageLoad('rules', {
+      cy.sa_waitForPageLoad('rules', {
         contains: 'Detection rules',
       });
 
@@ -530,7 +530,7 @@ describe('Rules', () => {
     });
 
     it('...can be edited', () => {
-      cy.waitForPageLoad('rules', {
+      cy.sa_waitForPageLoad('rules', {
         contains: 'Detection rules',
       });
 
@@ -572,7 +572,7 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
       submitRule();
 
-      cy.waitForPageLoad('rules', {
+      cy.sa_waitForPageLoad('rules', {
         contains: 'Detection rules',
       });
 
