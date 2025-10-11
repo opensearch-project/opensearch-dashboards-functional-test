@@ -187,7 +187,7 @@ const fillCreateForm = () => {
 };
 
 describe('Rules', () => {
-  before(() => cy.cleanUpTests());
+  // before(() => cy.cleanUpTests());
 
   describe('...should validate form fields', () => {
     beforeEach(() => {
@@ -622,5 +622,5 @@ describe('Rules', () => {
     });
   });
 
-  after(() => cy.cleanUpTests());
+  // after(() => cy.cleanUpTests());
 });
