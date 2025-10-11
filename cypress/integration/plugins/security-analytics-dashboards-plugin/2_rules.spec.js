@@ -187,7 +187,6 @@ const fillCreateForm = () => {
 };
 
 describe('Rules', () => {
-
   describe('...should validate form fields', () => {
     beforeEach(() => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
@@ -482,138 +481,137 @@ describe('Rules', () => {
   });
 
   describe('...should validate create rule flow', () => {
-  beforeEach(() => {
-    setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
-    // Visit Rules page
-    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-    cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+    beforeEach(() => {
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
+      // Visit Rules page
+      cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
+      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
 
-    // Check that correct page is showing
-    cy.sa_waitForPageLoad('rules', {
-      contains: 'Detection rules',
-    });
-  });
-
-  it('...can be created', () => {
-    getCreateButton().click({ force: true });
-
-    fillCreateForm();
-
-    // Switch to YAML editor
-    cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
-      force: true,
+      // Check that correct page is showing
+      cy.sa_waitForPageLoad('rules', {
+        contains: 'Detection rules',
+      });
     });
 
-    // Flexible YAML validation
-    cy.get('[data-test-subj="rule_yaml_editor"]').then(($editor) => {
-      const yamlContent = $editor.text();
-      expect(yamlContent).to.include(SAMPLE_RULE.references);
-    });
+    it('...can be created', () => {
+      getCreateButton().click({ force: true });
 
-    setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
-    submitRule();
+      fillCreateForm();
 
-    // Wait for navigation or toast (whichever comes first)
-    cy.wait(3000); // Give time for the operation to complete
-
-    // Wait for redirect back to rules page
-    cy.sa_waitForPageLoad('rules', {
-      contains: 'Detection rules',
-    }, 30000);
-
-    cy.wait('@getRules').then(() => {
-      // Additional wait to ensure rule is indexed and searchable
-      cy.wait(2000);
-      checkRulesFlyout();
-    });
-  });
-
-  it('...can be edited', () => {
-    cy.sa_waitForPageLoad('rules', {
-      contains: 'Detection rules',
-    });
-
-    cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
-    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
-      force: true,
-    });
-
-    cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
-      .find('button')
-      .contains('Action')
-      .click({ force: true })
-      .then(() => {
-        cy.get('.euiPopover__panel').find('button').contains('Edit').click();
+      // Switch to YAML editor
+      cy.get('[data-test-subj="change-editor-type"] label:nth-child(2)').click({
+        force: true,
       });
 
-    getNameField().clear();
-
-    SAMPLE_RULE.name += ' edited';
-    getNameField().type(SAMPLE_RULE.name);
-    getNameField().should('have.value', SAMPLE_RULE.name);
-
-    getLogTypeField().sa_clearCombobox();
-    SAMPLE_RULE.logType = 'dns';
-    getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
-
-    SAMPLE_RULE.description += ' edited';
-    getDescriptionField().clear();
-    getDescriptionField().type(SAMPLE_RULE.description);
-    getDescriptionField().should('have.value', SAMPLE_RULE.description);
-
-    setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
-    submitRule();
-
-    cy.wait(3000);
-    
-    cy.sa_waitForPageLoad('rules', {
-      contains: 'Detection rules',
-    });
-
-    cy.wait('@getRules').then(() => {
-      cy.wait(2000);
-      checkRulesFlyout();
-    });
-  });
-
-  it('...can be imported with log type', () => {
-    getImportButton().click({ force: true });
-    // Fixed path - removed leading dot
-    getImportRuleFilePicker().selectFile('cypress/fixtures/sample_aws_s3_rule_to_import.yml');
-    // Check that AWS S3 log type is set.
-    cy.contains('AWS S3', { timeout: 10000 });
-  });
-
-  it('...can be deleted', () => {
-    setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
-
-    cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
-
-    // Click the rule link to open the details flyout
-    cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
-      force: true,
-    });
-
-    cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
-      .find('button')
-      .contains('Action')
-      .click({ force: true })
-      .then(() => {
-        cy.get('.euiPopover__panel')
-          .find('button')
-          .contains('Delete')
-          .click()
-          .then(() => cy.get('.euiModalFooter > .euiButton').contains('Delete').click());
-
-        cy.wait(5000);
-        cy.wait('@getRules');
-
-        // Search for the rule
-        cy.wait(3000);
-        cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
-        // Verify it doesn't exist
-        cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
+      // Flexible YAML validation
+      cy.get('[data-test-subj="rule_yaml_editor"]').then(($editor) => {
+        const yamlContent = $editor.text();
+        expect(yamlContent).to.include(SAMPLE_RULE.references);
       });
-  });
+
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
+      submitRule();
+
+      // Wait for navigation or toast (whichever comes first)
+      cy.wait(3000); // Give time for the operation to complete
+
+      // Wait for redirect back to rules page
+      cy.sa_waitForPageLoad('rules', {
+        contains: 'Detection rules',
+      }, 30000);
+
+      cy.wait('@getRules').then(() => {
+        // Additional wait to ensure rule is indexed and searchable
+        cy.wait(2000);
+        checkRulesFlyout();
+      });
+    });
+
+    it('...can be edited', () => {
+      cy.sa_waitForPageLoad('rules', {
+        contains: 'Detection rules',
+      });
+
+      cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
+      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true,
+      });
+
+      cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
+        .find('button')
+        .contains('Action')
+        .click({ force: true })
+        .then(() => {
+          cy.get('.euiPopover__panel').find('button').contains('Edit').click();
+        });
+
+      getNameField().clear();
+
+      SAMPLE_RULE.name += ' edited';
+      getNameField().type(SAMPLE_RULE.name);
+      getNameField().should('have.value', SAMPLE_RULE.name);
+
+      getLogTypeField().sa_clearCombobox();
+      SAMPLE_RULE.logType = 'dns';
+      getLogTypeField().sa_selectComboboxItem(getLogTypeLabel(SAMPLE_RULE.logType));
+
+      SAMPLE_RULE.description += ' edited';
+      getDescriptionField().clear();
+      getDescriptionField().type(SAMPLE_RULE.description);
+      getDescriptionField().should('have.value', SAMPLE_RULE.description);
+
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
+      submitRule();
+
+      cy.wait(3000);
+      cy.sa_waitForPageLoad('rules', {
+        contains: 'Detection rules',
+      });
+
+      cy.wait('@getRules').then(() => {
+        cy.wait(2000);
+        checkRulesFlyout();
+      });
+    });
+
+    it('...can be imported with log type', () => {
+      getImportButton().click({ force: true });
+      // Fixed path - removed leading dot
+      getImportRuleFilePicker().selectFile('../../../utils/plugins/security-analytics-dashboards-plugin/sample_aws_s3_rule_to_import.yml');
+      // Check that AWS S3 log type is set.
+      cy.contains('AWS S3', { timeout: 10000 });
+    });
+
+    it('...can be deleted', () => {
+      setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getRules');
+
+      cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
+
+      // Click the rule link to open the details flyout
+      cy.get(`[data-test-subj="rule_link_${SAMPLE_RULE.name}"]`).click({
+        force: true,
+      });
+
+      cy.get(`[data-test-subj="rule_flyout_${SAMPLE_RULE.name}"]`)
+        .find('button')
+        .contains('Action')
+        .click({ force: true })
+        .then(() => {
+          cy.get('.euiPopover__panel')
+            .find('button')
+            .contains('Delete')
+            .click()
+            .then(() => cy.get('.euiModalFooter > .euiButton').contains('Delete').click());
+
+          cy.wait(5000);
+          cy.wait('@getRules');
+
+          // Search for the rule
+          cy.wait(3000);
+          cy.get(`input[placeholder="Search rules"]`).sa_ospSearch(SAMPLE_RULE.name);
+          // Verify it doesn't exist
+          cy.get('tbody').contains(SAMPLE_RULE.name).should('not.exist');
+        });
+    });
   });
 });
