@@ -1,7 +1,11 @@
 name: Security Analytics Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
-    branches: ['**']
+    branches:
+      - 'main'
+      - dev-*
+      - '[0-9]+.[0-9]+'
+      - '[0-9]+.x'
 jobs:
   changes:
     runs-on: ubuntu-latest
