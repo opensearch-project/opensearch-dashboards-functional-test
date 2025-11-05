@@ -17,9 +17,8 @@
 //  8. Delete a forecaster from the list page
 // ============================================================================
 
-import { AD_FIXTURE_BASE_PATH } from '../../../utils/constants';
+import { AD_FIXTURE_BASE_PATH, BASE_PATH } from '../../../utils/constants';
 import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
-import { BASE_PATH } from '../../../utils/constants';
 
 const setupIndexWithData = (indexName) => {
   // Create index mapping first
@@ -82,12 +81,24 @@ context('list forecaster workflow', () => {
   const TEST_INDEX_NAME_2 = 'sample-forecast-index-2';
 
   let restoreTenantSwitchModal;
+  let restoreWelcomeModal;
+  let restoreThemeModal;
 
   beforeEach(() => {
     // disable the tenant switch modal
     restoreTenantSwitchModal = setStorageItem(
       sessionStorage,
       'opendistro::security::tenant::show_popup',
+      'false'
+    );
+    restoreWelcomeModal = setStorageItem(
+      localStorage,
+      'home:welcome:show',
+      'false'
+    );
+    restoreThemeModal = setStorageItem(
+      localStorage,
+      'home:newThemeModal:show',
       'false'
     );
     // Visit OSD
@@ -106,6 +117,12 @@ context('list forecaster workflow', () => {
     cy.deleteForecastIndices();
     if (restoreTenantSwitchModal) {
       restoreTenantSwitchModal();
+    }
+    if (restoreWelcomeModal) {
+      restoreWelcomeModal();
+    }
+    if (restoreThemeModal) {
+      restoreThemeModal();
     }
   });
 
@@ -213,25 +230,44 @@ context('list forecaster workflow', () => {
     // Wait a moment for the cell to become active
     cy.wait(500);
 
-    // Try to trigger hover as well, in case that's needed
-    cy.get('@statusCell').trigger('mouseover');
-
-    // Check if the expand button is now visible, if not, try clicking again
-    cy.get('@statusCell').then(($cell) => {
-      const expandButton = $cell.find(
-        'button.euiDataGridRowCell__expandButtonIcon'
-      );
-      if (expandButton.length === 0 || !expandButton.is(':visible')) {
-        cy.log('Expand button not visible, trying to click cell again');
-        cy.get('@statusCell').click({ force: true });
-        cy.wait(500);
+    // Retry mechanism to handle the expand button visibility
+    const attemptExpandButtonClick = (retries = 5) => {
+      if (retries === 0) {
+        throw new Error('Failed to click expand button after multiple retries');
       }
-    });
 
-    // Find the now-visible expand button inside the cell.
+      cy.get('@statusCell').then(($cell) => {
+        const expandButton = $cell.find(
+          'button.euiDataGridRowCell__expandButtonIcon'
+        );
+
+        if (expandButton.length === 0) {
+          cy.log(`Expand button not found, retries left: ${retries}`);
+          cy.get('@statusCell').click({ force: true });
+          cy.wait(300);
+          attemptExpandButtonClick(retries - 1);
+        } else if (!expandButton.is(':visible')) {
+          cy.log(`Expand button not visible, retries left: ${retries}`);
+          // Try multiple hover techniques
+          cy.get('@statusCell')
+            .scrollIntoView()
+            .trigger('mouseenter', { force: true })
+            .trigger('mouseover', { force: true })
+            .trigger('mousemove', { force: true });
+          cy.wait(200);
+          attemptExpandButtonClick(retries - 1);
+        } else {
+          cy.log('Expand button is visible, clicking it');
+          cy.wrap(expandButton).click({ force: true });
+        }
+      });
+    };
+
+    attemptExpandButtonClick();
+
+    // Alias the button for later use
     cy.get('@statusCell')
       .find('button.euiDataGridRowCell__expandButtonIcon')
-      .should('be.visible')
       .as('expandButton');
 
     // Click the expand button to open the final popover.
