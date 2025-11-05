@@ -50,7 +50,7 @@ const YAML_RULE_LINES = [
   `level: ${SAMPLE_RULE.severity.toLowerCase()}`,
   `status: ${SAMPLE_RULE.status}`,
   `references:`,
-  `- '${SAMPLE_RULE.references}'`,
+  `- ${SAMPLE_RULE.references}`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
   ...SAMPLE_RULE.detectionLine,
@@ -205,10 +205,10 @@ const fillCreateForm = () => {
   // rule detection
   getSelectionPanelByIndex(0).within(() => {
     getSelectionNameField().should('have.value', 'Selection_1');
-    getMapKeyField().type('FieldKey');
+    getMapKeyField().click({ force: true }).type('FieldKey');
 
     getTextRadioField().click({ force: true });
-    getMapValueField().type('FieldValue');
+    getMapValueField().click({ force: true }).type('FieldValue');
   });
 
   // rule additional details
