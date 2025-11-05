@@ -50,7 +50,7 @@ const YAML_RULE_LINES = [
   `level: ${SAMPLE_RULE.severity.toLowerCase()}`,
   `status: ${SAMPLE_RULE.status}`,
   `references:`,
-  `- '${SAMPLE_RULE.references}'`,
+  `- ${SAMPLE_RULE.references}`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
   ...SAMPLE_RULE.detectionLine,
