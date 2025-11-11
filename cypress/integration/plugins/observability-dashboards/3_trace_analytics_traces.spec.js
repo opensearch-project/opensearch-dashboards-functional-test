@@ -37,7 +37,7 @@ describe('Testing traces table', () => {
     cy.get('[data-test-subj="trace-table-mode-selector"]').click();
     cy.get('.euiSelectableListItem__content').contains('Traces').click();
     cy.contains(' (1)').should('exist');
-    cy.contains('Mar 25, 2021 @ 10:21:22.896').should('exist');
+    cy.get('.euiLink--primary').contains(TRACE_ID).should('exist');
   });
 });
 
