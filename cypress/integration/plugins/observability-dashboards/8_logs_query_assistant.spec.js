@@ -13,9 +13,11 @@ const isQueryAssistantPPlAgentAvailable = () => {
       method: 'POST',
       url: '/api/console/proxy?path=_plugins/_ml/config/os_query_assist_ppl&method=GET&dataSourceId=',
       headers: { 'osd-xsrf': true },
+      failOnStatusCode: false,
     })
     .then((response) => {
-      return !!response.body.configuration.agent_id;
+      // eslint-disable-next-line no-unexpected-token
+      return !!response?.body?.configuration?.agent_id;
     });
 };
 
