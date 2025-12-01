@@ -16,8 +16,12 @@ const isQueryAssistantPPlAgentAvailable = () => {
       failOnStatusCode: false,
     })
     .then((response) => {
-      // eslint-disable-next-line no-unexpected-token
-      return !!response?.body?.configuration?.agent_id;
+      return !!(
+        response &&
+        response.body &&
+        response.body.configuration &&
+        response.body.configuration.agent_id
+      );
     });
 };
 
