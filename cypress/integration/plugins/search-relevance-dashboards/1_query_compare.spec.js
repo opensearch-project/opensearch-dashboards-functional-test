@@ -32,6 +32,12 @@ describe('Compare queries', () => {
 
   it('Should get comparison results', () => {
     cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
+    // Check for modal window and dismiss if present
+    cy.get('body').then(($body) => {
+      if ($body.find('button:contains("Dismiss")').length > 0) {
+        cy.get('button:contains("Dismiss")').click();
+      }
+    });
 
     // Check for euiCard with fail-safe
     cy.get('body').then(($body) => {
