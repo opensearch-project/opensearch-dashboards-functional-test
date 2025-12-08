@@ -20,10 +20,9 @@ Cypress.Commands.add('tbGetAllTableDataFromVisualization', (total) => {
 
 Cypress.Commands.add('tbGetTableDataFromVisualization', () => {
   let data = [];
-  cy.getElementByTestId('dataGridWrapper')
-    .find('[data-test-subj="dataGridRowCell"]')
-    .find('[class="euiDataGridRowCell__truncate"]')
-    .find('span')
+  cy.get('.tableVisContainer')
+    .find('tbody td')
+    .find('[data-test-subj="tableVisCellDataField"]')
     .each(($cell) => data.push($cell.text()));
   return cy.wrap(data);
 });

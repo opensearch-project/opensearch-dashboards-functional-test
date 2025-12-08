@@ -223,6 +223,7 @@ describe('table visualization data', () => {
         '126',
         '57',
         '126',
+        'Other',
         '9,359',
       ];
       cy.tbAddBucketsAggregation();
