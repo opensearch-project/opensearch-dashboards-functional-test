@@ -81,30 +81,31 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'tbClickTableCellAction',
   (totalColumn, rowIndex, colIndex, action, tableIndex = 0, embed = false) => {
-    expect(action).to.be.oneOf(['filter for', 'filter out', 'expand']);
-    const filterFor = '[data-test-subj="filterForValue"]';
-    const filterOut = '[data-test-subj="filterOutValue"]';
-    const expand =
-      '[class="euiButtonIcon euiButtonIcon--primary euiButtonIcon--fill euiButtonIcon--xSmall euiDataGridRowCell__expandButtonIcon"]';
-    const actionButton =
-      action == 'filter for'
-        ? filterFor
-        : action == 'filter out'
-        ? filterOut
-        : expand;
+    expect(action).to.be.oneOf(['filter for', 'filter out']);
+    const filterFor = '[data-test-subj="tableVisFilterForValue"]';
+    const filterOut = '[data-test-subj="tableVisFilterOutValue"]';
+    
+    const actionButton = action === 'filter for' ? filterFor : filterOut;
+    
     if (embed) {
-      cy.get('[data-test-subj="dataGridRowCell"]')
-        .eq(rowIndex * totalColumn + colIndex)
-        .click()
+      // For embedded tables, directly find the cell
+      cy.get('.tableVisContainer')
+        .find('tbody tr')
+        .eq(rowIndex)
+        .find('td')
+        .eq(colIndex)
+        .trigger('mouseover') // Hover to show filter buttons
         .find(actionButton)
         .click({ force: true });
     } else {
-      cy.get('[class="visTable__group"]')
+      // For multiple tables, use the tableIndex
+      cy.get('.tableVisContainer')
         .eq(tableIndex)
-        .find('[data-test-subj="dataGridWrapper"]')
-        .find('[data-test-subj="dataGridRowCell"]')
-        .eq(rowIndex * totalColumn + colIndex)
-        .click()
+        .find('tbody tr')
+        .eq(rowIndex)
+        .find('td')
+        .eq(colIndex)
+        .trigger('mouseover')
         .find(actionButton)
         .click({ force: true });
     }
