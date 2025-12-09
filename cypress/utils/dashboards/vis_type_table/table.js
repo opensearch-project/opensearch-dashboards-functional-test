@@ -29,13 +29,10 @@ Cypress.Commands.add('tbGetTableDataFromVisualization', () => {
 
 Cypress.Commands.add('tbGetTotalValueFromTable', () => {
   let data = [];
-  cy.getElementByTestId('dataGridRow')
-    .find('[data-test-subj="dataGridRowCell"]')
-    .find('[class="euiDataGridRowCell__truncate"]')
+  cy.get('.tableVisContainer')
+    .find('tfoot td')
     .each(($val) => {
-      const elementText = $val.text();
-      const value = elementText.substring(0, elementText.indexOf('Row'));
-      data.push(value);
+      data.push($val.text().trim());
     });
   return cy.wrap(data);
 });
