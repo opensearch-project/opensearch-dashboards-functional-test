@@ -6,7 +6,6 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 
 | Maintainer        | GitHub ID                                           | Affiliation |
 |-------------------| --------------------------------------------------- | ----------- |
-| Tianle Huang      | [tianleh](https://github.com/tianleh)               | Amazon      |
 | Kawika Avilla     | [kavilla](https://github.com/kavilla)               | Amazon      |
 | Tyler Ohlsen      | [ohltyler](https://github.com/ohltyler)             | Amazon      |
 | Cong Wang         | [CCongWang](https://github.com/CCongWang)           | Amazon      |
@@ -19,10 +18,13 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Zhou Su           | [SuZhou-Joe](https://github.com/SuZhou-Joe)         | Amazon      |
 | Yulong Ruan       | [ruanyl](https://github.com/ruanyl)                 | Amazon      |
 | Lin Wang          | [wanglam](https://github.com/wanglam)               | Amazon      |
-| Tianyu Gao        | [raintygao](https://github.com/raintygao)           | Amazon      |
 | Zhongnan Su       | [zhongnansu](https://github.com/zhongnansu)         | Amazon      |
 | Emma Jin          | [yujin-emma](https://github.com/yujin-emma)         | Amazon      |
-| Yubo Luo          | [yubonluo](https://github.com/yubonluo)         | Amazon      |
+| Yubo Luo          | [yubonluo](https://github.com/yubonluo)             | Amazon      |
+| Abby Hu           | [abbyhu2000](https://github.com/abbyhu2000)         | Amazon      |
+| Joey Liu          | [Maosaic](https://github.com/Maosaic)               | Amazon      |
+| Sean Li           | [sejli](https://github.com/sejli)                   | Amazon      |
+| Justin Kim        | [angle943](https://github.com/angle943)             | Amazon      |
 
 ## Emeritus
 
@@ -31,3 +33,5 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | David Cui      | [davidcui1225](https://github.com/davidcui1225)   | Amazon      |
 | Aviv Benchorin | [AvivBenchorin](https://github.com/AvivBenchorin) | Amazon      |
 | Manideep Pabba | [mpabba3003](https://github.com/mpabba3003)       | Amazon      |
+| Tianle Huang   | [tianleh](https://github.com/tianleh)             | Amazon      |
+| Tianyu Gao     | [raintygao](https://github.com/raintygao)         | Amazon      |
