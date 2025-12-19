@@ -5,7 +5,6 @@
 
 /// <reference types="cypress" />
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   SEARCH_RELEVANCE_PLUGIN_NAME,
   SAMPLE_INDEX,
@@ -19,15 +18,34 @@ describe('Compare queries', () => {
   before(() => {
     // visit base url
     cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
-    const miscUtils = new MiscUtils(cy);
     cy.deleteAllIndices();
-    miscUtils.addSampleData();
+    // Use API-based sample data loading instead of UI-based approach
+    cy.loadSampleData('ecommerce');
+    cy.loadSampleData('flights');
+    cy.loadSampleData('logs');
     cy.wait(10000);
   });
 
   after(() => {
-    const miscUtils = new MiscUtils(cy);
-    miscUtils.removeSampleData();
+    // Remove sample data via API
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/ecommerce`,
+      failOnStatusCode: false,
+    });
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/flights`,
+      failOnStatusCode: false,
+    });
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/logs`,
+      failOnStatusCode: false,
+    });
   });
 
   it('Should get comparison results', () => {
