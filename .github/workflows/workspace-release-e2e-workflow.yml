@@ -18,7 +18,7 @@ jobs:
               - '.github/workflows/workspace-release-e2e-workflow.yml'
   tests-with-security:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards workspace
@@ -27,7 +27,7 @@ jobs:
       artifact-name-suffix: "-with-security"
   tests-without-security:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards workspace without security
@@ -37,7 +37,7 @@ jobs:
       artifact-name-suffix: "-without-security"
   tests-with-multiple-data-source-and-disabled-local-cluster:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards workspace with MDS

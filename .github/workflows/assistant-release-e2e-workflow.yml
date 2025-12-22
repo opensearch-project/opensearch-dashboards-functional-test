@@ -18,7 +18,7 @@ jobs:
 
   tests-with-security:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
@@ -28,7 +28,7 @@ jobs:
 
   tests-without-security:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
@@ -40,7 +40,7 @@ jobs:
 
   tests-with-multiple-data-source-and-disabled-local-cluster:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
@@ -51,7 +51,7 @@ jobs:
 
   tests-with-query-enhancements:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
@@ -62,7 +62,7 @@ jobs:
 
   tests-with-workspace-and-permission-control:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
