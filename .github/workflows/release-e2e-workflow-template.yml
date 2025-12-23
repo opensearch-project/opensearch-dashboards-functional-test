@@ -88,6 +88,8 @@ jobs:
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
+          # Disable disk space threshold to prevent allocation issues in CI
+          echo "cluster.routing.allocation.disk.threshold_enabled: false" >> config/opensearch.yml
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove OpenSearch Security"
               [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
