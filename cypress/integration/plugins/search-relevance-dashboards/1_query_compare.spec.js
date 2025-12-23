@@ -49,19 +49,15 @@ describe('Compare queries', () => {
   });
 
   it('Should get comparison results', () => {
-    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
+    // Navigate directly to single query comparison page
+    // The new UI has a card-based landing page, so we go directly to the comparison view
+    cy.visit(
+      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
+    );
+    cy.wait(5000);
 
-    // Check for euiCard with fail-safe
-    cy.get('body').then(($body) => {
-      if ($body.find('.euiCard').length > 0) {
-        cy.visit(
-          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
-        );
-        cy.wait(10000);
-      }
-    });
     // Type search text in search box
-    cy.get('input[type="search"]').type(SAMPLE_SEARCH_TEXT, {
+    cy.get('input[type="search"]', { timeout: 30000 }).type(SAMPLE_SEARCH_TEXT, {
       force: true,
     });
 
