@@ -35,21 +35,31 @@ jobs:
       # 2.12 onwards security demo configuration require a custom admin password
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          # this might remove tools that are actually needed,
-          # if set to "true" but frees about 6 GB
-          tool-cache: false
+      - name: Free up disk space (preserve Cypress dependencies)
+        run: |
+          # Remove large packages but keep X11/display server components
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/graalvm/
+          sudo rm -rf /usr/local/.ghcup/
 
-          # all of these default to true, but feel free to set to
-          # "false" if necessary for your workflow
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-          swap-storage: true
+          # Clean Docker but keep essential images
+          sudo docker image prune --all --force
+          sudo docker system prune -af
+
+          # Clean apt cache
+          sudo apt-get clean
+          sudo apt-get autoremove -y
+
+          # Don't remove xvfb or x11 related packages
+          echo "Keeping Xvfb and X11 components for Cypress"
+
+          # Check remaining space
+          df -h
+
       - name: Checkout Branch
         uses: actions/checkout@v3
       - name: Set up JDK
