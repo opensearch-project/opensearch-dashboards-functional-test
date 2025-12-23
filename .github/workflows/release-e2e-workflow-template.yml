@@ -160,3 +160,9 @@ jobs:
         with:
           name: cypress-results${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/results
+      # OpenSearch logs are captured on failure for debugging
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: opensearch-logs${{ inputs.artifact-name-suffix }}
+          path: opensearch-${{ env.VERSION }}/logs
