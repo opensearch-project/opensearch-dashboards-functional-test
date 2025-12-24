@@ -17,6 +17,7 @@ jobs:
           filters: |
             tests:
               - 'cypress/**/security-analytics-dashboards-plugin/**'
+              - '.github/workflows/release-e2e-workflow-template.yml'
 
   tests:
     needs: changes
