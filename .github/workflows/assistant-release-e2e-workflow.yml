@@ -16,6 +16,7 @@ jobs:
               - 'cypress/**/dashboards-assistant/**'
               - 'cypress/support/assistant-dummy-llm.js'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/assistant-release-e2e-workflow.yml'
 
   tests-with-security:
     needs: changes
