@@ -19,7 +19,7 @@ describe('Compare queries', () => {
     // visit base url
     cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
     cy.deleteAllIndices();
-    // Use API-based sample data loading instead of UI-based approach
+    // Use API-based sample data loading to bypass modal popups on tutorial page
     cy.loadSampleData('ecommerce');
     cy.loadSampleData('flights');
     cy.loadSampleData('logs');
@@ -50,7 +50,6 @@ describe('Compare queries', () => {
 
   it('Should get comparison results', () => {
     // Navigate directly to single query comparison page
-    // The new UI has a card-based landing page, so we go directly to the comparison view
     cy.visit(
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
     );
