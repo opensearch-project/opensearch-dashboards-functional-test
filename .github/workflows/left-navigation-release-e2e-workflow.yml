@@ -15,6 +15,7 @@ jobs:
           filters: |
             tests:
               - 'cypress/**/left-navigation/**'
+              - '.github/workflows/release-e2e-workflow-template.yml'
   tests-workspace-enabled-with-security:
     needs: changes
     #if: ${{ needs.changes.outputs.tests == 'true' }}

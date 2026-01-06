@@ -14,6 +14,8 @@ jobs:
         filters: |
           tests:
             - 'cypress/**/observability-dashboards/**'
+            - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/observability-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -22,3 +24,4 @@ jobs:
     with:
       test-name: Observability
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/observability-dashboards/*'
+      osd-serve-args: --home.disableExperienceModal=true --home.disableWelcomeScreen=true
