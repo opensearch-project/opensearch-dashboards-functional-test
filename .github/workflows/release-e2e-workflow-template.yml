@@ -99,10 +99,11 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")
-          echo "node_version=$node_version_temp" >> $GITHUB_ENV
+          node_version_temp=$(node -p "require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node")
+          echo "node_version=$node_version_temp" >> $GITHUB_OUTPUT
+          echo "Extracted Node.js version/range: $node_version_temp"
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
