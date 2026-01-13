@@ -5,7 +5,6 @@
 
 /// <reference types="cypress" />
 
-import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   SEARCH_RELEVANCE_PLUGIN_NAME,
   SAMPLE_INDEX,
@@ -19,31 +18,45 @@ describe('Compare queries', () => {
   before(() => {
     // visit base url
     cy.visit(Cypress.config().baseUrl, { timeout: 10000 });
-    const miscUtils = new MiscUtils(cy);
     cy.deleteAllIndices();
-    miscUtils.addSampleData();
+    // Use API-based sample data loading to bypass modal popups on tutorial page
+    cy.loadSampleData('ecommerce');
+    cy.loadSampleData('flights');
+    cy.loadSampleData('logs');
     cy.wait(10000);
   });
 
   after(() => {
-    const miscUtils = new MiscUtils(cy);
-    miscUtils.removeSampleData();
+    // Remove sample data via API
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/ecommerce`,
+      failOnStatusCode: false,
+    });
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/flights`,
+      failOnStatusCode: false,
+    });
+    cy.request({
+      method: 'DELETE',
+      headers: { 'osd-xsrf': 'opensearch-dashboards' },
+      url: `${BASE_PATH}/api/sample_data/logs`,
+      failOnStatusCode: false,
+    });
   });
 
   it('Should get comparison results', () => {
-    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}`);
+    // Navigate directly to single query comparison page
+    cy.visit(
+      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
+    );
+    cy.wait(5000);
 
-    // Check for euiCard with fail-safe
-    cy.get('body').then(($body) => {
-      if ($body.find('.euiCard').length > 0) {
-        cy.visit(
-          `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
-        );
-        cy.wait(10000);
-      }
-    });
     // Type search text in search box
-    cy.get('input[type="search"]').type(SAMPLE_SEARCH_TEXT, {
+    cy.get('input[type="search"]', { timeout: 30000 }).type(SAMPLE_SEARCH_TEXT, {
       force: true,
     });
 
