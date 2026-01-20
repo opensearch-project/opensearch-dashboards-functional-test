@@ -22,6 +22,6 @@ jobs:
     with:
       test-name: dashboards investigation
       test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_INVESTIGATION_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-investigation/*'
-      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --investigation.enabled=true --investigation.agenticFeaturesEnabled=true --uiSettings.overrides.home:useNewHomePage=true --workspace.enabled=true --savedObjects.permission.enabled=true --opensearchDashboards.dashboardAdmin.users='["admin"]'
+      osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --investigation.enabled=true --investigation.agenticFeaturesEnabled=true --uiSettings.overrides.home:useNewHomePage=true --workspace.enabled=true --savedObjects.permission.enabled=true --opensearchDashboards.dashboardAdmin.users='["admin"]' --opensearch_security.multitenancy.enabled=false
       security-enabled: true
       artifact-name-suffix: '-with-workspace'
