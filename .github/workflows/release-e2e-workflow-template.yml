@@ -130,6 +130,7 @@ jobs:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
+          package-manager-cache: false
       # Screenshots are only captured on failure, will change this once we do visual regression tests
       - uses: actions/upload-artifact@v4
         if: failure()
