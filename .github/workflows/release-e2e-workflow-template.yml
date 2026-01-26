@@ -124,7 +124,7 @@ jobs:
               curl http://localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
       - name: Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v7
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
