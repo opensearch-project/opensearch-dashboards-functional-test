@@ -134,7 +134,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/Cypress
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
+          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('cypress-test/package.json', 'cypress-test/package-lock.json', 'cypress-test/yarn.lock') }}
         env:
           CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
       - run: npx cypress cache list
