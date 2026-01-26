@@ -123,21 +123,6 @@ jobs:
               timeout 300 bash -c 'while [[ "$(curl -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k http://localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
               curl http://localhost:5601/api/status -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
           fi
-      - name: Get Cypress version
-        id: cypress_version
-        run: |
-          cypress_version_temp=$(cat ./monetery-test/package.json | jq -r '.devDependencies.cypress')
-          echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
-      - name: Cache Cypress
-        id: cache-cypress
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-        env:
-          CYPRESS_INSTALL_BINARY: ${{ steps.cypress_version.outputs.cypress_version }}
-      - run: npx cypress cache list
-      - run: npx cypress cache path
       - name: Cypress tests
         uses: cypress-io/github-action@v2
         with:
