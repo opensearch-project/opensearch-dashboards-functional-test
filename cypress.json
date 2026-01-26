@@ -30,7 +30,6 @@
     "DASHBOARDS_ASSISTANT_ENABLED": false,
     "WORKSPACE_ENABLED": false,
     "SAVED_OBJECTS_PERMISSION_ENABLED": false,
-    "DASHBOARDS_INVESTIGATION_ENABLED": false,
     "DISABLE_LOCAL_CLUSTER": false,
     "browserPermissions": {
       "clipboard": "allow"
