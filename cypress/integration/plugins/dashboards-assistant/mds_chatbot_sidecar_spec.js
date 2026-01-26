@@ -5,9 +5,6 @@
 import { BASE_PATH } from '../../../utils/constants';
 
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
-  // Fix 8px error after this PR(https://github.com/opensearch-project/OpenSearch-Dashboards/pull/10600)
-  const APPLIED_PADDING_RIGHT = '468px';
-
   describe('Assistant sidecar spec', () => {
     beforeEach(() => {
       // Set welcome screen tracking to false
@@ -39,11 +36,11 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
           'padding-right',
-          APPLIED_PADDING_RIGHT
+          '460px'
         );
         cy.get('[id="globalHeaderBars"]')
           .children()
-          .should('have.css', 'padding-right', '468px');
+          .should('have.css', 'padding-right', '460px');
 
         // click toggle to call sidecar hide, sidecar will be hidden and paddingSize on header and wrapper will be zero.
         cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
@@ -66,11 +63,11 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
           'padding-right',
-          APPLIED_PADDING_RIGHT
+          '460px'
         );
         cy.get('[id="globalHeaderBars"]')
           .children()
-          .should('have.css', 'padding-right', APPLIED_PADDING_RIGHT);
+          .should('have.css', 'padding-right', '460px');
       });
 
       it('open sidecar and support to switch docked mode', () => {
@@ -83,7 +80,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
           'padding-right',
-          APPLIED_PADDING_RIGHT
+          '460px'
         );
 
         // switch to docked left
@@ -92,7 +89,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
           'padding-left',
-          APPLIED_PADDING_RIGHT
+          '460px'
         );
 
         // switch to docked take over
