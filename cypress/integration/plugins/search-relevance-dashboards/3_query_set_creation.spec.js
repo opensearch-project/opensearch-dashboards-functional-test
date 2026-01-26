@@ -144,12 +144,10 @@ describe('Query Set Creation', () => {
     // Verify we're on the query set view page
     cy.url().should('include', '/querySet/view/');
 
-    // Verify we're on the query set details page
-    cy.contains('Query Set Details').should('be.visible');
-    // Check for query content - format depends on backend version
-    // PR #264 changed format from "queryText#referenceAnswer" to "queryText#{"referenceAnswer":"..."}"
-    cy.contains('test query 1').should('be.visible');
-    cy.contains('test query 2').should('be.visible');
+    // Verify the page structure and content
+    cy.get('[data-test-subj="QueryLandingPage"]').should('exist');
+    cy.contains('test query 1#test answer 1').should('be.visible');
+    cy.contains('test query 2#test answer 2').should('be.visible');
   });
 
   it('Should show validation errors for empty required fields', () => {
