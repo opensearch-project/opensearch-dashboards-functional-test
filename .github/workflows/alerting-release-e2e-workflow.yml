@@ -9,3 +9,4 @@ jobs:
     with:
       test-name: Alerting
       test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/*'
+      multi-opensearch-enabled: false
