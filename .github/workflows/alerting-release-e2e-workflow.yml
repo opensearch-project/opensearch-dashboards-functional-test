@@ -2,23 +2,9 @@ name: Alerting Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
     branches: [ '**' ]
-jobs:
-  changes:
-    runs-on: ubuntu-latest
-    outputs:
-      tests: ${{ steps.filter.outputs.tests }}
-    steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          tests:
-            - 'cypress/**/alerting-dashboards-plugin/**'
-            - '.github/workflows/release-e2e-workflow-template.yml'
 
+jobs:
   tests:
-    needs: changes
-    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Alerting
