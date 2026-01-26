@@ -67,7 +67,9 @@
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^6.0.0",
     "luxon": "^3.2.1",
-    "mocha-junit-reporter": "^2.2.1"
+    "mocha-junit-reporter": "^2.2.1",
+    "patch-package": "^8.0.1",
+    "postinstall-postinstall": "^2.1.0"
   },
   "overrides": {
     "tough-cookie": "^4.1.3",

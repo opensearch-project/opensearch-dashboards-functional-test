@@ -1,0 +1,24 @@
+diff --git a/node_modules/mocha-junit-reporter/index.js b/node_modules/mocha-junit-reporter/index.js
+index 060ff9d..0b45bc5 100644
+--- a/node_modules/mocha-junit-reporter/index.js
++++ b/node_modules/mocha-junit-reporter/index.js
+@@ -152,7 +152,9 @@ function fullSuiteTitle(suite) {
+ }
+ 
+ function isInvalidSuite(suite) {
+-  return (!suite.root && suite.title === '') || (suite.tests.length === 0 && suite.suites.length === 0);
++  return (!suite.root && suite.title === '') ||
++         ((suite.tests && suite.tests.length === 0) &&
++          (suite.suites && suite.suites.length === 0));
+ }
+ 
+ function parsePropertiesFromEnv(envValue) {
+@@ -287,7 +289,7 @@ MochaJUnitReporter.prototype.getTestsuiteData = function(suite) {
+   var _attr =  {
+     name: this._generateSuiteTitle(suite),
+     timestamp: this._Date.now(),
+-    tests: suite.tests.length
++    tests: suite.tests ? suite.tests.length : 0
+   };
+   var testSuite = { testsuite: [ { _attr: _attr } ] };
+ 
