@@ -67,8 +67,6 @@ function addChatbotTestCase(url) {
     beforeEach(() => {
       // Set welcome screen tracking to false
       localStorage.setItem('home:welcome:show', 'false');
-      // Set new theme modal to false
-      localStorage.setItem('home:newThemeModal:show', 'false');
       const workspacePrefix = workspaceId ? `/w/${workspaceId}` : '';
       cy.intercept('POST', `${workspacePrefix}/api/assistant/send_message*`).as(
         'sendMessage'
