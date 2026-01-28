@@ -5,11 +5,13 @@ on:
     paths:
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/mds-release-e2e-workflow.yml'
   push:
     branches: ['**']
     paths:
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/mds-release-e2e-workflow.yml'
 
 jobs:
   tests-with-multiple-data-source-and-disabled-local-cluster:

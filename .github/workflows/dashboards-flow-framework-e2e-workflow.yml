@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/dashboards-flow-framework/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/dashboards-flow-framework-e2e-workflow.yml'
 
   tests:
     needs: changes

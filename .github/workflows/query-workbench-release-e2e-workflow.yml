@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/query-workbench-dashboards/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/query-workbench-release-e2e-workflow.yml'
 
   tests:
     needs: changes

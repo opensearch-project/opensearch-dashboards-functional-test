@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/custom-import-map-dashboards/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/custom-import-map-dashboards-release-e2e-workflow.yml'
 
   tests:
     needs: changes

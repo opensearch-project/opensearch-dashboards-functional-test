@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/alerting-dashboards-plugin/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/alerting-release-e2e-workflow.yml'
 
   tests:
     needs: changes
