@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/index-management-dashboards-plugin/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/index-management-release-e2e-workflow.yml'
 
   tests:
     needs: changes

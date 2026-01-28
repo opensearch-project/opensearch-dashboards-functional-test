@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/gantt-chart-dashboards/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/gantt-chart-release-e2e-workflow.yml'
 
   tests:
     needs: changes
