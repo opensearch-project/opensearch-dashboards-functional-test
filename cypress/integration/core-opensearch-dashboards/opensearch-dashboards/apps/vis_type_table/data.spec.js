@@ -20,8 +20,9 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const commonUI = new CommonUI(cy);
 
-// TODO: Remove cy.wait(500)
-// https://github.com/opensearch-project/OpenSearch-Dashboards/issues/4157
+// Wait time for UI interactions to complete
+// This is needed because aggregation changes require time to process
+const UI_WAIT_TIME = 500;
 
 describe('table visualization data', () => {
   before(() => {
@@ -74,7 +75,7 @@ describe('table visualization data', () => {
         2
       );
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectedData.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -82,12 +83,16 @@ describe('table visualization data', () => {
 
     it('Should show correct average metrics', () => {
       cy.tbOpenDataPanel();
+      cy.wait(UI_WAIT_TIME);
       cy.tbAddMetricsAggregation();
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectAggregationType('Average', 3);
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectAggregationField('age', 3);
+      cy.wait(UI_WAIT_TIME);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectedAverageData.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedAverageData);
       });
@@ -105,13 +110,18 @@ describe('table visualization data', () => {
     it('Should show correct data when using average pipeline aggregation', () => {
       const expectedData = ['10,000', '128.2'];
       cy.tbAddMetricsAggregation();
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectAggregationType('Average Bucket', 2);
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectSubAggregationType('Terms', 2, 'buckets');
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectSubAggregationField('age', 2, 'buckets');
+      cy.wait(UI_WAIT_TIME);
       cy.tbSelectSubAggregationType('Count', 2, 'metrics');
+      cy.wait(UI_WAIT_TIME);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectedData.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -132,7 +142,7 @@ describe('table visualization data', () => {
       cy.tbSplitRows();
       cy.tbSetupDateHistogramAggregation('timestamp', 'Year', 2);
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectedData.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectedData);
       });
@@ -141,21 +151,63 @@ describe('table visualization data', () => {
     it('Should correctly filter for applied time filter on the main timefield', () => {
       commonUI.addFilterRetrySelection('timestamp', 'is', '2022-05-30');
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(2);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '37']);
       });
       commonUI.removeFilter('timestamp');
       cy.waitForLoader();
-      commonUI.addFilterRangeRetrySelection(
-        'timestamp',
-        'is between',
-        '2022-05-30',
-        '2022-08-30'
-      );
+      cy.wait(UI_WAIT_TIME);
+
+      // Add range filter manually to ensure proper date format handling
+      // Using explicit format to avoid timezone parsing issues in React 18
+      cy.get('[data-test-subj="addFilter"]').click();
+      cy.wait(UI_WAIT_TIME);
+
+      // Select field
+      cy.get('[data-test-subj="filterFieldSuggestionList"]')
+        .find('[data-test-subj="comboBoxInput"]')
+        .type('timestamp');
+      cy.get(
+        '[data-test-subj="comboBoxOptionsList filterFieldSuggestionList-optionsList"]'
+      )
+        .find('[title="timestamp"]')
+        .click({ force: true });
+      cy.wait(UI_WAIT_TIME);
+
+      // Select operator
+      cy.get('[data-test-subj="filterOperatorList"]')
+        .find('[data-test-subj="comboBoxInput"]')
+        .type('is between');
+      cy.get(
+        '[data-test-subj="comboBoxOptionsList filterOperatorList-optionsList"]'
+      )
+        .find('[title="is between"]')
+        .click({ force: true });
+      cy.wait(UI_WAIT_TIME);
+
+      // Enter date values with full ISO format including timezone
+      cy.get('[data-test-subj="filterParams"]').find('input').first().clear();
+      cy.get('[data-test-subj="filterParams"]')
+        .find('input')
+        .first()
+        .type('2022-05-30T00:00:00.000Z', { delay: 50 });
+      cy.wait(UI_WAIT_TIME);
+      cy.get('[data-test-subj="filterParams"]').find('input').last().clear();
+      cy.get('[data-test-subj="filterParams"]')
+        .find('input')
+        .last()
+        .type('2022-08-30T00:00:00.000Z', { delay: 50 });
+      cy.wait(UI_WAIT_TIME);
+
+      // Save filter
+      cy.get('[data-test-subj="saveFilter"]').click();
       cy.waitForLoader();
-      cy.wait(500);
+
+      // Check the data
+      cy.tbWaitForTableCellCount(2);
       cy.tbGetTableDataFromVisualization().then((data) => {
+        cy.log('Actual table data:', JSON.stringify(data));
         expect(data).to.deep.eq(['2022', '3,370']);
       });
     });
@@ -163,13 +215,13 @@ describe('table visualization data', () => {
     it('Should correctly filter for pinned filters', () => {
       commonUI.pinFilter('timestamp');
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(2);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['2022', '3,370']);
       });
       commonUI.removeFilter('timestamp');
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(4);
     });
 
     after(() => {
@@ -183,7 +235,7 @@ describe('table visualization data', () => {
   describe('Check Terms aggregation and missing values', () => {
     it('Should show correct data before and after adding doc', () => {
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(1);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,000']);
       });
@@ -194,6 +246,8 @@ describe('table visualization data', () => {
       });
       cy.forceMergeSegments();
       cy.reload();
+      cy.waitForLoader();
+      cy.tbWaitForTableCellCount(1);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(['10,001']);
       });
@@ -230,14 +284,15 @@ describe('table visualization data', () => {
       cy.tbSplitRows();
       cy.tbSetupTermsAggregation('age', 'Descending', '5', 2);
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectDataBeforeGroupInOther.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeGroupInOther);
       });
       cy.tbToggleOtherBucket('true');
+      cy.wait(UI_WAIT_TIME);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectDataAfterGroupInOther.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterGroupInOther);
       });
@@ -271,16 +326,18 @@ describe('table visualization data', () => {
         '9,991',
       ];
       cy.tbSelectAggregationField('email.keyword', 2);
+      cy.wait(UI_WAIT_TIME);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectDataBeforeMissing.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataBeforeMissing);
       });
       cy.tbToggleMissingBucket('true');
+      cy.wait(UI_WAIT_TIME);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
-      cy.wait(500);
+      cy.tbWaitForTableCellCount(expectDataAfterMissing.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectDataAfterMissing);
       });
