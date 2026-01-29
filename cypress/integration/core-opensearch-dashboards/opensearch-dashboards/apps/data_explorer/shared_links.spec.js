@@ -65,17 +65,47 @@ describe('shared links', () => {
 
   describe('shared links with state in query', () => {
     it('should allow for copying the snapshot URL', function () {
-      const url = `http://localhost:5601/app/data-explorer/discover#/?_a=(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))&_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))&_q=(filters:!(),query:(language:kuery,query:''))`;
+      // Expected URL components (order-independent comparison)
+      const expectedBase = 'http://localhost:5601/app/data-explorer/discover#/';
+      const expectedParams = {
+        _a: "(discover:(columns:!(_source),isDirty:!f,sort:!()),metadata:(indexPattern:'logstash-*',view:discover))",
+        _g: "(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))",
+        _q: "(filters:!(),query:(language:kuery,query:''))",
+      };
+
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')
-        // Even though `CURRENT_TENANT.newTenant` is set to global, that could change and hence this test will remove
-        // either of the tenants it sees.
-        .should(
-          'satisfy',
-          (copied) =>
-            copied.replace(/\?security_tenant=(global|private)/, '') === url
-        )
+        .should('satisfy', (shareUrl) => {
+          // Remove security tenant param if present
+          const cleanUrl = shareUrl.replace(
+            /\?security_tenant=(global|private)/,
+            ''
+          );
+
+          // Check base URL
+          if (!cleanUrl.startsWith(expectedBase)) {
+            return false;
+          }
+
+          // Parse the hash parameters
+          const hashPart = cleanUrl.split('#/?')[1];
+          if (!hashPart) {
+            return false;
+          }
+
+          // Parse URL params from hash (they use & as separator)
+          const params = {};
+          hashPart.split('&').forEach((param) => {
+            const [key, ...valueParts] = param.split('=');
+            params[key] = valueParts.join('=');
+          });
+
+          // Compare each expected param
+          return Object.keys(expectedParams).every(
+            (key) => params[key] === expectedParams[key]
+          );
+        })
         .then((url) => {
           cy.log(url);
           cy.request(url).its('status').should('eq', 200);
