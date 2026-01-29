@@ -35,6 +35,31 @@ jobs:
       # 2.12 onwards security demo configuration require a custom admin password
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
+      - name: Free up disk space (preserve Cypress dependencies)
+        run: |
+          # Remove large packages but keep X11/display server components
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /usr/local/graalvm/
+          sudo rm -rf /usr/local/.ghcup/
+
+          # Clean Docker but keep essential images
+          sudo docker image prune --all --force
+          sudo docker system prune -af
+
+          # Clean apt cache
+          sudo apt-get clean
+          sudo apt-get autoremove -y
+
+          # Don't remove xvfb or x11 related packages
+          echo "Keeping Xvfb and X11 components for Cypress"
+
+          # Check remaining space
+          df -h
+
       - name: Checkout Branch
         uses: actions/checkout@v3
       - name: Set up JDK
@@ -163,3 +188,9 @@ jobs:
         with:
           name: cypress-results${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/results
+      # OpenSearch logs are captured on failure for debugging
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: opensearch-logs${{ inputs.artifact-name-suffix }}
+          path: opensearch-${{ env.VERSION }}/logs
