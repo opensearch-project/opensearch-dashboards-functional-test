@@ -23,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/security/*,cypress/integration/plugins/security-dashboards-plugin/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/security/*,cypress/integration/plugins/security-dashboards-plugin/*'

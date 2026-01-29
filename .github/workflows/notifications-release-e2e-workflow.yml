@@ -23,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Notifications
-      test-command: yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/notifications-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/notifications-dashboards/*'

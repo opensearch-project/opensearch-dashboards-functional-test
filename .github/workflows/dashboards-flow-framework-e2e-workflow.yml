@@ -23,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Flow Framework
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-flow-framework/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/dashboards-flow-framework/*'
