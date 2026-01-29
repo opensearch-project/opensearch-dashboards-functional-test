@@ -15,6 +15,7 @@ jobs:
             tests:
               - 'cypress/**/ml-commons-dashboards/**'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/ml-commons-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -22,7 +23,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons
-      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/ml-commons-dashboards/*'
+      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/ml-commons-dashboards/*'
       osd-serve-args: --ml_commons_dashboards.enabled=true
 
   tests-with-multiple-data-source-and-disabled-local-cluster:
@@ -31,6 +32,6 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons With Multi Data Source
-      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/ml-commons-dashboards/mds*.js'
+      test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/ml-commons-dashboards/mds*.js'
       osd-serve-args: --ml_commons_dashboards.enabled=true --data_source.enabled=true --data_source.hideLocalCluster=true
       artifact-name-suffix: "-with-security-and-mds"

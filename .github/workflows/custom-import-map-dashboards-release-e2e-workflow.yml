@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/custom-import-map-dashboards/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/custom-import-map-dashboards-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -22,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Observability
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'

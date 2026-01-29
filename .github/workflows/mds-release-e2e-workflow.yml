@@ -5,17 +5,19 @@ on:
     paths:
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/mds-release-e2e-workflow.yml'
   push:
     branches: ['**']
     paths:
       - 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
       - '.github/workflows/release-e2e-workflow-template.yml'
+      - '.github/workflows/mds-release-e2e-workflow.yml'
 
 jobs:
   tests-with-multiple-data-source-and-disabled-local-cluster:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: MDS enabled and local cluster disabled
-      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
+      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/core-opensearch-dashboards/opensearch-dashboards/**/mds*.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true
       security-enabled: true
