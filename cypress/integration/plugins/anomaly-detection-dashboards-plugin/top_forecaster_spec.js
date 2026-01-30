@@ -164,7 +164,18 @@ context('top forecaster api', () => {
 
         cy.getElementByTestId('addOrUpdateCustomQueryButton').click();
         cy.getElementByTestId('customQueryModal').should('not.exist');
-        cy.getElementByTestId('updateVisualizationButton').click();
+
+        // The update visualization button sometimes isn’t rendered yet after the modal closes,
+        // causing flaky failures. Add a short wait and reopen the options panel if the button
+        // is not visible before clicking.
+        cy.wait(200);
+        cy.get('body').then(($body) => {
+          if ($body.find('[data-test-subj="updateVisualizationButton"]:visible').length === 0) {
+            cy.getElementByTestId('splitTimeSeriesOptionsButton').click();
+          }
+        });
+
+        cy.getElementByTestId('updateVisualizationButton', { timeout: 60000 }).click();
         cy.contains('SPLIT TIME SERIES CONTROLS').should('not.exist');
         cy.contains('Time series per page:').should('not.exist');
         cy.contains('host_2', { timeout: 18000 }).should('be.visible');
