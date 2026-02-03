@@ -16,6 +16,7 @@ jobs:
               - 'cypress/**/dashboards-assistant/**'
               - 'cypress/support/assistant-dummy-llm.js'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/assistant-release-e2e-workflow.yml'
 
   tests-with-security:
     needs: changes
@@ -23,7 +24,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
+      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       artifact-name-suffix: '-with-security'
 
@@ -33,7 +34,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
+      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: false
       artifact-name-suffix: '-without-security'
@@ -45,7 +46,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/mds_chatbot*.js'
+      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/mds_chatbot*.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
       artifact-name-suffix: '-with-security-and-mds'
@@ -56,7 +57,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/mds_query_enhancements*.js'
+      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/mds_query_enhancements*.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --assistant.chat.enabled=true --assistant.alertInsight.enabled=true --assistant.smartAnomalyDetector.enabled=true --queryEnhancements.queryAssist.summary.enabled=true --uiSettings.overrides.home:useNewHomePage=true --uiSettings.overrides.query:enhancements:enabled=true --workspace.enabled=true --savedObjects.permission.enabled=true --assistant.text2viz.enabled=true  --opensearchDashboards.dashboardAdmin.users='["admin"]' --opensearch_security.multitenancy.enabled=false --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
       artifact-name-suffix: '-with-query-enhancements'
@@ -67,7 +68,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: dashboards assistant
-      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/mds_assistant_feature_flag_spec.js'
+      test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/mds_assistant_feature_flag_spec.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --assistant.chat.enabled=true --assistant.alertInsight.enabled=true --assistant.smartAnomalyDetector.enabled=true --queryEnhancements.queryAssist.summary.enabled=true --uiSettings.overrides.home:useNewHomePage=true --uiSettings.overrides.query:enhancements:enabled=true --uiSettings.overrides.query:enhancements:enabled=true --workspace.enabled=true --savedObjects.permission.enabled=true --assistant.text2viz.enabled=true  --opensearchDashboards.dashboardAdmin.users='["admin"]' --opensearch_security.multitenancy.enabled=false --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
       artifact-name-suffix: '-with-workspace-and-permission-control'
