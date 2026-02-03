@@ -25,6 +25,9 @@ jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
     runs-on: ubuntu-latest
+    container:
+      image: docker://opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v2
+      options: '--user 1001 --shm-size=4g'
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
