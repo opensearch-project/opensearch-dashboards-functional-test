@@ -31,9 +31,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/savedNotebook`).as(
-      'notebook'
-    );
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click({ force: true });
 
@@ -93,7 +94,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/savedNotebook`).as('notebook');
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click();
 
@@ -150,9 +154,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/savedNotebook`).as(
-      'notebook'
-    );
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click();
 
