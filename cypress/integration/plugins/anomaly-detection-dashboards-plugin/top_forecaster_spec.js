@@ -169,7 +169,10 @@ context('top forecaster api', () => {
         // causing flaky failures. Keep reopening the options panel until the button is visible.
         // This poll stops once the button is visible, otherwise it continues until the overall
         // Cypress test timeout (the it timeout or global config) aborts the test.
-        const waitForUpdateVisualizationButton = () => {
+        const waitForUpdateVisualizationButton = (
+          retryCount = 0,
+          maxRetries = 60
+        ) => {
           cy.get('body').then(($body) => {
             const updateButton = $body.find(
               '[data-test-subj="updateVisualizationButton"]'
@@ -177,6 +180,12 @@ context('top forecaster api', () => {
 
             if (updateButton.length && updateButton.is(':visible')) {
               return;
+            }
+
+            if (retryCount >= maxRetries) {
+              throw new Error(
+                `updateVisualizationButton not visible after ${maxRetries} retries`
+              );
             }
 
             const splitOptionsButton = $body.find(
@@ -187,7 +196,11 @@ context('top forecaster api', () => {
               cy.wrap(splitOptionsButton).click({ force: true });
             }
 
-            return cy.wait(1000).then(waitForUpdateVisualizationButton);
+            return cy
+              .wait(1000)
+              .then(() =>
+                waitForUpdateVisualizationButton(retryCount + 1, maxRetries)
+              );
           });
         };
 
