@@ -389,7 +389,9 @@ Cypress.Commands.add('sa_createRule', (ruleJSON) => {
   return cy.request({
     method: 'POST',
     url: `${OPENSEARCH_DASHBOARDS}${NODE_API.RULES_BASE}?category=${ruleJSON.category}`,
-    body: JSON.stringify(ruleJSON),
+    body: {
+      rule: ruleJSON,
+    },
     headers: {
       'osd-xsrf': true,
     },

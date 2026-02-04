@@ -97,9 +97,13 @@ export const createDetector = (
     .then(() => {
       cy.sa_createRule(ruleSettings)
         .then((response) => {
-          detectorConfig.inputs[0].detector_input.custom_rules[0].id =
-            response.body.response._id;
-          detectorConfig.triggers[0].ids.push(response.body.response._id);
+          const ruleId =
+            response?.body?.response?._id ||
+            response?.body?._id ||
+            response?.body?.id;
+          expect(ruleId, 'created rule id').to.exist;
+          detectorConfig.inputs[0].detector_input.custom_rules[0].id = ruleId;
+          detectorConfig.triggers[0].ids.push(ruleId);
         })
         // create the detector
         .then(() => cy.sa_createDetector(detectorConfig));
