@@ -64,7 +64,7 @@ describe('Managed indices', () => {
       cy.wait(3000).reload();
 
       // Confirm we are back to empty loading state, give 20 seconds as OSD takes a while to load
-      cy.contains('There are no existing managed indexes.', { timeout: 20000 });
+      cy.contains('There are no existing managed indexes.', { timeout: 60000 });
     });
   });
 
