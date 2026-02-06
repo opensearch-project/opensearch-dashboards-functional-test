@@ -25,6 +25,9 @@ jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }}
     runs-on: ubuntu-latest
+    container:
+      image: docker://opensearchstaging/ci-runner:ci-runner-rockylinux8-opensearch-dashboards-integtest-v2
+      options: '--user 1001 --shm-size=4g'
     env:
       # prevents extra Cypress installation progress messages
       CI: 1
@@ -58,25 +61,13 @@ jobs:
           else
               echo "SECURITY_ENABLED=false" >> $GITHUB_ENV
           fi
-      - name: Get and run OpenSearch
-        run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
-          tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
-          cd opensearch-${{ env.VERSION }}/
-          # Disable disk space threshold to prevent allocation issues in CI
-          echo "cluster.routing.allocation.disk.threshold_enabled: false" >> config/opensearch.yml
-          if [ "$SECURITY_ENABLED" = 'false' ]; then
-              echo "Remove OpenSearch Security"
-              [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
-              ./opensearch-tar-install.sh &
-              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' http://localhost:9200)" != "200" ]]; do sleep 5; done'
-              curl http://localhost:9200
-          else
-              echo "Keep OpenSearch Security"
-              ./opensearch-tar-install.sh &
-              timeout 900 bash -c 'while [[ "$(curl -o /dev/null -w ''%{http_code}'' -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
-              curl https://localhost:9200 -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} --insecure
-          fi
+      - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
+        with:
+          opensearch-version: ${{ env.VERSION }}
+          security-enabled: ${{ inputs.security-enabled }}
+          port: 9200
+          transport_port: 9300
       - uses: ./.github/actions/start-opensearch
         if: ${{ inputs.multi-opensearch-enabled }}
         with:
@@ -92,10 +83,17 @@ jobs:
           admin-password: myStrongPassword123!
           port: 9202
           transport_port: 9302
-      - name: Get OpenSearch-Dashboards
+
+      - name: Download OpenSearch-Dashboards
+        uses: peternied/download-file@v2
+        with:
+          url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+      # Extract downloaded zip
+      - name: Extract downloaded OpenSearch-Dashboards tar
         run: |
-          wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+          rm -f opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
+        shell: bash
       - name: Get node and yarn versions
         id: versions
         run: |
