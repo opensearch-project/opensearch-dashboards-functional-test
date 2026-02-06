@@ -18,16 +18,17 @@ jobs:
 
   tests:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons
       test-command: env CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/ml-commons-dashboards/*'
       osd-serve-args: --ml_commons_dashboards.enabled=true
+      multi-opensearch-enabled: false
 
   tests-with-multiple-data-source-and-disabled-local-cluster:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons With Multi Data Source
