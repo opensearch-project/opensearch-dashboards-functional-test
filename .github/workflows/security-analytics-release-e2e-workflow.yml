@@ -18,6 +18,7 @@ jobs:
             tests:
               - 'cypress/**/security-analytics-dashboards-plugin/**'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/security-analytics-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -25,4 +26,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security Analytics
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security-analytics-dashboards-plugin/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/security-analytics-dashboards-plugin/*'
