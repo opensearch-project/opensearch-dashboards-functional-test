@@ -18,7 +18,7 @@ jobs:
 
   tests:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons
@@ -27,7 +27,7 @@ jobs:
 
   tests-with-multiple-data-source-and-disabled-local-cluster:
     needs: changes
-    if: ${{ needs.changes.outputs.tests == 'true' }}
+    #if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: ML Commons With Multi Data Source
