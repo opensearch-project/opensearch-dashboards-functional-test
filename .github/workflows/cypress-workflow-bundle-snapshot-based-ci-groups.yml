@@ -71,7 +71,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-with-security --browser chromium --spec '${{ matrix.specs }}'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-with-security --browser electron --spec '${{ matrix.specs }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
       artifact-name-suffix: "-with-security-ciGroup${{ matrix.ciGroup }}"
 
@@ -85,7 +85,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-without-security --browser chromium --spec '${{ matrix.specs }}'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_ML_COMMONS_DASHBOARDS_ENABLED=true CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_BANNER_ENABLED=true yarn cypress:run-without-security --browser electron --spec '${{ matrix.specs }}'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --vis_builder.enabled=true --ml_commons_dashboards.enabled=true --banner.enabled=true --banner.content="This is an important announcement for all users. [Learn more](https://opensearch.org) about OpenSearch."
       security-enabled: false
       artifact-name-suffix: "-without-security-ciGroup${{ matrix.ciGroup }}"
@@ -103,8 +103,8 @@ jobs:
   #   uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
   #   with:
   #     test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec '${{ matrix.specs }}'
-  
+  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-with-security --browser electron --spec '${{ matrix.specs }}'
+
   # tests-without-security-windows:
   #   needs: ["get_spec"]
   #   strategy:
@@ -115,5 +115,5 @@ jobs:
   #   uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
   #   with:
   #     test-name: "osd:ciGroup${{ matrix.ciGroup }}"
-  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec '${{ matrix.specs }}'
+  #     test-command: env CYPRESS_NO_COMMAND_LOG=1 CYPRESS_VISBUILDER_ENABLED=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true yarn cypress:run-without-security --browser electron --spec '${{ matrix.specs }}'
   #     security-enabled: false
