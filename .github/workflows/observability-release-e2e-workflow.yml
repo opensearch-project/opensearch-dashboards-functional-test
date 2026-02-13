@@ -17,7 +17,7 @@ jobs:
             - '.github/workflows/release-e2e-workflow-template.yml'
             - '.github/workflows/observability-release-e2e-workflow.yml'
 
-  tests:
+  tests-with-security:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
@@ -25,3 +25,15 @@ jobs:
       test-name: Observability
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/observability-dashboards/*'
       osd-serve-args: --home.disableExperienceModal=true --home.disableWelcomeScreen=true
+      artifact-name-suffix: '-with-security'
+
+  tests-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Observability
+      test-command: yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/plugins/observability-dashboards/*'
+      osd-serve-args: --home.disableExperienceModal=true --home.disableWelcomeScreen=true
+      security-enabled: false
+      artifact-name-suffix: '-without-security'
