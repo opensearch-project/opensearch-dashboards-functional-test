@@ -46,7 +46,9 @@ const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
 const logTypeLabel = 'Log type';
 
-const getLogTypeField = () => cy.sa_getFieldByLabel(logTypeLabel);
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel(logTypeLabel).click().wait(5000);
 
 const openDetectorDetails = (detectorName) => {
   cy.sa_getInputByPlaceholder('Search threat detectors')

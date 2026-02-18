@@ -163,7 +163,9 @@ const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
   cy.sa_getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
-const getLogTypeField = () => cy.sa_getFieldByLabel('Log type');
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel('Log typ').click().wait(5000);
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
