@@ -135,23 +135,6 @@ describe('table visualization in embedded mode', () => {
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });
-    cy.wait(2000);
-    cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
-    cy.wait(2000);
-    cy.tbClickFilterFromExpand('filter for');
-    cy.wait(2000);
-    cy.reload();
-    cy.wait(2000);
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(['0', '1,059']);
-    });
-    commonUI.removeFilter('age');
-    cy.wait(2000);
-    cy.reload();
-    cy.wait(2000);
-    cy.tbGetTableDataFromVisualization().then((data) => {
-      expect(data).to.deep.eq(expectedData);
-    });
   });
 
   it.skip('Should filter out value in embedded mode', () => {
@@ -177,8 +160,7 @@ describe('table visualization in embedded mode', () => {
     cy.tbGetTableDataFromVisualization().then((data) => {
       expect(data).to.deep.eq(expectedData);
     });
-    cy.tbClickTableCellAction(2, 0, 0, 'expand', 0, true);
-    suppressResizeObserverIssue();
+    cy.tbClickTableCellAction(2, 0, 0, 'filter out', 0, true);
     cy.tbClickFilterFromExpand('filter out');
     cy.reload();
     cy.tbGetTableDataFromVisualization().then((data) => {

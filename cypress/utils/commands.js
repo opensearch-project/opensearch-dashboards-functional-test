@@ -27,43 +27,42 @@ export const CURRENT_TENANT = {
 };
 
 // Overwrite default backend endpoint to customized one, remember set to original value after tests complete.
-export const currentBackendEndpoint = (() => {
-  let currentEndpoint = BACKEND_BASE_PATH;
-  const DEFAULT_ENDPOINT = BACKEND_BASE_PATH;
-  const REMOTE_NO_AUTH_ENDPOINT = Cypress.env('remoteDataSourceNoAuthUrl');
-
-  return Object.freeze({
-    DEFAULT: DEFAULT_ENDPOINT,
-    REMOTE_NO_AUTH: REMOTE_NO_AUTH_ENDPOINT,
-    /**
-     * Change current backend endpoint
-     * @param {*} changedEndPoint
-     * @param {*} immediately set immediately false to change tenant after all pending promise be invoked,
-     * useful for reset backend endpoint after all tests run.
-     */
-    set(changedEndPoint, immediately = true) {
-      if (
-        ![DEFAULT_ENDPOINT, REMOTE_NO_AUTH_ENDPOINT].includes(changedEndPoint)
-      ) {
-        throw new Error(`Invalid endpoint:${changedEndPoint}`);
-      }
-      const updateEndpoint = () => {
-        currentEndpoint = changedEndPoint;
-        cy.log(
-          `Current backend endpoint has been changed to: ${currentEndpoint}`
-        );
-      };
-      if (immediately) {
-        updateEndpoint();
-      } else {
-        cy.wrap().then(updateEndpoint);
-      }
-    },
-    get() {
-      return currentEndpoint;
-    },
-  });
-})();
+export const currentBackendEndpoint = Object.freeze({
+  DEFAULT: BACKEND_BASE_PATH,
+  REMOTE_NO_AUTH: Cypress.env('remoteDataSourceNoAuthUrl'),
+  /**
+   * Change current backend endpoint
+   * @param {*} changedEndPoint
+   * @param {*} immediately set immediately false to change tenant after all pending promise be invoked,
+   * useful for reset backend endpoint after all tests run.
+   */
+  set(changedEndPoint, immediately = true) {
+    if (
+      ![
+        currentBackendEndpoint.DEFAULT,
+        currentBackendEndpoint.REMOTE_NO_AUTH,
+      ].includes(changedEndPoint)
+    ) {
+      throw new Error(`Invalid endpoint:${changedEndPoint}`);
+    }
+    const updateEndpoint = () => {
+      Cypress.env('currentBackendEndpoint', changedEndPoint);
+      cy.log(
+        `Current backend endpoint has been changed to: ${changedEndPoint}`
+      );
+    };
+    if (immediately) {
+      updateEndpoint();
+    } else {
+      cy.wrap().then(updateEndpoint);
+    }
+  },
+  get() {
+    return (
+      Cypress.env('currentBackendEndpoint') || currentBackendEndpoint.DEFAULT
+    );
+  },
+});
 
 export const supressNoRequestOccurred = () => {
   cy.on('fail', (err) => {
@@ -777,4 +776,69 @@ Cypress.Commands.add('clearCache', () => {
   devToolsRequest(`/_flush`, 'POST');
   devToolsRequest(`/_forcemerge`, 'POST');
   cy.wait(5000);
+});
+
+Cypress.Commands.add('deleteForecastIndices', () => {
+  cy.log('Deleting forecast indices');
+  const url = `${Cypress.env('openSearchUrl')}/opensearch-forecast-result*`;
+  cy.request({
+    method: 'DELETE',
+    url: url,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  });
+
+  cy.request({
+    method: 'POST',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_forecast/forecasters/_search`,
+    failOnStatusCode: false,
+    body: { query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request(
+          'POST',
+          `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+            hit._id
+          }/_stop`
+        ).then((response) => {
+          if (response.status === 200) {
+            cy.request(
+              'DELETE',
+              `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+                hit._id
+              }`
+            );
+          }
+        });
+      }
+    }
+  });
+});
+
+Cypress.Commands.add('setAbsoluteDate', (startDate, endDate) => {
+  cy.getElementByTestId('superDatePickerShowDatesButton').click();
+
+  // Set absolute start date
+  cy.getElementByTestId('superDatePickerAbsoluteTab').first().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .first()
+    .clear()
+    .type(startDate);
+
+  // Set absolute end date
+  cy.getElementByTestId('superDatePickerendDatePopoverButton').click();
+  cy.getElementByTestId('superDatePickerAbsoluteTab').last().click();
+  cy.getElementByTestId('superDatePickerAbsoluteDateInput')
+    .last()
+    .clear()
+    .type(endDate);
+
+  // Click on the body to close the date picker popover
+  cy.get('body').click(0, 0);
+
+  // Apply the new date range
+  cy.getElementByTestId('superDatePickerApplyTimeButton').click();
 });

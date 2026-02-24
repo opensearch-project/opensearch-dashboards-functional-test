@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "response": {
+    "totalForecasters": 1,
+    "forecasterList": [
+      {
+        "id": "ulgqpXEBqtadYz9j2MHG",
+        "description": "A running detector.",
+        "indices": ["running-forecaster-index"],
+        "lastUpdateTime": 1587614056945,
+        "name": "running-forecaster",
+        "timeField": "timestamp",
+        "forecastInterval": { "period": { "interval": 1, "unit": "Minutes" } },
+        "windowDelay": { "period": { "interval": 1, "unit": "Minutes" } },
+        "schemaVersion": 0,
+        "filterQuery": { "match_all": { "boost": 1 } },
+        "featureAttributes": [
+          {
+            "featureId": "1mMspXEBcngjFp58AS_u",
+            "featureName": "test-f",
+            "featureEnabled": true,
+            "aggregationQuery": { "aa": { "sum": { "field": "value" } } }
+          }
+        ],
+        "uiMetadata": {
+          "features": {
+            "aa": {
+              "aggregationBy": "sum",
+              "aggregationOf": "value",
+              "featureType": "simple_aggs"
+            }
+          },
+          "filters": [],
+          "filterType": "simple_filter"
+        },
+        "enabled": true,
+        "totalAnomalies": 0,
+        "lastActiveAnomaly": 1591593056550,
+        "curState": "Inactive stopped",
+        "stateError": "ConnectTransportException[[][127.0.0.2:9301] connect_exception]; nested: AnnotatedConnectException[Connection refused: /127.0.0.2:9301]; nested: ConnectException[Connection refused];"
+      }
+    ]
+  }
+}

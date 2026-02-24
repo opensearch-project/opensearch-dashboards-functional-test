@@ -1,0 +1,568 @@
+{"index":{"_id": "id-1"}}
+{ "value": 10, "timestamp": "2020-01-01 00:00:00", "host": "host_1"}
+{"index":{"_id": "id-2"}}
+{ "value": 12, "timestamp": "2020-01-01 00:01:00", "host": "host_2"}
+{"index":{"_id": "id-3"}}
+{ "value": 15, "timestamp": "2020-01-01 00:02:00", "host": "host_1"}
+{"index":{"_id": "id-4"}}
+{ "value": 18, "timestamp": "2020-01-01 00:03:00", "host": "host_2"}
+{"index":{"_id": "id-5"}}
+{ "value": 22, "timestamp": "2020-01-01 00:04:00", "host": "host_1"}
+{"index":{"_id": "id-6"}}
+{ "value": 25, "timestamp": "2020-01-01 00:05:00", "host": "host_2"}
+{"index":{"_id": "id-7"}}
+{ "value": 28, "timestamp": "2020-01-01 00:06:00", "host": "host_1"}
+{"index":{"_id": "id-8"}}
+{ "value": 30, "timestamp": "2020-01-01 00:07:00", "host": "host_2"}
+{"index":{"_id": "id-9"}}
+{ "value": 33, "timestamp": "2020-01-01 00:08:00", "host": "host_1"}
+{"index":{"_id": "id-10"}}
+{ "value": 35, "timestamp": "2020-01-01 00:09:00", "host": "host_2"}
+{"index":{"_id": "id-11"}}
+{ "value": 38, "timestamp": "2020-01-01 00:10:00", "host": "host_1"}
+{"index":{"_id": "id-12"}}
+{ "value": 40, "timestamp": "2020-01-01 00:11:00", "host": "host_2"}
+{"index":{"_id": "id-13"}}
+{ "value": 42, "timestamp": "2020-01-01 00:12:00", "host": "host_1"}
+{"index":{"_id": "id-14"}}
+{ "value": 45, "timestamp": "2020-01-01 00:13:00", "host": "host_2"}
+{"index":{"_id": "id-15"}}
+{ "value": 48, "timestamp": "2020-01-01 00:14:00", "host": "host_1"}
+{"index":{"_id": "id-16"}}
+{ "value": 50, "timestamp": "2020-01-01 00:15:00", "host": "host_2"}
+{"index":{"_id": "id-17"}}
+{ "value": 52, "timestamp": "2020-01-01 00:16:00", "host": "host_1"}
+{"index":{"_id": "id-18"}}
+{ "value": 55, "timestamp": "2020-01-01 00:17:00", "host": "host_2"}
+{"index":{"_id": "id-19"}}
+{ "value": 58, "timestamp": "2020-01-01 00:18:00", "host": "host_1"}
+{"index":{"_id": "id-20"}}
+{ "value": 60, "timestamp": "2020-01-01 00:19:00", "host": "host_2"}
+{"index":{"_id": "id-21"}}
+{ "value": 62, "timestamp": "2020-01-01 00:20:00", "host": "host_1"}
+{"index":{"_id": "id-22"}}
+{ "value": 65, "timestamp": "2020-01-01 00:21:00", "host": "host_2"}
+{"index":{"_id": "id-23"}}
+{ "value": 68, "timestamp": "2020-01-01 00:22:00", "host": "host_1"}
+{"index":{"_id": "id-24"}}
+{ "value": 70, "timestamp": "2020-01-01 00:23:00", "host": "host_2"}
+{"index":{"_id": "id-25"}}
+{ "value": 72, "timestamp": "2020-01-01 00:24:00", "host": "host_1"}
+{"index":{"_id": "id-26"}}
+{ "value": 75, "timestamp": "2020-01-01 00:25:00", "host": "host_2"}
+{"index":{"_id": "id-27"}}
+{ "value": 78, "timestamp": "2020-01-01 00:26:00", "host": "host_1"}
+{"index":{"_id": "id-28"}}
+{ "value": 80, "timestamp": "2020-01-01 00:27:00", "host": "host_2"}
+{"index":{"_id": "id-29"}}
+{ "value": 82, "timestamp": "2020-01-01 00:28:00", "host": "host_1"}
+{"index":{"_id": "id-30"}}
+{ "value": 85, "timestamp": "2020-01-01 00:29:00", "host": "host_2"}
+{"index":{"_id": "id-31"}}
+{ "value": 88, "timestamp": "2020-01-01 00:30:00", "host": "host_1"}
+{"index":{"_id": "id-32"}}
+{ "value": 90, "timestamp": "2020-01-01 00:31:00", "host": "host_2"}
+{"index":{"_id": "id-33"}}
+{ "value": 92, "timestamp": "2020-01-01 00:32:00", "host": "host_1"}
+{"index":{"_id": "id-34"}}
+{ "value": 95, "timestamp": "2020-01-01 00:33:00", "host": "host_2"}
+{"index":{"_id": "id-35"}}
+{ "value": 98, "timestamp": "2020-01-01 00:34:00", "host": "host_1"}
+{"index":{"_id": "id-36"}}
+{ "value": 100, "timestamp": "2020-01-01 00:35:00", "host": "host_2"}
+{"index":{"_id": "id-37"}}
+{ "value": 102, "timestamp": "2020-01-01 00:36:00", "host": "host_1"}
+{"index":{"_id": "id-38"}}
+{ "value": 105, "timestamp": "2020-01-01 00:37:00", "host": "host_2"}
+{"index":{"_id": "id-39"}}
+{ "value": 108, "timestamp": "2020-01-01 00:38:00", "host": "host_1"}
+{"index":{"_id": "id-40"}}
+{ "value": 110, "timestamp": "2020-01-01 00:39:00", "host": "host_2"}
+{"index":{"_id": "id-41"}}
+{ "value": 112, "timestamp": "2020-01-01 00:40:00", "host": "host_1"}
+{"index":{"_id": "id-42"}}
+{ "value": 115, "timestamp": "2020-01-01 00:41:00", "host": "host_2"}
+{"index":{"_id": "id-43"}}
+{ "value": 118, "timestamp": "2020-01-01 00:42:00", "host": "host_1"}
+{"index":{"_id": "id-44"}}
+{ "value": 120, "timestamp": "2020-01-01 00:43:00", "host": "host_2"}
+{"index":{"_id": "id-45"}}
+{ "value": 122, "timestamp": "2020-01-01 00:44:00", "host": "host_1"}
+{"index":{"_id": "id-46"}}
+{ "value": 125, "timestamp": "2020-01-01 00:45:00", "host": "host_2"}
+{"index":{"_id": "id-47"}}
+{ "value": 128, "timestamp": "2020-01-01 00:46:00", "host": "host_1"}
+{"index":{"_id": "id-48"}}
+{ "value": 130, "timestamp": "2020-01-01 00:47:00", "host": "host_2"}
+{"index":{"_id": "id-49"}}
+{ "value": 132, "timestamp": "2020-01-01 00:48:00", "host": "host_1"}
+{"index":{"_id": "id-50"}}
+{ "value": 135, "timestamp": "2020-01-01 00:49:00", "host": "host_2"}
+{"index":{"_id": "id-51"}}
+{ "value": 138, "timestamp": "2020-01-01 00:50:00", "host": "host_1"}
+{"index":{"_id": "id-52"}}
+{ "value": 140, "timestamp": "2020-01-01 00:51:00", "host": "host_2"}
+{"index":{"_id": "id-53"}}
+{ "value": 142, "timestamp": "2020-01-01 00:52:00", "host": "host_1"}
+{"index":{"_id": "id-54"}}
+{ "value": 145, "timestamp": "2020-01-01 00:53:00", "host": "host_2"}
+{"index":{"_id": "id-55"}}
+{ "value": 148, "timestamp": "2020-01-01 00:54:00", "host": "host_1"}
+{"index":{"_id": "id-56"}}
+{ "value": 150, "timestamp": "2020-01-01 00:55:00", "host": "host_2"}
+{"index":{"_id": "id-57"}}
+{ "value": 152, "timestamp": "2020-01-01 00:56:00", "host": "host_1"}
+{"index":{"_id": "id-58"}}
+{ "value": 155, "timestamp": "2020-01-01 00:57:00", "host": "host_2"}
+{"index":{"_id": "id-59"}}
+{ "value": 158, "timestamp": "2020-01-01 00:58:00", "host": "host_1"}
+{"index":{"_id": "id-60"}}
+{ "value": 160, "timestamp": "2020-01-01 00:59:00", "host": "host_2"}
+{"index":{"_id": "id-61"}}
+{ "value": 162, "timestamp": "2020-01-01 01:00:00", "host": "host_1"}
+{"index":{"_id": "id-62"}}
+{ "value": 165, "timestamp": "2020-01-01 01:01:00", "host": "host_2"}
+{"index":{"_id": "id-63"}}
+{ "value": 168, "timestamp": "2020-01-01 01:02:00", "host": "host_1"}
+{"index":{"_id": "id-64"}}
+{ "value": 170, "timestamp": "2020-01-01 01:03:00", "host": "host_2"}
+{"index":{"_id": "id-65"}}
+{ "value": 172, "timestamp": "2020-01-01 01:04:00", "host": "host_1"}
+{"index":{"_id": "id-66"}}
+{ "value": 175, "timestamp": "2020-01-01 01:05:00", "host": "host_2"}
+{"index":{"_id": "id-67"}}
+{ "value": 178, "timestamp": "2020-01-01 01:06:00", "host": "host_1"}
+{"index":{"_id": "id-68"}}
+{ "value": 180, "timestamp": "2020-01-01 01:07:00", "host": "host_2"}
+{"index":{"_id": "id-69"}}
+{ "value": 182, "timestamp": "2020-01-01 01:08:00", "host": "host_1"}
+{"index":{"_id": "id-70"}}
+{ "value": 185, "timestamp": "2020-01-01 01:09:00", "host": "host_2"}
+{"index":{"_id": "id-71"}}
+{ "value": 188, "timestamp": "2020-01-01 01:10:00", "host": "host_1"}
+{"index":{"_id": "id-72"}}
+{ "value": 190, "timestamp": "2020-01-01 01:11:00", "host": "host_2"}
+{"index":{"_id": "id-73"}}
+{ "value": 192, "timestamp": "2020-01-01 01:12:00", "host": "host_1"}
+{"index":{"_id": "id-74"}}
+{ "value": 195, "timestamp": "2020-01-01 01:13:00", "host": "host_2"}
+{"index":{"_id": "id-75"}}
+{ "value": 198, "timestamp": "2020-01-01 01:14:00", "host": "host_1"}
+{"index":{"_id": "id-76"}}
+{ "value": 200, "timestamp": "2020-01-01 01:15:00", "host": "host_2"}
+{"index":{"_id": "id-77"}}
+{ "value": 202, "timestamp": "2020-01-01 01:16:00", "host": "host_1"}
+{"index":{"_id": "id-78"}}
+{ "value": 205, "timestamp": "2020-01-01 01:17:00", "host": "host_2"}
+{"index":{"_id": "id-79"}}
+{ "value": 208, "timestamp": "2020-01-01 01:18:00", "host": "host_1"}
+{"index":{"_id": "id-80"}}
+{ "value": 210, "timestamp": "2020-01-01 01:19:00", "host": "host_2"}
+{"index":{"_id": "id-81"}}
+{ "value": 212, "timestamp": "2020-01-01 01:20:00", "host": "host_1"}
+{"index":{"_id": "id-82"}}
+{ "value": 215, "timestamp": "2020-01-01 01:21:00", "host": "host_2"}
+{"index":{"_id": "id-83"}}
+{ "value": 218, "timestamp": "2020-01-01 01:22:00", "host": "host_1"}
+{"index":{"_id": "id-84"}}
+{ "value": 220, "timestamp": "2020-01-01 01:23:00", "host": "host_2"}
+{"index":{"_id": "id-85"}}
+{ "value": 222, "timestamp": "2020-01-01 01:24:00", "host": "host_1"}
+{"index":{"_id": "id-86"}}
+{ "value": 225, "timestamp": "2020-01-01 01:25:00", "host": "host_2"}
+{"index":{"_id": "id-87"}}
+{ "value": 228, "timestamp": "2020-01-01 01:26:00", "host": "host_1"}
+{"index":{"_id": "id-88"}}
+{ "value": 230, "timestamp": "2020-01-01 01:27:00", "host": "host_2"}
+{"index":{"_id": "id-89"}}
+{ "value": 232, "timestamp": "2020-01-01 01:28:00", "host": "host_1"}
+{"index":{"_id": "id-90"}}
+{ "value": 235, "timestamp": "2020-01-01 01:29:00", "host": "host_2"}
+{"index":{"_id": "id-91"}}
+{ "value": 238, "timestamp": "2020-01-01 01:30:00", "host": "host_1"}
+{"index":{"_id": "id-92"}}
+{ "value": 240, "timestamp": "2020-01-01 01:31:00", "host": "host_2"}
+{"index":{"_id": "id-93"}}
+{ "value": 242, "timestamp": "2020-01-01 01:32:00", "host": "host_1"}
+{"index":{"_id": "id-94"}}
+{ "value": 245, "timestamp": "2020-01-01 01:33:00", "host": "host_2"}
+{"index":{"_id": "id-95"}}
+{ "value": 248, "timestamp": "2020-01-01 01:34:00", "host": "host_1"}
+{"index":{"_id": "id-96"}}
+{ "value": 250, "timestamp": "2020-01-01 01:35:00", "host": "host_2"}
+{"index":{"_id": "id-97"}}
+{ "value": 252, "timestamp": "2020-01-01 01:36:00", "host": "host_1"}
+{"index":{"_id": "id-98"}}
+{ "value": 255, "timestamp": "2020-01-01 01:37:00", "host": "host_2"}
+{"index":{"_id": "id-99"}}
+{ "value": 258, "timestamp": "2020-01-01 01:38:00", "host": "host_1"}
+{"index":{"_id": "id-100"}}
+{ "value": 260, "timestamp": "2020-01-01 01:39:00", "host": "host_2"}
+{"index":{"_id": "id-101"}}
+{ "value": 262, "timestamp": "2020-01-01 01:40:00", "host": "host_1"}
+{"index":{"_id": "id-102"}}
+{ "value": 265, "timestamp": "2020-01-01 01:41:00", "host": "host_2"}
+{"index":{"_id": "id-103"}}
+{ "value": 268, "timestamp": "2020-01-01 01:42:00", "host": "host_1"}
+{"index":{"_id": "id-104"}}
+{ "value": 270, "timestamp": "2020-01-01 01:43:00", "host": "host_2"}
+{"index":{"_id": "id-105"}}
+{ "value": 272, "timestamp": "2020-01-01 01:44:00", "host": "host_1"}
+{"index":{"_id": "id-106"}}
+{ "value": 275, "timestamp": "2020-01-01 01:45:00", "host": "host_2"}
+{"index":{"_id": "id-107"}}
+{ "value": 278, "timestamp": "2020-01-01 01:46:00", "host": "host_1"}
+{"index":{"_id": "id-108"}}
+{ "value": 280, "timestamp": "2020-01-01 01:47:00", "host": "host_2"}
+{"index":{"_id": "id-109"}}
+{ "value": 282, "timestamp": "2020-01-01 01:48:00", "host": "host_1"}
+{"index":{"_id": "id-110"}}
+{ "value": 285, "timestamp": "2020-01-01 01:49:00", "host": "host_2"}
+{"index":{"_id": "id-111"}}
+{ "value": 288, "timestamp": "2020-01-01 01:50:00", "host": "host_1"}
+{"index":{"_id": "id-112"}}
+{ "value": 290, "timestamp": "2020-01-01 01:51:00", "host": "host_2"}
+{"index":{"_id": "id-113"}}
+{ "value": 292, "timestamp": "2020-01-01 01:52:00", "host": "host_1"}
+{"index":{"_id": "id-114"}}
+{ "value": 295, "timestamp": "2020-01-01 01:53:00", "host": "host_2"}
+{"index":{"_id": "id-115"}}
+{ "value": 298, "timestamp": "2020-01-01 01:54:00", "host": "host_1"}
+{"index":{"_id": "id-116"}}
+{ "value": 300, "timestamp": "2020-01-01 01:55:00", "host": "host_2"}
+{"index":{"_id": "id-117"}}
+{ "value": 302, "timestamp": "2020-01-01 01:56:00", "host": "host_1"}
+{"index":{"_id": "id-118"}}
+{ "value": 305, "timestamp": "2020-01-01 01:57:00", "host": "host_2"}
+{"index":{"_id": "id-119"}}
+{ "value": 308, "timestamp": "2020-01-01 01:58:00", "host": "host_1"}
+{"index":{"_id": "id-120"}}
+{ "value": 310, "timestamp": "2020-01-01 01:59:00", "host": "host_2"}
+{"index":{"_id": "id-121"}}
+{ "value": 312, "timestamp": "2020-01-01 02:00:00", "host": "host_1"}
+{"index":{"_id": "id-122"}}
+{ "value": 315, "timestamp": "2020-01-01 02:01:00", "host": "host_2"}
+{"index":{"_id": "id-123"}}
+{ "value": 318, "timestamp": "2020-01-01 02:02:00", "host": "host_1"}
+{"index":{"_id": "id-124"}}
+{ "value": 320, "timestamp": "2020-01-01 02:03:00", "host": "host_2"}
+{"index":{"_id": "id-125"}}
+{ "value": 322, "timestamp": "2020-01-01 02:04:00", "host": "host_1"}
+{"index":{"_id": "id-126"}}
+{ "value": 325, "timestamp": "2020-01-01 02:05:00", "host": "host_2"}
+{"index":{"_id": "id-127"}}
+{ "value": 328, "timestamp": "2020-01-01 02:06:00", "host": "host_1"}
+{"index":{"_id": "id-128"}}
+{ "value": 330, "timestamp": "2020-01-01 02:07:00", "host": "host_2"}
+{"index":{"_id": "id-129"}}
+{ "value": 332, "timestamp": "2020-01-01 02:08:00", "host": "host_1"}
+{"index":{"_id": "id-130"}}
+{ "value": 335, "timestamp": "2020-01-01 02:09:00", "host": "host_2"}
+{"index":{"_id": "id-131"}}
+{ "value": 338, "timestamp": "2020-01-01 02:10:00", "host": "host_1"}
+{"index":{"_id": "id-132"}}
+{ "value": 340, "timestamp": "2020-01-01 02:11:00", "host": "host_2"}
+{"index":{"_id": "id-133"}}
+{ "value": 342, "timestamp": "2020-01-01 02:12:00", "host": "host_1"}
+{"index":{"_id": "id-134"}}
+{ "value": 345, "timestamp": "2020-01-01 02:13:00", "host": "host_2"}
+{"index":{"_id": "id-135"}}
+{ "value": 348, "timestamp": "2020-01-01 02:14:00", "host": "host_1"}
+{"index":{"_id": "id-136"}}
+{ "value": 350, "timestamp": "2020-01-01 02:15:00", "host": "host_2"}
+{"index":{"_id": "id-137"}}
+{ "value": 352, "timestamp": "2020-01-01 02:16:00", "host": "host_1"}
+{"index":{"_id": "id-138"}}
+{ "value": 355, "timestamp": "2020-01-01 02:17:00", "host": "host_2"}
+{"index":{"_id": "id-139"}}
+{ "value": 358, "timestamp": "2020-01-01 02:18:00", "host": "host_1"}
+{"index":{"_id": "id-140"}}
+{ "value": 360, "timestamp": "2020-01-01 02:19:00", "host": "host_2"}
+{"index":{"_id": "id-141"}}
+{ "value": 362, "timestamp": "2020-01-01 02:20:00", "host": "host_1"}
+{"index":{"_id": "id-142"}}
+{ "value": 365, "timestamp": "2020-01-01 02:21:00", "host": "host_2"}
+{"index":{"_id": "id-143"}}
+{ "value": 368, "timestamp": "2020-01-01 02:22:00", "host": "host_1"}
+{"index":{"_id": "id-144"}}
+{ "value": 370, "timestamp": "2020-01-01 02:23:00", "host": "host_2"}
+{"index":{"_id": "id-145"}}
+{ "value": 372, "timestamp": "2020-01-01 02:24:00", "host": "host_1"}
+{"index":{"_id": "id-146"}}
+{ "value": 375, "timestamp": "2020-01-01 02:25:00", "host": "host_2"}
+{"index":{"_id": "id-147"}}
+{ "value": 378, "timestamp": "2020-01-01 02:26:00", "host": "host_1"}
+{"index":{"_id": "id-148"}}
+{ "value": 380, "timestamp": "2020-01-01 02:27:00", "host": "host_2"}
+{"index":{"_id": "id-149"}}
+{ "value": 382, "timestamp": "2020-01-01 02:28:00", "host": "host_1"}
+{"index":{"_id": "id-150"}}
+{ "value": 385, "timestamp": "2020-01-01 02:29:00", "host": "host_2"}
+{"index":{"_id": "id-151"}}
+{ "value": 388, "timestamp": "2020-01-01 02:30:00", "host": "host_1"}
+{"index":{"_id": "id-152"}}
+{ "value": 390, "timestamp": "2020-01-01 02:31:00", "host": "host_2"}
+{"index":{"_id": "id-153"}}
+{ "value": 392, "timestamp": "2020-01-01 02:32:00", "host": "host_1"}
+{"index":{"_id": "id-154"}}
+{ "value": 395, "timestamp": "2020-01-01 02:33:00", "host": "host_2"}
+{"index":{"_id": "id-155"}}
+{ "value": 398, "timestamp": "2020-01-01 02:34:00", "host": "host_1"}
+{"index":{"_id": "id-156"}}
+{ "value": 400, "timestamp": "2020-01-01 02:35:00", "host": "host_2"}
+{"index":{"_id": "id-157"}}
+{ "value": 402, "timestamp": "2020-01-01 02:36:00", "host": "host_1"}
+{"index":{"_id": "id-158"}}
+{ "value": 405, "timestamp": "2020-01-01 02:37:00", "host": "host_2"}
+{"index":{"_id": "id-159"}}
+{ "value": 408, "timestamp": "2020-01-01 02:38:00", "host": "host_1"}
+{"index":{"_id": "id-160"}}
+{ "value": 410, "timestamp": "2020-01-01 02:39:00", "host": "host_2"}
+{"index":{"_id": "id-161"}}
+{ "value": 412, "timestamp": "2020-01-01 02:40:00", "host": "host_1"}
+{"index":{"_id": "id-162"}}
+{ "value": 415, "timestamp": "2020-01-01 02:41:00", "host": "host_2"}
+{"index":{"_id": "id-163"}}
+{ "value": 418, "timestamp": "2020-01-01 02:42:00", "host": "host_1"}
+{"index":{"_id": "id-164"}}
+{ "value": 420, "timestamp": "2020-01-01 02:43:00", "host": "host_2"}
+{"index":{"_id": "id-165"}}
+{ "value": 422, "timestamp": "2020-01-01 02:44:00", "host": "host_1"}
+{"index":{"_id": "id-166"}}
+{ "value": 425, "timestamp": "2020-01-01 02:45:00", "host": "host_2"}
+{"index":{"_id": "id-167"}}
+{ "value": 428, "timestamp": "2020-01-01 02:46:00", "host": "host_1"}
+{"index":{"_id": "id-168"}}
+{ "value": 430, "timestamp": "2020-01-01 02:47:00", "host": "host_2"}
+{"index":{"_id": "id-169"}}
+{ "value": 432, "timestamp": "2020-01-01 02:48:00", "host": "host_1"}
+{"index":{"_id": "id-170"}}
+{ "value": 435, "timestamp": "2020-01-01 02:49:00", "host": "host_2"}
+{"index":{"_id": "id-171"}}
+{ "value": 438, "timestamp": "2020-01-01 02:50:00", "host": "host_1"}
+{"index":{"_id": "id-172"}}
+{ "value": 440, "timestamp": "2020-01-01 02:51:00", "host": "host_2"}
+{"index":{"_id": "id-173"}}
+{ "value": 442, "timestamp": "2020-01-01 02:52:00", "host": "host_1"}
+{"index":{"_id": "id-174"}}
+{ "value": 445, "timestamp": "2020-01-01 02:53:00", "host": "host_2"}
+{"index":{"_id": "id-175"}}
+{ "value": 448, "timestamp": "2020-01-01 02:54:00", "host": "host_1"}
+{"index":{"_id": "id-176"}}
+{ "value": 450, "timestamp": "2020-01-01 02:55:00", "host": "host_2"}
+{"index":{"_id": "id-177"}}
+{ "value": 452, "timestamp": "2020-01-01 02:56:00", "host": "host_1"}
+{"index":{"_id": "id-178"}}
+{ "value": 455, "timestamp": "2020-01-01 02:57:00", "host": "host_2"}
+{"index":{"_id": "id-179"}}
+{ "value": 458, "timestamp": "2020-01-01 02:58:00", "host": "host_1"}
+{"index":{"_id": "id-180"}}
+{ "value": 460, "timestamp": "2020-01-01 02:59:00", "host": "host_2"}
+{"index":{"_id": "id-181"}}
+{ "value": 462, "timestamp": "2020-01-01 03:00:00", "host": "host_1"}
+{"index":{"_id": "id-182"}}
+{ "value": 465, "timestamp": "2020-01-01 03:01:00", "host": "host_2"}
+{"index":{"_id": "id-183"}}
+{ "value": 468, "timestamp": "2020-01-01 03:02:00", "host": "host_1"}
+{"index":{"_id": "id-184"}}
+{ "value": 470, "timestamp": "2020-01-01 03:03:00", "host": "host_2"}
+{"index":{"_id": "id-185"}}
+{ "value": 472, "timestamp": "2020-01-01 03:04:00", "host": "host_1"}
+{"index":{"_id": "id-186"}}
+{ "value": 475, "timestamp": "2020-01-01 03:05:00", "host": "host_2"}
+{"index":{"_id": "id-187"}}
+{ "value": 478, "timestamp": "2020-01-01 03:06:00", "host": "host_1"}
+{"index":{"_id": "id-188"}}
+{ "value": 480, "timestamp": "2020-01-01 03:07:00", "host": "host_2"}
+{"index":{"_id": "id-189"}}
+{ "value": 482, "timestamp": "2020-01-01 03:08:00", "host": "host_1"}
+{"index":{"_id": "id-190"}}
+{ "value": 485, "timestamp": "2020-01-01 03:09:00", "host": "host_2"}
+{"index":{"_id": "id-191"}}
+{ "value": 488, "timestamp": "2020-01-01 03:10:00", "host": "host_1"}
+{"index":{"_id": "id-192"}}
+{ "value": 490, "timestamp": "2020-01-01 03:11:00", "host": "host_2"}
+{"index":{"_id": "id-193"}}
+{ "value": 492, "timestamp": "2020-01-01 03:12:00", "host": "host_1"}
+{"index":{"_id": "id-194"}}
+{ "value": 495, "timestamp": "2020-01-01 03:13:00", "host": "host_2"}
+{"index":{"_id": "id-195"}}
+{ "value": 498, "timestamp": "2020-01-01 03:14:00", "host": "host_1"}
+{"index":{"_id": "id-196"}}
+{ "value": 500, "timestamp": "2020-01-01 03:15:00", "host": "host_2"}
+{"index":{"_id": "id-197"}}
+{ "value": 502, "timestamp": "2020-01-01 03:16:00", "host": "host_1"}
+{"index":{"_id": "id-198"}}
+{ "value": 505, "timestamp": "2020-01-01 03:17:00", "host": "host_2"}
+{"index":{"_id": "id-199"}}
+{ "value": 508, "timestamp": "2020-01-01 03:18:00", "host": "host_1"}
+{"index":{"_id": "id-200"}}
+{ "value": 510, "timestamp": "2020-01-01 03:19:00", "host": "host_2"}
+{"index":{"_id": "id-201"}}
+{ "value": 512, "timestamp": "2020-01-01 03:20:00", "host": "host_1"}
+{"index":{"_id": "id-202"}}
+{ "value": 515, "timestamp": "2020-01-01 03:21:00", "host": "host_2"}
+{"index":{"_id": "id-203"}}
+{ "value": 518, "timestamp": "2020-01-01 03:22:00", "host": "host_1"}
+{"index":{"_id": "id-204"}}
+{ "value": 520, "timestamp": "2020-01-01 03:23:00", "host": "host_2"}
+{"index":{"_id": "id-205"}}
+{ "value": 522, "timestamp": "2020-01-01 03:24:00", "host": "host_1"}
+{"index":{"_id": "id-206"}}
+{ "value": 525, "timestamp": "2020-01-01 03:25:00", "host": "host_2"}
+{"index":{"_id": "id-207"}}
+{ "value": 528, "timestamp": "2020-01-01 03:26:00", "host": "host_1"}
+{"index":{"_id": "id-208"}}
+{ "value": 530, "timestamp": "2020-01-01 03:27:00", "host": "host_2"}
+{"index":{"_id": "id-209"}}
+{ "value": 532, "timestamp": "2020-01-01 03:28:00", "host": "host_1"}
+{"index":{"_id": "id-210"}}
+{ "value": 535, "timestamp": "2020-01-01 03:29:00", "host": "host_2"}
+{"index":{"_id": "id-211"}}
+{ "value": 538, "timestamp": "2020-01-01 03:30:00", "host": "host_1"}
+{"index":{"_id": "id-212"}}
+{ "value": 540, "timestamp": "2020-01-01 03:31:00", "host": "host_2"}
+{"index":{"_id": "id-213"}}
+{ "value": 542, "timestamp": "2020-01-01 03:32:00", "host": "host_1"}
+{"index":{"_id": "id-214"}}
+{ "value": 545, "timestamp": "2020-01-01 03:33:00", "host": "host_2"}
+{"index":{"_id": "id-215"}}
+{ "value": 548, "timestamp": "2020-01-01 03:34:00", "host": "host_1"}
+{"index":{"_id": "id-216"}}
+{ "value": 550, "timestamp": "2020-01-01 03:35:00", "host": "host_2"}
+{"index":{"_id": "id-217"}}
+{ "value": 552, "timestamp": "2020-01-01 03:36:00", "host": "host_1"}
+{"index":{"_id": "id-218"}}
+{ "value": 555, "timestamp": "2020-01-01 03:37:00", "host": "host_2"}
+{"index":{"_id": "id-219"}}
+{ "value": 558, "timestamp": "2020-01-01 03:38:00", "host": "host_1"}
+{"index":{"_id": "id-220"}}
+{ "value": 560, "timestamp": "2020-01-01 03:39:00", "host": "host_2"}
+{"index":{"_id": "id-221"}}
+{ "value": 562, "timestamp": "2020-01-01 03:40:00", "host": "host_1"}
+{"index":{"_id": "id-222"}}
+{ "value": 565, "timestamp": "2020-01-01 03:41:00", "host": "host_2"}
+{"index":{"_id": "id-223"}}
+{ "value": 568, "timestamp": "2020-01-01 03:42:00", "host": "host_1"}
+{"index":{"_id": "id-224"}}
+{ "value": 570, "timestamp": "2020-01-01 03:43:00", "host": "host_2"}
+{"index":{"_id": "id-225"}}
+{ "value": 572, "timestamp": "2020-01-01 03:44:00", "host": "host_1"}
+{"index":{"_id": "id-226"}}
+{ "value": 575, "timestamp": "2020-01-01 03:45:00", "host": "host_2"}
+{"index":{"_id": "id-227"}}
+{ "value": 578, "timestamp": "2020-01-01 03:46:00", "host": "host_1"}
+{"index":{"_id": "id-228"}}
+{ "value": 580, "timestamp": "2020-01-01 03:47:00", "host": "host_2"}
+{"index":{"_id": "id-229"}}
+{ "value": 582, "timestamp": "2020-01-01 03:48:00", "host": "host_1"}
+{"index":{"_id": "id-230"}}
+{ "value": 585, "timestamp": "2020-01-01 03:49:00", "host": "host_2"}
+{"index":{"_id": "id-231"}}
+{ "value": 588, "timestamp": "2020-01-01 03:50:00", "host": "host_1"}
+{"index":{"_id": "id-232"}}
+{ "value": 590, "timestamp": "2020-01-01 03:51:00", "host": "host_2"}
+{"index":{"_id": "id-233"}}
+{ "value": 592, "timestamp": "2020-01-01 03:52:00", "host": "host_1"}
+{"index":{"_id": "id-234"}}
+{ "value": 595, "timestamp": "2020-01-01 03:53:00", "host": "host_2"}
+{"index":{"_id": "id-235"}}
+{ "value": 598, "timestamp": "2020-01-01 03:54:00", "host": "host_1"}
+{"index":{"_id": "id-236"}}
+{ "value": 600, "timestamp": "2020-01-01 03:55:00", "host": "host_2"}
+{"index":{"_id": "id-237"}}
+{ "value": 602, "timestamp": "2020-01-01 03:56:00", "host": "host_1"}
+{"index":{"_id": "id-238"}}
+{ "value": 605, "timestamp": "2020-01-01 03:57:00", "host": "host_2"}
+{"index":{"_id": "id-239"}}
+{ "value": 608, "timestamp": "2020-01-01 03:58:00", "host": "host_1"}
+{"index":{"_id": "id-240"}}
+{ "value": 610, "timestamp": "2020-01-01 03:59:00", "host": "host_2"}
+{"index":{"_id": "id-241"}}
+{ "value": 612, "timestamp": "2020-01-01 04:00:00", "host": "host_1"}
+{"index":{"_id": "id-242"}}
+{ "value": 615, "timestamp": "2020-01-01 04:01:00", "host": "host_2"}
+{"index":{"_id": "id-243"}}
+{ "value": 618, "timestamp": "2020-01-01 04:02:00", "host": "host_1"}
+{"index":{"_id": "id-244"}}
+{ "value": 620, "timestamp": "2020-01-01 04:03:00", "host": "host_2"}
+{"index":{"_id": "id-245"}}
+{ "value": 622, "timestamp": "2020-01-01 04:04:00", "host": "host_1"}
+{"index":{"_id": "id-246"}}
+{ "value": 625, "timestamp": "2020-01-01 04:05:00", "host": "host_2"}
+{"index":{"_id": "id-247"}}
+{ "value": 628, "timestamp": "2020-01-01 04:06:00", "host": "host_1"}
+{"index":{"_id": "id-248"}}
+{ "value": 630, "timestamp": "2020-01-01 04:07:00", "host": "host_2"}
+{"index":{"_id": "id-249"}}
+{ "value": 632, "timestamp": "2020-01-01 04:08:00", "host": "host_1"}
+{"index":{"_id": "id-250"}}
+{ "value": 635, "timestamp": "2020-01-01 04:09:00", "host": "host_2"}
+{"index":{"_id": "id-251"}}
+{ "value": 638, "timestamp": "2020-01-01 04:10:00", "host": "host_1"}
+{"index":{"_id": "id-252"}}
+{ "value": 640, "timestamp": "2020-01-01 04:11:00", "host": "host_2"}
+{"index":{"_id": "id-253"}}
+{ "value": 642, "timestamp": "2020-01-01 04:12:00", "host": "host_1"}
+{"index":{"_id": "id-254"}}
+{ "value": 645, "timestamp": "2020-01-01 04:13:00", "host": "host_2"}
+{"index":{"_id": "id-255"}}
+{ "value": 648, "timestamp": "2020-01-01 04:14:00", "host": "host_1"}
+{"index":{"_id": "id-256"}}
+{ "value": 650, "timestamp": "2020-01-01 04:15:00", "host": "host_2"}
+{"index":{"_id": "id-257"}}
+{ "value": 652, "timestamp": "2020-01-01 04:16:00", "host": "host_1"}
+{"index":{"_id": "id-258"}}
+{ "value": 655, "timestamp": "2020-01-01 04:17:00", "host": "host_2"}
+{"index":{"_id": "id-259"}}
+{ "value": 658, "timestamp": "2020-01-01 04:18:00", "host": "host_1"}
+{"index":{"_id": "id-260"}}
+{ "value": 660, "timestamp": "2020-01-01 04:19:00", "host": "host_2"}
+{"index":{"_id": "id-261"}}
+{ "value": 662, "timestamp": "2020-01-01 04:20:00", "host": "host_1"}
+{"index":{"_id": "id-262"}}
+{ "value": 665, "timestamp": "2020-01-01 04:21:00", "host": "host_2"}
+{"index":{"_id": "id-263"}}
+{ "value": 668, "timestamp": "2020-01-01 04:22:00", "host": "host_1"}
+{"index":{"_id": "id-264"}}
+{ "value": 670, "timestamp": "2020-01-01 04:23:00", "host": "host_2"}
+{"index":{"_id": "id-265"}}
+{ "value": 672, "timestamp": "2020-01-01 04:24:00", "host": "host_1"}
+{"index":{"_id": "id-266"}}
+{ "value": 675, "timestamp": "2020-01-01 04:25:00", "host": "host_2"}
+{"index":{"_id": "id-267"}}
+{ "value": 678, "timestamp": "2020-01-01 04:26:00", "host": "host_1"}
+{"index":{"_id": "id-268"}}
+{ "value": 680, "timestamp": "2020-01-01 04:27:00", "host": "host_2"}
+{"index":{"_id": "id-269"}}
+{ "value": 682, "timestamp": "2020-01-01 04:28:00", "host": "host_1"}
+{"index":{"_id": "id-270"}}
+{ "value": 685, "timestamp": "2020-01-01 04:29:00", "host": "host_2"}
+{"index":{"_id": "id-271"}}
+{ "value": 688, "timestamp": "2020-01-01 04:30:00", "host": "host_1"}
+{"index":{"_id": "id-272"}}
+{ "value": 690, "timestamp": "2020-01-01 04:31:00", "host": "host_2"}
+{"index":{"_id": "id-273"}}
+{ "value": 692, "timestamp": "2020-01-01 04:32:00", "host": "host_1"}
+{"index":{"_id": "id-274"}}
+{ "value": 695, "timestamp": "2020-01-01 04:33:00", "host": "host_2"}
+{"index":{"_id": "id-275"}}
+{ "value": 698, "timestamp": "2020-01-01 04:34:00", "host": "host_1"}
+{"index":{"_id": "id-276"}}
+{ "value": 700, "timestamp": "2020-01-01 04:35:00", "host": "host_2"}
+{"index":{"_id": "id-277"}}
+{ "value": 702, "timestamp": "2020-01-01 04:36:00", "host": "host_1"}
+{"index":{"_id": "id-278"}}
+{ "value": 705, "timestamp": "2020-01-01 04:37:00", "host": "host_2"}
+{"index":{"_id": "id-279"}}
+{ "value": 708, "timestamp": "2020-01-01 04:38:00", "host": "host_1"}
+{"index":{"_id": "id-280"}}
+{ "value": 710, "timestamp": "2020-01-01 04:39:00", "host": "host_2"}
+{"index":{"_id": "id-281"}}
+{ "value": 712, "timestamp": "2020-01-01 04:40:00", "host": "host_1"}
+{"index":{"_id": "id-282"}}
+{ "value": 715, "timestamp": "2020-01-01 04:41:00", "host": "host_2"}
+{"index":{"_id": "id-283"}}
+{ "value": 718, "timestamp": "2020-01-01 04:42:00", "host": "host_1"}
+{"index":{"_id": "id-284"}}
+{ "value": 720, "timestamp": "2020-01-01 04:43:00", "host": "host_2"}

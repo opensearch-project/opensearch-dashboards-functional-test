@@ -32,9 +32,12 @@ import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
+import '../utils/plugins/dashboards-investigation/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
 import '../utils/plugins/query-insights-dashboards/commands';
+import '../utils/plugins/banner/commands';
+import '../utils/plugins/search-relevance-dashboards/commands';
 
 import 'cypress-real-events';
 

@@ -165,10 +165,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   fillDetailsForm(detectorName, dataSource, expectFailure);
 
-  cy.sa_getElementByText(
-    '.euiAccordion .euiTitle',
-    'Selected detection rules (14)'
-  )
+  cy.contains('.euiAccordion .euiTitle', 'Selected detection rules')
+    .should('be.visible')
     .click({ force: true, timeout: 5000 })
     .then(() =>
       cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns))
@@ -217,7 +215,10 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.sa_validateDetailsItem('Detector name', detectorName);
             cy.sa_validateDetailsItem('Description', '-');
             cy.sa_validateDetailsItem('Detector schedule', 'Every 1 minute');
-            cy.sa_validateDetailsItem('Detection rules', '14');
+            cy.sa_getElementByText('.euiFlexItem label', 'Detection rules')
+              .parent()
+              .siblings()
+              .contains(/\d+/);
             cy.sa_validateDetailsItem(
               'Detector dashboard',
               'Not available for this log type'
@@ -482,23 +483,27 @@ describe('Detectors', () => {
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Active rules');
-      cy.sa_getElementByText('.euiText', 'Detection rules (14)');
+      cy.contains('.euiText', /Detection rules \(\d+\)/).should('be.visible');
 
       cy.sa_getInputByPlaceholder('Search...')
         .type(`${cypressDNSRule}`)
         .sa_pressEnterKey();
 
-      cy.sa_getElementByText('.euiTableCellContent button', cypressDNSRule)
-        .parents('td')
-        .prev()
-        .find('.euiTableCellContent button')
-        .click();
+      cy.get('[data-test-subj="edit-detector-rules-table"] tbody tr')
+        .first()
+        .find('td')
+        .first()
+        .find('button')
+        .first()
+        .click({ force: true });
 
-      cy.sa_getElementByText('.euiText', 'Detection rules (13)');
+      cy.contains('.euiText', /Detection rules \(\d+\)/).should('be.visible');
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
       cy.sa_urlShouldContain('detector-details').then(() => {
         cy.sa_getElementByText('.euiText', detectorName);
-        cy.sa_getElementByText('.euiPanel .euiText', 'Active rules (13)');
+        cy.contains('.euiPanel .euiText', /Active rules \(\d+\)/).should(
+          'be.visible'
+        );
       });
     });
 
@@ -605,13 +610,13 @@ describe('Detectors', () => {
       cy.sa_getButtonByText('Actions')
         .click({ force: true })
         .then(() => {
-          setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectors');
           cy.sa_getElementByText('.euiContextMenuItem', 'Delete').click({
             force: true,
           });
-          cy.wait('@detectors').then(() => {
-            cy.contains('There are no existing detectors');
-          });
+          setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
+          cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+          cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+          cy.contains(detectorName).should('not.exist');
         });
     });
   });

@@ -42,8 +42,7 @@ export const APIS_MLC = {
 
 export const BASE_FF_NODE_API_PATH = BASE_PATH + '/api/flow_framework';
 export const INGEST_NODE_API_PATH = BASE_FF_NODE_API_PATH + '/opensearch/bulk';
-export const SEARCH_NODE_API_PATH =
-  BASE_FF_NODE_API_PATH + '/opensearch/search';
+export const SEARCH_MODELS_API_PATH = BASE_FF_NODE_API_PATH + '/model/search';
 
 /**
  *****************************
