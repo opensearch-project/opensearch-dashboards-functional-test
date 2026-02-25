@@ -414,6 +414,37 @@ Cypress.Commands.add('importSavedObjects', (fixturePath, overwrite = true) => {
     });
 });
 
+Cypress.Commands.add('exportSavedObjects', (options = {}) => {
+  const {
+    types,
+    objects,
+    includeReferencesDeep = true,
+    excludeExportDetails = false,
+  } = options;
+  const url = `${Cypress.config().baseUrl}/api/saved_objects/_export`;
+
+  const body = {
+    includeReferencesDeep,
+    excludeExportDetails,
+  };
+
+  if (types) {
+    body.type = types;
+  }
+  if (objects) {
+    body.objects = objects;
+  }
+
+  return cy.request({
+    method: 'POST',
+    url,
+    headers: {
+      'osd-xsrf': true,
+    },
+    body,
+  });
+});
+
 Cypress.Commands.add('deleteSavedObject', (type, id, options = {}) => {
   const url = `${Cypress.config().baseUrl}/api/saved_objects/${type}/${id}`;
 
