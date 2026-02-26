@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import _ from 'lodash';
 import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_data.json';
 
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
@@ -97,10 +98,11 @@ export const createDetector = (
     .then(() => {
       cy.sa_createRule(ruleSettings)
         .then((response) => {
-          const ruleId =
-            response?.body?.response?._id ||
-            response?.body?._id ||
-            response?.body?.id;
+          const ruleId = _.get(
+            response,
+            'body.response._id',
+            _.get(response, 'body._id', _.get(response, 'body.id'))
+          );
           expect(ruleId, 'created rule id').to.exist;
           detectorConfig.inputs[0].detector_input.custom_rules[0].id = ruleId;
           detectorConfig.triggers[0].ids.push(ruleId);
@@ -148,5 +150,3 @@ export const logTypeLabels = {
   linux: 'Linux System Logs',
   azure: 'Microsoft Azure',
 };
-
-
