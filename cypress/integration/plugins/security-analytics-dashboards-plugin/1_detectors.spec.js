@@ -632,7 +632,7 @@ describe('Detectors', () => {
             'state',
             'Complete'
           );
-          cy.contains(detectorName).should('not.exist');
+          cy.contains('test detector edited').should('not.exist');
         });
     });
   });
