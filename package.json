@@ -73,6 +73,7 @@
     "cross-spawn": "^7.0.5",
     "nanoid": "^3.3.8",
     "form-data": "^2.5.5",
-    "serialize-javascript": "^6.0.2"
+    "serialize-javascript": "^6.0.2",
+    "js-yaml": ">=3.14.2 <4 || >=4.1.1"
   }
 }
