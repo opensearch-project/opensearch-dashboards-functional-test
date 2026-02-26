@@ -627,7 +627,11 @@ describe('Detectors', () => {
           });
           setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
           cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-          cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+          cy.wait('@detectorsSearch').should(
+            'have.property',
+            'state',
+            'Complete'
+          );
           cy.contains(detectorName).should('not.exist');
         });
     });
