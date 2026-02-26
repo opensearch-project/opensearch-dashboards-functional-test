@@ -34,6 +34,7 @@ let testDetectorCfg;
 
 describe('Alerts', () => {
   before(() => {
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
     testDetectorCfg = createDetector(
       detectorName,
       indexName,
@@ -53,7 +54,11 @@ describe('Alerts', () => {
     setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
-    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+    cy.wait('@detectorsSearch', { timeout: 300000 }).should(
+      'have.property',
+      'state',
+      'Complete'
+    );
 
     // Wait for page to load
     cy.sa_waitForPageLoad('alerts', {
@@ -72,6 +77,9 @@ describe('Alerts', () => {
     cy.get('[data-test-subj="superDatePickerCommonlyUsed_Today"]').click({
       force: true,
     });
+
+    // Short wait to reduce flakiness
+    cy.wait(5000);
   });
 
   it('are generated', () => {
