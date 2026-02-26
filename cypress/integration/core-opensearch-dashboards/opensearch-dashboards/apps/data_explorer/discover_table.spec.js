@@ -306,6 +306,9 @@ describe('Saved Queries', () => {
         cy.get('[data-test-subj="savedQueryFormSaveButton"]').click();
       });
 
+    // Wait for new added saved query synced
+    cy.wait(5000);
+
     // Verifiy the saved Query
     cy.get('[data-test-subj="saved-query-management-popover-button"]', {
       timeout: 10000,
