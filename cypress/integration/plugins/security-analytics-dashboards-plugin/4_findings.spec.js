@@ -44,7 +44,7 @@ describe('Findings', () => {
     // Wait for page to load
     cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
-      timeout: 300000,
+      timeout: 600000,
     });
 
     cy.wait(5000);

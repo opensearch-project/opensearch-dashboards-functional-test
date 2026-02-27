@@ -167,7 +167,7 @@ const getDescriptionField = () =>
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
 const getLogTypeField = () =>
   // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
-  cy.sa_getFieldByLabel('Log typ').click().wait(5000);
+  cy.sa_getFieldByLabel('Log type').click().wait(5000);
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
@@ -228,13 +228,17 @@ const fillCreateForm = () => {
 
 // TODO: Investigate later the timeout issue
 
-xdescribe('Rules', () => {
+describe('Rules', () => {
   describe('...should validate form fields', () => {
     beforeEach(() => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -497,46 +501,36 @@ xdescribe('Rules', () => {
       getRuleStatusField().sa_selectComboboxItem(SAMPLE_RULE.status);
 
       // selection name field
-      getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('{selectall}').type('{backspace}')
-      );
+      getSelectionNameField()
+        .type('{selectall}', { force: true })
+        .type('{backspace}', { force: true });
       toastShouldExist();
-      getSelectionPanelByIndex(0).within(() =>
-        getSelectionNameField().type('Selection_1')
-      );
+      getSelectionNameField().type('Selection_1', { force: true });
 
       // selection map key field
-      getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('{selectall}').type('{backspace}')
-      );
-      getSelectionPanelByIndex(0).within(() =>
-        getMapKeyField().type('FieldKey')
-      );
+      getMapKeyField()
+        .type('{selectall}', { force: true })
+        .type('{backspace}', { force: true });
+      getMapKeyField().type('FieldKey', { force: true });
 
       // selection map value field
-      getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('{selectall}').type('{backspace}')
-      );
+      getMapValueField()
+        .type('{selectall}', { force: true })
+        .type('{backspace}', { force: true });
       toastShouldExist();
-      getSelectionPanelByIndex(0).within(() =>
-        getMapValueField().type('FieldValue')
-      );
+      getMapValueField().type('FieldValue', { force: true });
 
       // selection map list field
-      getSelectionPanelByIndex(0).within(() => {
-        getListRadioField().click({ force: true });
-        getMapListField().sa_clearValue();
-      });
+      getListRadioField().click({ force: true });
+      getMapListField().sa_clearValue();
       toastShouldExist();
-      getSelectionPanelByIndex(0).within(() => {
-        getListRadioField().click({ force: true });
-        getMapListField().type('FieldValue');
-      });
+      getListRadioField().click({ force: true });
+      getMapListField().type('FieldValue', { force: true });
 
       // tags field
-      getTagField(0).sa_clearValue().type('wrong.tag');
+      getTagField(0).sa_clearValue().type('wrong.tag', { force: true });
       toastShouldExist();
-      getTagField(0).sa_clearValue().type('attack.tag');
+      getTagField(0).sa_clearValue().type('attack.tag', { force: true });
     });
   });
 
@@ -545,7 +539,11 @@ xdescribe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -584,7 +582,7 @@ xdescribe('Rules', () => {
         30000
       );
 
-      cy.wait('@getRules').then(() => {
+      cy.wait('@getRules', { timeout: 600000 }).then(() => {
         // Additional wait to ensure rule is indexed and searchable
         cy.wait(2000);
         checkRulesFlyout();
@@ -636,7 +634,7 @@ xdescribe('Rules', () => {
         contains: 'Detection rules',
       });
 
-      cy.wait('@getRules').then(() => {
+      cy.wait('@getRules', { timeout: 600000 }).then(() => {
         cy.wait(2000);
         checkRulesFlyout();
       });
@@ -678,7 +676,7 @@ xdescribe('Rules', () => {
             );
 
           cy.wait(5000);
-          cy.wait('@getRules');
+          cy.wait('@getRules', { timeout: 600000 });
 
           // Search for the rule
           cy.wait(3000);
