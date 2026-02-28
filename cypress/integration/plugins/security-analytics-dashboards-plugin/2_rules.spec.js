@@ -165,7 +165,7 @@ const getDescriptionField = () =>
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
 const getLogTypeField = () =>
   // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
-  cy.sa_getFieldByLabel('Log typ').click().wait(5000);
+  cy.sa_getFieldByLabel('Log type').click().wait(5000);
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
