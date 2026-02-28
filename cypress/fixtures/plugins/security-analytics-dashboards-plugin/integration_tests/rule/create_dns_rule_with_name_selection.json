@@ -1,5 +1,5 @@
 {
-  "id": "25b9c01c-350d-4b95-bed1-836d04a4f325",
+  "id": "25b9c01c-350d-4b95-bed1-836d04a4f324",
   "category": "dns",
   "title": "Cypress DNS Rule",
   "description": "Detects DNS name as QWE",

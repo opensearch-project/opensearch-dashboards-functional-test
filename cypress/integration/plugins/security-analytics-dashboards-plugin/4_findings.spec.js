@@ -160,6 +160,7 @@ describe('Findings', () => {
     cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
     });
+    cy.wait(5000);
 
     // filter table to show only sample_detector findings
     cy.get(`input[placeholder="Search findings"]`).sa_ospSearch(indexName);
