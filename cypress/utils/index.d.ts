@@ -64,11 +64,26 @@ declare namespace Cypress {
     /**
      * Import saved objects
      * @example
-     * cy.importSavedObject('plugins/test/exported_data.ndjson')
+     * cy.importSavedObjects('plugins/test/exported_data.ndjson')
      */
     importSavedObjects<S = any>(
       fixturePath: string,
       overwrite?: boolean
+    ): Chainable<S>;
+
+    /**
+     * Export saved objects via API
+     * @example
+     * cy.exportSavedObjects({ types: ['dashboard', 'visualization'] })
+     * cy.exportSavedObjects({ objects: [{ type: 'dashboard', id: 'my-id' }] })
+     */
+    exportSavedObjects<S = any>(
+      options?: {
+        types?: string | string[];
+        objects?: Array<{ type: string; id: string }>;
+        includeReferencesDeep?: boolean;
+        excludeExportDetails?: boolean;
+      }
     ): Chainable<S>;
 
     /**
