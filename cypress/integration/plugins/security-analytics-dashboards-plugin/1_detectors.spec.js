@@ -24,7 +24,7 @@ const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
 const creationFailedMessage = 'Create detector failed.';
 
-const cypressDNSRule = dns_name_rule_data.title;
+const cypressDNSRule = dns_name_rule_data.rule.title;
 
 const getNameField = () =>
   cy.sa_getInputByPlaceholder('Enter a name for the detector.');

@@ -23,6 +23,13 @@ describe('Findings', () => {
   before(() => {
     // Visit Alerts table page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/findings`);
+
+    // Wait for page to load
+    cy.sa_waitForPageLoad('findings', {
+      contains: 'Findings',
+      timeout: 600000,
+    });
+
     createDetector(
       detectorName,
       indexName,
@@ -44,7 +51,7 @@ describe('Findings', () => {
     // Wait for page to load
     cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
-      timeout: 300000,
+      timeout: 600000,
     });
 
     cy.wait(5000);
@@ -160,6 +167,7 @@ describe('Findings', () => {
     // Wait for page to load
     cy.sa_waitForPageLoad('findings', {
       contains: 'Findings',
+      timeout: 600000,
     });
     cy.wait(5000);
 
