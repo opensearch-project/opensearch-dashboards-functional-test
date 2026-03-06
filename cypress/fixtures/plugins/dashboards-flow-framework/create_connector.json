@@ -12,7 +12,6 @@
     "access_key": "<key>",
     "secret_key": "<value>",
     "session_token": "<token>"
-
   },
   "actions": [
     {

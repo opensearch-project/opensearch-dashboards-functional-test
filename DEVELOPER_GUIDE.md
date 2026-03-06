@@ -77,21 +77,21 @@ To run tests against a local cluster
 without security:
 
 ```
-$ yarn cypress:run-without-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
+$ yarn cypress:run-without-security --spec "cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
 with security:
 
 ```
-$ yarn cypress:run-with-security --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js"
+$ yarn cypress:run-with-security --spec "cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/*.js"
 ```
 
 These tests run in headless mode by default.
 
-And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
+And you can override certain [cypress config or environment variable](cypress.config.js) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
 ```
-$ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
+$ yarn cypress run --spec "cypress/e2e/core-opensearch-dashboards/opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
 ```
 
 `SECURITY_ENABLED`: if true, the `username` and `password` passing in are used as basic authentication credentials during `cy.visit` and `cy.request`. Also, please notice security enabled endpoint normally uses https protocol, so you may want to pass in different urls.
@@ -102,7 +102,7 @@ $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opense
 
 ## Writing tests
 
-The testing library uses [Cypress](https://www.cypress.io/) as its testing framework and follow its high level folder structure. All tests are written under the `./cypress/integration` folder.
+The testing library uses [Cypress](https://www.cypress.io/) as its testing framework and follow its high level folder structure. All tests are written under the `./cypress/e2e` folder.
 
 ### Tests for OpenSearch Dashboards
 
@@ -110,7 +110,7 @@ Tests for core features specific to [OpenSearch Dashboards](https://github.com/o
 
 ```
 /cypress
-    /integration
+    /e2e
         /core-opensearch-dashboards
             /opensearch-dashboards
 ```
@@ -121,16 +121,17 @@ Tests for plugins that are not a part of the [OpenSearch Dashboards](https://git
 
 ```
 /cypress
-    /integration
+    /e2e
         /plugins
             /<YOUR_PLUGIN_NAME>
 ```
 
 ### Tests for Multiple Datasources
 
-Tests surrounding the multiple datasources feature can use the start-opensearch action that lives in this repo. Note that to test these related features, the following OSD config needs to be set: `osd-serve-args: --data_source.enabled=true`. Additionally, if testing with a remote datasource with basic auth enabled using this repo, an additional OSD config needs to be set: `osd-serve-args: --data_source.ssl.verificationMode: none`, so that the self-signed demo certificates can be used. 
+Tests surrounding the multiple datasources feature can use the start-opensearch action that lives in this repo. Note that to test these related features, the following OSD config needs to be set: `osd-serve-args: --data_source.enabled=true`. Additionally, if testing with a remote datasource with basic auth enabled using this repo, an additional OSD config needs to be set: `osd-serve-args: --data_source.ssl.verificationMode: none`, so that the self-signed demo certificates can be used.
 
-Example usage: 
+Example usage:
+
 ```
 - uses: ./.github/actions/start-opensearch
         with:
@@ -139,8 +140,7 @@ Example usage:
           port: 9201
 ```
 
-
-This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within the same github runner. This OpenSearch can then be added as an datasource. 
+This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within the same github runner. This OpenSearch can then be added as an datasource.
 
 ```
 - uses: ./.github/actions/start-opensearch
@@ -150,18 +150,19 @@ This will spin up an OpenSearch backend with version 3.0.0 on port 9201 within t
           admin-password: admin
           port: 9202
 ```
-This will spin up an OpenSearch backend with version 3.0.0 on port 9202 with basic auth and admin credentials of "admin:admin" within the same github runner. This OpenSearch can then be added as an datasource. 
 
-To test UI/API compatibility with different versions you may want to spin up a matrix of OpenSearch backends with different versions than the local cluster. The earliest windows distribution supported is 2.4. 
+This will spin up an OpenSearch backend with version 3.0.0 on port 9202 with basic auth and admin credentials of "admin:admin" within the same github runner. This OpenSearch can then be added as an datasource.
 
+To test UI/API compatibility with different versions you may want to spin up a matrix of OpenSearch backends with different versions than the local cluster. The earliest windows distribution supported is 2.4.
 
 The DataSourceManagement Plugin exposes a helper function to create a data source on this port:
+
 ```
 const [noAuthId, noAuthLabel] = cy.createDataSourceNoAuth();
 
 const [basicAuthId, basicAuthLabel] = cy.createDataSourceBasicAuth();
 
-# Add tests that make calls using noAuthId and basicAuthId, or test that remote datasource via the UI using the labels noAuthLabel and basicAuthLabel. 
+# Add tests that make calls using noAuthId and basicAuthId, or test that remote datasource via the UI using the labels noAuthLabel and basicAuthLabel.
 ```
 
 ### Experimental Features
@@ -170,11 +171,11 @@ When writing tests for experimental features, please follow these steps.
 
 1. Figure out the folder location to put the tests
 
-Similar to the regular tests, OSD Core tests go to the [folder](integration/core-opensearch-dashboards/opensearch-dashboards/) and OSD plugin tests go to the [folder](cypress/integration/plugins/).
+Similar to the regular tests, OSD Core tests go to the [folder](e2e/core-opensearch-dashboards/opensearch-dashboards/) and OSD plugin tests go to the [folder](cypress/e2e/plugins/).
 
 2. Develop tests with a flag to turn on and off
 
-Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. (Define such in [cypress configuration](cypress.json). Refer to `SECURITY_ENABLED` as an example) This is to ensure backward compatibility when integrating with [opensearch-build repo](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet.
+Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. (Define such in [cypress configuration](cypress.config.js). Refer to `SECURITY_ENABLED` as an example) This is to ensure backward compatibility when integrating with [opensearch-build repo](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet.
 
 3. Set up Github action to run the tests inside the current repo
 
@@ -214,12 +215,12 @@ $ yarn lint --fix
 
 #### Arguments
 
-* -r REPO: Name of the repository in {owner}/{repository} format.
-* -w GITHUB_WORKFLOW_NAME: Name of the GitHub workflow file with .yml extension that contains the job that run Cypress tests in the component repository. For example, main.yaml.
-* -o OS_URL: Release artifact of the OpenSearch.
-* -d OSD_URL: Release artifact of the OpenSearch Dashboards.
-* -b BRANCH_REF: Test Branch name or commit reference id.
-* -i BUILD_ID: Release-specific build id for reference.
+- -r REPO: Name of the repository in {owner}/{repository} format.
+- -w GITHUB_WORKFLOW_NAME: Name of the GitHub workflow file with .yml extension that contains the job that run Cypress tests in the component repository. For example, main.yaml.
+- -o OS_URL: Release artifact of the OpenSearch.
+- -d OSD_URL: Release artifact of the OpenSearch Dashboards.
+- -b BRANCH_REF: Test Branch name or commit reference id.
+- -i BUILD_ID: Release-specific build id for reference.
 
 #### How it works
 
@@ -237,8 +238,8 @@ The script logs the status of the remote workflow to a log file located at `/tmp
 
 #### Dependencies
 
-* curl: Used to make HTTP requests to the GitHub API.
-* uuidgen: Used to generate a unique workflow ID.
+- curl: Used to make HTTP requests to the GitHub API.
+- uuidgen: Used to generate a unique workflow ID.
 
 ### Remote Cypress Test Runner - remote_cypress_manifest.json
 
@@ -247,6 +248,7 @@ The script logs the status of the remote workflow to a log file located at `/tmp
 #### Structure
 
 The JSON file contains an array of objects, each representing a different repository and its associated configuration. Here's an example of what an object in the array might look like:
+
 ```
 {
   "repo": "opensearch-project/opensearch-dashboards",
@@ -259,15 +261,15 @@ The JSON file contains an array of objects, each representing a different reposi
 
 #### Fields
 
-* repo: Name of the repository in {owner}/{repository} format.
-* workflow-name: Name of the GitHub workflow file name with .yml extension that contain jobs that run Cypress tests in the component repository. For example, main.yaml.
-* operating-system: Operating system on which tests will be executed. Example: "linux".
-* arch: Architecture of the system. Example: "x64".
-* ref: Test Branch name or commit reference id.
-* build_id: Release-specific build id for reference.
-* integ-test: Integration test configuration for the component.
-  * test-configs: Configurations for different test scenarios. Example: ["with-security", "without-security"].
-  * additional-cluster-configs: Additional configurations specific to the test environment. Example: {"vis_builder.enabled": true, "data_source.enabled": true}.
+- repo: Name of the repository in {owner}/{repository} format.
+- workflow-name: Name of the GitHub workflow file name with .yml extension that contain jobs that run Cypress tests in the component repository. For example, main.yaml.
+- operating-system: Operating system on which tests will be executed. Example: "linux".
+- arch: Architecture of the system. Example: "x64".
+- ref: Test Branch name or commit reference id.
+- build_id: Release-specific build id for reference.
+- integ-test: Integration test configuration for the component.
+  - test-configs: Configurations for different test scenarios. Example: ["with-security", "without-security"].
+  - additional-cluster-configs: Additional configurations specific to the test environment. Example: {"vis_builder.enabled": true, "data_source.enabled": true}.
 
 #### Usage
 
@@ -283,14 +285,14 @@ The `remoteCypress.sh` script reads this JSON file to get the configuration for 
 
 #### Arguments
 
-* -b BIND_ADDRESS: (Optional) Specifies the bind address for the remote OpenSearch/Dashboards cluster. Defaults to localhost or 127.0.0.1.
-* -p BIND_PORT: (Optional) Specifies the bind port for the remote OpenSearch/Dashboards cluster. Defaults to 9200 or 5601 depending on OpenSearch or Dashboards.
-* -s SECURITY_ENABLED: (Optional) Specifies whether security is enabled on the OpenSearch/Dashboards cluster. Can be set to true or false. Defaults to true.
-* -c CREDENTIAL: (Optional) Specifies the credentials for accessing the secured cluster. Format: username:password.
-* -t TEST_COMPONENTS: (Optional) Specifies the components to be tested. Separate multiple components with spaces. If not specified, tests all components.
-* -v VERSION: (Optional) Specifies the OpenSearch version to test.
-* -o OPTION: (Optional) Determines the test type value among default or manifest in test_finder.sh.
-* -r REMOTE_CYPRESS_ENABLED: (Optional) Specifies whether remote Cypress orchestrator runs are enabled. Defaults to true.
+- -b BIND_ADDRESS: (Optional) Specifies the bind address for the remote OpenSearch/Dashboards cluster. Defaults to localhost or 127.0.0.1.
+- -p BIND_PORT: (Optional) Specifies the bind port for the remote OpenSearch/Dashboards cluster. Defaults to 9200 or 5601 depending on OpenSearch or Dashboards.
+- -s SECURITY_ENABLED: (Optional) Specifies whether security is enabled on the OpenSearch/Dashboards cluster. Can be set to true or false. Defaults to true.
+- -c CREDENTIAL: (Optional) Specifies the credentials for accessing the secured cluster. Format: username:password.
+- -t TEST_COMPONENTS: (Optional) Specifies the components to be tested. Separate multiple components with spaces. If not specified, tests all components.
+- -v VERSION: (Optional) Specifies the OpenSearch version to test.
+- -o OPTION: (Optional) Determines the test type value among default or manifest in test_finder.sh.
+- -r REMOTE_CYPRESS_ENABLED: (Optional) Specifies whether remote Cypress orchestrator runs are enabled. Defaults to true.
 
 #### How it works
 
@@ -308,9 +310,8 @@ Cypress Test Execution: Finally, the script executes Cypress tests based on the 
 
 #### Dependencies
 
-* curl: Used to download the OpenSearch bundle.
-* gradlew: Used to run the integration tests.
-* jq: Used to parse JSON files.
-* docker: Used to set up the testing environment.
-* remoteCypress.sh: Used to trigger the remote Cypress tests.
-
+- curl: Used to download the OpenSearch bundle.
+- gradlew: Used to run the integration tests.
+- jq: Used to parse JSON files.
+- docker: Used to set up the testing environment.
+- remoteCypress.sh: Used to trigger the remote Cypress tests.

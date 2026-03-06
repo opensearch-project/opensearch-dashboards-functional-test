@@ -10,7 +10,7 @@ To generate test index data, use the generate index data script. The index name 
 
 ```sh
 npm run generate:test-data -- vis-builder \
-  ./cypress/fixtures/dashboard/opensearch_dashboards/visBuilder 
+  ./cypress/fixtures/dashboard/opensearch_dashboards/visBuilder
 
 # or
 npm run generate:test-data -- vis-builder \
@@ -32,11 +32,11 @@ Refer to [writing_tests.md](../../../../../docs/writing_tests.md)
 VisBuilder uses the following objects for its tests
 
 ### Index Pattern:
+
 - Name: vis-builder
 - timeFieldName: timestamp
 
 To create this index pattern, navigate to `Stack Management > Index Patterns > Create Index Pattern` and create an index pattern with the above name and title
-
 
 > Old
 
@@ -68,7 +68,7 @@ Description: Visualization Builder: Basic Bar Chart
 2. Metric Chart
 
 Any non empty metric will suffice
-   
+
 Title: VB: Basic Metric Chart  
 Description: Visualization Builder: Basic Metric Chart
 
@@ -95,8 +95,7 @@ Description: Visualization Builder: Basic Dashboard
 
 ### Exporting data
 
-
-Export the data from `Stack Management >  Saved Objects`
+Export the data from `Stack Management > Saved Objects`
 
 In the tests, we want to avoid clicking through a bunch of menus to reach the data. In these cases we want to directly access the visualizations and dashboards using their ID's. We can find these ID's by inspecting the exported saved object data or using the saved object API:
 
@@ -105,4 +104,4 @@ curl 'http://localhost:5601/api/opensearch-dashboards/management/saved_objects/_
 | jq '.saved_objects[] | {id: .id, title: .meta.title, type: .type}'
 ```
 
-Update the corresponding ID's in `cypress/utils/dashboards/vis_builder/constants.js` 
+Update the corresponding ID's in `cypress/utils/dashboards/vis_builder/constants.js`
