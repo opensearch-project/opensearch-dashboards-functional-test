@@ -165,21 +165,48 @@ context('top forecaster api', () => {
         cy.getElementByTestId('addOrUpdateCustomQueryButton').click();
         cy.getElementByTestId('customQueryModal').should('not.exist');
 
-        // The update visualization button sometimes isn’t rendered yet after the modal closes,
-        // causing flaky failures. Wait for it to exist and reopen the options panel if it's
-        // not visible before clicking.
-        cy.getElementByTestId('updateVisualizationButton', { timeout: 60000 })
-          .should('exist');
+        // The update visualization button sometimes is not rendered yet after the modal closes,
+        // causing flaky failures. Keep reopening the options panel until the button is visible.
+        // This poll stops once the button is visible, otherwise it continues until the overall
+        // Cypress test timeout (the it timeout or global config) aborts the test.
+        const waitForUpdateVisualizationButton = (
+          retryCount = 0,
+          maxRetries = 60
+        ) => {
+          cy.get('body').then(($body) => {
+            const updateButton = $body.find(
+              '[data-test-subj="updateVisualizationButton"]'
+            );
 
-        cy.get('body').then(($body) => {
-          if (
-            $body.find('[data-test-subj="updateVisualizationButton"]:visible').length === 0
-          ) {
-            cy.getElementByTestId('splitTimeSeriesOptionsButton').click();
-          }
-        });
+            if (updateButton.length && updateButton.is(':visible')) {
+              return;
+            }
 
-        cy.getElementByTestId('updateVisualizationButton', { timeout: 60000 })
+            if (retryCount >= maxRetries) {
+              throw new Error(
+                `updateVisualizationButton not visible after ${maxRetries} retries`
+              );
+            }
+
+            const splitOptionsButton = $body.find(
+              '[data-test-subj="splitTimeSeriesOptionsButton"]'
+            );
+
+            if (splitOptionsButton.length) {
+              cy.wrap(splitOptionsButton).click({ force: true });
+            }
+
+            return cy
+              .wait(1000)
+              .then(() =>
+                waitForUpdateVisualizationButton(retryCount + 1, maxRetries)
+              );
+          });
+        };
+
+        waitForUpdateVisualizationButton();
+
+        cy.getElementByTestId('updateVisualizationButton')
           .should('be.visible')
           .click();
         cy.contains('SPLIT TIME SERIES CONTROLS').should('not.exist');

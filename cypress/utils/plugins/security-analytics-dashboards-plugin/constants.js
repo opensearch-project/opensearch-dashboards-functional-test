@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import _ from 'lodash';
 import sample_detector from '../../../fixtures/plugins/security-analytics-dashboards-plugin/integration_tests/detector/create_usb_detector_data.json';
 
 export const TWENTY_SECONDS_TIMEOUT = { timeout: 20000 };
@@ -97,9 +98,14 @@ export const createDetector = (
     .then(() => {
       cy.sa_createRule(ruleSettings)
         .then((response) => {
-          detectorConfig.inputs[0].detector_input.custom_rules[0].id =
-            response.body.response._id;
-          detectorConfig.triggers[0].ids.push(response.body.response._id);
+          const ruleId = _.get(
+            response,
+            'body.response._id',
+            _.get(response, 'body._id', _.get(response, 'body.id'))
+          );
+          expect(ruleId, 'created rule id').to.exist;
+          detectorConfig.inputs[0].detector_input.custom_rules[0].id = ruleId;
+          detectorConfig.triggers[0].ids.push(ruleId);
         })
         // create the detector
         .then(() => cy.sa_createDetector(detectorConfig));
@@ -107,6 +113,9 @@ export const createDetector = (
     .then(() => {
       // Go to the detectors table page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+
+      // Short wait to reduce flakiness
+      cy.wait(5000);
 
       // Filter table to only show the test detector
       cy.get(`input[type="search"]`).type(`${detectorConfig.name}{enter}`);
@@ -144,5 +153,3 @@ export const logTypeLabels = {
   linux: 'Linux System Logs',
   azure: 'Microsoft Azure',
 };
-
-

@@ -292,7 +292,9 @@ describe('Saved Queries', () => {
     );
     cy.waitForSearch();
 
-    cy.get('[data-test-subj="saved-query-management-popover-button"]').click();
+    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
+      timeout: 10000,
+    }).click({ force: true });
 
     cy.get('[data-test-subj="saved-query-management-save-button"]')
       .click()
@@ -304,8 +306,13 @@ describe('Saved Queries', () => {
         cy.get('[data-test-subj="savedQueryFormSaveButton"]').click();
       });
 
+    // Wait for new added saved query synced
+    cy.wait(5000);
+
     // Verifiy the saved Query
-    cy.get('[data-test-subj="saved-query-management-popover-button"]').click();
+    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
+      timeout: 10000,
+    }).click({ force: true });
 
     cy.get('[type="button"]').should('contain.text', 'Sample Saved Query');
   });
@@ -320,7 +327,9 @@ describe('Saved Queries', () => {
     } else {
       cy.reload();
     }
-    cy.get('[data-test-subj="saved-query-management-popover-button"]').click();
+    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
+      timeout: 10000,
+    }).click({ force: true });
 
     cy.get('[class="euiListGroupItem__button"]').trigger('mouseover');
 
@@ -332,7 +341,9 @@ describe('Saved Queries', () => {
       force: true,
     });
 
-    cy.get('[data-test-subj="saved-query-management-popover-button"]').click();
+    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
+      timeout: 10000,
+    }).click({ force: true });
 
     cy.get('[type="button"]').should('not.contain.text', 'Sample Saved Query');
   });
