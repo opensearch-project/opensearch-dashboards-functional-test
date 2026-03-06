@@ -8,7 +8,7 @@ import { BASE_PATH, TIMEOUT } from '../../../utils/constants';
 describe('Cypress', () => {
   it('Visit edit page, update name and description', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
+      waitForGetTenant: false,
     });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
@@ -71,7 +71,7 @@ describe('Cypress', () => {
 
   it('Visit edit page, change report trigger', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
+      waitForGetTenant: false,
     });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
@@ -131,7 +131,7 @@ describe('Cypress', () => {
 
   it('Visit edit page, change report trigger back', () => {
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
+      waitForGetTenant: false,
     });
     cy.location('pathname', { timeout: TIMEOUT }).should(
       'include',
