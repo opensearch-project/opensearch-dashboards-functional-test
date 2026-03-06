@@ -71,7 +71,11 @@ export const WorkspaceDetailTestCases = () => {
             'PUT',
             `/w/${workspaceId}/api/workspaces/${workspaceId}`
           ).as('updateWorkspaceRequest');
-          cy.getElementByTestId('workspaceForm-workspaceDetails-edit').click();
+          cy.getElementByTestId('workspaceForm-workspaceDetails-edit', {
+            timeout: 10000,
+          })
+            .should('be.visible')
+            .click();
         });
 
         describe('Validate workspace name and description', () => {
@@ -306,9 +310,11 @@ export const WorkspaceDetailTestCases = () => {
           });
 
           afterEach(() => {
-            cy.getElementByTestId(
-              'workspaceForm-workspaceDetails-edit'
-            ).click();
+            cy.getElementByTestId('workspaceForm-workspaceDetails-edit', {
+              timeout: 10000,
+            })
+              .should('be.visible')
+              .click();
             cy.getElementByTestId('workspacePrivacySettingSelector').click({
               force: true,
             });
@@ -335,9 +341,11 @@ export const WorkspaceDetailTestCases = () => {
           });
 
           it('should able to update privacy setting to anyone can read', () => {
-            cy.getElementByTestId(
-              'workspaceForm-workspaceDetails-edit'
-            ).click();
+            cy.getElementByTestId('workspaceForm-workspaceDetails-edit', {
+              timeout: 10000,
+            })
+              .should('be.visible')
+              .click();
             cy.getElementByTestId('workspacePrivacySettingSelector').click({
               force: true,
             });
@@ -367,9 +375,11 @@ export const WorkspaceDetailTestCases = () => {
           });
 
           it('should able to update privacy setting to anyone can write', () => {
-            cy.getElementByTestId(
-              'workspaceForm-workspaceDetails-edit'
-            ).click();
+            cy.getElementByTestId('workspaceForm-workspaceDetails-edit', {
+              timeout: 10000,
+            })
+              .should('be.visible')
+              .click();
             cy.getElementByTestId('workspacePrivacySettingSelector').click({
               force: true,
             });

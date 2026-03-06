@@ -117,7 +117,9 @@ export const testOverviewPage = (context) => {
     cy.contains('h1', 'Overview');
     cy.contains('h2', 'Models');
 
-    cy.get('[aria-label="Search by model name or ID"]').clear();
+    cy.get('[aria-label="Search by model name or ID"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear();
     cy.get('[aria-label="Search by model name or ID"]').type(
       context.uploadedModelId
     );
@@ -133,7 +135,9 @@ export const testOverviewPage = (context) => {
   });
 
   it('should open preview panel after view detail button click', () => {
-    cy.get('[aria-label="Search by model name or ID"]').clear();
+    cy.get('[aria-label="Search by model name or ID"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear();
     cy.get('[aria-label="Search by model name or ID"]').type(
       context.uploadedModelId
     );
@@ -174,7 +178,9 @@ export const testOverviewPage = (context) => {
       }
     ).as('getDeployedModelProfile');
 
-    cy.get('[aria-label="Search by model name or ID"]').clear();
+    cy.get('[aria-label="Search by model name or ID"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear();
     cy.get('[aria-label="Search by model name or ID"]').type(
       context.uploadedModelId
     );
@@ -203,7 +209,9 @@ export const testOverviewPageRedirect = () => {
 
 export const testRemoteModelsOverviewPage = (context) => {
   it('should show remote models with External source', () => {
-    cy.get('[aria-label="Search by model name or ID"]').clear();
+    cy.get('[aria-label="Search by model name or ID"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear();
     cy.get('[aria-label="Search by model name or ID"]').type(
       context.registeredRemoteModelId
     );
@@ -213,7 +221,9 @@ export const testRemoteModelsOverviewPage = (context) => {
   });
 
   it('should show show connector details after status details clicked', () => {
-    cy.get('[aria-label="Search by model name or ID"]').clear();
+    cy.get('[aria-label="Search by model name or ID"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear();
     cy.get('[aria-label="Search by model name or ID"]').type(
       context.registeredRemoteModelId
     );

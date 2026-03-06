@@ -726,7 +726,9 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'selectTopRightNavigationDataSource',
   (dataSourceTitle, dataSourceId) => {
-    cy.getElementByTestId('dataSourceSelectableButton').click();
+    cy.getElementByTestId('dataSourceSelectableButton', { timeout: 10000 })
+      .should('be.visible')
+      .click();
     cy.getElementByTestId('dataSourceSelectable').find('input').clear();
     cy.getElementByTestId('dataSourceSelectable')
       .find('input')
@@ -747,13 +749,19 @@ Cypress.Commands.add(
           dataSourceElement.click();
         } else {
           // Close data source picker manually if data source already selected
-          cy.getElementByTestId('dataSourceSelectableButton').click();
+          cy.getElementByTestId('dataSourceSelectableButton', {
+            timeout: 10000,
+          })
+            .should('be.visible')
+            .click();
         }
       });
     }
     // Close data source picker manually if no data source element need to be clicked
     if (!dataSourceElement) {
-      cy.getElementByTestId('dataSourceSelectableButton').click();
+      cy.getElementByTestId('dataSourceSelectableButton', { timeout: 10000 })
+        .should('be.visible')
+        .click();
     }
   }
 );

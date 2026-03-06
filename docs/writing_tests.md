@@ -2,7 +2,6 @@
 
 Most features added to OpenSearch Dashboards and its Plugins will require functional tests. Many of it components are quite similar. This doc should make it easier to setup your test correctly and make the test more useful and follow best practices.
 
-
 - [Writing tests](#writing-tests)
   - [Adding and using data](#adding-and-using-data)
     - [Generating/Using test data](#generatingusing-test-data)
@@ -16,7 +15,6 @@ Most features added to OpenSearch Dashboards and its Plugins will require functi
     - [Seeding saved object data](#seeding-saved-object-data)
   - [Useful commands](#useful-commands)
   - [Best practices](#best-practices)
-
 
 ## Adding and using data
 
@@ -61,14 +59,14 @@ To create a custom data model, refer `scripts/generate_data/create_vis_builder_d
 You will need to index your data both while writing your tests and to create the necessary saved object data. For the latter, simply use the `cy.bulkUploadDocs` command. e.g.
 
 ```ts
-cy.bulkUploadDocs('fixture_path', index_id)
+cy.bulkUploadDocs('fixture_path', index_id);
 ```
 
 But to upload data to test various scenarios and generate saved object test fixtures use the bulk api to index the generated data.
 
 #### Upload
 
-To upload your data and consume it within Dashboards, you can use the bulk api in your terminal (src: https://opensearch.org/docs/latest/opensearch/index-data/#introduction-to-indexing). 
+To upload your data and consume it within Dashboards, you can use the bulk api in your terminal (src: https://opensearch.org/docs/latest/opensearch/index-data/#introduction-to-indexing).
 If you do not care about the mapping for your test data, just upload the test data. This will automatically map the data and create the index pattern.
 
 ```sh
@@ -85,7 +83,8 @@ If you want specific datatypes for your index fields, you can manually create th
 
 This involves you using the Dashboards dev tools to make our lives easier while creating the data
 
-First create index with desired mapping in dev tools(Only map the fields you want to override the default mapping for. This must be done before uploading the data). e.g. 
+First create index with desired mapping in dev tools(Only map the fields you want to override the default mapping for. This must be done before uploading the data). e.g.
+
 ```sh
 PUT vis-builder
 {
@@ -113,8 +112,8 @@ Creating an index pattern can be achieved using the command
 
 ```ts
 cy.createIndexPattern(INDEX_PATTERN_ID, {
-    title: INDEX_PATTERN,
-    timeFieldName?: 'timestamp',
+  title: INDEX_PATTERN,
+  timeFieldName: 'timestamp',
 });
 ```
 
@@ -123,11 +122,13 @@ cy.createIndexPattern(INDEX_PATTERN_ID, {
 Depending on whether you want to delete your index pattern, indexed data or both you have two separate commands available to do this
 
 To delete an index pattern
+
 ```ts
 cy.deleteIndexPattern(INDEX_PATTERN_ID);
 ```
 
 To delete an index
+
 ```ts
 cy.deleteIndex(INDEX_ID);
 ```
@@ -142,7 +143,7 @@ Data in OpenSearch Dashboards is primarily persisted using saved objects. To ens
 
 First index the data that you need to create the appropriate saved objects for. This is optional if your saved objects dont rely on index data.
 
-Then create the saved objects in your test instance and export them from the saved object manager under `Stack Management > Saved Objects`. 
+Then create the saved objects in your test instance and export them from the saved object manager under `Stack Management > Saved Objects`.
 
 > Note: Remember to uncheck the "Include related objects" flag if you do not wish to export the saved objects that it references (Checked by default).
 

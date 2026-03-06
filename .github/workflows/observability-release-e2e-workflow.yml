@@ -1,21 +1,21 @@
 name: Observability Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
-    branches: [ '**' ]
+    branches: ['**']
 jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          tests:
-            - 'cypress/**/observability-dashboards/**'
-            - '.github/workflows/release-e2e-workflow-template.yml'
-            - '.github/workflows/observability-release-e2e-workflow.yml'
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tests:
+              - 'cypress/**/observability-dashboards/**'
+              - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/observability-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -23,5 +23,5 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Observability
-      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/observability-dashboards/*'
+      test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/plugins/observability-dashboards/*'
       osd-serve-args: --home.disableExperienceModal=true --home.disableWelcomeScreen=true
