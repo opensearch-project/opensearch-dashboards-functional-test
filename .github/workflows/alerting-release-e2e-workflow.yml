@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/alerting-dashboards-plugin/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/alerting-release-e2e-workflow.yml'
 
   tests:
     needs: changes
@@ -22,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Alerting
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser electron --spec 'cypress/integration/plugins/alerting-dashboards-plugin/*'
