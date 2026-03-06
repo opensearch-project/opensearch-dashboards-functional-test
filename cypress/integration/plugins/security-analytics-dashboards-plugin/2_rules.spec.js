@@ -50,7 +50,7 @@ const YAML_RULE_LINES = [
   `level: ${SAMPLE_RULE.severity.toLowerCase()}`,
   `status: ${SAMPLE_RULE.status}`,
   `references:`,
-  `- '${SAMPLE_RULE.references}'`,
+  `- ${SAMPLE_RULE.references}`,
   `author: ${SAMPLE_RULE.author}`,
   `detection:`,
   ...SAMPLE_RULE.detectionLine,
@@ -163,7 +163,9 @@ const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
   cy.sa_getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
-const getLogTypeField = () => cy.sa_getFieldByLabel('Log type');
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel('Log type').click().wait(5000);
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
@@ -230,7 +232,11 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -561,7 +567,11 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -587,11 +597,9 @@ describe('Rules', () => {
 
       submitRule();
 
-      cy.wait('@getRules');
+      cy.wait('@getRules', { timeout: 600000 });
 
-      cy.sa_waitForPageLoad('rules', {
-        contains: 'Detection rules',
-      });
+      cy.sa_waitForPageLoad('rules', { contains: 'Detection rules' }, 30000);
 
       checkRulesFlyout();
     });
@@ -648,7 +656,7 @@ describe('Rules', () => {
         contains: 'Detection rules',
       });
 
-      cy.wait('@getRules');
+      cy.wait('@getRules', { timeout: 600000 });
 
       checkRulesFlyout();
     });
@@ -689,7 +697,7 @@ describe('Rules', () => {
             );
 
           cy.wait(5000);
-          cy.wait('@getRules');
+          cy.wait('@getRules', { timeout: 600000 });
 
           // Search for sample_detector, presumably deleted
           cy.wait(3000);

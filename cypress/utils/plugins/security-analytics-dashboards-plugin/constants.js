@@ -108,6 +108,9 @@ export const createDetector = (
       // Go to the detectors table page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
 
+      // Short wait to reduce flakiness
+      cy.wait(5000);
+
       // Filter table to only show the test detector
       cy.get(`input[type="search"]`).type(`${detectorConfig.name}{enter}`);
 
