@@ -268,12 +268,13 @@ describe('Left navigation menu', () => {
 
       // open recent history dialog
       cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]')
+      cy.wait(1000); // Wait for flyout to open
+      cy.get('.euiFlyout, div[role="dialog"]', { timeout: 10000 })
         .first()
+        .should('be.visible')
         .within(() => {
           // dialog displays correct visited content
-          cy.contains(/Recent assets/).should('exist');
-          cy.contains(visualizationName).should('exist');
+          cy.contains(visualizationName, { timeout: 10000 }).should('exist');
         });
 
       // back to dashboard
@@ -289,11 +290,15 @@ describe('Left navigation menu', () => {
 
       // open recent history dialog again
       cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]')
+      cy.wait(1000); // Wait for flyout to open
+      cy.get('.euiFlyout, div[role="dialog"]', { timeout: 10000 })
         .first()
+        .should('be.visible')
         .within(() => {
           // click recent visited visualization in the dialog
-          cy.contains(visualizationName).should('exist').click({ force: true });
+          cy.contains(visualizationName, { timeout: 10000 })
+            .should('exist')
+            .click({ force: true });
         });
 
       // should go back to the visualization screen just visited

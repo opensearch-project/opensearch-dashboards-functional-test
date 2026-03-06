@@ -8,6 +8,8 @@ module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
+  experimentalMemoryManagement: true,
+  numTestsKeptInMemory: 0,
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
     configFile: 'reporter-config.json',

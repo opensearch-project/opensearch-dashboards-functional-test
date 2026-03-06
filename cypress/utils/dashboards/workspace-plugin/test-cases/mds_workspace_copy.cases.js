@@ -39,11 +39,14 @@ export const WorkspaceCopyTestCases = () => {
       });
     cy.get('.euiFilterSelectItem')
       .should('be.visible')
-      .should('have.length', 2)
-      .within(() => {
-        cy.contains(`${sourceWorkspaceName} (current)`).should('be.visible');
-        cy.contains(targetWorkspaceName).should('be.visible').click();
-      });
+      .should('have.length', 2);
+    cy.contains(
+      '.euiFilterSelectItem',
+      `${sourceWorkspaceName} (current)`
+    ).should('be.visible');
+    cy.contains('.euiFilterSelectItem', targetWorkspaceName)
+      .should('be.visible')
+      .click();
   };
 
   const verifyDuplicateFunction = (expectedAssetCount, targetWorkspaceId) => {

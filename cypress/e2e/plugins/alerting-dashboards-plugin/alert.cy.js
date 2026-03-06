@@ -7,8 +7,8 @@ import {
   ALERTING_PLUGIN_NAME,
   ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
-import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
+import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger.json';
+import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow.json';
 import { BASE_PATH } from '../../../utils/base_constants';
 
 const TESTING_INDEX = 'alerting_test';
