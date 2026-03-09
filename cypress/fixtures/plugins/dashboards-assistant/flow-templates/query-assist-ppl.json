@@ -71,8 +71,8 @@
             "name": "TransferQuestionToPPLAndExecuteTool",
             "description": "Use this tool to transfer natural language to generate PPL and execute PPL to query inside. Use this tool after you know the index name, otherwise, call IndexRoutingTool first. The input parameters are: {index:IndexName, question:UserQuestion}",
             "parameters": {
-                "model_type": "FINETUNE",
-                "execute": false
+              "model_type": "FINETUNE",
+              "execute": false
             }
           }
         },

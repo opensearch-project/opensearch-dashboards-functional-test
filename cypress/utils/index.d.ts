@@ -2,7 +2,8 @@
 /// <reference types="cypress" />
 
 declare namespace Cypress {
-  interface Chainable<Subject> { /**
+  interface Chainable<Subject> {
+    /**
      * Call a function when an element with a test id cannot be found
      * @example
      * cy.whenTestIdNotFound(['query', 'puery'], () => {...})
@@ -77,14 +78,12 @@ declare namespace Cypress {
      * cy.exportSavedObjects({ types: ['dashboard', 'visualization'] })
      * cy.exportSavedObjects({ objects: [{ type: 'dashboard', id: 'my-id' }] })
      */
-    exportSavedObjects<S = any>(
-      options?: {
-        types?: string | string[];
-        objects?: Array<{ type: string; id: string }>;
-        includeReferencesDeep?: boolean;
-        excludeExportDetails?: boolean;
-      }
-    ): Chainable<S>;
+    exportSavedObjects<S = any>(options?: {
+      types?: string | string[];
+      objects?: Array<{ type: string; id: string }>;
+      includeReferencesDeep?: boolean;
+      excludeExportDetails?: boolean;
+    }): Chainable<S>;
 
     /**
      * Delete a saved object
@@ -117,7 +116,7 @@ declare namespace Cypress {
         timeFieldName?: string;
         [key: string]: any;
       },
-      header: string,
+      header: string
     ): Chainable<S>;
 
     /**
@@ -141,13 +140,13 @@ declare namespace Cypress {
      * cy.changeDefaultTenant({multitenancy_enabled: true, private_tenant_enabled: true, default_tenant: tenantName, });
      */
     changeDefaultTenant<S = any>(
-        attributes: {
-          multitenancy_enabled: boolean,
-          private_tenant_enabled: boolean,
-          default_tenant: string;
-        },
-        // header: string,
-        // default_tenant: string
+      attributes: {
+        multitenancy_enabled: boolean;
+        private_tenant_enabled: boolean;
+        default_tenant: string;
+      }
+      // header: string,
+      // default_tenant: string
     ): Chainable<S>;
 
     /**
