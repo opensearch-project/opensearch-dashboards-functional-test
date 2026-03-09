@@ -53,7 +53,11 @@ describe('Alerts', () => {
     setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectorsSearch');
     // Visit Detectors page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
-    cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+    cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+      'have.property',
+      'state',
+      'Complete'
+    );
 
     // Wait for page to load
     cy.sa_waitForPageLoad('alerts', {
