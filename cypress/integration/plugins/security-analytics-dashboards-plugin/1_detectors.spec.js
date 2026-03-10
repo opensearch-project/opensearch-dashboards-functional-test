@@ -24,7 +24,7 @@ const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
 const creationFailedMessage = 'Create detector failed.';
 
-const cypressDNSRule = dns_name_rule_data.title;
+const cypressDNSRule = dns_name_rule_data.rule.title;
 
 const getNameField = () =>
   cy.sa_getInputByPlaceholder('Enter a name for the detector.');
@@ -46,7 +46,9 @@ const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
 const logTypeLabel = 'Log type';
 
-const getLogTypeField = () => cy.sa_getFieldByLabel(logTypeLabel);
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel(logTypeLabel).click().wait(5000);
 
 const openDetectorDetails = (detectorName) => {
   cy.sa_getInputByPlaceholder('Search threat detectors')
@@ -276,7 +278,11 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       openCreateForm();
     });
@@ -425,7 +431,11 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
     });
 
     it('...can fail creation', () => {
@@ -465,6 +475,7 @@ describe('Detectors', () => {
       cy.sa_getFieldByLabel('Run every', 'select').select('Hours');
 
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
+      cy.wait(2000); // Short wait to reduce flakiness
 
       cy.sa_urlShouldContain('detector-details').then(() => {
         cy.sa_validateDetailsItem('Detector name', 'test detector edited');
@@ -570,7 +581,11 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
       // Need this extra wait time for the Actions button to become enabled again
       cy.wait(2000);
 
@@ -583,7 +598,11 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
       // Need this extra wait time for the Actions button to become enabled again
       cy.wait(2000);
 

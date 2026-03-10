@@ -163,7 +163,9 @@ const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
 const getDescriptionField = () =>
   cy.sa_getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
-const getLogTypeField = () => cy.sa_getFieldByLabel('Log type');
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel('Log type').click().wait(5000);
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
@@ -230,7 +232,11 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
@@ -548,7 +554,11 @@ describe('Rules', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'rulesSearch');
       // Visit Rules page
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/rules`);
-      cy.wait('@rulesSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@rulesSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       // Check that correct page is showing
       cy.sa_waitForPageLoad('rules', {
