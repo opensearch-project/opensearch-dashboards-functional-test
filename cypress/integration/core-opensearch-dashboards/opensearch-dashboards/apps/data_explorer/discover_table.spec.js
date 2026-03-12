@@ -292,6 +292,10 @@ describe('Saved Queries', () => {
     );
     cy.waitForSearch();
 
+    // Add a query before saving
+    cy.setTopNavQuery('response:200');
+    cy.waitForSearch();
+
     cy.get('[data-test-subj="saved-query-management-popover-button"]', {
       timeout: 10000,
     }).click({ force: true });
