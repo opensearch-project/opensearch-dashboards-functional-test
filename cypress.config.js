@@ -66,6 +66,7 @@ module.exports = defineConfig({
     },
   ],
   e2e: {
+    testIsolation: false,
     specPattern: 'cypress/e2e/**/*.{js,jsx,ts,tsx}',
     supportFile: 'cypress/support/e2e.js',
 
