@@ -26,23 +26,19 @@ describe(
   () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
-      cy.log('load opensearch-dashboards index with default index pattern');
 
-      // 1. 导入基础数据和映射
+      // 导入数据与映射
       testFixtureHandler.importJSONDoc(
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
       );
-
       testFixtureHandler.importJSONDocIfNeeded(
         indexSet,
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
       );
-
       testFixtureHandler.importJSONMapping(
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
       );
-
       testFixtureHandler.importJSONDoc(
         'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/data.json.txt'
       );
@@ -54,7 +50,7 @@ describe(
     });
 
     after(() => {
-      miscUtils.visitPage('app/management/opensearch-dashboards/settings');
+      cy.visit('app/management/opensearch-dashboards/settings');
       cy.waitForLoader();
       cy.getElementByTestId('advancedSetting-resetField-dateFormat:tz').click({
         force: true,
@@ -70,12 +66,29 @@ describe(
       cy.clearCache();
     });
 
+    const manualPrepareTest = (from, to, interval) => {
+      cy.log(`Setting time from ${from} to ${to} with interval ${interval}`);
+
+      cy.setTestTime(from, to);
+
+      cy.waitForLoader();
+      cy.wait(1000);
+
+      cy.getElementByTestId('discoverIntervalSelect')
+        .should('be.visible')
+        .select(interval, { force: true });
+
+      cy.waitForLoader();
+
+      cy.wait(2000);
+    };
+
     const setupDiscoverPage = () => {
       miscUtils.visitPage('app/data-explorer/discover#/');
-      cy.get('.echChart canvas', { timeout: 90000 }).should('exist');
+
+      cy.get('.echChart canvas', { timeout: 60000 }).should('exist');
       cy.waitForLoader();
       cy.get('body').click(0, 0, { force: true });
-      cy.wait(2000);
     };
 
     it('should visualize monthly data with different day intervals', () => {
@@ -83,8 +96,8 @@ describe(
       const fromTime = 'Nov 01, 2017 @ 00:00:00.000';
       const toTime = 'Mar 21, 2018 @ 00:00:00.000';
 
-      cy.prepareTest(fromTime, toTime, 'Month');
-      cy.wait(1000);
+      manualPrepareTest(fromTime, toTime, 'Month');
+
       cy.get('.echChart canvas:last-of-type', { timeout: 60000 }).should(
         'be.visible'
       );
@@ -95,8 +108,8 @@ describe(
       const fromTime = 'Mar 01, 2018 @ 00:00:00.000';
       const toTime = 'May 01, 2018 @ 00:00:00.000';
 
-      cy.prepareTest(fromTime, toTime, 'Week');
-      cy.wait(1000);
+      manualPrepareTest(fromTime, toTime, 'Week');
+
       cy.get('.echChart canvas:last-of-type', { timeout: 60000 }).should(
         'be.visible'
       );
@@ -107,8 +120,8 @@ describe(
       const fromTime = 'Jan 01, 2010 @ 00:00:00.000';
       const toTime = 'Mar 21, 2019 @ 00:00:00.000';
 
-      cy.prepareTest(fromTime, toTime, 'Day');
-      cy.wait(3000);
+      manualPrepareTest(fromTime, toTime, 'Day');
+
       cy.get('.echChart canvas:last-of-type', { timeout: 90000 }).should(
         'be.visible'
       );
