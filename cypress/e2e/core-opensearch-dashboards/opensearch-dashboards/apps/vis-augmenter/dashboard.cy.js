@@ -119,13 +119,15 @@ describe('Vis augmenter - existing dashboards work as expected', () => {
 
     it('Validate non-vega visualizations are not rendered with vega under the hood', () => {
       visualizationSpecs.forEach((visualizationSpec) => {
-        cy.getVisPanelByTitle(visualizationSpec.name).within(() => {
-          if (visualizationSpec.type === 'vega') {
-            cy.get('.vgaVis__view').should('exist');
-          } else {
-            cy.get('.vgaVis__view').should('not.exist');
-          }
-        });
+        cy.getVisPanelByTitle(visualizationSpec.name)
+          .first()
+          .within(() => {
+            if (visualizationSpec.type === 'vega') {
+              cy.get('.vgaVis__view').should('exist');
+            } else {
+              cy.get('.vgaVis__view').should('not.exist');
+            }
+          });
       });
     });
   });
