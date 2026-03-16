@@ -51,14 +51,17 @@ describe('Compare queries', () => {
   it('Should get comparison results', () => {
     // Navigate directly to single query comparison page
     cy.visit(
-      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
+      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/queryAnalysis`
     );
     cy.wait(5000);
 
     // Type search text in search box
-    cy.get('input[type="search"]', { timeout: 30000 }).type(SAMPLE_SEARCH_TEXT, {
-      force: true,
-    });
+    cy.get('input[type="search"]', { timeout: 30000 }).type(
+      SAMPLE_SEARCH_TEXT,
+      {
+        force: true,
+      }
+    );
 
     // Select index 1
     cy.get('div.search-relevance-config:nth-child(1) select').select(
