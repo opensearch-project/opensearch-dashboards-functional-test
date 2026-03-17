@@ -55,6 +55,25 @@ function alertSummaryTestCases(url) {
   describe('alert summary', () => {
     let workspaceId = '';
     let dataSourceId = '';
+    const clickFirstVisible = (selector) => {
+      cy.get(`${selector}:visible`, { timeout: 60000 })
+        .should('have.length.greaterThan', 0)
+        .then(($elements) => {
+          $elements[0].click();
+        });
+    };
+    const waitForInsightContent = () => {
+      cy.get('.incontextInsightPopoverBody', { timeout: 60000 })
+        .should('be.visible')
+        .should(($popover) => {
+          expect($popover.find('.euiLoadingContent:visible').length).to.equal(
+            0
+          );
+        });
+      cy.get('.incontextInsightGeneratePopoverContent', {
+        timeout: 60000,
+      }).should('be.visible');
+    };
     before(() => {
       clearAll();
       createWorkspaceWithEcommerceData().then((result) => {
@@ -97,22 +116,15 @@ function alertSummaryTestCases(url) {
     });
 
     it('should display the summary panel with appropriate content', () => {
-      // Click on the first one since we could have multiple alerts
-      cy.get('.incontextInsightAnchorIcon').first().click();
+      clickFirstVisible('.incontextInsightAnchorIcon');
+      waitForInsightContent();
 
-      cy.get('.incontextInsightPopoverBody').within(() => {
-        cy.get('.euiLoadingContent').should('exist');
-        // Allow additional loading time to avoid flakiness
-        cy.get('.euiLoadingContent', { timeout: 60000 }).should('not.exist');
-
-        cy.get('.incontextInsightGeneratePopoverContent').should(($popover) => {
-          const popoverText = $popover.text();
-          // Validate the generated content has reasonable structure
-          expect(popoverText.trim()).to.not.be.empty;
-          expect(popoverText.length).to.be.greaterThan(0);
-          expect(popoverText).to.match(/[.!?]$/);
-          expect(popoverText.split(' ').length).to.be.greaterThan(1);
-        });
+      cy.get('.incontextInsightGeneratePopoverContent').should(($popover) => {
+        const popoverText = $popover.text();
+        expect(popoverText.trim()).to.not.be.empty;
+        expect(popoverText.length).to.be.greaterThan(0);
+        expect(popoverText).to.match(/[.!?]$/);
+        expect(popoverText.split(' ').length).to.be.greaterThan(1);
       });
     });
 
@@ -121,71 +133,51 @@ function alertSummaryTestCases(url) {
       const downButton = '[aria-label="feedback thumbs down"]';
       const copyButton = '[aria-label="copy message"]';
 
-      const triggerInsightPopoverAndGetFooter = () => {
-        return cy
-          .get('.incontextInsightAnchorIcon')
-          .should('exist')
-          .first()
-          .click()
-          .then(() => {
-            return cy
-              .get('.incontextInsightGeneratePopoverFooter')
-              .within(() => {});
-          });
+      const openInsightPopover = () => {
+        clickFirstVisible('.incontextInsightAnchorIcon');
+        cy.get('.incontextInsightGeneratePopoverFooter', {
+          timeout: 60000,
+        }).should('be.visible');
       };
 
-      triggerInsightPopoverAndGetFooter().then(() => {
-        // Verify fotter buttons
-        cy.get(upButton).should('exist');
-        cy.get(downButton).should('exist');
-        cy.get(copyButton).should('exist');
-
-        // Click on thumb up feedback button so that thumb down is hidden
-        cy.get(upButton).first().click();
-        cy.get(downButton).should('not.exist');
-      });
+      openInsightPopover();
+      cy.get(upButton, { timeout: 60000 }).should('exist');
+      cy.get(downButton, { timeout: 60000 }).should('exist');
+      cy.get(copyButton, { timeout: 60000 }).should('exist');
+      clickFirstVisible(upButton);
+      cy.get(downButton).should('not.exist');
 
       cy.reload();
 
-      triggerInsightPopoverAndGetFooter().then(() => {
-        // Click on thumb down feedback button so that thumb up is hidden
-        cy.get(downButton).first().click();
-        cy.get(upButton).should('not.exist');
-      });
+      openInsightPopover();
+      cy.get('.incontextInsightGeneratePopoverFooter', {
+        timeout: 60000,
+      }).should('be.visible');
+      clickFirstVisible(downButton);
+      cy.get(upButton, { timeout: 60000 }).should('not.exist');
 
       cy.reload();
 
-      triggerInsightPopoverAndGetFooter().then(() => {
-        cy.window().then((win) => {
-          cy.spy(win.document, 'execCommand').as('copyCommand');
-        });
-        cy.get(copyButton).first().click();
-        // Verify the text copy is triggered
-        cy.get('@copyCommand').should('be.calledWith', 'copy');
+      openInsightPopover();
+      cy.window().then((win) => {
+        cy.spy(win.document, 'execCommand').as('copyCommand');
       });
+      clickFirstVisible(copyButton);
+      cy.get('@copyCommand').should('be.calledWith', 'copy');
     });
 
     it('should allow users to interact with view insight button inside the panel', () => {
-      cy.get('.incontextInsightAnchorIcon').should('exist').first().click();
-
-      cy.get('.incontextInsightPopoverBody').within(() => {
-        cy.get('.euiLoadingContent').should('exist');
-        // Allow additional loading time to avoid flakiness
-        cy.get('.euiLoadingContent', { timeout: 60000 }).should('not.exist');
-      });
+      clickFirstVisible('.incontextInsightAnchorIcon');
+      waitForInsightContent();
 
       cy.get('body').then(($body) => {
-        // Check if the button exists for this alert
         if ($body.find(':contains("View insight")').length > 0) {
           cy.get('.euiButton')
             .contains(/View insight/)
             .should('exist')
             .click();
 
-          // Trigger the loading for insight
-          cy.get('.euiLoadingContent').should('exist');
-          // Allow additional loading time to avoid flakiness
-          cy.get('.euiLoadingContent', { timeout: 60000 }).should('not.exist');
+          waitForInsightContent();
 
           cy.get('.incontextInsightGeneratePopoverContent').should(
             ($popover) => {
