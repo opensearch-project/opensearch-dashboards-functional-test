@@ -28,7 +28,6 @@ describe('Query Set Creation', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/querySet/create`
     );
     cy.wait(5000); // Increase wait time to ensure form is fully loaded
-    cy.waitForLoader();
   });
 
   it('Should fail query set creation with more than 1000 queries', () => {

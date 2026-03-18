@@ -49,13 +49,6 @@ describe('table visualization in embedded mode', () => {
     '115',
   ];
 
-  const suppressResizeObserverIssue = () => {
-    // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-    cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('ResizeObserver loop')) return false;
-    });
-  };
-
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     cy.fleshTenantSettings();
