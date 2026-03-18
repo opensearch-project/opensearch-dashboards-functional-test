@@ -40,7 +40,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/querySet/create`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     // Use textarea selector with longer timeout
     cy.get('[data-test-subj="querySetDescriptionInput"]')
@@ -62,7 +61,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/searchConfiguration/create`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     cy.get('[data-test-subj="searchConfigurationNameInput"]').type(configName1);
     cy.get('[data-test-subj="codeEditorContainer"]').click();
@@ -81,7 +79,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/searchConfiguration/create`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     cy.get('[data-test-subj="searchConfigurationNameInput"]').type(configName2);
     cy.get('[data-test-subj="codeEditorContainer"]').click();
@@ -100,7 +97,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/judgment/create`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     cy.get('input[name="name"]').type(judgmentName);
     cy.get('select').first().select('UBI_JUDGMENT');
@@ -120,7 +116,7 @@ describe('Experiment Create', () => {
     cy.get('.euiCard').should('have.length', 4);
 
     // Verify each card's title
-    cy.contains('.euiCard', 'Single Query Comparison').should('exist');
+    cy.contains('.euiCard', 'Query Analysis').should('exist');
     cy.contains('.euiCard', 'Query Set Comparison').should('exist');
     cy.contains('.euiCard', 'Search Evaluation').should('exist');
     cy.contains('.euiCard', 'Hybrid Search Optimizer').should('exist');
@@ -128,9 +124,7 @@ describe('Experiment Create', () => {
 
   it('Should display correct descriptions for each card', () => {
     // Verify card descriptions
-    cy.contains('Test two search configurations with a single query').should(
-      'exist'
-    );
+    cy.contains('Run and analyze a single query').should('exist');
     cy.contains('Perform a comparison across an entire set of queries').should(
       'exist'
     );
@@ -147,8 +141,8 @@ describe('Experiment Create', () => {
 
   it('Should navigate to correct routes when clicked', () => {
     // Click Single Query Comparison card and verify navigation
-    cy.contains('.euiCard', 'Single Query Comparison').click();
-    cy.url().should('include', '/experiment/create/singleQueryComparison');
+    cy.contains('.euiCard', 'Query Analysis').click();
+    cy.url().should('include', '/experiment/create/queryAnalysis');
 
     // Navigate back and test other cards
     cy.go('back');
@@ -178,7 +172,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/querySetComparison`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     // Select query set from dropdown
     cy.get('[data-test-subj="comboBoxInput"]').first().click();
@@ -209,7 +202,6 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/searchEvaluation`
     );
     cy.wait(3000);
-    cy.waitForLoader();
 
     // Select query set from dropdown
     cy.get('[data-test-subj="comboBoxInput"]').first().click();

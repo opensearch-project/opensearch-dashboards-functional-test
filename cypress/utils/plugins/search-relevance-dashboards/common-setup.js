@@ -18,7 +18,6 @@ export const enableWorkbenchUI = () => {
   // Visit the settings page with retry logic
   cy.visit('app/management/opensearch-dashboards/settings', { timeout: 20000 });
   cy.wait(3000); // Wait for page to stabilize
-  cy.waitForLoader();
 
   // Check current state of the toggle with increased timeout
   cy.get(
