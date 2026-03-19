@@ -7,20 +7,6 @@
 
 import { delayTime, setTimeFilter } from '../../../utils/constants';
 
-describe('Testing dashboard table empty state', () => {
-  beforeEach(() => {
-    cy.visit('app/observability-traces#/traces', {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
-    cy.wait(delayTime * 3);
-    cy.get(
-      '[data-test-subj="trace-groups-service-operation-accordian"]'
-    ).click();
-  });
-});
-
 describe('Testing dashboard table', () => {
   beforeEach(() => {
     cy.visit('app/observability-traces#/traces', {
