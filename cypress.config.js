@@ -31,11 +31,13 @@ module.exports = defineConfig({
     MANAGED_SERVICE_ENDPOINT: false,
     VISBUILDER_ENABLED: true,
     DATASOURCE_MANAGEMENT_ENABLED: false,
+    BANNER_ENABLED: false,
     ML_COMMONS_DASHBOARDS_ENABLED: true,
     WAIT_FOR_LOADER_BUFFER_MS: 0,
     DASHBOARDS_ASSISTANT_ENABLED: false,
     WORKSPACE_ENABLED: false,
     SAVED_OBJECTS_PERMISSION_ENABLED: false,
+    DASHBOARDS_INVESTIGATION_ENABLED: true,
     DISABLE_LOCAL_CLUSTER: false,
     browserPermissions: {
       clipboard: 'allow',
