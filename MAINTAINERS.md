@@ -5,7 +5,7 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 ## Current Maintainers
 
 | Maintainer        | GitHub ID                                           | Affiliation |
-|-------------------| --------------------------------------------------- | ----------- |
+| ----------------- | --------------------------------------------------- | ----------- |
 | Kawika Avilla     | [kavilla](https://github.com/kavilla)               | Amazon      |
 | Tyler Ohlsen      | [ohltyler](https://github.com/ohltyler)             | Amazon      |
 | Cong Wang         | [CCongWang](https://github.com/CCongWang)           | Amazon      |

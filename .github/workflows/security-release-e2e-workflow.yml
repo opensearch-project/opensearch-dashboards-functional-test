@@ -1,21 +1,21 @@
 name: Security Release tests workflow in Bundled OpenSearch Dashboards
 on:
   pull_request:
-    branches: [ '**' ]
+    branches: ['**']
 jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
-    - uses: dorny/paths-filter@v2
-      id: filter
-      with:
-        filters: |
-          tests:
-            - 'cypress/**/security/**'
-            - 'cypress/**/security-dashboards-plugin/**'
-            - '.github/workflows/release-e2e-workflow-template.yml'
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tests:
+              - 'cypress/**/security/**'
+              - 'cypress/**/security-dashboards-plugin/**'
+              - '.github/workflows/release-e2e-workflow-template.yml'
 
   tests:
     needs: changes
@@ -23,4 +23,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security/*,cypress/integration/plugins/security-dashboards-plugin/*'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/e2e/plugins/security/*,cypress/e2e/plugins/security-dashboards-plugin/*'

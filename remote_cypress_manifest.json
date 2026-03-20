@@ -5,8 +5,7 @@
     "version": "3.0.0-beta1"
   },
   "ci": {
-    "image": {
-    }
+    "image": {}
   },
   "components": [
     {
@@ -17,10 +16,7 @@
       "operating-system": "linux",
       "arch": "x64",
       "integ-test": {
-        "test-configs": [
-          "with-security",
-          "without-security"
-        ],
+        "test-configs": ["with-security", "without-security"],
         "additional-cluster-configs": {
           "vis_builder.enabled": true,
           "data_source.enabled": true

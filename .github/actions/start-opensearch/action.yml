@@ -33,9 +33,8 @@ inputs:
     default: '9300-9400'
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
-
     # Configure longpath names if on Windows
     - name: Enable Longpaths if on Windows
       if: ${{ runner.os == 'Windows' }}
@@ -48,7 +47,7 @@ runs:
         java-version: 21
 
     - name: Create temporary directory
-      run: | 
+      run: |
         mkdir ${{ inputs.port }}
       shell: bash
 
@@ -58,7 +57,6 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-windows-x64.zip
-
 
     - name: Download OpenSearch for Linux
       uses: peternied/download-file@v2
@@ -161,7 +159,7 @@ runs:
       with:
         seconds: 30
 
-     # Verify that the server is operational
+      # Verify that the server is operational
     - name: Check OpenSearch Running on Linux
       if: ${{ runner.os != 'Windows'}}
       run: |

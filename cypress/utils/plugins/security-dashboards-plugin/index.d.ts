@@ -8,10 +8,7 @@ declare namespace Cypress {
      * @example
      * cy.createTenant('test_tenant', tenantJsonFixture )
      */
-     createTenant<S = any>(
-        tenantID: string,
-        tenantJson: string
-      ): Chainable<S>;
+    createTenant<S = any>(tenantID: string, tenantJson: string): Chainable<S>;
   }
 
   interface Chainable<Subject> {
@@ -20,10 +17,7 @@ declare namespace Cypress {
      * @example
      * cy.createInternalUser('test_user', userJsonFixture )
      */
-     createInternalUser<S = any>(
-        userID: string,
-        userJson: string
-      ): Chainable<S>;
+    createInternalUser<S = any>(userID: string, userJson: string): Chainable<S>;
   }
 
   interface Chainable<Subject> {
@@ -32,10 +26,7 @@ declare namespace Cypress {
      * @example
      * cy.createRole('role_name', roleJsonFixture )
      */
-     createRole<S = any>(
-        roleID: string,
-        roleJson: string
-      ): Chainable<S>;
+    createRole<S = any>(roleID: string, roleJson: string): Chainable<S>;
   }
 
   interface Chainable<Subject> {
@@ -44,9 +35,9 @@ declare namespace Cypress {
      * @example
      * cy.createRoleMapping('role_name', rolemappingJsonFixture )
      */
-     createRoleMapping<S = any>(
-        roleID: string,
-        rolemappingJson: string
-      ): Chainable<S>;
+    createRoleMapping<S = any>(
+      roleID: string,
+      rolemappingJson: string
+    ): Chainable<S>;
   }
 }

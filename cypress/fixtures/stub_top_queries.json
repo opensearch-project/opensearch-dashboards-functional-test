@@ -30,8 +30,16 @@
         "labels": {},
         "query_group_hashcode": "2219a4bb71bd0d262e6d0f5504b88537",
         "measurements": {
-          "memory": { "number": 58000, "count": 1, "aggregationType": "AVERAGE" },
-          "cpu": { "number": 1780000, "count": 1, "aggregationType": "AVERAGE" },
+          "memory": {
+            "number": 58000,
+            "count": 1,
+            "aggregationType": "AVERAGE"
+          },
+          "cpu": {
+            "number": 1780000,
+            "count": 1,
+            "aggregationType": "AVERAGE"
+          },
           "latency": { "number": 10, "count": 1, "aggregationType": "AVERAGE" }
         }
       },
@@ -82,7 +90,11 @@
         },
         "query_group_hashcode": "a336f9580d5d980f7403f6d179f454eb",
         "measurements": {
-          "memory": { "number": 133600, "count": 1, "aggregationType": "AVERAGE" },
+          "memory": {
+            "number": 133600,
+            "count": 1,
+            "aggregationType": "AVERAGE"
+          },
           "cpu": { "number": 990000, "count": 1, "aggregationType": "AVERAGE" },
           "latency": { "number": 9, "count": 1, "aggregationType": "AVERAGE" }
         }
@@ -98,8 +110,16 @@
         "labels": {},
         "query_group_hashcode": "7cef9a399c117a0278025a89e943eebc",
         "measurements": {
-          "memory": { "number": 640320, "count": 3, "aggregationType": "AVERAGE" },
-          "cpu": { "number": 3190000, "count": 3, "aggregationType": "AVERAGE" },
+          "memory": {
+            "number": 640320,
+            "count": 3,
+            "aggregationType": "AVERAGE"
+          },
+          "cpu": {
+            "number": 3190000,
+            "count": 3,
+            "aggregationType": "AVERAGE"
+          },
           "latency": { "number": 6, "count": 1, "aggregationType": "NONE" }
         }
       },
@@ -114,8 +134,16 @@
         "labels": {},
         "query_group_hashcode": "7cef9a399c117a0278025a89e943eebc",
         "measurements": {
-          "memory": { "number": 812400, "count": 4, "aggregationType": "AVERAGE" },
-          "cpu": { "number": 2280000, "count": 4, "aggregationType": "AVERAGE" },
+          "memory": {
+            "number": 812400,
+            "count": 4,
+            "aggregationType": "AVERAGE"
+          },
+          "cpu": {
+            "number": 2280000,
+            "count": 4,
+            "aggregationType": "AVERAGE"
+          },
           "latency": { "number": 4, "count": 4, "aggregationType": "AVERAGE" }
         }
       },
@@ -130,8 +158,16 @@
         "labels": {},
         "query_group_hashcode": "2219a4bb71bd0d262e6d0f5504b88537",
         "measurements": {
-          "memory": { "number": 59000, "count": 1, "aggregationType": "AVERAGE" },
-          "cpu": { "number": 1720000, "count": 1, "aggregationType": "AVERAGE" },
+          "memory": {
+            "number": 59000,
+            "count": 1,
+            "aggregationType": "AVERAGE"
+          },
+          "cpu": {
+            "number": 1720000,
+            "count": 1,
+            "aggregationType": "AVERAGE"
+          },
           "latency": { "number": 11, "count": 1, "aggregationType": "NONE" }
         }
       }

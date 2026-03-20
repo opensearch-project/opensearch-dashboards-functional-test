@@ -6,21 +6,21 @@ author: Bhabesh Raj
 date: 2021/05/06
 modified: 2021/11/30
 references:
-    - https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831
+  - https://securelist.com/operation-tunnelsnake-and-moriya-rootkit/101831
 tags:
-    - attack.persistence
-    - attack.privilege_escalation
-    - attack.t1543.003
+  - attack.persistence
+  - attack.privilege_escalation
+  - attack.t1543.003
 logsource:
-    product: d3
-    category: s3
-    service: azure
+  product: d3
+  category: s3
+  service: azure
 detection:
-    selection:
-        Provider_Name: 'Service Control Manager'
-        EventID: 2100
-        ServiceName: ZzNetSvc
-    condition: selection
+  selection:
+    Provider_Name: 'Service Control Manager'
+    EventID: 2100
+    ServiceName: ZzNetSvc
+  condition: selection
 level: critical
 falsepositives:
-    - Unknown
+  - Unknown
