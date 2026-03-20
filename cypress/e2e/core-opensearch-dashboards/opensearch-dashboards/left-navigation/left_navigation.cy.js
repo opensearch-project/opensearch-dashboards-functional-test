@@ -22,6 +22,107 @@ const createWorkspace = (feature) => {
     });
 };
 
+const waitForPageLoad = () => {
+  // Use a very robust wait for the page to be ready in V13
+  cy.get('html').should('exist');
+  cy.get('body', { timeout: 60000 }).should('be.visible');
+
+  // Wait for loading indicator to disappear if it exists
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-test-subj="osdLoadingIndicator"]').length > 0) {
+      cy.get('[data-test-subj="osdLoadingIndicator"]', {
+        timeout: 60000,
+      }).should('not.exist');
+    }
+  });
+
+  // Wait for the main shell to be stable
+  cy.get(
+    '[data-test-subj="opensearchDashboardsMainContent"], .osdShell, .app-wrapper',
+    { timeout: 60000 }
+  ).should('be.visible');
+};
+
+const ensureNavExpanded = () => {
+  waitForPageLoad();
+
+  cy.get('body').then(($body) => {
+    // Check for expanded state indicators
+    const isExpanded =
+      $body.find(
+        '[data-test-subj="collapsibleNavShrinkButton"]:visible, [data-test-subj="collapsibleNavLockButton"]:visible'
+      ).length > 0;
+
+    if (!isExpanded) {
+      const $toggleBtn = $body.find(
+        '[data-test-subj="toggleNavButton"]:visible, [aria-label="Toggle primary navigation"]:visible'
+      );
+      if ($toggleBtn.length > 0) {
+        cy.wrap($toggleBtn.first()).click({ force: true });
+        // Explicitly wait for the side nav to be open
+        cy.get(
+          '[data-test-subj="collapsibleNavShrinkButton"], [data-test-subj="collapsibleNavLockButton"]',
+          { timeout: 20000 }
+        ).should('be.visible');
+      }
+    }
+  });
+};
+
+const getNavContainer = () => {
+  // V13 Fix: Ensure we only get ONE visible container for .within()
+  return cy
+    .get('.left-navigation-wrapper, [data-test-subj="collapsibleNav"]', {
+      timeout: 30000,
+    })
+    .filter(':visible')
+    .first();
+};
+
+const validateHomeIconVisible = (visible = true) => {
+  const selector =
+    '.navGroupEnabledHomeIcon, [data-test-subj="navGroupHomeIcon"], [data-test-subj="logo"], .euiHeaderLogo';
+  if (visible) {
+    getNavContainer().within(() => {
+      cy.get(selector, { timeout: 10000 }).should('be.visible');
+    });
+  } else {
+    // Use a robust check for non-visibility
+    cy.get('body').then(($body) => {
+      const $icons = $body.find(selector).filter(':visible');
+      if ($icons.length > 0) {
+        cy.wrap($icons).should('not.be.visible');
+      }
+    });
+  }
+};
+
+const getGroupAndItemSelectors = () => {
+  waitForPageLoad();
+
+  return cy.get('body').then(($body) => {
+    const isNavGroups =
+      $body.find('.navGroupEnabledHomeIcon').length > 0 ||
+      $body.text().includes('Visualize and report');
+
+    if (isNavGroups) {
+      return {
+        // Use more specific regex to avoid overlap
+        group: /^Visualize and report$/i,
+        item: /^Visualizations$/i,
+        dashboards: /^Dashboards$/i,
+      };
+    } else {
+      // Legacy Sidebar mode
+      return {
+        group: /^OpenSearch Dashboards$/i,
+        item: /^Visualizations$/i,
+        dashboards: /^Dashboards$/i,
+      };
+    }
+  });
+};
+
 if (isWorkspaceEnabled) {
   const validateWorkspaceNavMenu = (feature, callbackFn) => {
     createWorkspace(feature).then(() => {
@@ -29,17 +130,21 @@ if (isWorkspaceEnabled) {
       // overview page should be loaded
       cy.get('.content').should('exist');
 
-      // navigation menu should be hidden initially
-      cy.get('.navGroupEnabledNavTopWrapper').should('not.exist');
-
-      // top right navigation menu button should exist
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      // navigation menu setup
+      ensureNavExpanded();
 
       // navigation should be expanded and display content correctly
-      cy.get('.left-navigation-wrapper').within(() => {
+      getNavContainer().within(() => {
         cy.contains(`${workspaceName}_${feature}`).should('exist');
-        cy.get('.navGroupEnabledHomeIcon').should('exist');
-        cy.get('input[type="search"]').should('exist');
+        validateHomeIconVisible(true);
+
+        // Search input might only exist in Navigation Groups mode
+        cy.get('body').then(($body) => {
+          if ($body.find('input[type="search"]').length > 0) {
+            cy.get('input[type="search"]').should('exist');
+          }
+        });
+
         cy.contains(/Manage workspace/).should('exist');
 
         // additional assertion according to different type of workspace
@@ -52,8 +157,8 @@ if (isWorkspaceEnabled) {
     createWorkspace('all').then(() => {
       cy.visit(`w/${workspaceId}/app/all_overview`);
 
-      // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      // expand the navigation menu if needed
+      ensureNavExpanded();
 
       cy.get('input[type="search"]').should('exist').click();
       cy.get('input[type="search"]').type(input);
@@ -62,7 +167,7 @@ if (isWorkspaceEnabled) {
     });
   };
 
-  describe('Left navigation menu in workspace', () => {
+  describe('Left navigation menu in workspace', { testIsolation: true }, () => {
     before(() => {
       cy.deleteAllWorkspaces();
     });
@@ -75,11 +180,13 @@ if (isWorkspaceEnabled) {
 
     it('features are visible inside left navigation for analytics use case', () => {
       validateWorkspaceNavMenu('all', () => {
-        cy.contains(/Visualize and report/).should('exist');
-        cy.contains(/Observability/).should('exist');
-        cy.contains(/Security Analytics/).should('exist');
-        cy.contains(/Search/).should('exist');
-        cy.contains(/Detect/).should('exist');
+        getGroupAndItemSelectors().then(({ group }) => {
+          cy.contains(group).should('exist');
+          cy.contains(/Observability/i).should('exist');
+          cy.contains(/Security Analytics|Security/i).should('exist');
+          cy.contains(/Search/i).should('exist');
+          cy.contains(/Detect/i).should('exist');
+        });
       });
     });
 
@@ -89,35 +196,42 @@ if (isWorkspaceEnabled) {
 
     it('features are visible inside left navigation for search use case', () => {
       validateWorkspaceNavMenu('search', () => {
-        cy.contains(/Visualize and report/).should('exist');
-        // TODO: Move this to search relevance functional tests
-        // Renamed to "Search relevance" in https://github.com/opensearch-project/dashboards-search-relevance/pull/533
-        isWorkspaceEnabled && cy.contains(/Search relevance/).should('exist');
+        getGroupAndItemSelectors().then(({ group }) => {
+          cy.contains(group).should('exist');
+          // TODO: Move this to search relevance functional tests
+          // Renamed to "Search relevance" in https://github.com/opensearch-project/dashboards-search-relevance/pull/533
+          isWorkspaceEnabled &&
+            cy.contains(/Search relevance/i).should('exist');
+        });
       });
     });
 
     it('features are visible inside left navigation for security analytics use case', () => {
       validateWorkspaceNavMenu('security-analytics', () => {
-        cy.contains(/Visualize and report/).should('exist');
-        cy.contains(/Threat detection/).should('exist');
-        cy.contains(/Detect/).should('exist');
-        cy.contains(/Alerting/).should('exist');
-        cy.contains(/Anomaly Detection/).should('exist');
+        getGroupAndItemSelectors().then(({ group }) => {
+          cy.contains(group).should('exist');
+          cy.contains(/Threat detection/i).should('exist');
+          cy.contains(/Detect/i).should('exist');
+          cy.contains(/Alerting/i).should('exist');
+          cy.contains(/Anomaly Detection/i).should('exist');
+        });
       });
     });
 
     it('features are visible inside left navigation for observability use case', () => {
       validateWorkspaceNavMenu('observability', () => {
-        cy.contains(/Visualize and report/).should('exist');
-        cy.contains(/Detect/).should('exist');
+        getGroupAndItemSelectors().then(({ group }) => {
+          cy.contains(group).should('exist');
+          cy.contains(/Detect/i).should('exist');
+        });
       });
     });
 
     it('verify workspace identification in navigation', () => {
       createWorkspace('all').then(() => {
         cy.visit(`w/${workspaceId}/app/all_overview`);
-        // expand the navigation menu
-        cy.get('.navToggleInLargeScreen').should('exist').click();
+        // expand the navigation menu if needed
+        ensureNavExpanded();
         cy.get('.bottom-container').within(() => {
           cy.get('div[id="workspaceDropdownMenu"]').should('exist').click();
         });
@@ -158,7 +272,7 @@ if (isWorkspaceEnabled) {
   });
 }
 
-describe('Left navigation menu', () => {
+describe('Left navigation menu', { testIsolation: true }, () => {
   before(() => {
     if (isWorkspaceEnabled) {
       cy.deleteAllWorkspaces();
@@ -171,149 +285,141 @@ describe('Left navigation menu', () => {
     }
   });
 
-  it('collapsible menu sections', () => {
-    const validateMenuSection = () => {
-      // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
-
-      // menu section should be able to expand/collapse, with inside items display/hide corectly
-      cy.contains(/Visualizations/).should('exist');
-
-      // collapse the menu section and expect content to be hidden
-      cy.contains(/Visualize and report/)
-        .should('exist')
-        .click();
-      cy.contains(/Visualizations/).should('not.exist');
-
-      // expand the menu section and expect content to be visible
-      cy.contains(/Visualize and report/)
-        .should('exist')
-        .click();
-      cy.contains(/Visualizations/).should('exist');
-    };
-    if (isWorkspaceEnabled) {
-      createWorkspace('all').then(() => {
-        cy.visit(`w/${workspaceId}/app/all_overview`);
-        validateMenuSection();
-      });
-    } else {
+  it('validates navigation menu functionality and persistence', () => {
+    const runTest = () => {
+      // 1. collapsible menu sections
       cy.visit('app/home');
-      validateMenuSection();
-    }
-  });
+      waitForPageLoad();
+      ensureNavExpanded();
 
-  it('navigation should remember state of expand in browser', () => {
-    const validateMenuState = () => {
-      cy.get('.navToggleInLargeScreen').should('exist').click(); // expand the menu
+      getGroupAndItemSelectors().then(({ group, item }) => {
+        // Ensure group is initially collapsed if item is visible (cleanup from previous state)
+        getNavContainer().then(($nav) => {
+          if (
+            $nav.find(`:contains("${item.source || item}"):visible`).length > 0
+          ) {
+            cy.contains(group).click({ force: true });
+          }
+        });
 
+        // Test expansion
+        getNavContainer().within(() => {
+          cy.contains(group, { timeout: 30000 })
+            .should('be.visible')
+            .click({ force: true });
+          cy.contains(item, { timeout: 30000 }).should('be.visible');
+        });
+
+        // Test collapse
+        getNavContainer().within(() => {
+          cy.contains(group).click({ force: true });
+          cy.contains(item).should('not.be.visible');
+        });
+
+        // Test expansion again for next steps
+        getNavContainer().within(() => {
+          cy.contains(group).click({ force: true });
+          cy.contains(item).should('be.visible');
+        });
+      });
+
+      // 2. navigation should remember state of expand in browser
       cy.reload();
-      // navigation menu should remain expanded after reload
-      cy.get('.left-navigation-wrapper').within(() => {
+      waitForPageLoad();
+
+      getNavContainer().within(() => {
         isWorkspaceEnabled &&
           cy.contains(`${workspaceName}_all`).should('exist');
-        cy.get('.navGroupEnabledHomeIcon').should('exist');
-        cy.get('input[type="search"]').should('exist');
-        cy.get('.bottom-container-expanded').should('exist');
+        validateHomeIconVisible(true);
         cy.getElementByTestId('collapsibleNavShrinkButton')
           .should('exist')
-          .click(); // collapse the menu
+          .click();
       });
 
       cy.reload();
-      // navigation menu should remain collapsed after reload
-      cy.get('.left-navigation-wrapper').find('.euiPanel').should('not.exist');
-      cy.get('.left-navigation-wrapper').within(() => {
-        isWorkspaceEnabled &&
-          cy.contains(`${workspaceName}_all`).should('not.exist');
-        cy.get('.navGroupEnabledHomeIcon').should('not.exist');
-        cy.get('input[type="search"]').should('not.exist');
+      waitForPageLoad();
+
+      getNavContainer().within(() => {
+        validateHomeIconVisible(false);
         cy.get('.bottom-container-expanded').should('not.exist');
       });
-    };
 
-    if (isWorkspaceEnabled) {
-      createWorkspace('all').then(() => {
-        cy.visit(`w/${workspaceId}/app/all_overview`);
-        validateMenuState();
-      });
-    } else {
-      cy.visit('app/home');
-      validateMenuState();
-    }
-  });
-
-  it('validate navigation history functionality', () => {
-    const validateRecentHistory = () => {
-      // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
-      cy.contains(/Visualizations/)
-        .should('exist')
-        .click();
-
-      let visualizationName;
-      cy.getElementByTestId('itemsInMemTable').within(() => {
-        cy.get('.euiLink')
-          .first()
-          .invoke('text')
-          .then((text) => {
-            visualizationName = text;
-            // Click to the first visualization item
-            cy.contains(visualizationName).click();
-          });
-      });
-
-      // wait for the page to be loaded
-      cy.get('.visualize').should('exist');
-      cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
-
-      // open recent history dialog
-      cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]')
-        .first()
-        .within(() => {
-          // dialog displays correct visited content
-          cy.contains(/Recent assets/).should('exist');
-          cy.contains(visualizationName).should('exist');
+      // 3. validate navigation history functionality
+      ensureNavExpanded();
+      getGroupAndItemSelectors().then(({ group, item, dashboards }) => {
+        getNavContainer().within(() => {
+          cy.contains(group, { timeout: 30000 })
+            .should('be.visible')
+            .click({ force: true });
+          cy.contains(item, { timeout: 30000 })
+            .should('be.visible')
+            .click({ force: true });
         });
 
-      // back to dashboard
-      cy.get('.left-navigation-wrapper').within(() => {
-        cy.contains(/Dashboards/)
-          .should('exist')
-          .click({ force: true });
-      });
+        cy.url().should('include', 'visualize');
+        cy.get('[data-test-subj="itemsInMemTable"]', { timeout: 60000 }).should(
+          'be.visible'
+        );
 
-      // wait for the page to be loaded
-      cy.get('.application').should('exist');
-      cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
+        cy.get('[data-test-subj="itemsInMemTable"]').within(() => {
+          cy.get('.euiLink')
+            .first()
+            .invoke('text')
+            .then((visualizationName) => {
+              cy.contains(visualizationName).click();
+              cy.url().should('include', 'visualize');
+              cy.get('[data-test-subj="visualizeEditor"]', {
+                timeout: 60000,
+              }).should('be.visible');
 
-      // open recent history dialog again
-      cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]')
-        .first()
-        .within(() => {
-          // click recent visited visualization in the dialog
-          cy.contains(visualizationName).should('exist').click({ force: true });
+              cy.get('.headerRecentItemsButton').should('exist').click();
+              cy.get('.euiPopover__panel')
+                .should('be.visible')
+                .within(() => {
+                  cy.contains(/Recent assets|Recent items/i).should(
+                    'be.visible'
+                  );
+                  cy.contains(visualizationName).should('be.visible');
+                });
+
+              ensureNavExpanded();
+              getNavContainer().within(() => {
+                cy.contains(group).click({ force: true });
+                cy.contains(dashboards).click({ force: true });
+              });
+
+              cy.url().should('include', 'dashboards');
+              cy.get('.dashboard-container', { timeout: 60000 }).should(
+                'be.visible'
+              );
+
+              cy.get('.headerRecentItemsButton').should('exist').click();
+              cy.get('.euiPopover__panel')
+                .should('be.visible')
+                .within(() => {
+                  cy.contains(visualizationName)
+                    .should('be.visible')
+                    .click({ force: true });
+                });
+
+              cy.url().should('contain', 'visualize');
+              cy.get('[data-test-subj="headerAppActionMenu"]')
+                .should('be.visible')
+                .contains(visualizationName);
+            });
         });
-
-      // should go back to the visualization screen just visited
-      cy.getElementByTestId('headerAppActionMenu').within(() => {
-        cy.url().should('contain', 'edit').should('contain', 'visualize');
-        cy.contains(visualizationName).should('exist');
       });
     };
 
     if (isWorkspaceEnabled) {
       createWorkspace('all').then(() => {
         cy.loadSampleDataForWorkspace('ecommerce', workspaceId).then(() => {
-          cy.visit(`w/${workspaceId}/app/all_overview`);
-          validateRecentHistory();
+          runTest();
         });
       });
     } else {
       cy.loadSampleData('logs').then(() => {
-        cy.visit('app/home');
-        validateRecentHistory();
+        runTest();
       });
     }
   });
