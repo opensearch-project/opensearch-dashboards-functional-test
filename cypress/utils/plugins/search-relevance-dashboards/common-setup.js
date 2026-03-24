@@ -51,6 +51,7 @@ export const enableWorkbenchUI = () => {
 export const initializeUbiIndices = () => {
   // Delete and recreate ubi_queries index
   cy.deleteIndex('ubi_queries');
+  cy.wait(1000);
 
   // Create ubi_queries index with proper mapping
   cy.createIndex('ubi_queries', null, {
@@ -90,6 +91,7 @@ export const initializeUbiIndices = () => {
 
   // Delete and recreate ubi_events index
   cy.deleteIndex('ubi_events');
+  cy.wait(1000);
 
   // Create ubi_events index with proper mapping
   cy.createIndex('ubi_events', null, {
