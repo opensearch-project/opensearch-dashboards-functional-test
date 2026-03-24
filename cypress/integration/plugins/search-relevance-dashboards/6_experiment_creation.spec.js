@@ -120,7 +120,7 @@ describe('Experiment Create', () => {
     cy.get('.euiCard').should('have.length', 4);
 
     // Verify each card's title
-    cy.contains('.euiCard', 'Single Query Comparison').should('exist');
+    cy.contains('.euiCard', 'Query Analysis').should('exist');
     cy.contains('.euiCard', 'Query Set Comparison').should('exist');
     cy.contains('.euiCard', 'Search Evaluation').should('exist');
     cy.contains('.euiCard', 'Hybrid Search Optimizer').should('exist');
@@ -128,9 +128,7 @@ describe('Experiment Create', () => {
 
   it('Should display correct descriptions for each card', () => {
     // Verify card descriptions
-    cy.contains('Test two search configurations with a single query').should(
-      'exist'
-    );
+    cy.contains('Run and analyze a single query').should('exist');
     cy.contains('Perform a comparison across an entire set of queries').should(
       'exist'
     );
@@ -147,8 +145,8 @@ describe('Experiment Create', () => {
 
   it('Should navigate to correct routes when clicked', () => {
     // Click Single Query Comparison card and verify navigation
-    cy.contains('.euiCard', 'Single Query Comparison').click();
-    cy.url().should('include', '/experiment/create/singleQueryComparison');
+    cy.contains('.euiCard', 'Query Analysis').click();
+    cy.url().should('include', '/experiment/create/queryAnalysis');
 
     // Navigate back and test other cards
     cy.go('back');
