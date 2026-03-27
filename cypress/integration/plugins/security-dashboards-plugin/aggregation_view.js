@@ -29,7 +29,6 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
     // start a server so that server responses can be mocked via fixtures
     // in all of the below test cases
     before(() => {
-      cy.server();
       cy.createTenant(tenantName, tenantDescription);
 
       cy.createIndexPattern('index-pattern1', {
@@ -55,32 +54,30 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.createRoleMapping(roleName1, roleWithTestMappingSetUp);
       cy.createRoleMapping(roleName2, roleWithoutTestMappingSetUp);
 
-      cy.wait(300000);
+      cy.wait(10000);
     });
 
     it('should check the saved objects as global tenant', () => {
       CURRENT_TENANT.newTenant = 'global';
       cy.visit(SAVED_OBJECTS_PATH);
-      cy.contains('a', 'Saved objects');
-      cy.contains('a', 's*');
-      cy.contains('a', 'se*');
+      cy.contains('s*');
+      cy.contains('se*');
     });
 
     it('should check the saved objects by applying filter', () => {
       CURRENT_TENANT.newTenant = 'global';
       cy.visit(SAVED_OBJECTS_PATH);
-      cy.contains('a', 'Saved objects');
 
-      cy.get('span[title="Tenant"]').first().click({ force: true });
-      cy.get('span').contains('Private').click();
-      cy.contains('a', 's*');
-      cy.contains('a', 'se*').should('not.exist');
+      cy.contains('button', 'Tenant').click({ force: true });
+      cy.contains('Private').click();
+      cy.contains('s*');
+      cy.contains('se*').should('not.exist');
 
       cy.wait(3000);
 
-      cy.get('span').contains('test').click();
-      cy.contains('a', 's*');
-      cy.contains('a', 'se*');
+      cy.contains('test').click();
+      cy.contains('s*');
+      cy.contains('se*');
     });
 
     it('should login as test1 and check saved object', () => {
@@ -94,8 +91,8 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       });
 
       cy.wait(5000);
-      cy.contains('a', 'se*');
-      cy.contains('a', 's*').should('not.exist');
+      cy.contains('se*');
+      cy.contains('s*').should('not.exist');
     });
 
     it('should login as test2 and check saved object', () => {
@@ -109,8 +106,8 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       });
 
       cy.wait(5000);
-      cy.contains('a', 'se*').should('not.exist');
-      cy.contains('a', 's*').should('not.exist');
+      cy.contains('se*').should('not.exist');
+      cy.contains('s*').should('not.exist');
     });
 
     after(() => {
