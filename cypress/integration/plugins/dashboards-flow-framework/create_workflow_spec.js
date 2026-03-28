@@ -74,8 +74,8 @@ describe('Creating Workflows Using Various Methods', () => {
   it('Attempt to import workflow with invalid configuration', () => {
     cy.getElementByDataTestId('importWorkflowButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
-      .click();
-    cy.contains('Import a workflow (JSON/YAML)').should('be.visible');
+      .click({ force: true });
+    cy.contains('Import a workflow (JSON/YAML)', { timeout: FF_TIMEOUT }).should('be.visible');
     const filePath =
       'cypress/fixtures/' +
       FF_FIXTURE_BASE_PATH +
@@ -113,6 +113,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.get('input[type=file]').selectFile(filePath);
     cy.getElementByDataTestId('updateSourceDataButton')
       .should('be.visible')
+      .should('be.enabled')
       .click();
 
     cy.mockIngestion(() => {
