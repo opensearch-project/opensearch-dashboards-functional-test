@@ -275,8 +275,8 @@ Cypress.Commands.add('getElementsByTestIds', (testIds, options = {}) => {
   return cy.get(selectors.join(','), options);
 });
 
-Cypress.Commands.add('getElementByDataTestId', (testId) => {
-  return cy.get(`[data-testid="${testId}"]`);
+Cypress.Commands.add('getElementByDataTestId', (testId, options = {}) => {
+  return cy.get(`[data-testid="${testId}"]`, options);
 });
 
 Cypress.Commands.add(

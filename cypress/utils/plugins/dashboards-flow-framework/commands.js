@@ -139,3 +139,39 @@ Cypress.Commands.add('mockModelSearch', (funcMockedOn) => {
     }
   );
 });
+
+Cypress.Commands.add('deleteAllFlowFrameworkWorkflows', () => {
+  cy.request({
+    method: 'POST',
+    failOnStatusCode: false,
+    form: false,
+    url: 'api/console/proxy',
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+    },
+    qs: {
+      path: '_plugins/_flow_framework/workflow/_search',
+      method: 'POST',
+    },
+    body: { query: { match_all: {} } },
+  }).then(({ body }) => {
+    const hits = (body && body.hits && body.hits.hits) || [];
+    hits.forEach((hit) => {
+      cy.request({
+        method: 'POST',
+        form: false,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `_plugins/_flow_framework/workflow/${hit._id}?clear_status=true`,
+          method: 'DELETE',
+        },
+        failOnStatusCode: false,
+      });
+    });
+  });
+});
