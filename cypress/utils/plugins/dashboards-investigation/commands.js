@@ -311,14 +311,15 @@ Cypress.Commands.add('startInvestigationDummyServer', () => {
   // });
   cy.wait(500);
   cy.exec(
-    `nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 &`
+    'nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & sleep 1 && ps -ef | grep [i]nvestigation-dummy-llm.js | head -n 1 | awk \'{print $2}\' > /tmp/investigation-llm.pid',
+    { timeout: 10000 }
   );
   cy.wait(2000);
 });
 
 Cypress.Commands.add('stopInvestigationDummyServer', () => {
   cy.exec(
-    `lsof -ti :3001 -sTCP:LISTEN | xargs -r kill -9 2>/dev/null || true`,
+    'kill -9 $(cat /tmp/investigation-llm.pid) || true',
     { failOnNonZeroExit: false }
   );
 });
