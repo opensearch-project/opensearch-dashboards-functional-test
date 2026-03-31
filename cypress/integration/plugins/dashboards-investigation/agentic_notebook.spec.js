@@ -13,7 +13,7 @@ const investigationQuestion = "what's the issue?";
 const SELECTORS = {
   questionTextarea:
     'textarea[placeholder="Describe the issue you want to investigate."]',
-  hypothesisItem: '[data-test-subject="hypothesisItem"]',
+  hypothesisItem: '[data-test-subj="hypothesisItem"]',
   investigationMetadata: 'investigation-metadata',
   queryEditor: 'notebookQueryPanelEditor',
   flyoutClose: '[data-test-subj="euiFlyoutCloseButton"]',
@@ -482,9 +482,64 @@ function notebooksTestCases() {
       });
     });
 
-    describe.skip('Investigation from visualization', () => {
-      it('should trigger investigation from alert details', () => {
-        // TODO: implement
+    describe('Investigation from visualization', () => {
+      it('should trigger investigation from discover visualization', () => {
+        const dashboardName = 'agentic-notebook-investigation-dashboard';
+        const exploreName = 'agentic-notebook-investigation-explore';
+
+        // Navigate to explore logs and run a PPL query that produces a visualization
+        cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
+        cy.get('textarea[aria-label="Editor content"]').then(($textarea) => {
+          const textarea = $textarea[0];
+          textarea.focus();
+          textarea.value =
+            'source = opensearch_dashboards_sample_data_ecommerce | fields order_date, total_quantity ';
+          textarea.dispatchEvent(new Event('input', { bubbles: true }));
+          textarea.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        cy.getElementByTestId('exploreQueryExecutionButton').click();
+        cy.getElementByTestId('exploreVisualizationLoader').should(
+          'be.visible'
+        );
+
+        // Add visualization to a new dashboard
+        cy.getElementByTestId('addToDashboardButton')
+          .should('be.visible')
+          .click();
+        cy.getElementByTestId('saveToNewDashboardRadio')
+          .should('be.visible')
+          .click();
+        cy.get('input[placeholder="Enter dashboard name"]')
+          .should('be.visible')
+          .type(dashboardName);
+        cy.get('input[placeholder="Enter save search name"]')
+          .should('be.visible')
+          .type(exploreName);
+        cy.getElementByTestId('saveToDashboardConfirmButton')
+          .should('be.visible')
+          .click();
+
+        // Navigate to the created dashboard
+        cy.getElementByTestId('addToNewDashboardSuccessToast')
+          .should('be.visible')
+          .contains('View Dashboard')
+          .should('have.attr', 'href')
+          .then((href) => {
+            cy.visit(href);
+          });
+
+        // Trigger investigation from the dashboard visualization
+        cy.getElementByTestId('embeddablePanelToggleMenuIcon').click();
+        cy.contains('Start investigation').click();
+
+        cy.get(SELECTORS.questionTextarea)
+          .should('be.visible')
+          .type(investigationQuestion);
+        cy.contains('button.euiButton', 'Start Investigation').click();
+
+        cy.url().should('contain', 'app/investigation-notebooks#/agentic/');
+        cy.contains('Visualization investigation');
+        cy.getElementByTestId('embeddedSavedExplore').should('be.visible');
       });
     });
 
