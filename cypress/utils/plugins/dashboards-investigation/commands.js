@@ -306,9 +306,9 @@ Cypress.Commands.add('cleanProvisionedInvestigationAgents', () => {
 });
 
 Cypress.Commands.add('startInvestigationDummyServer', () => {
-  cy.exec(`lsof -ti :3001 | xargs kill -9 2>/dev/null || true`, {
-    failOnNonZeroExit: false,
-  });
+  // cy.exec(`lsof -ti :3001 | xargs kill -9 2>/dev/null || true`, {
+  //   failOnNonZeroExit: false,
+  // });
   cy.wait(500);
   cy.exec(
     `nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 &`
