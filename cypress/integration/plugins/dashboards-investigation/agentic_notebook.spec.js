@@ -87,7 +87,7 @@ function notebooksTestCases() {
     after(() => {
       cy.cleanProvisionedInvestigationAgents();
       cy.deleteWorkspaceByName(workspaceName);
-      cy.stopInvestigationDummyServer();
+      // cy.stopInvestigationDummyServer();
     });
 
     describe('Investigation from multiple log entries', () => {
