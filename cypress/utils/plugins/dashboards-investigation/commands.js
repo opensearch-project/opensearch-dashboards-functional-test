@@ -311,7 +311,7 @@ Cypress.Commands.add('startInvestigationDummyServer', () => {
   // });
   cy.wait(500);
   cy.exec(
-    "bash -c 'yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & sleep 1 && ps --ppid $! -o pid= > /tmp/investigation-llm.pid && disown'",
+    'nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & sleep 1 && ps -ef | grep [i]nvestigation-dummy-llm.js | head -n 1 | awk \'{print $2}\' > /tmp/investigation-llm.pid',
     { timeout: 10000 }
   );
   cy.wait(2000);
