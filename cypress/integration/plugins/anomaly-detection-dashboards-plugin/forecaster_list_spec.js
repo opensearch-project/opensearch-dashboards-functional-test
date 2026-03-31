@@ -225,7 +225,9 @@ context('list forecaster workflow', () => {
 
     // ========== Scenario: START FORECASTER ==========
     // Click the cell to make it active and reveal the hidden controls.
-    cy.get('@statusCell').click();
+    // Use { force: true } because EUI data grid wraps cells in a parent div
+    // with `pointer-events: none`, which blocks normal Cypress clicks.
+    cy.get('@statusCell').click({ force: true });
 
     // Wait a moment for the cell to become active
     cy.wait(500);
@@ -271,7 +273,9 @@ context('list forecaster workflow', () => {
       .as('expandButton');
 
     // Click the expand button to open the final popover.
-    cy.get('@expandButton').click();
+    // Use { force: true } because the expand button is inside a data grid cell
+    // whose parent has `pointer-events: none`.
+    cy.get('@expandButton').click({ force: true });
 
     // Verify the popover content is visible.
     // Instead of looking for the container div, we now directly look for the
@@ -288,7 +292,7 @@ context('list forecaster workflow', () => {
       // Within those siblings, find the button with aria-label="Show actions" and click it.
       // This is the most reliable way to target the button from the HTML you provided.
       .find('button[aria-label="Show actions"]')
-      .click();
+      .click({ force: true });
 
     // Now that the popover is open, find the "Start forecasting" menu item and click it.
     // We target the panel specifically to ensure we don't click anything else by accident.
@@ -322,7 +326,9 @@ context('list forecaster workflow', () => {
     );
 
     // Click the cell to activate it and show the hidden controls.
-    cy.get('@initializingStatusCell').click();
+    // Use { force: true } because EUI data grid wraps cells in a parent div
+    // with `pointer-events: none`, which blocks normal Cypress clicks.
+    cy.get('@initializingStatusCell').click({ force: true });
 
     // Find the expand button inside the active cell...
     cy.get('@initializingStatusCell')
