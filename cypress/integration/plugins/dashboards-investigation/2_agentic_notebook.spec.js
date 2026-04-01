@@ -62,6 +62,32 @@ function closeHypothesisDetail() {
   cy.url().should('not.contain', 'hypothesis');
 }
 
+function setWideTimeRange() {
+  cy.getElementsByTestIds([
+    'superDatePickerstartDatePopoverButton',
+    'superDatePickerShowDatesButton',
+  ])
+    .should('be.visible')
+    .invoke('attr', 'data-test-subj')
+    .then((testId) => {
+      cy.getElementByTestId(testId).should('be.visible').click();
+    });
+  cy.whenTestIdNotFound('superDatePickerAbsoluteTab', () => {
+    cy.getElementByTestId('superDatePickerstartDatePopoverButton')
+      .should('be.visible')
+      .click();
+  });
+  cy.getElementByTestId('superDatePickerRelativeTab').first().click();
+  cy.getElementByTestId('superDatePickerRelativeDateInputNumber')
+    .first()
+    .clear()
+    .type('15');
+  cy.getElementByTestId('superDatePickerRelativeDateInputUnitSelector').select(
+    'Years ago'
+  );
+  cy.getElementByTestId('exploreQueryExecutionButton').click();
+}
+
 describe('Agentic Notebook Investigation Tests', () => {
   before(() => {
     cy.visit(BASE_PATH);
@@ -92,6 +118,8 @@ describe('Agentic Notebook Investigation Tests', () => {
   describe('Investigation from multiple log entries', () => {
     it('should trigger investigation from Start Investigation button', () => {
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
+
+      setWideTimeRange();
 
       cy.contains('Start Investigation').click();
 
@@ -443,6 +471,8 @@ describe('Agentic Notebook Investigation Tests', () => {
     it('should trigger investigation from log action menu', () => {
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
 
+      setWideTimeRange();
+
       cy.getElementByTestId('logActionMenuButton')
         .first()
         .trigger('mouseover')
@@ -483,6 +513,9 @@ describe('Agentic Notebook Investigation Tests', () => {
 
       // Navigate to explore logs and run a PPL query that produces a visualization
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
+
+      setWideTimeRange();
+
       cy.get('textarea[aria-label="Editor content"]').then(($textarea) => {
         const textarea = $textarea[0];
         textarea.focus();
