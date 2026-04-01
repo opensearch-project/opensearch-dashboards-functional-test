@@ -73,7 +73,7 @@ const investigationResult = {
 };
 
 // Track ReAct agent iteration count per session
-const reactIterations = {};
+const reactIterations = new Map();
 
 /**
  * Count completed steps by looking for <step-N> tags in the request body.
