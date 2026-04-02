@@ -15,12 +15,11 @@ export const enableWorkbenchUI = () => {
   cy.visit(Cypress.config().baseUrl, { timeout: 20000 });
   cy.wait(2000);
 
-  // Visit the settings page with retry logic
+  // Visit the settings page — don't use waitForLoader here since the
+  // management page may not have homeIcon during SPA re-renders in Cypress 13
   cy.visit('app/management/opensearch-dashboards/settings', { timeout: 20000 });
-  cy.wait(3000); // Wait for page to stabilize
-  cy.waitForLoader();
 
-  // Check current state of the toggle with increased timeout
+  // Wait directly for the toggle element as the page readiness indicator
   cy.get(
     'button[role="switch"][data-test-subj="advancedSetting-editField-search-relevance:experimental_workbench_ui_enabled"]',
     { timeout: 60000 }
