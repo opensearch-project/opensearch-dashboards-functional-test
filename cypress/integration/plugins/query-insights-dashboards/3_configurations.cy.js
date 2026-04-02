@@ -15,6 +15,8 @@ const toggleMetricEnabled = () => {
   cy.get('button[data-test-subj="top-n-metric-toggle"]').click({ force: true });
   cy.get('button[data-test-subj="top-n-metric-toggle"]', { timeout: 15000 })
     .should('have.attr', 'aria-checked', 'true');
+  // Wait for React re-render to complete so form controls are attached and enabled
+  cy.get('select#timeUnit', { timeout: 15000 }).should('not.be.disabled');
 };
 
 describe('Query Insights Configurations Page', () => {
@@ -109,13 +111,11 @@ describe('Query Insights Configurations Page', () => {
     // Locate the input for N
     cy.get('input[type="number"]').should('have.attr', 'value', '10'); // Default 10
     // Change the value to 50
-    cy.get('input[type="number"]')
-      .first()
-      .clear()
-      .type('50')
-      .should('have.value', '50');
+    cy.get('input[type="number"]').first().clear();
+    cy.get('input[type="number"]').first().type('50').should('have.value', '50');
     // Validate invalid input
-    cy.get('input[type="number"]').first().clear().type('200'); // Enter value above max limit
+    cy.get('input[type="number"]').first().clear();
+    cy.get('input[type="number"]').first().type('200'); // Enter value above max limit
     cy.get('.euiFormHelpText').should('contain.text', 'Max allowed limit 100');
   });
 
