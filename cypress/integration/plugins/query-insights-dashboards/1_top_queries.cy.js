@@ -299,11 +299,11 @@ describe('Query Insights Dashboard', () => {
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverview();
-    // Ensure main table has data before attempting to sort
+    // Ensure main table has at least 2 rows so sorting can change the order
     cy.get('.euiBasicTable', { timeout: 30000 })
       .last()
       .find('.euiTableRow')
-      .should('have.length.greaterThan', 0);
+      .should('have.length.greaterThan', 1);
     cy.get('body').should('not.contain', 'No items found');
     // Click the Timestamp column header in main table to sort
     cy.get('.euiBasicTable').last().find('.euiTableHeaderCell').contains('Timestamp').click();
@@ -370,6 +370,30 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
+
+    // Stub settings so retrieveConfigInfo does not disable metrics
+    // and trigger a re-fetch that clears the intercepted data.
+    cy.intercept('GET', '**/api/settings*', (req) => {
+      req.reply({
+        statusCode: 200,
+        body: {
+          response: {
+            persistent: {
+              search: {
+                insights: {
+                  top_queries: {
+                    latency: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                    cpu: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                    memory: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                  },
+                },
+              },
+            },
+            transient: {},
+          },
+        },
+      });
+    });
 
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
