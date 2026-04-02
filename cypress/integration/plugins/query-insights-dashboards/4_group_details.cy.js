@@ -26,12 +26,9 @@ describe('Query Group Details Page', () => {
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverviewWithData();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink')
-      .first()
-      .trigger('mouseover');
-    cy.wait(1000);
-    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
-    cy.wait(1000);
+    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click();
+    // Wait for details page to fully render
+    cy.url().should('include', '/query-group-details');
   });
 
   it('should display correct details on the group details page', () => {

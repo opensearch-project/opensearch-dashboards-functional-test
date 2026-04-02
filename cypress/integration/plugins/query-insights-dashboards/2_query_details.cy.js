@@ -28,12 +28,9 @@ describe('Top Queries Details Page', () => {
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverviewWithData();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink')
-      .first()
-      .trigger('mouseover');
-    cy.wait(1000);
-    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
-    cy.wait(1000);
+    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click();
+    // Wait for details page to fully render
+    cy.get('[data-test-subj="query-details-summary-section"]').should('be.visible');
   });
 
   it('should display correct details on the query details page', () => {
