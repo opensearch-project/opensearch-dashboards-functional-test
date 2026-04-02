@@ -16,8 +16,10 @@ const clearAll = () => {
 };
 
 describe('Top Queries Details Page', () => {
+  before(() => clearAll());
+
   beforeEach(() => {
-    clearAll();
+    // Ensure data exists — re-create if a bundled cross-spec test destroyed it
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
@@ -25,12 +27,12 @@ describe('Top Queries Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
+    // Allow query insights queue to capture the searches
     cy.wait(10000);
     cy.navigateToOverviewWithData();
     cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click();
-    // Wait for details page to fully render
-    cy.get('[data-test-subj="query-details-summary-section"]').should('be.visible');
+    cy.url().should('include', '/query-details');
+    cy.contains('h4', 'Timestamp').should('be.visible');
   });
 
   it('should display correct details on the query details page', () => {

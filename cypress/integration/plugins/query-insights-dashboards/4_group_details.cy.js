@@ -13,21 +13,19 @@ const clearAll = () => {
 };
 
 describe('Query Group Details Page', () => {
+  before(() => clearAll());
+
   beforeEach(() => {
-    clearAll();
-    cy.wait(5000);
+    // Ensure data exists — re-create if a bundled cross-spec test destroyed it
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stablize
-    cy.wait(5000);
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
+    // Allow query insights queue to capture the searches
     cy.wait(10000);
     cy.navigateToOverviewWithData();
     cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click();
-    // Wait for details page to fully render
     cy.url().should('include', '/query-group-details');
   });
 
