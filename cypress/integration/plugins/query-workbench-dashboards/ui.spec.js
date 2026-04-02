@@ -53,26 +53,30 @@ describe('Test PPL UI', () => {
   });
 
   it('Test Run button', () => {
+    cy.intercept('**/api/sql_console/pplquery').as('pplQuery');
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('source=accounts | sort firstname', { force: true });
+      .type('{selectall}{backspace}source=accounts | sort firstname', {
+        force: true,
+      });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait('@pplQuery');
     cy.get('.euiTab__content').contains('Events').click({ force: true });
 
     cy.contains('Abbott');
   });
 
   it('Test Clear button', () => {
+    cy.intercept('**/api/sql_console/pplquery').as('pplQuery');
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('source=accounts', { force: true });
+      .type('{selectall}{backspace}source=accounts', { force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY);
+    cy.wait('@pplQuery');
     cy.get('.euiTab__content').contains('Events').click({ force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Clear').click({ force: true });
@@ -92,13 +96,15 @@ describe('Test PPL UI', () => {
   it('Test full screen view', () => {
     cy.get('.euiButton__text').contains('Full screen view').should('not.exist');
 
+    cy.intercept('**/api/sql_console/pplquery').as('pplQuery');
     cy.get('textarea.ace_text-input')
       .eq(0)
       .focus()
-      .type('source=accounts', { force: true });
+      .type('{selectall}{backspace}source=accounts', { force: true });
     cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text').contains('Run').click({ force: true });
-    cy.wait(QUERY_WORKBENCH_DELAY * 5);
+    cy.wait('@pplQuery');
+    cy.wait(QUERY_WORKBENCH_DELAY);
     cy.get('.euiButton__text')
       .contains('Full screen view')
       .click({ force: true });
