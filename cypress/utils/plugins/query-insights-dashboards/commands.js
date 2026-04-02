@@ -153,6 +153,33 @@ Cypress.Commands.add('navigateToOverview', () => {
   cy.get('.euiBasicTable', { timeout: tableTimeout }).should('exist');
 });
 
+// Navigate to overview and retry with reload until table rows with links appear.
+// Useful for tests that depend on query insights data being populated.
+Cypress.Commands.add('navigateToOverviewWithData', () => {
+  const maxAttempts = 6;
+  const delayBetween = 10000;
+
+  function attempt(n) {
+    cy.navigateToOverview();
+    cy.get('body').then(($body) => {
+      if ($body.find('.euiBasicTable .euiTableRow button.euiLink').length > 0) {
+        return; // data is present
+      }
+      if (n >= maxAttempts) {
+        throw new Error(
+          'navigateToOverviewWithData: table rows with links never appeared after ' +
+            maxAttempts +
+            ' attempts'
+        );
+      }
+      cy.wait(delayBetween);
+      attempt(n + 1);
+    });
+  }
+
+  attempt(1);
+});
+
 Cypress.Commands.add('navigateToConfiguration', () => {
   cy.visit(QUERY_INSIGHTS_CONFIGURATION_PATH);
   cy.waitForPageLoad(QUERY_INSIGHTS_CONFIGURATION_PATH, {

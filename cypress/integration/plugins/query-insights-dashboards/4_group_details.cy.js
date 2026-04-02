@@ -25,8 +25,8 @@ describe('Query Group Details Page', () => {
     cy.searchOnIndex(indexName);
     // waiting for the query insights queue to drain
     cy.wait(10000);
-    cy.navigateToOverview();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink', { timeout: 120000 })
+    cy.navigateToOverviewWithData();
+    cy.get('.euiBasicTable .euiTableRow button.euiLink')
       .first()
       .trigger('mouseover');
     cy.wait(1000);

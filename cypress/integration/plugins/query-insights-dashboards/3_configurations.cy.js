@@ -13,10 +13,11 @@ const clearAll = () => {
 
 const toggleMetricEnabled = () => {
   cy.get('button[data-test-subj="top-n-metric-toggle"]').click({ force: true });
-  cy.get('button[data-test-subj="top-n-metric-toggle"]', { timeout: 15000 })
+  cy.get('button[data-test-subj="top-n-metric-toggle"]')
     .should('have.attr', 'aria-checked', 'true');
-  // Wait for React re-render to complete so form controls are attached and enabled
-  cy.get('select#timeUnit', { timeout: 15000 }).should('not.be.disabled');
+  // Wait for backend response + React re-render so form controls are enabled
+  cy.get('input[type="number"]').should('not.be.disabled');
+  cy.get('select#timeUnit').should('not.be.disabled');
 };
 
 describe('Query Insights Configurations Page', () => {
@@ -80,27 +81,21 @@ describe('Query Insights Configurations Page', () => {
    *  Validate enabling/disabling metrics
    */
   it('should allow enabling and disabling metrics', () => {
-    // Wait for the toggle to be fully rendered and interactive
     cy.get('button[data-test-subj="top-n-metric-toggle"]')
-      .should('exist')
       .should('be.visible')
       .and('have.attr', 'aria-checked', 'false');
 
-    // Click and wait for React 18 state update
     cy.get('button[data-test-subj="top-n-metric-toggle"]').click({
       force: true,
     });
-    cy.get('button[data-test-subj="top-n-metric-toggle"]', {
-      timeout: 15000,
-    }).should('have.attr', 'aria-checked', 'true');
+    cy.get('button[data-test-subj="top-n-metric-toggle"]')
+      .should('have.attr', 'aria-checked', 'true');
 
-    // Re-disable the switch
     cy.get('button[data-test-subj="top-n-metric-toggle"]').click({
       force: true,
     });
-    cy.get('button[data-test-subj="top-n-metric-toggle"]', {
-      timeout: 15000,
-    }).should('have.attr', 'aria-checked', 'false');
+    cy.get('button[data-test-subj="top-n-metric-toggle"]')
+      .should('have.attr', 'aria-checked', 'false');
   });
 
   /**
