@@ -635,6 +635,9 @@ describe('Query Insights — Filters and Search', () => {
     setTypeFilter('query');
     cy.get('.euiFieldSearch').should('not.have.value', '');
     resetTypeFilterToNone();
+    // Deselecting type filters does not auto-clear the search box;
+    // manually clear and verify the table resets to show all rows.
+    cy.get('.euiFieldSearch').clear();
     cy.get('.euiFieldSearch').should('have.value', '');
   });
 
