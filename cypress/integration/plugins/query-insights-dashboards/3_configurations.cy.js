@@ -11,11 +11,10 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
 };
 
-const toggleMetricEnabled = async () => {
-  cy.get('button[data-test-subj="top-n-metric-toggle"]').trigger('mouseover');
-  cy.wait(1000);
+const toggleMetricEnabled = () => {
   cy.get('button[data-test-subj="top-n-metric-toggle"]').click({ force: true });
-  cy.wait(1000);
+  cy.get('button[data-test-subj="top-n-metric-toggle"]', { timeout: 15000 })
+    .should('have.attr', 'aria-checked', 'true');
 };
 
 describe('Query Insights Configurations Page', () => {
