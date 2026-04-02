@@ -112,7 +112,12 @@ Cypress.Commands.add(
     Cypress.log({
       message: `Wait for url: ${fullUrl} to be loaded.`,
     });
-    cy.url({ timeout: timeout }).should('include', fullUrl);
+    // Split on hash to handle security_tenant query param inserted before #
+    const [basePath, hash] = fullUrl.split('#');
+    cy.url({ timeout: timeout }).should('include', basePath);
+    if (hash) {
+      cy.url({ timeout: timeout }).should('include', `#${hash}`);
+    }
 
     if (contains) {
       const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');

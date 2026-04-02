@@ -21,6 +21,31 @@ const makeTimestampedBody = (raw) => {
 
 const getRowsFromRaw = (raw) => (raw?.response?.top_queries ?? raw?.top_queries ?? []).slice();
 
+// Stub settings so retrieveConfigInfo does not trigger a re-fetch that clears intercepted data
+const stubSettings = () => {
+  cy.intercept('GET', '**/api/settings*', (req) => {
+    req.reply({
+      statusCode: 200,
+      body: {
+        response: {
+          persistent: {
+            search: {
+              insights: {
+                top_queries: {
+                  latency: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                  cpu: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                  memory: { enabled: 'true', window_size: '1m', top_n_size: '100' },
+                },
+              },
+            },
+          },
+          transient: {},
+        },
+      },
+    });
+  });
+};
+
 const assertRowCountEquals = (expected) => {
   // Target the main data table (last table on page), not the chart table
   cy.get('.euiBasicTable').last().find('.euiTableRow').should('have.length', expected);
@@ -299,11 +324,11 @@ describe('Query Insights Dashboard', () => {
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverview();
-    // Ensure main table has data before attempting to sort
+    // Ensure main table has at least 2 rows so sorting can change the order
     cy.get('.euiBasicTable', { timeout: 30000 })
       .last()
       .find('.euiTableRow')
-      .should('have.length.greaterThan', 0);
+      .should('have.length.greaterThan', 1);
     cy.get('body').should('not.contain', 'No items found');
     // Click the Timestamp column header in main table to sort
     cy.get('.euiBasicTable').last().find('.euiTableHeaderCell').contains('Timestamp').click();
@@ -371,12 +396,17 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
 
+    stubSettings();
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
   });
 
   it('renders combined headers when Nothing is selected in type', () => {
+    // Collapse Stats & Visualizations so pie chart table doesn't interfere
+    cy.contains('h3', 'Stats & Visualizations').click();
     resetTypeFilterToNone();
+    // Wait for mixed data to fully render before checking headers
+    assertRowCountEquals(totalRowCount);
     const expected = [
       'Id',
       'Type',
@@ -392,7 +422,6 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       'Total Shards',
     ];
     getHeaders().should('deep.equal', expected);
-    assertRowCountEquals(totalRowCount);
     expectSortedBy('Query Count', 2);
     expectSortedBy('Avg Latency / Latency', 4);
     expectSortedBy('Avg CPU Time / CPU Time', 5);
@@ -428,6 +457,10 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
 
   it('renders group-only headers when Type=group', () => {
     setTypeFilter('group');
+    const groupOnlyCount = mixedRows.filter((r) => String(r.group_by).toUpperCase() !== 'NONE')
+      .length;
+    // Wait for filtered rows to render before checking headers
+    assertRowCountEquals(groupOnlyCount);
     const expected = [
       'Id',
       'Type',
@@ -437,10 +470,6 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       'Average Memory Usage',
     ];
     getHeaders().should('deep.equal', expected);
-
-    const groupOnlyCount = mixedRows.filter((r) => String(r.group_by).toUpperCase() !== 'NONE')
-      .length;
-    assertRowCountEquals(groupOnlyCount);
 
     expectSortedBy('Query Count', 2);
     expectSortedBy('Average Latency', 3);
@@ -481,6 +510,7 @@ describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(QUERY_ONLY) });
     }).as('topQueries');
 
+    stubSettings();
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
   });
@@ -511,6 +541,7 @@ describe('Query Insights — Dynamic Columns (GROUP ONLY fixture)', () => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(GROUP_ONLY) });
     }).as('topQueries');
 
+    stubSettings();
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
   });
@@ -553,6 +584,7 @@ describe('Query Insights — Filters and Search', () => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
 
+    stubSettings();
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
   });
@@ -627,9 +659,8 @@ describe('Query Insights — Filters and Search', () => {
 
   it('updates search box when filter is selected', () => {
     resetTypeFilterToNone();
-    cy.get('.euiFieldSearch').should('have.value', '');
     setTypeFilter('query');
-    cy.get('.euiFieldSearch').should('contain.value', 'group_by');
+    cy.get('.euiFieldSearch').should('have.value', 'group_by:(NONE)');
   });
 
   it('clears search box when filters are cleared', () => {
@@ -679,6 +710,7 @@ describe('Query Insights — Stats & Visualizations Panel', () => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
 
+    stubSettings();
     cy.waitForQueryInsightsPlugin();
     cy.wait('@topQueries');
   });
