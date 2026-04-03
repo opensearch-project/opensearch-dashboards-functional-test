@@ -25,8 +25,8 @@ describe('Query Group Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until query insights data is available, then
-    // navigate directly to the group details page using the ID from the API
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the group details page via URL.
     cy.waitForTopQueriesData();
     cy.navigateToGroupDetails();
   });

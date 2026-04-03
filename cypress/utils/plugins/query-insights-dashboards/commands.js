@@ -22,7 +22,7 @@ Cypress.Commands.add('enableTopQueries', (metric) => {
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: true,
-        [`search.insights.top_queries.${metric}.window_size`]: '1m',
+        [`search.insights.top_queries.${metric}.window_size`]: '5m',
         [`search.insights.top_queries.${metric}.top_n_size`]: 100,
       },
     },
@@ -59,9 +59,9 @@ Cypress.Commands.add('enableGrouping', () => {
         'search.insights.top_queries.latency.top_n_size': 5,
         'search.insights.top_queries.cpu.top_n_size': 5,
         'search.insights.top_queries.memory.top_n_size': 5,
-        'search.insights.top_queries.latency.window_size': '1m',
-        'search.insights.top_queries.cpu.window_size': '1m',
-        'search.insights.top_queries.memory.window_size': '1m',
+        'search.insights.top_queries.latency.window_size': '5m',
+        'search.insights.top_queries.cpu.window_size': '5m',
+        'search.insights.top_queries.memory.window_size': '5m',
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
@@ -170,16 +170,21 @@ Cypress.Commands.add('waitForQueryInsightsPlugin', () => {
   );
 });
 
+/**
+ * Poll the OpenSearch _insights/top_queries API until data is available.
+ * Returns once at least one query is found. Retries up to maxRetries times
+ * with a 5-second delay between attempts.
+ */
 Cypress.Commands.add(
   'waitForTopQueriesData',
   (metric = 'latency', maxRetries = 12) => {
-    const checkData = (retries) => {
+    var checkData = function (retries) {
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
+        url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
         qs: { type: metric },
         failOnStatusCode: false,
-      }).then((response) => {
+      }).then(function (response) {
         var body = response.body || {};
         var queries = body.top_queries || [];
         if (queries.length > 0) {
@@ -203,13 +208,15 @@ Cypress.Commands.add(
   }
 );
 
-// Fetch a query ID from the OpenSearch API with retry logic, then navigate
-// directly to the details page. This avoids clicking table links (fragile
-// due to OUI class name differences and visualization panel tables).
-Cypress.Commands.add('navigateToQueryDetails', () => {
+/**
+ * Fetch a query ID from the OpenSearch _insights/top_queries API (with
+ * retries) and navigate directly to the query details page. This bypasses
+ * clicking table links which is fragile due to OUI/EUI class differences
+ * and multiple tables on the overview page.
+ */
+Cypress.Commands.add('navigateToQueryDetails', function () {
   var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
   var timeout = isCI ? 120000 : 60000;
-  // waitForTopQueriesData already confirmed data exists; fetch the ID
   var to = new Date().toISOString();
   var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
   var fetchAndNavigate = function (retries) {
@@ -222,24 +229,28 @@ Cypress.Commands.add('navigateToQueryDetails', () => {
       var body = response.body || {};
       var queries = body.top_queries || [];
       if (queries.length === 0 && retries > 0) {
-        cy.log('No queries yet for navigation, retrying...');
+        cy.log('No queries for navigation, retrying...');
         cy.wait(5000);
         fetchAndNavigate(retries - 1);
         return;
       }
-      expect(queries.length).to.be.greaterThan(0);
-      var query = queries[0];
+      // Filter for individual queries (group_by === 'NONE')
+      var individual = queries.filter(function (q) {
+        return !q.group_by || q.group_by === 'NONE';
+      });
+      expect(individual.length).to.be.greaterThan(0);
+      var query = individual[0];
       var basePath = QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0];
-      var detailsPath =
+      cy.visit(
         basePath +
-        '#/query-details?from=' +
-        encodeURIComponent(from) +
-        '&to=' +
-        encodeURIComponent(to) +
-        '&id=' +
-        encodeURIComponent(query.id) +
-        '&verbose=true';
-      cy.visit(detailsPath);
+          '#/query-details?from=' +
+          encodeURIComponent(from) +
+          '&to=' +
+          encodeURIComponent(to) +
+          '&id=' +
+          encodeURIComponent(query.id) +
+          '&verbose=true'
+      );
       cy.contains('Query details', { timeout: timeout }).should('be.visible');
       cy.get('[data-test-subj="query-details-summary-section"]', {
         timeout: timeout,
@@ -249,7 +260,10 @@ Cypress.Commands.add('navigateToQueryDetails', () => {
   fetchAndNavigate(6);
 });
 
-Cypress.Commands.add('navigateToGroupDetails', () => {
+/**
+ * Same as navigateToQueryDetails but for group details pages.
+ */
+Cypress.Commands.add('navigateToGroupDetails', function () {
   var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
   var timeout = isCI ? 120000 : 60000;
   var to = new Date().toISOString();
@@ -264,24 +278,28 @@ Cypress.Commands.add('navigateToGroupDetails', () => {
       var body = response.body || {};
       var queries = body.top_queries || [];
       if (queries.length === 0 && retries > 0) {
-        cy.log('No queries yet for navigation, retrying...');
+        cy.log('No queries for navigation, retrying...');
         cy.wait(5000);
         fetchAndNavigate(retries - 1);
         return;
       }
-      expect(queries.length).to.be.greaterThan(0);
-      var query = queries[0];
+      // Filter for grouped queries (group_by === 'SIMILARITY')
+      var grouped = queries.filter(function (q) {
+        return q.group_by && q.group_by !== 'NONE';
+      });
+      expect(grouped.length).to.be.greaterThan(0);
+      var query = grouped[0];
       var basePath = QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0];
-      var detailsPath =
+      cy.visit(
         basePath +
-        '#/query-group-details?from=' +
-        encodeURIComponent(from) +
-        '&to=' +
-        encodeURIComponent(to) +
-        '&id=' +
-        encodeURIComponent(query.id) +
-        '&verbose=true';
-      cy.visit(detailsPath);
+          '#/query-group-details?from=' +
+          encodeURIComponent(from) +
+          '&to=' +
+          encodeURIComponent(to) +
+          '&id=' +
+          encodeURIComponent(query.id) +
+          '&verbose=true'
+      );
       cy.contains('Query group details', { timeout: timeout }).should(
         'be.visible'
       );

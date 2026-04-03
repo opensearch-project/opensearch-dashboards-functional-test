@@ -13,6 +13,7 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+  cy.disableGrouping();
 };
 
 describe('Top Queries Details Page', () => {
@@ -27,8 +28,9 @@ describe('Top Queries Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until query insights data is available, then
-    // navigate directly to the query details page using the ID from the API
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the query details page via URL (bypasses table click
+    // which is fragile due to OUI class names and viz panel tables).
     cy.waitForTopQueriesData();
     cy.navigateToQueryDetails();
   });

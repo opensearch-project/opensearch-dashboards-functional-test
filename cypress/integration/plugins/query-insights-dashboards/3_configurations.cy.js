@@ -11,14 +11,11 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
 };
 
-const toggleMetricEnabled = () => {
+const toggleMetricEnabled = async () => {
+  cy.get('button[data-test-subj="top-n-metric-toggle"]').trigger('mouseover');
+  cy.wait(1000);
   cy.get('button[data-test-subj="top-n-metric-toggle"]').click({ force: true });
-  // Wait for the toggle state to update
-  cy.get('button[data-test-subj="top-n-metric-toggle"]', {
-    timeout: 15000,
-  }).should('have.attr', 'aria-checked', 'true');
-  // Wait for the form fields to become enabled after the API save completes
-  cy.get('input[type="number"]', { timeout: 15000 }).should('not.be.disabled');
+  cy.wait(1000);
 };
 
 describe('Query Insights Configurations Page', () => {

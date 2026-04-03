@@ -10,7 +10,6 @@ import MIXED from '../../../fixtures/stub_top_queries.json';
 import QUERY_ONLY from '../../../fixtures/stub_top_queries_query_only.json';
 import GROUP_ONLY from '../../../fixtures/stub_top_queries_group_only.json';
 
-
 const makeTimestampedBody = (raw) => {
   const body = JSON.parse(JSON.stringify(raw));
   const list = body?.response?.top_queries ?? body?.top_queries ?? [];
