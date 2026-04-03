@@ -4,7 +4,7 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 import MIXED from '../../../fixtures/stub_top_queries.json';
 import QUERY_ONLY from '../../../fixtures/stub_top_queries_query_only.json';
@@ -361,8 +361,13 @@ describe('Query Insights Dashboard', () => {
 });
 
 describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED)', () => {
-  const mixedRows = getRowsFromRaw(MIXED);
-  const totalRowCount = mixedRows.length;
+  var mixedRows;
+  var totalRowCount;
+
+  before(() => {
+    mixedRows = getRowsFromRaw(MIXED);
+    totalRowCount = mixedRows.length;
+  });
 
   beforeEach(() => {
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
