@@ -26,8 +26,4 @@ jobs:
       # blocks between specs (the runner does not fully reset suite state when
       # using --spec glob). These tests depend on short-lived cluster state
       # (query insights windows) that expires if stale suites re-execute.
-      test-command: >-
-        env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/1_top_queries_spec.js'
-        && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/2_query_details_spec.js'
-        && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/3_configurations_spec.js'
-        && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/4_group_details_spec.js'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/1_top_queries_spec.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/2_query_details_spec.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/3_configurations_spec.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/4_group_details_spec.js'
