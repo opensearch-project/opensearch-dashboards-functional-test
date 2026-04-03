@@ -24,7 +24,7 @@ import {
 const miscUtils = new MiscUtils(cy);
 
 if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
-  describe('Create datasources', () => {
+  describe('Create datasources', { testIsolation: true }, () => {
     before(() => {
       // Clean up before creating new data sources for testing
       cy.deleteAllDataSources();

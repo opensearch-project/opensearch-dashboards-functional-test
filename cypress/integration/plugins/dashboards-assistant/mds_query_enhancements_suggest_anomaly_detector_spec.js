@@ -44,16 +44,15 @@ const createWorkspaceWithLogsData = () => {
 
 const testSuggestAD = (url) => {
   describe('SuggestAnomalyDetector', () => {
-    let workspaceId = '';
-    let dataSourceId = '';
     before(() => {
       createWorkspaceWithLogsData().then((result) => {
-        workspaceId = result.workspaceId;
-        dataSourceId = result.dataSourceId;
+        cy.wrap(result.workspaceId).as('workspaceId');
+        cy.wrap(result.dataSourceId).as('dataSourceId');
       });
     });
 
-    after(() => {
+    after(function () {
+      const { workspaceId, dataSourceId } = this;
       if (workspaceId) {
         if (dataSourceId) {
           cy.removeSampleDataForWorkspace('logs', workspaceId, dataSourceId);
@@ -65,27 +64,28 @@ const testSuggestAD = (url) => {
       }
     });
 
-    beforeEach(() => {
-      cy.visit(`${url}/w/${workspaceId}/app/data-explorer/discover`);
-      cy.wait(5000);
+    beforeEach(function () {
+      cy.get('@workspaceId').then((workspaceId) => {
+        cy.visit(`${url}/w/${workspaceId}/app/data-explorer/discover`);
 
-      cy.get('[data-test-subj="datasetSelectorButton"]', {
-        timeout: 60000,
-      }).click();
+        cy.get('[data-test-subj="datasetSelectorButton"]', {
+          timeout: 60000,
+        })
+          .should('be.visible')
+          .click();
 
-      // Type in the search box
-      cy.get(
-        '[data-test-subj="datasetSelectorSelectable"] input[type="search"]'
-      ).type('opensearch_dashboards_sample_data_logs');
+        cy.get(
+          '[data-test-subj="datasetSelectorSelectable"] input[type="search"]'
+        ).type('opensearch_dashboards_sample_data_logs');
 
-      // Wait for and select the filtered result
-      cy.get('[data-test-subj="datasetSelectorSelectable"]')
-        .contains(
-          '.euiSelectableListItem',
-          'opensearch_dashboards_sample_data_logs'
-        )
-        .should('be.visible')
-        .click();
+        cy.get('[data-test-subj="datasetSelectorSelectable"]')
+          .contains(
+            '.euiSelectableListItem',
+            'opensearch_dashboards_sample_data_logs'
+          )
+          .should('be.visible')
+          .click();
+      });
     });
 
     it('should create detector successfully', () => {
@@ -94,7 +94,6 @@ const testSuggestAD = (url) => {
       }).click();
       cy.contains('Suggest anomaly detector').click();
 
-      // Check main UI elements are present
       cy.get('#add-anomaly-detector__title').should(
         'contain',
         'Suggested anomaly detector'
@@ -105,22 +104,15 @@ const testSuggestAD = (url) => {
         .should('be.visible')
         .click();
 
-      // Test empty name validation
       cy.get('[data-test-subj="detectorNameTextInputFlyout"]').clear();
-
-      // Test valid name
       cy.get('[data-test-subj="detectorNameTextInputFlyout"]').type(
         'test-detector-name' + Math.floor(Math.random() * 100) + 1
       );
 
-      // Test interval input
       cy.get('[data-test-subj="detectionInterval"]').clear().type('15');
-
-      // Test window delay input
       cy.get('[data-test-subj="windowDelay"]').clear().type('5');
 
       cy.wait(5000);
-      // Click create button
       cy.contains('button', 'Create detector').click();
       cy.contains('Detector created').should('be.visible');
     });
@@ -140,7 +132,6 @@ const testSuggestAD = (url) => {
 
       cy.wait('@suggestParametersError');
 
-      // Verify error toast
       cy.contains(
         'Generate parameters for creating anomaly detector failed'
       ).should('be.visible');
@@ -153,7 +144,6 @@ const testSuggestAD = (url) => {
       }).click();
       cy.contains('Suggest anomaly detector').click();
 
-      // Mock failed API call
       cy.intercept('POST', 'w/*/api/anomaly_detectors/detectors/*', (req) => {
         req.reply({
           statusCode: 200,
@@ -164,12 +154,9 @@ const testSuggestAD = (url) => {
         });
       }).as('createDetectorError');
 
-      // Click create button
       cy.contains('button', 'Create detector').click();
-
       cy.wait('@createDetectorError');
 
-      // Verify error toast
       cy.contains('Create anomaly detector failed').should('be.visible');
     });
   });

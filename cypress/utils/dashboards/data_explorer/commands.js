@@ -54,7 +54,7 @@ Cypress.Commands.add('waitForSearch', () => {
     message: 'search load',
   });
 
-  cy.getElementByTestId('docTable');
+  cy.getElementByTestId('docTable', { timeout: 10000 }).should('exist');
 });
 
 Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {

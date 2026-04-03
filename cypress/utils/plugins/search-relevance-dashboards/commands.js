@@ -13,6 +13,6 @@ Cypress.Commands.add('enableSearchRelevanceWorkbench', () => {
         'plugins.search_relevance.workbench_enabled': true,
       },
     },
-    failOnStatusCode: false,
+    failOnStatusCode: true,
   });
 });

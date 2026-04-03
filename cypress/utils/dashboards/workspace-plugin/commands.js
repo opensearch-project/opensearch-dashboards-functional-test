@@ -57,10 +57,18 @@ Cypress.Commands.add('createWorkspace', ({ settings, ...workspace } = {}) => {
       settings,
     },
   }).then((resp) => {
-    if (resp && resp.body && resp.body.success) {
-      return resp.body.result.id;
+    if (resp && resp.body) {
+      if (resp.body.success) {
+        return resp.body.result.id;
+      } else {
+        throw new Error(
+          `Create workspace ${workspace.name} failed: ${resp?.body?.error}`
+        );
+      }
     } else {
-      throw new Error(`Create workspace ${workspace.name} failed: ${resp?.body?.error}`);
+      throw new Error(
+        `Create workspace ${workspace.name} failed: ${resp?.body?.error}`
+      );
     }
   });
 });
