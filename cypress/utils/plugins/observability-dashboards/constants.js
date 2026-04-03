@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { BASE_PATH } from '../../base_constants';
+import dayjs from 'dayjs';
 
 export const OBSERVABILITY_INDEX_NAME = '.opensearch-observability';
 export const delayTime = 1500;
@@ -52,8 +53,15 @@ export const suppressResizeObserverIssue = () => {
 };
 
 export const setTimeFilter = (setEndTime = false, refresh = true) => {
-  const startTime = 'Mar 25, 2021 @ 10:00:00.000';
-  const endTime = 'Mar 25, 2021 @ 11:00:00.000';
+  const baseStartTimeUTC = '2021-03-25T17:00:00.000Z';
+  const baseEndTimeUTC = '2021-03-25T19:00:00.000Z';
+
+  // Convert UTC to local timezone and format for the date picker
+  const startTime = dayjs(baseStartTimeUTC).format(
+    'MMM DD, YYYY @ HH:mm:ss.SSS'
+  );
+  const endTime = dayjs(baseEndTimeUTC).format('MMM DD, YYYY @ HH:mm:ss.SSS');
+
   cy.get('button.euiButtonEmpty[aria-label="Date quick select"]', {
     timeout: TIMEOUT_DELAY,
   }).click();

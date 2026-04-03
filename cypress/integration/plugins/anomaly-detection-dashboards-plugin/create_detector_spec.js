@@ -62,6 +62,17 @@ context('Create detector workflow', () => {
     // Configure model step
     cy.getElementByTestId('featureNameTextInput-0').type(TEST_FEATURE_NAME);
     selectTopItemFromFilter('featureFieldTextInput-0', false);
+
+    // Suggest parameters
+    cy.getElementByTestId('suggestParametersButton').click();
+    cy.getElementByTestId('suggestParametersDialogTitle').should('exist');
+    cy.getElementByTestId('generateSuggestionsButton').click();
+    cy.getElementByTestId('suggestedParametersResult').should('exist');
+    cy.getElementByTestId('useSuggestedParametersButton').click();
+
+    // The dialog should close and we're back on the model configuration page
+    cy.getElementByTestId('suggestParametersDialogTitle').should('not.exist');
+
     cy.getElementByTestId('configureModelNextButton').click();
     cy.getElementByTestId('configureOrEditModelConfigurationTitle').should(
       'not.exist'

@@ -75,5 +75,18 @@ describe('Judgment Create', () => {
 
     // Expect success message
     cy.contains('Judgment created successfully', { timeout: 10000 });
+
+    // Navigate to judgment listing page
+    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/judgment`);
+    cy.wait(3000);
+
+    // Find and click on the "Test UBI Judgment" link
+    cy.contains('Test UBI Judgment').click();
+
+    // Verify we're on the judgment view page
+    cy.url().should('include', '/judgment/view/');
+
+    // Verify the content contains the expected text
+    cy.contains('futon frames full size without mattress').should('be.visible');
   });
 });

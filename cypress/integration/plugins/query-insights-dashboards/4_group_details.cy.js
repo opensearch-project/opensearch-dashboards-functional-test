@@ -26,11 +26,11 @@ describe('Query Group Details Page', () => {
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverview();
-    cy.wait(10000);
-    cy.get('.euiTableRow').first().find('button').first().trigger('mouseover');
+    cy.get('.euiBasicTable .euiTableRow button.euiLink')
+      .first()
+      .trigger('mouseover');
     cy.wait(1000);
-    // Click the first button in the 'group' row
-    cy.get('.euiTableRow').first().find('button').first().click(); // Navigate to details
+    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
     cy.wait(1000);
   });
 
@@ -52,7 +52,9 @@ describe('Query Group Details Page', () => {
     cy.get('.euiPanel').contains('Query').should('be.visible');
 
     // Validate the presence of the latency chart
-    cy.get('#latency').should('be.visible');
+    cy.get('[data-test-subj="query-group-details-latency-chart"] svg').should(
+      'be.visible'
+    );
   });
 
   it('should validate the aggregate summary fields', () => {
@@ -100,12 +102,12 @@ describe('Query Group Details Page', () => {
 
   it('should display the latency panel correctly', () => {
     // Validate the fourth EuiPanel contains the Latency section
-    cy.get('.euiPanel')
-      .eq(3)
-      .within(() => {
+    cy.get('[data-test-subj="query-group-details-latency-chart"]').within(
+      () => {
         cy.contains('h2', 'Latency').should('be.visible');
-        cy.get('#latency').should('be.visible');
-      });
+        cy.get('svg').should('be.visible');
+      }
+    );
   });
   it('should get complete details of the query using verbose=true for group type', () => {
     const to = new Date().toISOString();

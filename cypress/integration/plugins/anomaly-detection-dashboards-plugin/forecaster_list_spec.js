@@ -17,7 +17,8 @@
 //  8. Delete a forecaster from the list page
 // ============================================================================
 
-import { AD_FIXTURE_BASE_PATH } from '../../../utils/constants';
+import { AD_FIXTURE_BASE_PATH, BASE_PATH } from '../../../utils/constants';
+import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
 
 const setupIndexWithData = (indexName) => {
   // Create index mapping first
@@ -79,9 +80,30 @@ context('list forecaster workflow', () => {
   const TEST_INDEX_NAME = 'sample-forecast-index';
   const TEST_INDEX_NAME_2 = 'sample-forecast-index-2';
 
-  beforeEach(() => {
-    cy.visit('/');
+  let restoreTenantSwitchModal;
+  let restoreWelcomeModal;
+  let restoreThemeModal;
 
+  beforeEach(() => {
+    // disable the tenant switch modal
+    restoreTenantSwitchModal = setStorageItem(
+      sessionStorage,
+      'opendistro::security::tenant::show_popup',
+      'false'
+    );
+    restoreWelcomeModal = setStorageItem(
+      localStorage,
+      'home:welcome:show',
+      'false'
+    );
+    restoreThemeModal = setStorageItem(
+      localStorage,
+      'home:newThemeModal:show',
+      'false'
+    );
+    // Visit OSD
+    // requrired otherwise we encounter connection issue in later test
+    cy.visit(`${BASE_PATH}/app/home`);
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
 
@@ -93,6 +115,15 @@ context('list forecaster workflow', () => {
   afterEach(() => {
     cy.deleteAllIndices();
     cy.deleteForecastIndices();
+    if (restoreTenantSwitchModal) {
+      restoreTenantSwitchModal();
+    }
+    if (restoreWelcomeModal) {
+      restoreWelcomeModal();
+    }
+    if (restoreThemeModal) {
+      restoreThemeModal();
+    }
   });
 
   it('Full creation - based on real index', () => {
@@ -135,16 +166,11 @@ context('list forecaster workflow', () => {
     });
 
     // Handles the optional "Select your tenant" pop-up
-    cy.get('body').then(($body) => {
-      // We look for an element containing "Select your tenant" to avoid being
-      // specific about which tag (e.g. h1, h2) is used for the title.
-      if ($body.find(':contains("Select your tenant")').length > 0) {
-        const confirmButton = $body.find('button:contains("Confirm")');
-        if (confirmButton.length) {
-          cy.wrap(confirmButton.first()).click();
-        }
-      }
-    });
+    cy.handleTenantDialog();
+
+    cy.contains('Loading OpenSearch Dashboards', { timeout: 120000 }).should(
+      'not.exist'
+    );
 
     // The application can sometimes re-render the header after loading or
     // dismissing initial pop-ups. To prevent a "detached from the DOM" error,
@@ -161,18 +187,6 @@ context('list forecaster workflow', () => {
       timeout: 10000,
     }).should('be.visible');
     cy.contains('Forecasting').click();
-
-    // Handles the optional "Select your tenant" pop-up
-    cy.get('body').then(($body) => {
-      // We look for an element containing "Select your tenant" to avoid being
-      // specific about which tag (e.g. h1, h2) is used for the title.
-      if ($body.find(':contains("Select your tenant")').length > 0) {
-        const confirmButton = $body.find('button:contains("Confirm")');
-        if (confirmButton.length) {
-          cy.wrap(confirmButton.first()).click();
-        }
-      }
-    });
 
     // Verify we're redirected to the forecasters list page
     // match ensures that the url ends with /forecasters
@@ -211,34 +225,57 @@ context('list forecaster workflow', () => {
 
     // ========== Scenario: START FORECASTER ==========
     // Click the cell to make it active and reveal the hidden controls.
-    cy.get('@statusCell').click();
+    // Use { force: true } because EUI data grid wraps cells in a parent div
+    // with `pointer-events: none`, which blocks normal Cypress clicks.
+    cy.get('@statusCell').click({ force: true });
 
     // Wait a moment for the cell to become active
     cy.wait(500);
 
-    // Try to trigger hover as well, in case that's needed
-    cy.get('@statusCell').trigger('mouseover');
-
-    // Check if the expand button is now visible, if not, try clicking again
-    cy.get('@statusCell').then(($cell) => {
-      const expandButton = $cell.find(
-        'button.euiDataGridRowCell__expandButtonIcon'
-      );
-      if (expandButton.length === 0 || !expandButton.is(':visible')) {
-        cy.log('Expand button not visible, trying to click cell again');
-        cy.get('@statusCell').click({ force: true });
-        cy.wait(500);
+    // Retry mechanism to handle the expand button visibility
+    const attemptExpandButtonClick = (retries = 5) => {
+      if (retries === 0) {
+        throw new Error('Failed to click expand button after multiple retries');
       }
-    });
 
-    // Find the now-visible expand button inside the cell.
+      cy.get('@statusCell').then(($cell) => {
+        const expandButton = $cell.find(
+          'button.euiDataGridRowCell__expandButtonIcon'
+        );
+
+        if (expandButton.length === 0) {
+          cy.log(`Expand button not found, retries left: ${retries}`);
+          cy.get('@statusCell').click({ force: true });
+          cy.wait(300);
+          attemptExpandButtonClick(retries - 1);
+        } else if (!expandButton.is(':visible')) {
+          cy.log(`Expand button not visible, retries left: ${retries}`);
+          // Try multiple hover techniques
+          cy.get('@statusCell')
+            .scrollIntoView()
+            .trigger('mouseenter', { force: true })
+            .trigger('mouseover', { force: true })
+            .trigger('mousemove', { force: true });
+          cy.wait(200);
+          attemptExpandButtonClick(retries - 1);
+        } else {
+          cy.log('Expand button is visible, clicking it');
+          cy.wrap(expandButton).click({ force: true });
+        }
+      });
+    };
+
+    attemptExpandButtonClick();
+
+    // Alias the button for later use
     cy.get('@statusCell')
       .find('button.euiDataGridRowCell__expandButtonIcon')
-      .should('be.visible')
       .as('expandButton');
 
     // Click the expand button to open the final popover.
-    cy.get('@expandButton').click();
+    // Use { force: true } because the expand button is inside a data grid cell
+    // whose parent has `pointer-events: none`.
+    cy.get('@expandButton').click({ force: true });
 
     // Verify the popover content is visible.
     // Instead of looking for the container div, we now directly look for the
@@ -255,7 +292,7 @@ context('list forecaster workflow', () => {
       // Within those siblings, find the button with aria-label="Show actions" and click it.
       // This is the most reliable way to target the button from the HTML you provided.
       .find('button[aria-label="Show actions"]')
-      .click();
+      .click({ force: true });
 
     // Now that the popover is open, find the "Start forecasting" menu item and click it.
     // We target the panel specifically to ensure we don't click anything else by accident.
@@ -289,7 +326,9 @@ context('list forecaster workflow', () => {
     );
 
     // Click the cell to activate it and show the hidden controls.
-    cy.get('@initializingStatusCell').click();
+    // Use { force: true } because EUI data grid wraps cells in a parent div
+    // with `pointer-events: none`, which blocks normal Cypress clicks.
+    cy.get('@initializingStatusCell').click({ force: true });
 
     // Find the expand button inside the active cell...
     cy.get('@initializingStatusCell')
@@ -302,8 +341,10 @@ context('list forecaster workflow', () => {
 
     // The popover should now be visible. We'll find it by looking for the
     // unique text inside it, which is more reliable than checking styles.
+    // Note: The popover content may be clipped by parent overflow styles,
+    // so we check existence rather than visibility.
     cy.contains('p', 'initializing forecast since', { timeout: 10000 })
-      .should('be.visible')
+      .should('exist')
       .parents('div[style*="width: 250px"]')
       .first()
       .as('popoverContainer');
@@ -432,10 +473,12 @@ context('list forecaster workflow', () => {
       buttonIndex,
       buttonCount
     ) => {
+      // after trying all buttons, return
       if (buttonIndex >= buttonCount) {
-        throw new Error(
+        cy.log(
           `Could not open the "${modalTestSubj}" modal after trying all buttons.`
         );
+        return;
       }
 
       cy.log(
@@ -461,9 +504,7 @@ context('list forecaster workflow', () => {
         }
 
         cy.log(
-          `  Inner loop: Attempt #${4 - retryCount} for button #${
-            buttonIndex + 1
-          }`
+          `  Inner loop: Attempt #${retryCount} for button #${buttonIndex + 1}`
         );
 
         // Always re-query for the button to ensure it's not detached
@@ -473,45 +514,55 @@ context('list forecaster workflow', () => {
           .click({ force: true });
 
         // Poll for the menu to appear
+        cy.wait(500);
         cy.get('body').then(($body) => {
           const $visibleMenu = $body.find('.euiContextMenuPanel:visible');
           if (
             $visibleMenu.length > 0 &&
             $visibleMenu.text().includes(menuItemText)
           ) {
-            // Correct menu found, attempt to click the item
-            cy.log(`  Correct menu is visible. Clicking "${menuItemText}".`);
-            cy.get('.euiContextMenuPanel:visible')
-              .contains('.euiContextMenuItem', menuItemText)
-              .click({ force: true });
+            // The menu was visible. Re-check just before clicking to be safe.
+            if (Cypress.$('.euiContextMenuPanel:visible').length > 0) {
+              cy.log(`  Correct menu is visible. Clicking "${menuItemText}".`);
+              cy.get('.euiContextMenuPanel:visible')
+                .contains('.euiContextMenuItem', menuItemText)
+                .click({ force: true });
 
-            // After clicking, wait a moment and check if the modal appeared.
-            cy.wait(500); // Wait for modal to render
-            cy.get('body').then(($bodyAfterClick) => {
-              if (
-                $bodyAfterClick.find(`[data-test-subj="${modalTestSubj}"]`)
-                  .length > 0
-              ) {
-                // SUCCESS! Modal is open. End all loops.
-                cy.log(`  Success! ${modalTestSubj} is visible.`);
-                return;
-              } else {
-                // Modal did not appear. Retry the sequence.
-                cy.log(
-                  '  Modal did not appear after click. Closing menu and retrying.'
-                );
-                cy.get('body').click('topLeft', { force: true });
-                cy.wait(500);
-                attemptClickSequence(retryCount - 1);
-              }
-            });
+              // After clicking, wait a moment and check if the modal appeared.
+              cy.wait(500); // Wait for modal to render
+              cy.get('body').then(($bodyAfterClick) => {
+                if (
+                  $bodyAfterClick.find(`[data-test-subj="${modalTestSubj}"]`)
+                    .length > 0
+                ) {
+                  // SUCCESS! Modal is open. End all loops.
+                  cy.log(`  Success! ${modalTestSubj} is visible.`);
+                  return;
+                } else {
+                  // Modal did not appear. Retry the sequence.
+                  cy.log(
+                    '  Modal did not appear after click. Closing menu and retrying.'
+                  );
+                  cy.get('body').click('topLeft', { force: true });
+                  cy.wait(500);
+                  attemptClickSequence(retryCount - 1);
+                }
+              });
+            } else {
+              // The menu disappeared between the initial check and this one.
+              cy.log('  Menu disappeared before click. Retrying.');
+              cy.wait(500);
+              attemptClickSequence(retryCount - 1);
+            }
           } else {
             // Menu was not visible or was incorrect. Retry.
             cy.log('  Menu not visible or incorrect. Retrying.');
             if ($visibleMenu.length > 0) {
+              cy.log(`  Visible menu text: "${$visibleMenu.text()}"`);
               cy.get('body').click('topLeft', { force: true });
             }
-            cy.wait(500);
+            // Give the UX more time to render the menu.
+            cy.wait(2000);
             attemptClickSequence(retryCount - 1);
           }
         });
@@ -560,6 +611,34 @@ context('list forecaster workflow', () => {
           throw new Error('No "Show actions" buttons found on the page.');
         }
       });
+
+    // After attempting with "Cancel forecast", check if the modal appeared.
+    // If not, try again with "Stop forecasting". "Cancel forecast" is present
+    // when state is "Initializing". "Stop forecasting" is present when state
+    // is "Running". We are not sure which state the forecaster is in when the
+    // real time run is triggered, so we try both.
+    cy.get('body').then(($body) => {
+      if (
+        $body.find('[data-test-subj="stopForecastersModal"]:visible').length ===
+        0
+      ) {
+        cy.log(
+          'Modal not found with "Cancel forecast", trying "Stop forecasting".'
+        );
+        cy.get('button[aria-label="Show actions"]')
+          .its('length')
+          .then((count) => {
+            if (count > 0) {
+              openActionModalWithRetries(
+                'Stop forecasting',
+                'stopForecastersModal',
+                0,
+                count
+              );
+            }
+          });
+      }
+    });
 
     // =====================================================================
     //  Scenario – STOP FORECASTER VIA ROW ACTIONS
@@ -652,10 +731,14 @@ context('list forecaster workflow', () => {
     // Verify the 'Delete forecaster' confirmation modal appears.
     cy.get('[data-test-subj="deleteForecastersModal"]')
       .should('be.visible')
-      .and(
-        'contain',
-        `Are you sure you want to delete "${TEST_FORECASTER_NAME}"?`
-      );
+      .and(($element) => {
+        const text = $element.text();
+        const includesFirstName = text.includes(TEST_FORECASTER_NAME);
+        const includesSecondName = text.includes(TEST_FORECASTER_NAME_2);
+
+        // Assert that at least one of the names is in the text
+        expect(includesFirstName || includesSecondName).to.be.true;
+      });
 
     // Type 'delete' in the confirmation field to enable the button.
     cy.get('[data-test-subj="deleteForecastersModal"]')

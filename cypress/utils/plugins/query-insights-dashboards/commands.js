@@ -65,7 +65,7 @@ Cypress.Commands.add('enableGrouping', () => {
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
-    failOnStatusCode: false,
+    failOnStatusCode: true,
   });
 });
 
@@ -82,7 +82,7 @@ Cypress.Commands.add('disableGrouping', () => {
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
-    failOnStatusCode: false,
+    failOnStatusCode: true,
   });
 });
 
@@ -107,27 +107,55 @@ Cypress.Commands.add('deleteIndexByName', (indexName) => {
 });
 
 Cypress.Commands.add(
-  'qi_waitForPageLoad',
+  'waitForPageLoad',
   (fullUrl, { timeout = 60000, contains = null }) => {
     Cypress.log({
       message: `Wait for url: ${fullUrl} to be loaded.`,
     });
-    cy.url({ timeout: timeout }).then(() => {
-      contains && cy.contains(contains).should('be.visible');
-    });
+    cy.url({ timeout: timeout }).should('include', fullUrl);
+
+    if (contains) {
+      const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+      const ciTimeout = isCI ? Math.max(timeout, 180000) : timeout;
+      cy.log(
+        `Waiting for content "${contains}" with timeout: ${ciTimeout}ms (${
+          isCI ? 'CI' : 'Local'
+        })`
+      );
+      cy.contains(contains, { timeout: ciTimeout }).should('be.visible');
+    }
   }
 );
 
 Cypress.Commands.add('navigateToOverview', () => {
   cy.visit(QUERY_INSIGHTS_OVERVIEW_PATH);
-  cy.qi_waitForPageLoad(QUERY_INSIGHTS_OVERVIEW_PATH, {
+
+  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const baseTimeout = isCI ? 240000 : 90000;
+
+  cy.waitForPageLoad(QUERY_INSIGHTS_OVERVIEW_PATH, {
+    timeout: baseTimeout,
     contains: 'Query insights - Top N queries',
   });
+
+  const tableTimeout = isCI ? 60000 : 30000;
+  cy.get('.euiBasicTable', { timeout: tableTimeout }).should('exist');
 });
 
 Cypress.Commands.add('navigateToConfiguration', () => {
   cy.visit(QUERY_INSIGHTS_CONFIGURATION_PATH);
-  cy.qi_waitForPageLoad(QUERY_INSIGHTS_CONFIGURATION_PATH, {
+  cy.waitForPageLoad(QUERY_INSIGHTS_CONFIGURATION_PATH, {
     contains: 'Query insights - Configuration',
   });
+});
+
+Cypress.Commands.add('waitForQueryInsightsPlugin', () => {
+  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const timeout = isCI ? 360000 : 120000;
+
+  cy.visit(QUERY_INSIGHTS_OVERVIEW_PATH, { timeout: 60000 });
+
+  cy.contains('Query insights - Top N queries', { timeout }).should(
+    'be.visible'
+  );
 });

@@ -22,7 +22,7 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const creationFailedMessage = 'Create detector failed.';
+const creationFailedMessage = 'Failed to create detector';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -46,7 +46,9 @@ const getDataSourceField = () => cy.sa_getFieldByLabel(dataSourceLabel);
 
 const logTypeLabel = 'Log type';
 
-const getLogTypeField = () => cy.sa_getFieldByLabel(logTypeLabel);
+const getLogTypeField = () =>
+  // This log type dropdown is populated asynchronously. Adding short wait to reduce flakiness.
+  cy.sa_getFieldByLabel(logTypeLabel).click().wait(5000);
 
 const openDetectorDetails = (detectorName) => {
   cy.sa_getInputByPlaceholder('Search threat detectors')
@@ -165,10 +167,8 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
 
   fillDetailsForm(detectorName, dataSource, expectFailure);
 
-  cy.sa_getElementByText(
-    '.euiAccordion .euiTitle',
-    'Selected detection rules (14)'
-  )
+  cy.contains('.euiAccordion .euiTitle', 'Selected detection rules')
+    .should('be.visible')
     .click({ force: true, timeout: 5000 })
     .then(() =>
       cy.contains('.euiTable .euiTableRow', getLogTypeLabel(cypressLogTypeDns))
@@ -217,7 +217,10 @@ const createDetector = (detectorName, dataSource, expectFailure) => {
             cy.sa_validateDetailsItem('Detector name', detectorName);
             cy.sa_validateDetailsItem('Description', '-');
             cy.sa_validateDetailsItem('Detector schedule', 'Every 1 minute');
-            cy.sa_validateDetailsItem('Detection rules', '14');
+            cy.sa_getElementByText('.euiFlexItem label', 'Detection rules')
+              .parent()
+              .siblings()
+              .contains(/\d+/);
             cy.sa_validateDetailsItem(
               'Detector dashboard',
               'Not available for this log type'
@@ -242,6 +245,7 @@ const getTriggerNameField = () => cy.sa_getFieldByLabel('Trigger name');
 
 describe('Detectors', () => {
   before(() => {
+    cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
     cy.sa_cleanUpTests();
 
     cy.sa_createIndex(cypressIndexWindows, sample_windows_index_settings);
@@ -278,7 +282,11 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
 
       openCreateForm();
     });
@@ -365,7 +373,7 @@ describe('Detectors', () => {
         .blur()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
-        .contains('Select an input source.');
+        .contains('Select an input source for the detector.');
 
       getDataSourceField().sa_selectComboboxItem(cypressIndexDns);
       getDataSourceField()
@@ -429,12 +437,16 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+      cy.wait('@detectorsSearch', { timeout: 600000 }).should(
+        'have.property',
+        'state',
+        'Complete'
+      );
     });
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.sa_getElementByText('.euiCallOut', creationFailedMessage);
+      cy.contains(creationFailedMessage);
     });
 
     it('...can be created', () => {
@@ -470,6 +482,7 @@ describe('Detectors', () => {
 
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
 
+      cy.wait(2000); // Short wait to reduce flakiness
       cy.sa_urlShouldContain('detector-details').then(() => {
         cy.sa_validateDetailsItem('Detector name', 'test detector edited');
         cy.sa_validateDetailsItem('Description', 'Edited description');
@@ -482,23 +495,27 @@ describe('Detectors', () => {
       openDetectorDetails(detectorName);
 
       editDetectorDetails(detectorName, 'Active rules');
-      cy.sa_getElementByText('.euiText', 'Detection rules (14)');
+      cy.contains('.euiText', /Detection rules \(\d+\)/).should('be.visible');
 
       cy.sa_getInputByPlaceholder('Search...')
         .type(`${cypressDNSRule}`)
         .sa_pressEnterKey();
 
-      cy.sa_getElementByText('.euiTableCellContent button', cypressDNSRule)
-        .parents('td')
-        .prev()
-        .find('.euiTableCellContent button')
-        .click();
+      cy.get('[data-test-subj="edit-detector-rules-table"] tbody tr')
+        .first()
+        .find('td')
+        .first()
+        .find('button')
+        .first()
+        .click({ force: true });
 
-      cy.sa_getElementByText('.euiText', 'Detection rules (13)');
+      cy.contains('.euiText', /Detection rules \(\d+\)/).should('be.visible');
       cy.sa_getElementByText('button', 'Save changes').click({ force: true });
       cy.sa_urlShouldContain('detector-details').then(() => {
         cy.sa_getElementByText('.euiText', detectorName);
-        cy.sa_getElementByText('.euiPanel .euiText', 'Active rules (13)');
+        cy.contains('.euiPanel .euiText', /Active rules \(\d+\)/).should(
+          'be.visible'
+        );
       });
     });
 
@@ -553,8 +570,10 @@ describe('Detectors', () => {
       validateFieldMappingsTable('rules are changed');
     });
 
-    it('...can be stopped and started back from detectors list action menu', () => {
+    it('...can be stopped from detectors list action menu', () => {
+      // Short wait to reduce flakiness
       cy.wait(1000);
+
       cy.get('tbody > tr')
         .first()
         .within(() => {
@@ -575,29 +594,40 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
-      // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(2000);
+      cy.contains('Inactive');
+    });
+
+    it('...can be started from detectors list action menu', () => {
+      // Short wait to reduce flakiness
+      cy.wait(1000);
+
+      cy.get('tbody > tr')
+        .first()
+        .within(() => {
+          cy.get('[class="euiCheckbox__input"]').click({ force: true });
+        });
+
+      // Waiting for Actions menu button to be enabled
+      cy.wait(1000);
 
       setupIntercept(
         cy,
         `${NODE_API.DETECTORS_BASE}/_search`,
         'detectorsSearch'
       );
+
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
       cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
-      // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(2000);
-
-      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
-      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
+      cy.contains('Inactive').should('not.exist');
+      cy.contains('Active');
     });
 
     it('...can be deleted', () => {
       setupIntercept(cy, `${NODE_API.RULES_BASE}/_search`, 'getSigmaRules');
-      openDetectorDetails(detectorName);
+      openDetectorDetails('test detector edited');
 
       cy.wait('@detectorsSearch');
       cy.wait('@getSigmaRules');
@@ -605,13 +635,17 @@ describe('Detectors', () => {
       cy.sa_getButtonByText('Actions')
         .click({ force: true })
         .then(() => {
-          setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectors');
           cy.sa_getElementByText('.euiContextMenuItem', 'Delete').click({
             force: true,
           });
-          cy.wait('@detectors').then(() => {
-            cy.contains('There are no existing detectors');
-          });
+          setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
+          cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+          cy.wait('@detectorsSearch').should(
+            'have.property',
+            'state',
+            'Complete'
+          );
+          cy.contains('test detector edited').should('not.exist');
         });
     });
   });

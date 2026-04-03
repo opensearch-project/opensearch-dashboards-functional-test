@@ -7,6 +7,22 @@ import { AD_FIXTURE_BASE_PATH, FORECAST_URL } from '../../../utils/constants';
 
 describe('Forecaster list page mock', () => {
   before(function () {
+    // Set the default tenant to 'global' to avoid the "Select your tenant" pop-up
+    // as the timing of the pop-up is not deterministic.
+    // I checked brownser'sDevTools → Application → Local Storage (and Session Storage)
+    //  → look for keys containing “security” and “tenant”. I found:
+    // opendistro::security::tenant::savedopendistro::security::tenant::saved:""""
+    // Just to be safe, instead of using the key directly, we use the following code
+    // to find the key and set the value to 'global'.
+    cy.visit('/', {
+      onBeforeLoad(win) {
+        const key = Object.keys(win.localStorage).find(
+          (k) => k.includes('security') && k.includes('tenant')
+        );
+        if (key) win.localStorage.setItem(key, 'global');
+      },
+    });
+
     // Get OpenSearch version.
     cy.request({
       method: 'GET',

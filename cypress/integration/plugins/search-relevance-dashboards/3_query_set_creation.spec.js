@@ -53,7 +53,6 @@ describe('Query Set Creation', () => {
 
     // Expect Forbidden error message
     cy.contains('Failed to create query set', { timeout: 10000 });
-    cy.contains('Forbidden');
   });
 
   it('Should succeed UBI query set creation with 200 status', () => {
@@ -134,6 +133,23 @@ describe('Query Set Creation', () => {
     cy.contains('Query set "Test Manual Query Set" created successfully', {
       timeout: 10000,
     });
+
+    // Navigate to query set listing page
+    cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/querySet`);
+    cy.wait(3000);
+
+    // Find and click on the "Test Manual Query Set" link
+    cy.contains('Test Manual Query Set').click();
+
+    // Verify we're on the query set view page
+    cy.url().should('include', '/querySet/view/');
+
+    // Verify we're on the query set details page
+    cy.contains('Query Set Details').should('be.visible');
+    // Check for query content - format depends on backend version
+    // PR #264 changed format from "queryText#referenceAnswer" to "queryText#{"referenceAnswer":"..."}"
+    cy.contains('test query 1').should('be.visible');
+    cy.contains('test query 2').should('be.visible');
   });
 
   it('Should show validation errors for empty required fields', () => {

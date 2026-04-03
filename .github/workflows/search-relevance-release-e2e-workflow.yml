@@ -14,6 +14,7 @@ jobs:
         filters: |
           tests:
             - 'cypress/**/search-relevance-dashboards/**'
+            - '.github/workflows/release-e2e-workflow-template.yml'
   tests:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}

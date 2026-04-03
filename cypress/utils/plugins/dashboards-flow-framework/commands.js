@@ -6,13 +6,14 @@
 import {
   FF_FIXTURE_BASE_PATH,
   INGEST_NODE_API_PATH,
-  SEARCH_NODE_API_PATH,
+  SEARCH_MODELS_API_PATH,
 } from '../../../utils/constants';
 
 Cypress.Commands.add('createConnector', (connectorBody) =>
   cy
     .request({
       method: 'POST',
+      failOnStatusCode: false, // may fail for envs where connector creation is prohibited
       form: false,
       url: 'api/console/proxy',
       headers: {
@@ -124,40 +125,53 @@ Cypress.Commands.add('mockIngestion', (funcMockedOn) => {
   });
 });
 
-Cypress.Commands.add('mockAllIngestActions', (funcMockedOn) => {
-  cy.fixture(
-    FF_FIXTURE_BASE_PATH + 'semantic_search/simulate_pipeline_response.json'
-  ).then((simulatePipelineResponse) => {
-    cy.intercept('POST', /simulatePipeline/, {
-      statusCode: 200,
-      body: simulatePipelineResponse,
-    }).as('simulatePipelineRequest');
-    cy.fixture(
-      FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response.json'
-    ).then((ingestResponse) => {
-      cy.intercept('POST', INGEST_NODE_API_PATH, {
+Cypress.Commands.add('mockModelSearch', (funcMockedOn) => {
+  cy.fixture(FF_FIXTURE_BASE_PATH + 'search_models_response.json').then(
+    (searchModelsResponse) => {
+      cy.intercept('POST', SEARCH_MODELS_API_PATH, {
         statusCode: 200,
-        body: ingestResponse,
-      }).as('ingestionRequest');
+        body: searchModelsResponse,
+      }).as('searchModelsRequest');
+
       funcMockedOn();
 
-      cy.wait('@simulatePipelineRequest');
-      cy.wait('@ingestionRequest');
-    });
-  });
+      cy.wait('@searchModelsRequest');
+    }
+  );
 });
 
-Cypress.Commands.add('mockSemanticSearchIndexSearch', (funcMockedOn) => {
-  cy.fixture(
-    FF_FIXTURE_BASE_PATH + 'semantic_search/search_response.json'
-  ).then((searchResults) => {
-    cy.intercept('POST', SEARCH_NODE_API_PATH + '/*', {
-      statusCode: 200,
-      body: searchResults,
-    }).as('searchRequest');
-
-    funcMockedOn();
-
-    cy.wait('@searchRequest');
+Cypress.Commands.add('deleteAllFlowFrameworkWorkflows', () => {
+  cy.request({
+    method: 'POST',
+    failOnStatusCode: false,
+    form: false,
+    url: 'api/console/proxy',
+    headers: {
+      'content-type': 'application/json;charset=UTF-8',
+      'osd-xsrf': true,
+    },
+    qs: {
+      path: '_plugins/_flow_framework/workflow/_search',
+      method: 'POST',
+    },
+    body: { query: { match_all: {} } },
+  }).then(({ body }) => {
+    const hits = (body && body.hits && body.hits.hits) || [];
+    hits.forEach((hit) => {
+      cy.request({
+        method: 'POST',
+        form: false,
+        url: 'api/console/proxy',
+        headers: {
+          'content-type': 'application/json;charset=UTF-8',
+          'osd-xsrf': true,
+        },
+        qs: {
+          path: `_plugins/_flow_framework/workflow/${hit._id}?clear_status=true`,
+          method: 'DELETE',
+        },
+        failOnStatusCode: false,
+      });
+    });
   });
 });

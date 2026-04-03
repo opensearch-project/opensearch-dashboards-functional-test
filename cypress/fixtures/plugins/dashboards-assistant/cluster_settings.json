@@ -5,6 +5,7 @@
     "plugins.ml_commons.agent_framework_enabled": true,
     "plugins.ml_commons.trusted_connector_endpoints_regex": [
       "^http://127.0.0.1:3000$"
-    ]
+    ],
+    "plugins.ml_commons.connector.private_ip_enabled": true
   }
 }

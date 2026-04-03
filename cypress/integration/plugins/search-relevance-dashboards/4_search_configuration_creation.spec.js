@@ -64,6 +64,21 @@ describe('Search Configuration Create', () => {
       'Search configuration "Test Configuration" created successfully',
       { timeout: 10000 }
     );
+
+    // Navigate to search configuration listing page
+    cy.visit(
+      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/searchConfiguration`
+    );
+    cy.wait(3000);
+
+    // Find and click on the "Test Configuration" link
+    cy.contains('Test Configuration').click();
+
+    // Verify we're on the search configuration view page
+    cy.url().should('include', '/searchConfiguration/view/');
+
+    // Verify the query contains "match_all"
+    cy.contains('match_all').should('be.visible');
   });
 
   it('Should navigate back on cancel', () => {

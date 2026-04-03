@@ -90,8 +90,9 @@ if (isWorkspaceEnabled) {
     it('features are visible inside left navigation for search use case', () => {
       validateWorkspaceNavMenu('search', () => {
         cy.contains(/Visualize and report/).should('exist');
-        isWorkspaceEnabled &&
-          cy.contains(/Compare search results/).should('exist');
+        // TODO: Move this to search relevance functional tests
+        // Renamed to "Search relevance" in https://github.com/opensearch-project/dashboards-search-relevance/pull/533
+        isWorkspaceEnabled && cy.contains(/Search relevance/).should('exist');
       });
     });
 

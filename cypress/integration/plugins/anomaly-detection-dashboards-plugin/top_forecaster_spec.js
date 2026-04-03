@@ -164,7 +164,51 @@ context('top forecaster api', () => {
 
         cy.getElementByTestId('addOrUpdateCustomQueryButton').click();
         cy.getElementByTestId('customQueryModal').should('not.exist');
-        cy.getElementByTestId('updateVisualizationButton').click();
+
+        // The update visualization button sometimes is not rendered yet after the modal closes,
+        // causing flaky failures. Keep reopening the options panel until the button is visible.
+        // This poll stops once the button is visible, otherwise it continues until the overall
+        // Cypress test timeout (the it timeout or global config) aborts the test.
+        const waitForUpdateVisualizationButton = (
+          retryCount = 0,
+          maxRetries = 60
+        ) => {
+          cy.get('body').then(($body) => {
+            const updateButton = $body.find(
+              '[data-test-subj="updateVisualizationButton"]'
+            );
+
+            if (updateButton.length && updateButton.is(':visible')) {
+              return;
+            }
+
+            if (retryCount >= maxRetries) {
+              throw new Error(
+                `updateVisualizationButton not visible after ${maxRetries} retries`
+              );
+            }
+
+            const splitOptionsButton = $body.find(
+              '[data-test-subj="splitTimeSeriesOptionsButton"]'
+            );
+
+            if (splitOptionsButton.length) {
+              cy.wrap(splitOptionsButton).click({ force: true });
+            }
+
+            return cy
+              .wait(1000)
+              .then(() =>
+                waitForUpdateVisualizationButton(retryCount + 1, maxRetries)
+              );
+          });
+        };
+
+        waitForUpdateVisualizationButton();
+
+        cy.getElementByTestId('updateVisualizationButton')
+          .should('be.visible')
+          .click();
         cy.contains('SPLIT TIME SERIES CONTROLS').should('not.exist');
         cy.contains('Time series per page:').should('not.exist');
         cy.contains('host_2', { timeout: 18000 }).should('be.visible');

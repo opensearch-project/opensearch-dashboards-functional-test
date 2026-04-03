@@ -108,6 +108,13 @@ fi
 
 . ./test_finder.sh
 
+# Windows have issues installing cypress in parallel (during integTest) by design
+# And is not baked in images due to slow startup time
+# We are forcing the installation from opensearch ci bucket
+if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
+    CYPRESS_INSTALL_BINARY=https://ci.opensearch.org/ci/dbc/tools/Cypress-9.5.4-x64-windows.zip npm install cypress
+fi
+
 npm install
 
 TEST_FILES=`get_test_list $TEST_COMPONENTS`

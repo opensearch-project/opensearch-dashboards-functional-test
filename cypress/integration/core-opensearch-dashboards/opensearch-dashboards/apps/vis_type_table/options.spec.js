@@ -201,11 +201,16 @@ describe('Table visualization options', () => {
 
     it('Should show metrics other than count on each level', () => {
       cy.tbOpenDataPanel();
+      cy.wait(500);
       cy.tbAddMetricsAggregation();
+      cy.wait(500);
       cy.tbSelectAggregationType('Average', 4);
+      cy.wait(500);
       cy.tbSelectAggregationField('age', 4);
+      cy.wait(500);
       cy.tbUpdateAggregationSettings();
       cy.waitForLoader();
+      cy.tbWaitForTableCellCount(expectAverageData.length);
       cy.tbGetTableDataFromVisualization().then((data) => {
         expect(data).to.deep.eq(expectAverageData);
       });

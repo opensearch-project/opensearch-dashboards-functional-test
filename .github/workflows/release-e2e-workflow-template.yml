@@ -63,6 +63,8 @@ jobs:
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           tar -xzf opensearch-${{ env.VERSION }}-linux-x64.tar.gz
           cd opensearch-${{ env.VERSION }}/
+          # Disable disk space threshold to prevent allocation issues in CI
+          echo "cluster.routing.allocation.disk.threshold_enabled: false" >> config/opensearch.yml
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove OpenSearch Security"
               [ -d "plugins/opensearch-security" ] && echo "plugins.security.disabled: true" >> config/opensearch.yml
@@ -97,10 +99,11 @@ jobs:
       - name: Get node and yarn versions
         id: versions
         run: |
-          node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")
-          echo "node_version=$node_version_temp" >> $GITHUB_ENV
+          node_version_temp=$(node -p "require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node")
+          echo "node_version=$node_version_temp" >> $GITHUB_OUTPUT
+          echo "Extracted Node.js version/range: $node_version_temp"
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'

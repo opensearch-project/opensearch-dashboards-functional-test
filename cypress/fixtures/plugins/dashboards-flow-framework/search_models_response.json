@@ -1,0 +1,77 @@
+{
+    "models": {
+        "d9VHdpgBSV4mi45KsG7a": {
+            "id": "d9VHdpgBSV4mi45KsG7a",
+            "name": "BedRock Titan embedding model",
+            "algorithm": "Remote",
+            "state": "Deployed",
+            "modelConfig": {},
+            "interface": {
+                "input": {
+                    "type": "object",
+                    "properties": {
+                        "parameters": {
+                            "additionalProperties": true,
+                            "type": "object",
+                            "properties": {
+                                "inputText": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "output": {
+                    "type": "object",
+                    "properties": {
+                        "inference_results": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "output": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "dataAsMap": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "embedding": {
+                                                            "type": "array"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "embedding"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "dataAsMap"
+                                            ]
+                                        }
+                                    },
+                                    "status_code": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "required": [
+                                    "output",
+                                    "status_code"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "inference_results"
+                    ]
+                }
+            },
+            "connectorId": "-VJHdpgBWQNCYG3iro2a"
+        }
+    }
+}
