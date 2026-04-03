@@ -22,7 +22,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Query Insights Dashboards
-      test-command: >-
-        for spec in cypress/integration/plugins/query-insights-dashboards/*_spec.js; do
-        env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec "$spec" || exit 1;
-        done
+      test-command: bash -c 'for spec in cypress/integration/plugins/query-insights-dashboards/*_spec.js; do env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec "$spec" || exit 1; done'
