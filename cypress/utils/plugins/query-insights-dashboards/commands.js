@@ -174,21 +174,16 @@ Cypress.Commands.add(
   'waitForTopQueriesData',
   (metric = 'latency', maxRetries = 12) => {
     const checkData = (retries) => {
-      const to = new Date().toISOString();
-      const from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
       cy.request({
         method: 'GET',
-        url: `/api/top_queries/${metric}`,
-        qs: { from, to },
+        url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
+        qs: { type: metric },
         failOnStatusCode: false,
       }).then((response) => {
-        const queries =
-          (response.body &&
-            response.body.response &&
-            response.body.response.top_queries) ||
-          [];
+        var body = response.body || {};
+        var queries = body.top_queries || [];
         if (queries.length > 0) {
-          cy.log(`Found ${queries.length} top queries`);
+          cy.log('Found ' + queries.length + ' top queries');
           return;
         }
         if (retries <= 0) {
@@ -197,7 +192,7 @@ Cypress.Commands.add(
           );
         }
         cy.log(
-          `No top queries data yet, retrying... (${retries} retries left)`
+          'No top queries data yet, retrying... (' + retries + ' retries left)'
         );
         cy.wait(5000);
         checkData(retries - 1);
@@ -206,3 +201,25 @@ Cypress.Commands.add(
     checkData(maxRetries);
   }
 );
+
+Cypress.Commands.add('ensureOverviewTableHasData', (indexName) => {
+  const retryIfEmpty = (retries) => {
+    cy.get('.euiBasicTable')
+      .last()
+      .then(($table) => {
+        if ($table.text().includes('No items found') && retries > 0) {
+          cy.log(
+            'Table empty, searching again and reloading... (' +
+              retries +
+              ' retries left)'
+          );
+          cy.searchOnIndex(indexName);
+          cy.wait(10000);
+          cy.reload();
+          cy.get('.euiBasicTable', { timeout: 60000 }).should('exist');
+          retryIfEmpty(retries - 1);
+        }
+      });
+  };
+  retryIfEmpty(3);
+});
