@@ -23,6 +23,27 @@ describe('Alerts', () => {
 
     // Common text to wait for to confirm page loaded, give up to 30 seconds for initial load
     cy.contains('Acknowledge', { timeout: ALERTING_PLUGIN_TIMEOUT });
+
+    // Clear search box and uncheck rows to ensure a clean state
+    cy.get('body').then(($body) => {
+      // Clear search box if it exists
+      if ($body.find('input[type="search"]').length > 0) {
+        cy.get('input[type="search"]').each(($el) => {
+          cy.wrap($el).clear({ force: true });
+        });
+      }
+      // Uncheck any checked rows
+      if (
+        $body.find('input[data-test-subj^="checkboxSelectRow-"]:checked')
+          .length > 0
+      ) {
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]:checked').each(
+          ($el) => {
+            cy.wrap($el).click({ force: true });
+          }
+        );
+      }
+    });
   });
 
   describe("can be in 'Active' state", () => {
@@ -74,13 +95,20 @@ describe('Alerts', () => {
         .focus()
         .type(`${Cypress.config('unique_number')}`);
 
+      cy.wait(1000); // Add wait for search results to update
+
       //Confirm there is an active alert
       cy.contains('Active');
+
+      // Wait for the table to load and render the checkbox
+      cy.get('tbody > tr').should('have.length.at.least', 1);
 
       // Select checkbox for the existing alert
       // There may be multiple alerts in the cluster, first() is used to get the active alert
       cy.get('input[data-test-subj^="checkboxSelectRow-"]')
         .first()
+        .should('exist') // The input itself might have opacity: 0 but should exist
+        .should('not.be.checked')
         .click({ force: true });
 
       // Click Acknowledge button

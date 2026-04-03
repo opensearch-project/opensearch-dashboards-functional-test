@@ -70,7 +70,9 @@ const testSuggestAD = (url) => {
 
         cy.get('[data-test-subj="datasetSelectorButton"]', {
           timeout: 60000,
-        }).should('be.visible').click();
+        })
+          .should('be.visible')
+          .click();
 
         cy.get(
           '[data-test-subj="datasetSelectorSelectable"] input[type="search"]'

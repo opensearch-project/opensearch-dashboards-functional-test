@@ -56,7 +56,6 @@ function alertSummaryTestCases(url) {
     before(() => {
       clearAll();
       createWorkspaceWithEcommerceData().then((result) => {
-      
         cy.wrap(result.workspaceId).as('workspaceId');
         cy.wrap(result.dataSourceId).as('dataSourceId');
 
@@ -92,7 +91,6 @@ function alertSummaryTestCases(url) {
       }
     });
 
-  
     beforeEach(function () {
       cy.get('@workspaceId').then((workspaceId) => {
         cy.visit(`${url}/w/${workspaceId}/app/alerts#/`);
