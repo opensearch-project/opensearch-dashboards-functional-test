@@ -4,7 +4,7 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const indexName = 'sample_index';
 
@@ -13,6 +13,7 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+  cy.disableGrouping();
 };
 
 describe('Top Queries Details Page', () => {
@@ -23,17 +24,15 @@ describe('Top Queries Details Page', () => {
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
     cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
-    cy.navigateToOverview();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink')
-      .first()
-      .trigger('mouseover');
     cy.wait(1000);
-    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
+    cy.searchOnIndex(indexName);
     cy.wait(1000);
+    cy.searchOnIndex(indexName);
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the query details page via URL (bypasses table click
+    // which is fragile due to OUI class names and viz panel tables).
+    cy.waitForTopQueriesData();
+    cy.navigateToQueryDetails();
   });
 
   it('should display correct details on the query details page', () => {

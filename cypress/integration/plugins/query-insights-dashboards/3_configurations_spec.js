@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);

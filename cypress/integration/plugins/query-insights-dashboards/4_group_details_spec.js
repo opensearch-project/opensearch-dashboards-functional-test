@@ -18,20 +18,17 @@ describe('Query Group Details Page', () => {
     cy.wait(5000);
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stablize
+    // waiting for the query insights to stabilize
     cy.wait(5000);
     cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
-    cy.navigateToOverview();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink')
-      .first()
-      .trigger('mouseover');
     cy.wait(1000);
-    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
+    cy.searchOnIndex(indexName);
     cy.wait(1000);
+    cy.searchOnIndex(indexName);
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the group details page via URL.
+    cy.waitForTopQueriesData();
+    cy.navigateToGroupDetails();
   });
 
   it('should display correct details on the group details page', () => {
