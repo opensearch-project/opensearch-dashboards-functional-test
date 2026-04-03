@@ -203,72 +203,90 @@ Cypress.Commands.add(
   }
 );
 
-// Navigate directly to the query details page by fetching a query ID from
-// the OpenSearch API, bypassing the need to click a table link.
+// Fetch a query ID from the OpenSearch API with retry logic, then navigate
+// directly to the details page. This avoids clicking table links (fragile
+// due to OUI class name differences and visualization panel tables).
 Cypress.Commands.add('navigateToQueryDetails', () => {
+  var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  var timeout = isCI ? 120000 : 60000;
+  // waitForTopQueriesData already confirmed data exists; fetch the ID
   var to = new Date().toISOString();
   var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-  cy.request({
-    method: 'GET',
-    url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
-    qs: { type: 'latency' },
-    failOnStatusCode: false,
-  }).then((response) => {
-    var body = response.body || {};
-    var queries = body.top_queries || [];
-    expect(queries.length).to.be.greaterThan(0);
-    var query = queries[0];
-    var detailsPath =
-      QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0] +
-      '#/query-details?from=' +
-      encodeURIComponent(from) +
-      '&to=' +
-      encodeURIComponent(to) +
-      '&id=' +
-      encodeURIComponent(query.id) +
-      '&verbose=true';
-    cy.visit(detailsPath);
-    var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
-    var timeout = isCI ? 120000 : 60000;
-    cy.contains('Query details', { timeout: timeout }).should('be.visible');
-    // Wait for the summary section to render (requires async data fetch)
-    cy.get('[data-test-subj="query-details-summary-section"]', {
-      timeout: timeout,
-    }).should('be.visible');
-  });
+  var fetchAndNavigate = function (retries) {
+    cy.request({
+      method: 'GET',
+      url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
+      qs: { type: 'latency' },
+      failOnStatusCode: false,
+    }).then(function (response) {
+      var body = response.body || {};
+      var queries = body.top_queries || [];
+      if (queries.length === 0 && retries > 0) {
+        cy.log('No queries yet for navigation, retrying...');
+        cy.wait(5000);
+        fetchAndNavigate(retries - 1);
+        return;
+      }
+      expect(queries.length).to.be.greaterThan(0);
+      var query = queries[0];
+      var basePath = QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0];
+      var detailsPath =
+        basePath +
+        '#/query-details?from=' +
+        encodeURIComponent(from) +
+        '&to=' +
+        encodeURIComponent(to) +
+        '&id=' +
+        encodeURIComponent(query.id) +
+        '&verbose=true';
+      cy.visit(detailsPath);
+      cy.contains('Query details', { timeout: timeout }).should('be.visible');
+      cy.get('[data-test-subj="query-details-summary-section"]', {
+        timeout: timeout,
+      }).should('be.visible');
+    });
+  };
+  fetchAndNavigate(6);
 });
 
-// Navigate directly to the group details page by fetching a group query ID
-// from the OpenSearch API.
 Cypress.Commands.add('navigateToGroupDetails', () => {
+  var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  var timeout = isCI ? 120000 : 60000;
   var to = new Date().toISOString();
   var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-  cy.request({
-    method: 'GET',
-    url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
-    qs: { type: 'latency' },
-    failOnStatusCode: false,
-  }).then((response) => {
-    var body = response.body || {};
-    var queries = body.top_queries || [];
-    expect(queries.length).to.be.greaterThan(0);
-    var query = queries[0];
-    var detailsPath =
-      QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0] +
-      '#/query-group-details?from=' +
-      encodeURIComponent(from) +
-      '&to=' +
-      encodeURIComponent(to) +
-      '&id=' +
-      encodeURIComponent(query.id) +
-      '&verbose=true';
-    cy.visit(detailsPath);
-    var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
-    var timeout = isCI ? 120000 : 60000;
-    cy.contains('Query group details', { timeout: timeout }).should(
-      'be.visible'
-    );
-    // Wait for the group summary panel to render
-    cy.get('.euiPanel h4', { timeout: timeout }).should('be.visible');
-  });
+  var fetchAndNavigate = function (retries) {
+    cy.request({
+      method: 'GET',
+      url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
+      qs: { type: 'latency' },
+      failOnStatusCode: false,
+    }).then(function (response) {
+      var body = response.body || {};
+      var queries = body.top_queries || [];
+      if (queries.length === 0 && retries > 0) {
+        cy.log('No queries yet for navigation, retrying...');
+        cy.wait(5000);
+        fetchAndNavigate(retries - 1);
+        return;
+      }
+      expect(queries.length).to.be.greaterThan(0);
+      var query = queries[0];
+      var basePath = QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0];
+      var detailsPath =
+        basePath +
+        '#/query-group-details?from=' +
+        encodeURIComponent(from) +
+        '&to=' +
+        encodeURIComponent(to) +
+        '&id=' +
+        encodeURIComponent(query.id) +
+        '&verbose=true';
+      cy.visit(detailsPath);
+      cy.contains('Query group details', { timeout: timeout }).should(
+        'be.visible'
+      );
+      cy.get('.euiPanel h4', { timeout: timeout }).should('be.visible');
+    });
+  };
+  fetchAndNavigate(6);
 });

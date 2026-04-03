@@ -22,4 +22,4 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Query Insights Dashboards
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/1_top_queries.cy.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/2_query_details.cy.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/3_configurations.cy.js' && env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/4_group_details.cy.js'
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/query-insights-dashboards/*'
