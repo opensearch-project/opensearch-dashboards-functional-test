@@ -6,4 +6,5 @@ cypress/screenshots/
 **/.DS_Store
 .idea
 
-/.opensearch
+/.opensearch.vscode/
+yarn.lock

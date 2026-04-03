@@ -109,10 +109,20 @@ Cypress.Commands.add('deleteIndexByName', (indexName) => {
 Cypress.Commands.add(
   'waitForPageLoad',
   (fullUrl, { timeout = 60000, contains = null }) => {
+    // Extract path and hash so extra query params (e.g. ?security_tenant=private)
+    // don't cause the assertion to fail.
+    const pathAndHash = fullUrl.replace(/^https?:\/\/[^/]+/, '');
+    const [path, hash] = pathAndHash.split('#');
+
     Cypress.log({
-      message: `Wait for url: ${fullUrl} to be loaded.`,
+      message: `Wait for url containing path: ${path}${
+        hash ? ' hash: ' + hash : ''
+      }`,
     });
-    cy.url({ timeout: timeout }).should('include', fullUrl);
+    cy.url({ timeout: timeout }).should('include', path);
+    if (hash) {
+      cy.url().should('include', `#${hash}`);
+    }
 
     if (contains) {
       const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
