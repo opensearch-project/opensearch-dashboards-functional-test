@@ -32,9 +32,13 @@ describe('Top Queries Details Page', () => {
     cy.navigateToOverview();
     // If table is empty, retry with additional searches and page reloads
     cy.ensureOverviewTableHasData(indexName);
+    // Click the first link in the data table (use tag selectors to avoid
+    // class-name differences between EUI and OUI)
     cy.get('.euiBasicTable')
       .last()
-      .find('.euiTableRow .euiLink', { timeout: 60000 })
+      .find('.euiTableRow a, .euiTableRow button[class*="Link"]', {
+        timeout: 60000,
+      })
       .first()
       .click();
     cy.wait(1000);
