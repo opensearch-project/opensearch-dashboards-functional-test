@@ -18,19 +18,28 @@ describe('Query Group Details Page', () => {
     cy.wait(5000);
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stablize
+    // waiting for the query insights to stabilize
     cy.wait(5000);
     cy.searchOnIndex(indexName);
+    cy.wait(1000);
     cy.searchOnIndex(indexName);
+    cy.wait(1000);
     cy.searchOnIndex(indexName);
     // waiting for the query insights queue to drain
     cy.wait(10000);
     cy.navigateToOverview();
-    cy.get('.euiBasicTable .euiTableRow button.euiLink')
+    // Wait for table rows to populate before clicking (target the main data table)
+    cy.get('.euiBasicTable')
+      .last()
+      .find('.euiTableRow', { timeout: 60000 })
+      .should('have.length.greaterThan', 0);
+    cy.get('.euiBasicTable')
+      .last()
+      .find('.euiTableRow .euiLink')
       .first()
       .trigger('mouseover');
     cy.wait(1000);
-    cy.get('.euiBasicTable .euiTableRow button.euiLink').first().click(); // Navigate to details
+    cy.get('.euiBasicTable').last().find('.euiTableRow .euiLink').first().click();
     cy.wait(1000);
   });
 
