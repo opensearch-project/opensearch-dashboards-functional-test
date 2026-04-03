@@ -361,8 +361,13 @@ describe('Query Insights Dashboard', () => {
 });
 
 describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED)', () => {
-  const mixedRows = getRowsFromRaw(MIXED);
-  const totalRowCount = mixedRows.length;
+  var mixedRows;
+  var totalRowCount;
+
+  before(() => {
+    mixedRows = getRowsFromRaw(MIXED);
+    totalRowCount = mixedRows.length;
+  });
 
   beforeEach(() => {
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
