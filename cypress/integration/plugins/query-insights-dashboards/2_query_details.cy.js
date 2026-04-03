@@ -6,12 +6,6 @@
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
 import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
 
-// Workaround: Cypress 9.x may re-register describe blocks from previously run
-// spec files. This guard is a no-op in Cypress 13+. Safe to remove after upgrade.
-const _describe = Cypress.spec.name.includes('2_query_details')
-  ? describe
-  : describe.skip;
-
 const indexName = 'sample_index';
 
 const clearAll = () => {
@@ -21,7 +15,7 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
 };
 
-_describe('Top Queries Details Page', () => {
+describe('Top Queries Details Page', () => {
   beforeEach(() => {
     clearAll();
     cy.createIndexByName(indexName, sampleDocument);
