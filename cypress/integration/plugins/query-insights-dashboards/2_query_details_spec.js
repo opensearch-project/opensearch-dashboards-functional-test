@@ -4,7 +4,7 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const indexName = 'sample_index';
 
