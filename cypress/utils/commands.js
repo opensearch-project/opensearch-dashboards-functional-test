@@ -498,6 +498,41 @@ Cypress.Commands.add('createIndexPattern', (id, attributes, header = {}) => {
       attributes,
       references: [],
     }),
+  }).then(() => {
+    // After creating the index pattern, resolve fields from the live index
+    // and persist them. This replaces the legacy write-on-read behavior that
+    // was removed from DataViewsService/IndexPatternsService.
+    cy.request({
+      method: 'GET',
+      url: `${Cypress.config().baseUrl}/api/index_patterns/_fields_for_wildcard`,
+      qs: {
+        pattern: attributes.title,
+        meta_fields: ['_source', '_id', '_type', '_index', '_score'],
+      },
+      headers: {
+        'osd-xsrf': true,
+        ...header,
+      },
+      failOnStatusCode: false,
+    }).then((fieldsResponse) => {
+      if (fieldsResponse.status === 200 && fieldsResponse.body.fields) {
+        cy.request({
+          method: 'PUT',
+          url: `${Cypress.config().baseUrl}/api/saved_objects/index-pattern/${id}`,
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+            ...header,
+          },
+          body: JSON.stringify({
+            attributes: {
+              ...attributes,
+              fields: JSON.stringify(fieldsResponse.body.fields),
+            },
+          }),
+        });
+      }
+    });
   });
 });
 
