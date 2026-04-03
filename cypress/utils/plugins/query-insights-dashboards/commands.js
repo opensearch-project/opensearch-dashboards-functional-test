@@ -231,6 +231,10 @@ Cypress.Commands.add('navigateToQueryDetails', () => {
     var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
     var timeout = isCI ? 120000 : 60000;
     cy.contains('Query details', { timeout: timeout }).should('be.visible');
+    // Wait for the summary section to render (requires async data fetch)
+    cy.get('[data-test-subj="query-details-summary-section"]', {
+      timeout: timeout,
+    }).should('be.visible');
   });
 });
 
@@ -264,5 +268,7 @@ Cypress.Commands.add('navigateToGroupDetails', () => {
     cy.contains('Query group details', { timeout: timeout }).should(
       'be.visible'
     );
+    // Wait for the group summary panel to render
+    cy.get('.euiPanel h4', { timeout: timeout }).should('be.visible');
   });
 });
