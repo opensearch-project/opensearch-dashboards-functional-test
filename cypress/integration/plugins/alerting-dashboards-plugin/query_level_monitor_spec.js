@@ -92,6 +92,13 @@ describe('Query-Level Monitors', () => {
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
     cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
+
+    // Clear search box if it exists
+    cy.get('body').then(($body) => {
+      if ($body.find('input[type="search"]').length > 0) {
+        cy.get('input[type="search"]').clear({ force: true });
+      }
+    });
   });
 
   describe('can be created', () => {
@@ -326,10 +333,12 @@ describe('Query-Level Monitors', () => {
       );
 
       // Confirm we can see the created monitor in the list
-      cy.contains(SAMPLE_MONITOR);
+      cy.contains('a', SAMPLE_MONITOR, {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('be.visible');
 
       // Select the existing monitor
-      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
+      cy.get(`a[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
       cy.contains('Edit').click({ force: true });
