@@ -14,6 +14,8 @@ jobs:
           filters: |
             tests:
               - 'cypress/**/dashboards-investigation/**'
+              - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/investigation-release-e2e-workflow.yml'
 
   tests-with-workspace:
     needs: changes
