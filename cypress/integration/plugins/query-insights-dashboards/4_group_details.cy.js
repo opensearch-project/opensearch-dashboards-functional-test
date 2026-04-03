@@ -25,21 +25,10 @@ describe('Query Group Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until query insights data is available
+    // Poll the OpenSearch API until query insights data is available, then
+    // navigate directly to the group details page using the ID from the API
     cy.waitForTopQueriesData();
-    cy.navigateToOverview();
-    // If table is empty, retry with additional searches and page reloads
-    cy.ensureOverviewTableHasData(indexName);
-    // Click the first link in the data table (use tag selectors to avoid
-    // class-name differences between EUI and OUI)
-    cy.get('.euiBasicTable')
-      .last()
-      .find('.euiTableRow a, .euiTableRow button[class*="Link"]', {
-        timeout: 60000,
-      })
-      .first()
-      .click();
-    cy.wait(1000);
+    cy.navigateToGroupDetails();
   });
 
   it('should display correct details on the group details page', () => {

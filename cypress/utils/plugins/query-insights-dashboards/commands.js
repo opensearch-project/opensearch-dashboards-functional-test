@@ -22,7 +22,7 @@ Cypress.Commands.add('enableTopQueries', (metric) => {
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: true,
-        [`search.insights.top_queries.${metric}.window_size`]: '5m',
+        [`search.insights.top_queries.${metric}.window_size`]: '1m',
         [`search.insights.top_queries.${metric}.top_n_size`]: 100,
       },
     },
@@ -59,9 +59,9 @@ Cypress.Commands.add('enableGrouping', () => {
         'search.insights.top_queries.latency.top_n_size': 5,
         'search.insights.top_queries.cpu.top_n_size': 5,
         'search.insights.top_queries.memory.top_n_size': 5,
-        'search.insights.top_queries.latency.window_size': '5m',
-        'search.insights.top_queries.cpu.window_size': '5m',
-        'search.insights.top_queries.memory.window_size': '5m',
+        'search.insights.top_queries.latency.window_size': '1m',
+        'search.insights.top_queries.cpu.window_size': '1m',
+        'search.insights.top_queries.memory.window_size': '1m',
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
@@ -188,7 +188,8 @@ Cypress.Commands.add(
         }
         if (retries <= 0) {
           throw new Error(
-            'No top queries data available after polling. The query insights plugin may not have captured any queries.'
+            'No top queries data available after polling. ' +
+              'The query insights plugin may not have captured any queries.'
           );
         }
         cy.log(
@@ -202,24 +203,66 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add('ensureOverviewTableHasData', (indexName) => {
-  const retryIfEmpty = (retries) => {
-    cy.get('.euiBasicTable')
-      .last()
-      .then(($table) => {
-        if ($table.text().includes('No items found') && retries > 0) {
-          cy.log(
-            'Table empty, searching again and reloading... (' +
-              retries +
-              ' retries left)'
-          );
-          cy.searchOnIndex(indexName);
-          cy.wait(10000);
-          cy.reload();
-          cy.get('.euiBasicTable', { timeout: 60000 }).should('exist');
-          retryIfEmpty(retries - 1);
-        }
-      });
-  };
-  retryIfEmpty(3);
+// Navigate directly to the query details page by fetching a query ID from
+// the OpenSearch API, bypassing the need to click a table link.
+Cypress.Commands.add('navigateToQueryDetails', () => {
+  var to = new Date().toISOString();
+  var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  cy.request({
+    method: 'GET',
+    url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
+    qs: { type: 'latency' },
+    failOnStatusCode: false,
+  }).then((response) => {
+    var body = response.body || {};
+    var queries = body.top_queries || [];
+    expect(queries.length).to.be.greaterThan(0);
+    var query = queries[0];
+    var detailsPath =
+      QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0] +
+      '#/query-details?from=' +
+      encodeURIComponent(from) +
+      '&to=' +
+      encodeURIComponent(to) +
+      '&id=' +
+      encodeURIComponent(query.id) +
+      '&verbose=true';
+    cy.visit(detailsPath);
+    var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+    var timeout = isCI ? 120000 : 60000;
+    cy.contains('Query details', { timeout: timeout }).should('be.visible');
+  });
+});
+
+// Navigate directly to the group details page by fetching a group query ID
+// from the OpenSearch API.
+Cypress.Commands.add('navigateToGroupDetails', () => {
+  var to = new Date().toISOString();
+  var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  cy.request({
+    method: 'GET',
+    url: `${Cypress.env('openSearchUrl')}/_insights/top_queries`,
+    qs: { type: 'latency' },
+    failOnStatusCode: false,
+  }).then((response) => {
+    var body = response.body || {};
+    var queries = body.top_queries || [];
+    expect(queries.length).to.be.greaterThan(0);
+    var query = queries[0];
+    var detailsPath =
+      QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0] +
+      '#/query-group-details?from=' +
+      encodeURIComponent(from) +
+      '&to=' +
+      encodeURIComponent(to) +
+      '&id=' +
+      encodeURIComponent(query.id) +
+      '&verbose=true';
+    cy.visit(detailsPath);
+    var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+    var timeout = isCI ? 120000 : 60000;
+    cy.contains('Query group details', { timeout: timeout }).should(
+      'be.visible'
+    );
+  });
 });
