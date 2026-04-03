@@ -169,3 +169,40 @@ Cypress.Commands.add('waitForQueryInsightsPlugin', () => {
     'be.visible'
   );
 });
+
+Cypress.Commands.add(
+  'waitForTopQueriesData',
+  (metric = 'latency', maxRetries = 12) => {
+    const checkData = (retries) => {
+      const to = new Date().toISOString();
+      const from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+      cy.request({
+        method: 'GET',
+        url: `/api/top_queries/${metric}`,
+        qs: { from, to },
+        failOnStatusCode: false,
+      }).then((response) => {
+        const queries =
+          (response.body &&
+            response.body.response &&
+            response.body.response.top_queries) ||
+          [];
+        if (queries.length > 0) {
+          cy.log(`Found ${queries.length} top queries`);
+          return;
+        }
+        if (retries <= 0) {
+          throw new Error(
+            'No top queries data available after polling. The query insights plugin may not have captured any queries.'
+          );
+        }
+        cy.log(
+          `No top queries data yet, retrying... (${retries} retries left)`
+        );
+        cy.wait(5000);
+        checkData(retries - 1);
+      });
+    };
+    checkData(maxRetries);
+  }
+);

@@ -27,21 +27,18 @@ describe('Top Queries Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
+    // Poll the API until query insights data is available
+    cy.waitForTopQueriesData();
     cy.navigateToOverview();
-    // Wait for table rows to populate before clicking (target the main data table)
+    // Wait for the data table to have actual data rows (not "No items found")
+    cy.get('.euiBasicTable', { timeout: 60000 })
+      .last()
+      .should('not.contain', 'No items found');
     cy.get('.euiBasicTable')
       .last()
-      .find('.euiTableRow', { timeout: 60000 })
-      .should('have.length.greaterThan', 0);
-    cy.get('.euiBasicTable')
-      .last()
-      .find('.euiTableRow .euiLink')
+      .find('.euiTableRow .euiLink', { timeout: 60000 })
       .first()
-      .trigger('mouseover');
-    cy.wait(1000);
-    cy.get('.euiBasicTable').last().find('.euiTableRow .euiLink').first().click();
+      .click();
     cy.wait(1000);
   });
 
