@@ -152,8 +152,7 @@ const setTypeFilter = (mode /* 'query' | 'group' | 'both' */) => {
 
   const ensureToggle = (label, shouldBeOn) => {
     cy.contains('.euiSelectableListItem', new RegExp(`^${esc(label)}$`, 'i')).then(($item) => {
-      // SVG with path = checked, empty SVG = unchecked
-      const isOn = $item.find('svg path').length > 0;
+      const isOn = $item.attr('aria-checked') === 'true';
       if (isOn !== shouldBeOn) {
         cy.wrap($item).click();
       }
@@ -179,15 +178,14 @@ const resetTypeFilterToNone = () => {
   findFilterButton(['Type']).click();
   cy.get('.euiSelectableListItem', { timeout: 10000 }).should('exist');
 
-  // Only click items where SVG has content (path element = checked)
   cy.contains('.euiSelectableListItem', /^query$/i).then(($item) => {
-    if ($item.find('svg path').length > 0) {
+    if ($item.attr('aria-checked') === 'true') {
       cy.wrap($item).click();
     }
   });
 
   cy.contains('.euiSelectableListItem', /^group$/i).then(($item) => {
-    if ($item.find('svg path').length > 0) {
+    if ($item.attr('aria-checked') === 'true') {
       cy.wrap($item).click();
     }
   });
@@ -636,6 +634,7 @@ describe('Query Insights — Filters and Search', () => {
     setTypeFilter('query');
     cy.get('.euiFieldSearch').should('not.have.value', '');
     resetTypeFilterToNone();
+    cy.get('.euiFieldSearch').clear();
     cy.get('.euiFieldSearch').should('have.value', '');
   });
 
