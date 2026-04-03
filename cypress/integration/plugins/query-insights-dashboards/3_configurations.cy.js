@@ -13,10 +13,12 @@ const clearAll = () => {
 
 const toggleMetricEnabled = () => {
   cy.get('button[data-test-subj="top-n-metric-toggle"]').click({ force: true });
-  // Wait for the toggle state to update and the form to render
+  // Wait for the toggle state to update
   cy.get('button[data-test-subj="top-n-metric-toggle"]', {
     timeout: 15000,
   }).should('have.attr', 'aria-checked', 'true');
+  // Wait for the form fields to become enabled after the API save completes
+  cy.get('input[type="number"]', { timeout: 15000 }).should('not.be.disabled');
 };
 
 describe('Query Insights Configurations Page', () => {
