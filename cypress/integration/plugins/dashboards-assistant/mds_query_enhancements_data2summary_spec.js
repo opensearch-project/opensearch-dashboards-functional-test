@@ -43,15 +43,11 @@ const createWorkspaceWithEcommerceData = () => {
 };
 
 const askQuestion = (question) => {
-  // Enter the question into the query assistant input box
-
   cy.getElementByTestId('query-assist-input-field-text')
     .should('exist')
     .then(($input) => {
-      // Get the current value
       const content = $input.val();
       if (content) {
-        // Clear the input if not empty
         cy.wrap($input).clear({ force: true });
       }
     });
@@ -65,16 +61,15 @@ const askQuestion = (question) => {
 
 function addDiscoverSummaryCase(url) {
   describe(`discover summary`, () => {
-    let workspaceId = '';
-    let dataSourceId = '';
     before(() => {
       createWorkspaceWithEcommerceData().then((result) => {
-        workspaceId = result.workspaceId;
-        dataSourceId = result.dataSourceId;
+        cy.wrap(result.workspaceId).as('workspaceId');
+        cy.wrap(result.dataSourceId).as('dataSourceId');
       });
     });
 
-    after(() => {
+    after(function () {
+      const { workspaceId, dataSourceId } = this;
       if (workspaceId) {
         if (dataSourceId) {
           cy.removeSampleDataForWorkspace(
@@ -90,39 +85,41 @@ function addDiscoverSummaryCase(url) {
       }
     });
 
-    beforeEach(() => {
-      cy.visit(`${url}/w/${workspaceId}/app/all_overview`);
-      cy.getElementByTestId('toggleNavButton', { timeout: 60000 })
-        .eq(0)
-        .should('exist')
-        .should('be.visible')
-        .click();
+    beforeEach(function () {
+      cy.get('@workspaceId').then((workspaceId) => {
+        cy.visit(`${url}/w/${workspaceId}/app/all_overview`);
+        cy.getElementByTestId('toggleNavButton', { timeout: 60000 })
+          .eq(0)
+          .should('exist')
+          .should('be.visible')
+          .click();
 
-      cy.getElementByTestId('collapsibleNavAppLink-discover')
-        .should('exist')
-        .and('be.visible')
-        .click();
-      cy.get('.deSidebar_dataSource .datasetSelector__button')
-        .should('exist')
-        .and('be.visible')
-        .click();
+        cy.getElementByTestId('collapsibleNavAppLink-discover')
+          .should('exist')
+          .and('be.visible')
+          .click();
+        cy.get('.deSidebar_dataSource .datasetSelector__button')
+          .should('exist')
+          .and('be.visible')
+          .click();
 
-      cy.get('.euiSelectableListItem')
-        .should('exist')
-        .and('be.visible')
-        .first()
-        .click();
+        cy.get('.euiSelectableListItem')
+          .should('exist')
+          .and('be.visible')
+          .first()
+          .click();
 
-      cy.get('.languageSelector__button')
-        .should('exist')
-        .and('be.visible')
-        .and('be.enabled')
-        .click();
-      cy.contains('button', 'PPL').should('exist').and('be.visible').click();
-      cy.getElementByTestId('languageReferenceButton')
-        .should('exist')
-        .and('be.visible')
-        .click();
+        cy.get('.languageSelector__button')
+          .should('exist')
+          .and('be.visible')
+          .and('be.enabled')
+          .click();
+        cy.contains('button', 'PPL').should('exist').and('be.visible').click();
+        cy.getElementByTestId('languageReferenceButton')
+          .should('exist')
+          .and('be.visible')
+          .click();
+      });
     });
 
     it('should display Discover Summary Panel if the selected data source has agent', () => {
@@ -133,7 +130,6 @@ function addDiscoverSummaryCase(url) {
 
     it('should be able to generate summary ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
       cy.getElementByTestId('queryAssist_summary_loading')
         .should('exist')
         .then(() => {
@@ -141,13 +137,11 @@ function addDiscoverSummaryCase(url) {
             'not.exist'
           );
         });
-      // Verify summary is generated
       cy.getElementByTestId('queryAssist_summary_result').should('exist');
     });
 
     it('should be able to give feedback ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
       cy.getElementByTestId('queryAssist_summary_loading')
         .should('exist')
         .then(() => {
@@ -155,7 +149,6 @@ function addDiscoverSummaryCase(url) {
             'not.exist'
           );
         });
-      // click thumbdown button and once clicked, thumbdown button should not be visible and thumbdown button should be disabled
       cy.getElementByTestId('queryAssist_summary_buttons_thumbdown')
         .should('exist')
         .click();
@@ -166,7 +159,6 @@ function addDiscoverSummaryCase(url) {
 
     it('should be able to copy summary ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
       cy.getElementByTestId('queryAssist_summary_loading')
         .should('exist')
         .then(() => {
@@ -174,9 +166,7 @@ function addDiscoverSummaryCase(url) {
             'not.exist'
           );
         });
-      // Verify summary is generated
       cy.getElementByTestId('queryAssist_summary_result').should('exist');
-
       cy.getElementByTestId('queryAssist_summary_buttons_copy')
         .should('exist')
         .click();
@@ -191,7 +181,6 @@ function addDiscoverSummaryCase(url) {
             'not.exist'
           );
         });
-      // Verify summary is generated
       cy.getElementByTestId('queryAssist_summary_result').should('exist');
 
       askQuestion('give me one random doc in my index?');
@@ -202,7 +191,6 @@ function addDiscoverSummaryCase(url) {
         .should('be.enabled')
         .click({ force: true });
       cy.getElementByTestId('queryAssist_summary_loading').should('exist');
-      // Verify new summary is generated
       cy.getElementByTestId('queryAssist_summary_result').should('exist');
     });
   });
