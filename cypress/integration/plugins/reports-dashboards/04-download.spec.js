@@ -39,7 +39,7 @@ describe('Cypress', () => {
     });
     cy.wait(5000);
 
-    // click first entry in dashboards page
+    // click first entry in dashboards page 
     cy.get(
       'tr.euiTableRow:nth-child(1) > td:nth-child(2) > div:nth-child(2) > a:nth-child(1)'
     ).click({ force: true });
