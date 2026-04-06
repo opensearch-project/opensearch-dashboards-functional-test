@@ -82,6 +82,7 @@ describe('Cypress', () => {
     cy.visit(`${BASE_PATH}/app/discover#`, {
       waitForGetTenant: true,
     });
+    cy.reload();
     cy.wait(5000);
 
     // open saved search list
