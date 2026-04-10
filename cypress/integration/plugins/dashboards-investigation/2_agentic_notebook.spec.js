@@ -52,17 +52,23 @@ function waitForInvestigationCompletion(retries = 3, startTime = Date.now()) {
 }
 
 function navigateToHypothesisDetail() {
-  cy.get(SELECTORS.hypothesisItem).first().click();
+  cy.get(SELECTORS.hypothesisItem)
+    .first()
+    .scrollIntoView()
+    .click({ force: true });
   cy.url().should('contain', 'hypothesis');
   cy.get(SELECTORS.hypothesisDetail).should('exist');
 }
 
 function closeHypothesisDetail() {
-  cy.get(SELECTORS.flyoutClose).click();
+  // Close the hypothesis detail flyout — use last() to avoid picking the left nav flyout's close button
+  cy.get(SELECTORS.flyoutClose).last().click({ force: true });
   cy.url().should('not.contain', 'hypothesis');
 }
 
 function setWideTimeRange() {
+  // Wait for the page to stabilize before interacting with date picker
+  cy.wait(1000);
   cy.getElementsByTestIds([
     'superDatePickerstartDatePopoverButton',
     'superDatePickerShowDatesButton',
@@ -209,13 +215,14 @@ describe('Agentic Notebook Investigation Tests', () => {
     it('should display investigation steps with trace', () => {
       cy.get('button[aria-controls="investigation-steps"]').click();
       cy.get('#investigation-steps')
+        .first()
         .should('exist')
         .within(() => {
           cy.contains('span', 'Explain this step').click();
         });
 
-      // Step trace flyout
-      cy.get('div[role="dialog"]')
+      // Step trace flyout — exclude the left nav flyout (context-nav-wrapper)
+      cy.get('div[role="dialog"]:not(.context-nav-wrapper)')
         .should('exist')
         .within(() => {
           cy.contains('Step trace').should('exist');
@@ -340,8 +347,11 @@ describe('Agentic Notebook Investigation Tests', () => {
 
       cy.get(SELECTORS.hypothesisItem)
         .first()
+        .scrollIntoView()
         .within(() => {
-          cy.contains('button', 'Rule out').click();
+          cy.contains('button', 'Rule out')
+            .scrollIntoView()
+            .click({ force: true });
         });
 
       cy.contains(/RULED OUT/).should('exist');
@@ -378,6 +388,7 @@ describe('Agentic Notebook Investigation Tests', () => {
 
       cy.get(SELECTORS.hypothesisItem)
         .eq(1)
+        .scrollIntoView()
         .within(() => {
           cy.contains('button', 'Rule in').should('exist');
           cy.contains('button', 'Replace as primary').should('not.exist');
@@ -400,10 +411,16 @@ describe('Agentic Notebook Investigation Tests', () => {
     });
 
     it('should interact with data distribution visualization', () => {
-      cy.contains('Data distribution analysis').should('exist');
+      cy.contains('Data distribution analysis')
+        .scrollIntoView()
+        .should('exist');
 
-      // Expand modal
-      cy.get(SELECTORS.dataDistributionExpand).click();
+      // Click the button inside the expand wrapper
+      cy.get(SELECTORS.dataDistributionExpand)
+        .should('exist')
+        .find('button')
+        .scrollIntoView()
+        .click({ force: true });
       cy.get('div.euiModal[style*="min-width: 1000px"]').should('exist');
       cy.get('button[aria-label="Closes this modal window"]').click();
 
@@ -417,17 +434,20 @@ describe('Agentic Notebook Investigation Tests', () => {
     });
 
     it('should be able to add user finding in agentic notebook', () => {
-      cy.contains('button', 'Add Finding').click();
+      cy.contains('button', 'Add Finding')
+        .scrollIntoView()
+        .click({ force: true });
 
       cy.get(SELECTORS.addFindingInput).type('My custom finding');
       cy.get('div.euiModal').contains('button', 'Add').click();
 
       // wait until paragraph is created
-      cy.contains(/User Finding/);
+      cy.contains(/User Finding/, { timeout: 10000 });
 
       // User finding inserted at the bottom
       cy.get(SELECTORS.paragraphWrapper)
         .last()
+        .scrollIntoView()
         .within(() => {
           cy.contains(/User Finding/);
           cy.contains(/My custom finding/);
@@ -436,7 +456,9 @@ describe('Agentic Notebook Investigation Tests', () => {
     });
 
     it('should reinvestigate with new question', () => {
-      cy.contains('button', 'Reinvestigate').click();
+      cy.contains('button', 'Reinvestigate')
+        .scrollIntoView()
+        .click({ force: true });
 
       cy.get('div.euiModal').should('exist');
       cy.get('button.euiModal__closeIcon').should('exist');

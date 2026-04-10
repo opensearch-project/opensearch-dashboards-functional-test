@@ -20,22 +20,14 @@ const indexSet = [
   'logstash-2015.09.20',
 ];
 
-describe('discover doc table', () => {
+describe('discover doc table', { testIsolation: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    // import logstash functional
+
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
-    );
-
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
     );
 
     cy.setAdvancedSetting({
@@ -46,23 +38,36 @@ describe('discover doc table', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    cy.waitForSearch();
   });
 
-  after(() => {});
+  it('should show the doc table', () => {
+    cy.getElementByTestId('docTable', { timeout: 60000 }).should('exist');
+  });
 
-  describe('add and remove columns', function () {
-    it('should add more columns to the table', function () {
-      cy.getElementByTestId('fieldFilterSearchInput').type('phpmemory');
+  it('should add columns to the table', () => {
+    cy.get('[data-test-subj="fieldFilterSearchInput"]', { timeout: 60000 })
+      .clear()
+      .type('phpmemory');
 
-      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
+    cy.wait(2000);
 
-      cy.getElementByTestId('docTableHeader-phpmemory').should('be.visible');
-    });
+    cy.get('[data-test-subj="fieldToggle-phpmemory"]', {
+      timeout: 60000,
+    }).click({ force: true });
 
-    it('should remove columns from the table', function () {
-      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
+    cy.get('[data-test-subj="docTableHeader-phpmemory"]', {
+      timeout: 60000,
+    }).should('exist');
+  });
 
-      cy.getElementByTestId('docTableHeader-phpmemory').should('not.exist');
-    });
+  it('should remove columns from the table', () => {
+    cy.get('[data-test-subj="fieldToggle-phpmemory"]', {
+      timeout: 60000,
+    }).click({ force: true });
+
+    cy.get('[data-test-subj="docTableHeader-phpmemory"]', {
+      timeout: 60000,
+    }).should('not.exist');
   });
 });

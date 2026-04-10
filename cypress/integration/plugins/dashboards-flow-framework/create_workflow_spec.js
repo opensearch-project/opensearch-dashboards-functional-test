@@ -103,6 +103,7 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.contains('The uploaded file is not a valid workflow', {
       timeout: FF_TIMEOUT,
     }).should('be.visible');
+    cy.contains('button', 'Cancel', { timeout: FF_TIMEOUT }).click();
   });
 
   it('Create workflow using custom search template', () => {
@@ -162,9 +163,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
       () => {
-        cy.get('#tools_panel_id', { timeout: FF_TIMEOUT }).should(
-          'be.visible'
-        );
+        cy.get('#tools_panel_id', { timeout: FF_TIMEOUT }).should('be.visible');
       }
     );
     cy.getElementByDataTestId('searchPipelineButton', { timeout: FF_TIMEOUT })
@@ -173,27 +172,27 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('queryEditButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
-    cy.get('[data-testid="editQueryModalBody"]', { timeout: FF_TIMEOUT }).within(
-      () => {
-        cy.fixture(
-          FF_FIXTURE_BASE_PATH + 'semantic_search/search_query.json'
-        ).then((jsonData) => {
-          const jsonString = JSON.stringify(jsonData);
-          cy.get('.ace_text-input')
-            .should('exist')
-            .focus()
-            .clear({ force: true })
-            .focus()
-            .wait(2000)
-            .type(jsonString, {
-              force: true,
-              parseSpecialCharSequences: false,
-              delay: 5,
-            })
-            .trigger('blur', { force: true });
-        });
-      }
-    );
+    cy.get('[data-testid="editQueryModalBody"]', {
+      timeout: FF_TIMEOUT,
+    }).within(() => {
+      cy.fixture(
+        FF_FIXTURE_BASE_PATH + 'semantic_search/search_query.json'
+      ).then((jsonData) => {
+        const jsonString = JSON.stringify(jsonData);
+        cy.get('.ace_text-input')
+          .should('exist')
+          .focus()
+          .clear({ force: true })
+          .focus()
+          .wait(2000)
+          .type(jsonString, {
+            force: true,
+            parseSpecialCharSequences: false,
+            delay: 5,
+          })
+          .trigger('blur', { force: true });
+      });
+    });
     cy.getElementByDataTestId('updateSearchQueryButton', {
       timeout: FF_TIMEOUT,
     })

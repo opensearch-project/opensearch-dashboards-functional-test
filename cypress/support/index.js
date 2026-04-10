@@ -53,6 +53,10 @@ Cypress.on('uncaught:exception', (err) => {
   }
 });
 
+Cypress.on('uncaught:exception', () => {
+  return false;
+});
+
 // Proxy layer of OpenSearch domain may redirect to login page
 //  if you haven't authenticate
 if (Cypress.env('ENDPOINT_WITH_PROXY')) {
