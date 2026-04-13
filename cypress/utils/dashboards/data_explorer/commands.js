@@ -54,15 +54,29 @@ Cypress.Commands.add('waitForSearch', () => {
     message: 'search load',
   });
 
-  cy.getElementByTestId('docTable');
+  // Wait for either doc table (results found) or no results message
+  cy.get(
+    '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"]',
+    { timeout: 60000 }
+  ).should('exist');
+
+  // If spinner appeared, wait for it to go away
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-test-subj="loadingSpinner"]').length) {
+      cy.get('[data-test-subj="loadingSpinner"]', { timeout: 120000 }).should(
+        'not.exist'
+      );
+    }
+  });
 });
 
 Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {
   cy.setTopNavDate(fromTime, toTime);
   cy.waitForLoader();
-  // wait until the search has been finished
   cy.waitForSearch();
-  cy.get('select').select(`${interval}`);
+  cy.get('[data-test-subj="discoverIntervalSelect"]', {
+    timeout: 30000,
+  }).select(`${interval}`);
   cy.waitForLoader();
   cy.waitForSearch();
 });

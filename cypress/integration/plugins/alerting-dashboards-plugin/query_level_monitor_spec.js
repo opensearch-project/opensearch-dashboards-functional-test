@@ -9,8 +9,8 @@ import {
   ALERTING_PLUGIN_NAME,
   ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import sampleQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor';
-import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
+import sampleQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor.json';
+import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger.json';
 import sampleDaysIntervalQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_days_interval_query_level_monitor.json';
 import sampleCronExpressionQueryLevelMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_cron_expression_query_level_monitor.json';
 import { BASE_PATH } from '../../../utils/base_constants';
@@ -92,6 +92,13 @@ describe('Query-Level Monitors', () => {
 
     // Common text to wait for to confirm page loaded, give up to 20 seconds for initial load
     cy.contains('Create monitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
+
+    // Clear search box if it exists
+    cy.get('body').then(($body) => {
+      if ($body.find('input[type="search"]').length > 0) {
+        cy.get('input[type="search"]').clear({ force: true });
+      }
+    });
   });
 
   describe('can be created', () => {
@@ -326,10 +333,12 @@ describe('Query-Level Monitors', () => {
       );
 
       // Confirm we can see the created monitor in the list
-      cy.contains(SAMPLE_MONITOR);
+      cy.contains('a', SAMPLE_MONITOR, {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('be.visible');
 
       // Select the existing monitor
-      cy.get(`[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
+      cy.get(`a[data-test-subj="${SAMPLE_MONITOR}"]`).click({ force: true });
 
       // Click Edit button
       cy.contains('Edit').click({ force: true });

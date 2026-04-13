@@ -32,7 +32,7 @@ npx cypress run --env SECURITY_ENABLED=true --spec "cypress/integration/plugins/
 
 For the complete ways to run Cypress, you can refer to the Cypress official site https://docs.cypress.io/guides/getting-started/.installing-cypress#Opening-Cypress.
 
-The env parameters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.json where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
+The env parameters are defined in https://github.com/opensearch-project/opensearch-dashboards-functional-test/blob/main/cypress.config.js where you can look for or add the desired parameters. You can refer to the Cypress official site https://docs.cypress.io/guides/guides/environment-variables#Setting.
 
 6. [optional] Remove copied tests from your plugin and execute them remotely from your plugin
 

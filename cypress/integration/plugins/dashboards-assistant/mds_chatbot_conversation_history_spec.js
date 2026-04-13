@@ -163,14 +163,24 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         const conversationToUpdate = conversations[0];
         const newTitle = 'New title';
 
+        cy.get('.llm-chat-flyout-body:visible', { timeout: 30000 })
+          .should('be.visible')
+          .and('not.have.class', 'llm-chat-hidden');
+        cy.wait(1000);
+
         cy.getElementByTestId(
           `chatHistoryItem-${conversationToUpdate.conversationId}`
         )
           .find('button[aria-label="Edit conversation name"]')
-          .click();
-        cy.contains('Edit conversation name');
+          .click({ force: true });
 
-        cy.get('input[aria-label="Conversation name input"').type(newTitle);
+        cy.contains('Edit conversation name').should('be.visible');
+
+        cy.get('input[aria-label="Conversation name input"]')
+          .should('be.visible')
+          .clear()
+          .type(newTitle);
+
         cy.getElementByTestId('confirmModalConfirmButton')
           .contains('Confirm name')
           .click();
@@ -178,17 +188,19 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         conversationToUpdate.title = newTitle;
         cy.getElementByTestId(
           `chatHistoryItem-${conversationToUpdate.conversationId}`
-        ).contains(conversationToUpdate.title);
-        cy.contains('Edit conversation name', { timeout: 3000 }).should(
-          'not.exist'
-        );
+        ).should('contain', newTitle);
 
-        // Reset to chat panel
+        cy.contains('Edit conversation name').should('not.exist');
+
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
       });
 
       it('should able to delete conversation', () => {
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
+
+        cy.get('.llm-chat-flyout-body:visible', { timeout: 30000 })
+          .should('be.visible')
+          .and('not.have.class', 'llm-chat-hidden');
 
         const conversationToDelete = conversations[0];
 
@@ -196,7 +208,8 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
           `chatHistoryItem-${conversationToDelete.conversationId}`
         )
           .find('button[aria-label="Delete conversation"]')
-          .click();
+          .click({ force: true });
+
         cy.getElementByTestId('confirmModalTitleText').contains(
           'Delete conversation'
         );
@@ -208,9 +221,9 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.getElementByTestId(
           `chatHistoryItem-${conversationToDelete.conversationId}`
         ).should('not.exist');
+
         conversations.shift();
 
-        // Reset to chat panel
         cy.get('.llm-chat-flyout button[aria-label="history"]').click();
       });
     });

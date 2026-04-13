@@ -172,8 +172,8 @@ Cypress.Commands.add('removeIndexAlias', (alias) => {
   });
 });
 
-Cypress.Commands.add("dismissToast", () => {
-  cy.get("body").then(($body) => {
+Cypress.Commands.add('dismissToast', () => {
+  cy.get('body').then(($body) => {
     if ($body.find(`[data-test-subj="toastCloseButton"]`).length) {
       cy.get(`[data-test-subj="toastCloseButton"]`).click({ force: true });
     }
