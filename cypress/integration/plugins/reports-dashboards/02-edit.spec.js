@@ -31,10 +31,14 @@ describe('Cypress', () => {
       'search'
     );
 
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.intercept(
       'GET',
       `${BASE_PATH}/api/observability/notebooks/savedNotebook`
-    ).as('notebook');
+    ).as('savedNotebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click({ force: true });
 
@@ -49,6 +53,7 @@ describe('Cypress', () => {
     cy.wait('@visualization');
     cy.wait('@search');
     cy.wait('@notebook');
+    cy.wait('@savedNotebook');
 
     // update the report name
     cy.get('#reportSettingsName')
@@ -96,10 +101,14 @@ describe('Cypress', () => {
       'search'
     );
 
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.intercept(
       'GET',
       `${BASE_PATH}/api/observability/notebooks/savedNotebook`
-    ).as('notebook');
+    ).as('savedNotebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click();
 
@@ -115,6 +124,7 @@ describe('Cypress', () => {
     cy.wait('@visualization');
     cy.wait('@search');
     cy.wait('@notebook');
+    cy.wait('@savedNotebook');
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(2)').click({
       force: true,
     });
@@ -156,10 +166,14 @@ describe('Cypress', () => {
       'search'
     );
 
+    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
+      'notebook'
+    );
+
     cy.intercept(
       'GET',
       `${BASE_PATH}/api/observability/notebooks/savedNotebook`
-    ).as('notebook');
+    ).as('savedNotebook');
 
     cy.get('#reportDefinitionDetailsLink').first().click();
 
@@ -175,6 +189,7 @@ describe('Cypress', () => {
     cy.wait('@visualization');
     cy.wait('@search');
     cy.wait('@notebook');
+    cy.wait('@savedNotebook');
 
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(1)').click({
       force: true,
