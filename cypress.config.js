@@ -9,7 +9,7 @@ module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
-  video: true,
+  video: false,
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
     configFile: 'reporter-config.json',
@@ -39,7 +39,6 @@ module.exports = defineConfig({
     SAVED_OBJECTS_PERMISSION_ENABLED: false,
     DASHBOARDS_INVESTIGATION_ENABLED: true,
     DISABLE_LOCAL_CLUSTER: false,
-    experimentalMemoryManagement: true,
     browserPermissions: {
       clipboard: 'allow',
     },
@@ -71,10 +70,32 @@ module.exports = defineConfig({
   ],
   e2e: {
     testIsolation: false,
-    specPattern: 'cypress/integration/**/*.{js,jsx,ts,tsx}',
+    specPattern: 'cypress/integration/**/*.{js,jsx,ts,tsx,json}',
     supportFile: 'cypress/support/index.js',
-
+    experimentalMemoryManagement: true,
+    numTestsKeptInMemory: 0,
     setupNodeEvents(on, config) {
+      // Configure Chromium browser launch options for memory optimization
+      on('before:browser:launch', (browser = {}, launchOptions) => {
+        if (browser.family === 'chromium' && browser.name !== 'electron') {
+          launchOptions.args.push('--js-flags=--max-old-space-size=4096');
+          launchOptions.args.push('--use-gl=disabled');
+          launchOptions.args.push('--disable-gpu');
+          launchOptions.args.push('--disable-software-rasterizer');
+          launchOptions.args.push('--disable-vulkan');
+          launchOptions.args.push('--disable-features=Vulkan,VulkanFromANGLE');
+
+          launchOptions.args.push('--no-sandbox');
+          launchOptions.args.push('--disable-dev-shm-usage');
+          launchOptions.args.push('--disable-setuid-sandbox');
+
+          launchOptions.args.push('--disable-renderer-backgrounding');
+          launchOptions.args.push('--disable-background-timer-throttling');
+          launchOptions.args.push('--disable-backgrounding-occluded-windows');
+        }
+        return launchOptions;
+      });
+
       try {
         const result = require('./cypress/plugins/index.js')(on, config);
         return result || config;
