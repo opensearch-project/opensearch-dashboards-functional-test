@@ -9,7 +9,7 @@ module.exports = defineConfig({
   defaultCommandTimeout: 60000,
   requestTimeout: 60000,
   responseTimeout: 60000,
-  video: false,
+  video: true,
   reporter: 'cypress-multi-reporters',
   reporterOptions: {
     configFile: 'reporter-config.json',
@@ -80,10 +80,15 @@ module.exports = defineConfig({
         if (browser.family === 'chromium' && browser.name !== 'electron') {
           launchOptions.args.push('--js-flags=--max-old-space-size=4096');
           launchOptions.args.push('--use-gl=disabled');
+          launchOptions.args.push('--use-angle=disabled');
           launchOptions.args.push('--disable-gpu');
           launchOptions.args.push('--disable-software-rasterizer');
           launchOptions.args.push('--disable-vulkan');
           launchOptions.args.push('--disable-features=Vulkan,VulkanFromANGLE');
+          launchOptions.args.push('--disable-gpu-compositing');
+          launchOptions.args.push(
+            '--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE'
+          );
 
           launchOptions.args.push('--no-sandbox');
           launchOptions.args.push('--disable-dev-shm-usage');
