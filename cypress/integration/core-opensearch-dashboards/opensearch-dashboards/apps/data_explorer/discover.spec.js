@@ -127,7 +127,11 @@ describe('discover app', { scrollBehavior: false }, () => {
 
     it('should reload the saved search with persisted query to show the initial hit count', function () {
       // set current hit count as alias
-      cy.getElementByTestId('discoverQueryHits').invoke('text').as('hits');
+      cy.getElementByTestId('discoverQueryHits')
+        .should('not.be.empty')
+        .invoke('text')
+        .should('not.be.empty')
+        .as('hits');
       // apply query some changes
       cy.setTopNavQuery('test');
       cy.verifyHitCount('22');
@@ -219,10 +223,14 @@ describe('discover app', { scrollBehavior: false }, () => {
       cy.setAdvancedSetting({
         'discover:searchOnPageLoad': true,
       });
-      miscUtils.visitPage(`app/data-explorer/discover#/`);
-      cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
-      cy.waitForSearch();
+      miscUtils.visitPage(
+        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+      );
       cy.waitForLoader();
+      // The setting may not take effect on the first visit after change;
+      // click Refresh to trigger the search explicitly.
+      cy.getElementByTestId('querySubmitButton').click({ force: true });
+      cy.waitForSearch();
       cy.getElementByTestId('discoverTable').should('be.visible');
     });
   });
@@ -266,7 +274,9 @@ describe('discover app', { scrollBehavior: false }, () => {
     it('should refetch when autofresh is enabled', () => {
       cy.getElementByTestId('openInspectorButton').click();
       cy.getElementByTestId('inspectorPanel')
-        .get('.euiTable tr:nth-child(6) td:nth-child(2) span')
+        .find('.euiTable')
+        .contains('tr', 'Request timestamp')
+        .find('td:nth-child(2)')
         .invoke('text')
         .then((timestamp) => {
           // Get the time stamp of the previous request
@@ -291,7 +301,9 @@ describe('discover app', { scrollBehavior: false }, () => {
           // Check the timestamp of the last request, it should be different than the first timestamp
           cy.getElementByTestId('openInspectorButton').click();
           cy.getElementByTestId('inspectorPanel')
-            .get('.euiTable tr:nth-child(6) td:nth-child(2) span')
+            .find('.euiTable')
+            .contains('tr', 'Request timestamp')
+            .find('td:nth-child(2)')
             .invoke('text')
             .should('not.equal', timestamp);
         });

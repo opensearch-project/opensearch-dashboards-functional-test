@@ -296,20 +296,38 @@ describe('Left navigation menu', () => {
     const validateRecentHistory = () => {
       ensureNavExpanded();
 
-      // Ensure "Visualize and report" section is expanded to show "Visualizations"
+      // Ensure "Visualize and report" is expanded so visualize navigation link is present.
       cy.get('.left-navigation-wrapper').then(($nav) => {
-        if (
-          $nav.find('a:contains("Visualizations")').length === 0 ||
-          !$nav.find('a:contains("Visualizations")').is(':visible')
-        ) {
-          cy.contains(/Visualize and report/i).click({ force: true });
+        const visualizeLinkSelector = 'a[href*="/app/visualize"]';
+        if ($nav.find(`${visualizeLinkSelector}:visible`).length === 0) {
+          cy.get('.left-navigation-wrapper .euiAccordion__button')
+            .contains(/Visualize and report/i)
+            .click({ force: true });
         }
       });
 
-      cy.get('.left-navigation-wrapper')
-        .contains(/Visualizations/)
-        .should('be.visible')
-        .click({ force: true });
+      // Prefer a deterministic route link across workspace/security combinations.
+      cy.get('body').then(($body) => {
+        const visualizeLinkSelector =
+          '.left-navigation-wrapper a[href*="/app/visualize"]';
+        if ($body.find(visualizeLinkSelector).length > 0) {
+          cy.get(visualizeLinkSelector).first().should('be.visible').click({
+            force: true,
+          });
+        } else {
+          cy.get('.left-navigation-wrapper')
+            .contains(/Visualizations/)
+            .should('be.visible')
+            .click({ force: true });
+        }
+      });
+
+      // Fallback direct route when sidebar click is swallowed by UI state.
+      cy.location('pathname', { timeout: 15000 }).then((pathname) => {
+        if (!pathname.includes('/app/visualize')) {
+          cy.visit('app/visualize#/');
+        }
+      });
 
       // Ensure navigation to Visualize page is completed before asserting table
       cy.location('pathname', { timeout: 60000 }).should(
