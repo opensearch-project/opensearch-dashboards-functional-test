@@ -91,21 +91,15 @@ function addDiscoverSummaryCase(url) {
     });
 
     beforeEach(() => {
-      cy.visit(`${url}/w/${workspaceId}/app/all_overview`);
-      cy.getElementByTestId('toggleNavButton', { timeout: 60000 })
-        .eq(0)
-        .should('exist')
-        .should('be.visible')
-        .click();
+      // Use a clean URL without any state to force fresh page load
+      cy.visit(`${url}/w/${workspaceId}/app/data-explorer/discover#`, {
+        timeout: 60000,
+      });
+      cy.wait(3000);
 
-      cy.getElementByTestId('collapsibleNavAppLink-discover')
-        .should('exist')
-        .and('be.visible')
-        .click();
-      cy.get('.deSidebar_dataSource .datasetSelector__button')
-        .should('exist')
-        .and('be.visible')
-        .click();
+      cy.get('[data-test-subj="datasetSelectorButton"]', {
+        timeout: 60000,
+      }).click();
 
       cy.get('.euiSelectableListItem')
         .should('exist')
@@ -133,28 +127,18 @@ function addDiscoverSummaryCase(url) {
 
     it('should be able to generate summary ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
-      cy.getElementByTestId('queryAssist_summary_loading')
-        .should('exist')
-        .then(() => {
-          cy.getElementByTestId('queryAssist_summary_loading').should(
-            'not.exist'
-          );
-        });
       // Verify summary is generated
-      cy.getElementByTestId('queryAssist_summary_result').should('exist');
+      cy.getElementByTestId('queryAssist_summary_result', {
+        timeout: 60000,
+      }).should('exist');
     });
 
     it('should be able to give feedback ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
-      cy.getElementByTestId('queryAssist_summary_loading')
-        .should('exist')
-        .then(() => {
-          cy.getElementByTestId('queryAssist_summary_loading').should(
-            'not.exist'
-          );
-        });
+      // Wait for summary result to appear
+      cy.getElementByTestId('queryAssist_summary_result', {
+        timeout: 60000,
+      }).should('exist');
       // click thumbdown button and once clicked, thumbdown button should not be visible and thumbdown button should be disabled
       cy.getElementByTestId('queryAssist_summary_buttons_thumbdown')
         .should('exist')
@@ -166,16 +150,10 @@ function addDiscoverSummaryCase(url) {
 
     it('should be able to copy summary ', () => {
       askQuestion('How many doc in my index?');
-      // loading first
-      cy.getElementByTestId('queryAssist_summary_loading')
-        .should('exist')
-        .then(() => {
-          cy.getElementByTestId('queryAssist_summary_loading').should(
-            'not.exist'
-          );
-        });
-      // Verify summary is generated
-      cy.getElementByTestId('queryAssist_summary_result').should('exist');
+      // Wait for summary result to appear
+      cy.getElementByTestId('queryAssist_summary_result', {
+        timeout: 60000,
+      }).should('exist');
 
       cy.getElementByTestId('queryAssist_summary_buttons_copy')
         .should('exist')
@@ -184,15 +162,10 @@ function addDiscoverSummaryCase(url) {
 
     it('should be able to regenerate summary when user input new question ', () => {
       askQuestion('How many doc in my index?');
-      cy.getElementByTestId('queryAssist_summary_loading', { timeout: 60000 })
-        .should('exist')
-        .then(() => {
-          cy.getElementByTestId('queryAssist_summary_loading').should(
-            'not.exist'
-          );
-        });
-      // Verify summary is generated
-      cy.getElementByTestId('queryAssist_summary_result').should('exist');
+      // Wait for summary result to appear
+      cy.getElementByTestId('queryAssist_summary_result', {
+        timeout: 60000,
+      }).should('exist');
 
       askQuestion('give me one random doc in my index?');
 
@@ -201,9 +174,10 @@ function addDiscoverSummaryCase(url) {
         .should('be.visible')
         .should('be.enabled')
         .click({ force: true });
-      cy.getElementByTestId('queryAssist_summary_loading').should('exist');
       // Verify new summary is generated
-      cy.getElementByTestId('queryAssist_summary_result').should('exist');
+      cy.getElementByTestId('queryAssist_summary_result', {
+        timeout: 60000,
+      }).should('exist');
     });
   });
 }

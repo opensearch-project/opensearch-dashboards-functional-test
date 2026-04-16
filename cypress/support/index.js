@@ -21,6 +21,7 @@
 // Import commands.js using ES2015 syntax:
 import * as commands from '../utils/commands';
 import '../utils/dashboards/commands';
+import '../utils/dashboards/test-fixture-handler-patch';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
 import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';

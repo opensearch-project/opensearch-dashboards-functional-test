@@ -311,6 +311,13 @@ describe('Left navigation menu', () => {
         .should('be.visible')
         .click({ force: true });
 
+      // Ensure navigation to Visualize page is completed before asserting table
+      cy.location('pathname', { timeout: 60000 }).should(
+        'include',
+        '/app/visualize'
+      );
+      cy.get('.application', { timeout: 60000 }).should('exist');
+
       cy.getElementByTestId('itemsInMemTable')
         .find('.euiLink')
         .first()
@@ -367,7 +374,7 @@ describe('Left navigation menu', () => {
         });
       });
     } else {
-      cy.loadSampleData('logs').then(() => {
+      cy.loadSampleData('ecommerce').then(() => {
         cy.visit('app/home');
         validateRecentHistory();
       });

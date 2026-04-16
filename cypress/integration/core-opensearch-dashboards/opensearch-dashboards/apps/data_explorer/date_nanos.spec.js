@@ -3,16 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  TestFixtureHandler,
-  MiscUtils,
-} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
-
-const testFixtureHandler = new TestFixtureHandler(
-  cy,
-  Cypress.env('openSearchUrl')
-);
 
 const miscUtils = new MiscUtils(cy);
 
@@ -22,11 +14,11 @@ describe('date_nanos', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
     // import date nanos
-    testFixtureHandler.importJSONMapping(
+    cy.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos/mappings.json.txt'
     );
 
-    testFixtureHandler.importJSONDoc(
+    cy.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos/data.json.txt'
     );
     cy.setAdvancedSetting({
@@ -40,7 +32,7 @@ describe('date_nanos', () => {
   });
 
   after(() => {
-    testFixtureHandler.clearJSONMapping(
+    cy.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/date_nanos/mappings.json.txt'
     );
   });

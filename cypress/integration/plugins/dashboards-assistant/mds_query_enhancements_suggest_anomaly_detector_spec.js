@@ -94,7 +94,6 @@ const testSuggestAD = (url) => {
       }).click();
       cy.contains('Suggest anomaly detector').click();
 
-      // Check main UI elements are present
       cy.get('#add-anomaly-detector__title').should(
         'contain',
         'Suggested anomaly detector'
@@ -105,32 +104,23 @@ const testSuggestAD = (url) => {
         .should('be.visible')
         .click();
 
-      // Test empty name validation
       cy.get('[data-test-subj="detectorNameTextInputFlyout"]').clear();
 
-      // Test valid name
       cy.get('[data-test-subj="detectorNameTextInputFlyout"]').type(
         'test-detector-name' + Math.floor(Math.random() * 100) + 1
       );
 
-      // Test interval input
       cy.get('[data-test-subj="detectionInterval"]').clear().type('15');
 
-      // Test window delay input
       cy.get('[data-test-subj="windowDelay"]').clear().type('5');
 
       cy.wait(5000);
-      // Click create button
       cy.contains('button', 'Create detector').click();
       cy.contains('Detector created').should('be.visible');
     });
 
     it('should handle suggest parameters error gracefully', () => {
-      cy.get('button[aria-label="OpenSearch assistant trigger button"]', {
-        timeout: 60000,
-      }).click();
-      cy.contains('Suggest anomaly detector').click();
-
+      // Set up intercept before triggering the request
       cy.intercept('POST', 'w/*/api/assistant/agent/_execute**', (req) => {
         req.reply({
           statusCode: 500,
@@ -138,9 +128,13 @@ const testSuggestAD = (url) => {
         });
       }).as('suggestParametersError');
 
+      cy.get('button[aria-label="OpenSearch assistant trigger button"]', {
+        timeout: 60000,
+      }).click();
+      cy.contains('Suggest anomaly detector').click();
+
       cy.wait('@suggestParametersError');
 
-      // Verify error toast
       cy.contains(
         'Generate parameters for creating anomaly detector failed'
       ).should('be.visible');
@@ -153,7 +147,6 @@ const testSuggestAD = (url) => {
       }).click();
       cy.contains('Suggest anomaly detector').click();
 
-      // Mock failed API call
       cy.intercept('POST', 'w/*/api/anomaly_detectors/detectors/*', (req) => {
         req.reply({
           statusCode: 200,
@@ -164,12 +157,10 @@ const testSuggestAD = (url) => {
         });
       }).as('createDetectorError');
 
-      // Click create button
       cy.contains('button', 'Create detector').click();
 
       cy.wait('@createDetectorError');
 
-      // Verify error toast
       cy.contains('Create anomaly detector failed').should('be.visible');
     });
   });
