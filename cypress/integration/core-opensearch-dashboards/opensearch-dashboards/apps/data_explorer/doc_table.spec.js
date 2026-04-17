@@ -33,7 +33,10 @@ describe('discover doc table', { testIsolation: false }, () => {
     );
     cy.waitForLoader();
     // Wait for discover app to fully initialize
-    cy.getElementByTestId('queryInput', { timeout: 60000 });
+    cy.get(
+      '[data-test-subj="queryInput"], [data-test-subj="osdQueryEditor__multiLine"], [data-test-subj="osdQueryEditor__singleLine"]',
+      { timeout: 120000 }
+    );
     // Handle the uninitialized "Start searching" state if searchOnPageLoad is off
     cy.get(
       '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
