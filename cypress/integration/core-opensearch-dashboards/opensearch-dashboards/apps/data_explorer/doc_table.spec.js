@@ -32,6 +32,8 @@ describe('discover doc table', { testIsolation: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    // Wait for discover app to fully initialize
+    cy.getElementByTestId('queryInput', { timeout: 60000 });
     // Handle the uninitialized "Start searching" state if searchOnPageLoad is off
     cy.get(
       '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
