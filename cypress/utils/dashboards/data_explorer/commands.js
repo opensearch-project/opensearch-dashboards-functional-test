@@ -88,20 +88,23 @@ Cypress.Commands.add('verifyMarkCount', (count) => {
 Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
   cy.getElementByTestId('addFilter').click();
   cy.getElementByTestId('filterFieldSuggestionList')
-    .should('be.visible')
+    .filter(':visible')
+    .first()
     .click()
     .type(`${field}{downArrow}{enter}`)
     .trigger('blur', { force: true });
 
   cy.getElementByTestId('filterOperatorList')
-    .should('be.visible')
+    .filter(':visible')
+    .first()
     .click()
     .type(`${operator}{downArrow}{enter}`)
     .trigger('blur', { force: true });
 
   if (value) {
     cy.get('[data-test-subj^="filterParamsComboBox"]')
-      .should('be.visible')
+      .filter(':visible')
+      .first()
       .click()
       .type(`${value}{downArrow}{enter}`)
       .trigger('blur', { force: true });
