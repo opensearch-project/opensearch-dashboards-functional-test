@@ -4,10 +4,10 @@
  */
 
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
-import {
-  DE_DEFAULT_END_TIME,
-  DE_DEFAULT_START_TIME,
-} from '../../../../../utils/constants';
+// import {
+//   DE_DEFAULT_END_TIME,
+//   DE_DEFAULT_START_TIME,
+// } from '../../../../../utils/constants';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
@@ -51,18 +51,33 @@ describe('inspector', () => {
     cy.getElementByTestId('openInspectorButton').click();
     cy.wait(1000);
     cy.getElementByTestId('inspectorPanel')
-      .get('.euiTable tr:nth-child(2) td:nth-child(2) span')
+      .find('.euiTable')
+      .contains('tr', 'Hits (total)')
+      .find('td:nth-child(2)')
       .invoke('text')
       .should('eq', '0');
   });
 
   it('should display request stats with results', () => {
-    cy.setTopNavDate(DE_DEFAULT_START_TIME, DE_DEFAULT_END_TIME);
+    miscUtils.visitPage(
+      `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
+    );
+    cy.waitForLoader();
+    cy.get(
+      '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+      { timeout: 60000 }
+    ).then(($el) => {
+      if ($el.filter('[data-test-subj="discover-refreshDataButton"]').length) {
+        cy.getElementByTestId('discover-refreshDataButton').click();
+      }
+    });
     cy.waitForSearch();
     cy.getElementByTestId('openInspectorButton').click();
     cy.wait(1000);
     cy.getElementByTestId('inspectorPanel')
-      .get('.euiTable tr:nth-child(2) td:nth-child(2) span')
+      .find('.euiTable')
+      .contains('tr', 'Hits (total)')
+      .find('td:nth-child(2)')
       .invoke('text')
       .should('eq', '14004');
   });
