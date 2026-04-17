@@ -240,7 +240,7 @@ describe('discover app', { scrollBehavior: false }, () => {
         }
       });
       cy.waitForSearch();
-      cy.getElementByTestId('discoverTable').should('be.visible');
+      cy.getElementByTestId('docTable').should('be.visible');
     });
   });
 
