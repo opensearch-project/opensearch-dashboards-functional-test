@@ -12,7 +12,6 @@ const FINAL_ANSWER =
 if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation save to notebook spec', () => {
     let restoreShowHome;
-    let restoreNewThemeModal;
     let restoreTenantSwitchModal;
 
     beforeEach(() => {
@@ -20,12 +19,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       restoreShowHome = setStorageItem(
         localStorage,
         'home:welcome:show',
-        'false'
-      );
-      // Hide new theme modal
-      restoreNewThemeModal = setStorageItem(
-        localStorage,
-        'home:newThemeModal:show',
         'false'
       );
       restoreTenantSwitchModal = setStorageItem(
@@ -56,9 +49,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     afterEach(() => {
       if (restoreShowHome) {
         restoreShowHome();
-      }
-      if (restoreNewThemeModal) {
-        restoreNewThemeModal();
       }
       if (restoreTenantSwitchModal) {
         restoreTenantSwitchModal();

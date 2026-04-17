@@ -10,8 +10,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
       cy.setDefaultDataSourceForAssistant();
       // Set welcome screen tracking to false
       localStorage.setItem('home:welcome:show', 'false');
-      // Set new theme modal to false
-      localStorage.setItem('home:newThemeModal:show', 'false');
     });
 
     beforeEach(() => {
@@ -27,7 +25,6 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     after(() => {
       cy.clearDataSourceForAssistant();
       localStorage.removeItem('home:welcome:show');
-      localStorage.removeItem('home:newThemeModal:show');
     });
 
     describe('conversation feedback', () => {
