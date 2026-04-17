@@ -180,6 +180,8 @@ describe('shared links', () => {
     });
 
     it('should allow for copying the snapshot URL', function () {
+      // Wait for page to stabilize after sessionStorage state changes
+      cy.wait(2000);
       cy.getElementByTestId('shareTopNavButton').should('be.visible').click();
       cy.getElementByTestId('copyShareUrlButton')
         .invoke('attr', 'data-share-url')

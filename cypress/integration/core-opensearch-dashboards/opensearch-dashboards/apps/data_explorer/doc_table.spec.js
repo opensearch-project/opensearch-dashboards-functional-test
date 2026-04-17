@@ -16,6 +16,7 @@ const indexSet = [
 describe('discover doc table', { testIsolation: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
 
     cy.importJSONDocIfNeeded(
       indexSet,

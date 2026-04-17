@@ -107,7 +107,7 @@ Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
       .trigger('blur', { force: true });
   }
 
-  cy.getElementByTestId('saveFilter').click({ force: true });
+  cy.getElementByTestId('saveFilter').first().click({ force: true });
   cy.waitForLoader();
 });
 

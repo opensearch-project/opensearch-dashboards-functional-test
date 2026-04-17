@@ -228,8 +228,17 @@ describe('discover app', { scrollBehavior: false }, () => {
       );
       cy.waitForLoader();
       // The setting may not take effect on the first visit after change;
-      // click Refresh to trigger the search explicitly.
-      cy.getElementByTestId('querySubmitButton').click({ force: true });
+      // trigger search if the page is in the uninitialized state.
+      cy.get(
+        '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+        { timeout: 60000 }
+      ).then(($el) => {
+        if (
+          $el.filter('[data-test-subj="discover-refreshDataButton"]').length
+        ) {
+          cy.getElementByTestId('discover-refreshDataButton').click();
+        }
+      });
       cy.waitForSearch();
       cy.getElementByTestId('discoverTable').should('be.visible');
     });

@@ -324,7 +324,9 @@ describe('Saved Queries', () => {
       timeout: 10000,
     }).click({ force: true });
 
-    cy.get('[class="euiListGroupItem__button"]').trigger('mouseover');
+    cy.get('[class="euiListGroupItem__button"]')
+      .first()
+      .trigger('mouseover', { force: true });
 
     cy.get(
       '[data-test-subj="delete-saved-query-Sample Saved Query-button"]'
