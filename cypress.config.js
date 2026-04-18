@@ -78,16 +78,16 @@ module.exports = defineConfig({
       // Configure Chromium browser launch options for memory optimization
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'chromium') {
-          launchOptions.args.push('--js-flags=--max-old-space-size=8192');
+          launchOptions.args.push('--js-flags=--max-old-space-size=4096');
+          launchOptions.args.push('--disable-gpu');
+          launchOptions.args.push('--disable-gpu-compositing');
+          launchOptions.args.push('--disable-software-rasterizer');
           launchOptions.args.push('--use-gl=disabled');
           launchOptions.args.push('--use-angle=disabled');
-          launchOptions.args.push('--disable-gpu');
-          launchOptions.args.push('--disable-software-rasterizer');
           launchOptions.args.push('--disable-vulkan');
-          launchOptions.args.push('--disable-features=Vulkan,VulkanFromANGLE');
-          launchOptions.args.push('--disable-gpu-compositing');
+          launchOptions.args.push('--in-process-gpu');
           launchOptions.args.push(
-            '--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE'
+            '--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE,UseSkiaRenderer'
           );
 
           launchOptions.args.push('--no-sandbox');

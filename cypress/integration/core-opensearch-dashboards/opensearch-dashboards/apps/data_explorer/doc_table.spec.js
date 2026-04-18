@@ -24,6 +24,11 @@ describe('discover doc table', { testIsolation: false }, () => {
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
+    cy.createIndexPattern('logstash-*', {
+      title: 'logstash-*',
+      timeFieldName: '@timestamp',
+    });
+
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
     });
@@ -32,11 +37,6 @@ describe('discover doc table', { testIsolation: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
-    // Wait for discover app to fully initialize
-    cy.get(
-      '[data-test-subj="queryInput"], [data-test-subj="osdQueryEditor__multiLine"], [data-test-subj="osdQueryEditor__singleLine"]',
-      { timeout: 120000 }
-    );
     // Handle the uninitialized "Start searching" state if searchOnPageLoad is off
     cy.get(
       '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
