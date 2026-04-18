@@ -49,6 +49,7 @@ describe('table visualization in embedded mode', () => {
     '115',
   ];
 
+  // eslint-disable-next-line no-unused-vars
   const suppressResizeObserverIssue = () => {
     // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
     cy.on('uncaught:exception', (err) => {

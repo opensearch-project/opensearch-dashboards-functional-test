@@ -3,17 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  TestFixtureHandler,
-  MiscUtils,
-} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
-const testFixtureHandler = new TestFixtureHandler(
-  cy,
-  Cypress.env('openSearchUrl')
-);
 const indexSet = [
   'logstash-2015.09.22',
   'logstash-2015.09.21',
@@ -26,23 +19,23 @@ describe('discover histogram', { scrollBehavior: false }, () => {
     cy.log('load opensearch-dashboards index with default index pattern');
 
     // import long window logstash index pattern
-    testFixtureHandler.importJSONDoc(
+    cy.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash_index_pattern/data.json.txt'
     );
 
     // import logstash functional
-    testFixtureHandler.importJSONDocIfNeeded(
+    cy.importJSONDocIfNeeded(
       indexSet,
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
     // import long window logstash
-    testFixtureHandler.importJSONMapping(
+    cy.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
     );
 
-    testFixtureHandler.importJSONDoc(
+    cy.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/data.json.txt'
     );
 
@@ -63,7 +56,7 @@ describe('discover histogram', { scrollBehavior: false }, () => {
       force: true,
     });
     cy.getElementByTestId('advancedSetting-saveButton').click({ force: true });
-    testFixtureHandler.clearJSONMapping(
+    cy.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/long_window_logstash/mappings.json.txt'
     );
     cy.deleteIndex('long-window-logstash-0');

@@ -8,7 +8,7 @@ import { SECURITY_PLUGIN_PATH } from '../../../utils/dashboards/constants';
 if (Cypress.env('SECURITY_ENABLED') && !Cypress.env('MULTITENANCY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
-      cy.server();
+      cy.intercept();
     });
     it('Test Dashboards tenancy features should not be accessible ', () => {
       // This test is to ensure tenancy related features are not accessible when opensearch_security.multitenancy.enabled is disabled in the opensearchdashboard.yaml

@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+/* eslint-disable no-unused-vars */
+
 import { CommonUI } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import {
   BASE_PATH,
@@ -43,7 +45,9 @@ describe('table visualization - auto column resizing', () => {
       cy.visit(`${BASE_PATH}/app/visualize`);
       cy.get('[data-test-subj="newItemButton"]').click();
       cy.get('[data-test-subj="visType-table"]').click();
-      cy.get('[data-test-subj="savedObjectFinderSearchInput"]').type(TABLE_INDEX_ID);
+      cy.get('[data-test-subj="savedObjectFinderSearchInput"]').type(
+        TABLE_INDEX_ID
+      );
       cy.get(`[data-test-subj="savedObjectTitle${TABLE_INDEX_ID}"]`).click();
       cy.setTopNavDate(TABLE_INDEX_START_TIME, TABLE_INDEX_END_TIME);
     });
@@ -98,7 +102,10 @@ describe('table visualization - auto column resizing', () => {
 
     it('Should show tooltips for headers', () => {
       // Headers should have tooltips
-      cy.get('.tableVisContainer').find('thead th .header-text').first().trigger('mouseover');
+      cy.get('.tableVisContainer')
+        .find('thead th .header-text')
+        .first()
+        .trigger('mouseover');
       cy.get('.euiToolTipPopover').should('be.visible');
     });
   });

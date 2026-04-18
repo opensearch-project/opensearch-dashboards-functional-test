@@ -3,26 +3,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  TestFixtureHandler,
-  MiscUtils,
-} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
-const testFixtureHandler = new TestFixtureHandler(
-  cy,
-  Cypress.env('openSearchUrl')
-);
 
 describe('source filters', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    testFixtureHandler.importJSONMapping(
+    cy.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/mappings.json.txt'
     );
 
-    testFixtureHandler.importJSONDoc(
+    cy.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/data.json.txt'
     );
 
@@ -34,7 +27,7 @@ describe('source filters', () => {
   });
 
   after(() => {
-    testFixtureHandler.clearJSONMapping(
+    cy.clearJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/visualize_source-filters/mappings.json.txt'
     );
   });

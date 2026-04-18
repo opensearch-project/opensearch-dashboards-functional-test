@@ -3,40 +3,31 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  MiscUtils,
-  TestFixtureHandler,
-} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
-const testFixtureHandler = new TestFixtureHandler(
-  cy,
-  Cypress.env('openSearchUrl')
-);
 const indexSet = [
   'logstash-2015.09.22',
   'logstash-2015.09.21',
   'logstash-2015.09.20',
 ];
 
-describe('discover doc table', () => {
+describe('discover doc table', { testIsolation: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    // import logstash functional
-    testFixtureHandler.importJSONDocIfNeeded(
+    cy.fleshTenantSettings();
+
+    cy.importJSONDocIfNeeded(
       indexSet,
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
 
-    testFixtureHandler.importJSONMapping(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
-    );
-
-    testFixtureHandler.importJSONDoc(
-      'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
-    );
+    cy.createIndexPattern('logstash-*', {
+      title: 'logstash-*',
+      timeFieldName: '@timestamp',
+    });
 
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
@@ -46,23 +37,45 @@ describe('discover doc table', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    // Handle the uninitialized "Start searching" state if searchOnPageLoad is off
+    cy.get(
+      '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+      { timeout: 60000 }
+    ).then(($el) => {
+      if ($el.filter('[data-test-subj="discover-refreshDataButton"]').length) {
+        cy.getElementByTestId('discover-refreshDataButton').click();
+      }
+    });
+    cy.waitForSearch();
   });
 
-  after(() => {});
+  it('should show the doc table', () => {
+    cy.getElementByTestId('docTable', { timeout: 60000 }).should('exist');
+  });
 
-  describe('add and remove columns', function () {
-    it('should add more columns to the table', function () {
-      cy.getElementByTestId('fieldFilterSearchInput').type('phpmemory');
+  it('should add columns to the table', () => {
+    cy.get('[data-test-subj="fieldFilterSearchInput"]', { timeout: 60000 })
+      .clear()
+      .type('phpmemory');
 
-      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
+    cy.wait(2000);
 
-      cy.getElementByTestId('docTableHeader-phpmemory').should('be.visible');
-    });
+    cy.get('[data-test-subj="fieldToggle-phpmemory"]', {
+      timeout: 60000,
+    }).click({ force: true });
 
-    it('should remove columns from the table', function () {
-      cy.getElementByTestId('fieldToggle-phpmemory').click({ force: true });
+    cy.get('[data-test-subj="docTableHeader-phpmemory"]', {
+      timeout: 60000,
+    }).should('exist');
+  });
 
-      cy.getElementByTestId('docTableHeader-phpmemory').should('not.exist');
-    });
+  it('should remove columns from the table', () => {
+    cy.get('[data-test-subj="fieldToggle-phpmemory"]', {
+      timeout: 60000,
+    }).click({ force: true });
+
+    cy.get('[data-test-subj="docTableHeader-phpmemory"]', {
+      timeout: 60000,
+    }).should('not.exist');
   });
 });
