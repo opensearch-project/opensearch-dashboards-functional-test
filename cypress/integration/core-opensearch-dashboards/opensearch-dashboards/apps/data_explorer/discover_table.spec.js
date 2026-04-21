@@ -322,38 +322,20 @@ describe('Saved Queries', () => {
     }
     cy.get('[data-test-subj="saved-query-management-popover-button"]', {
       timeout: 10000,
-    }).click({ force: true });
+    })
+      .should('be.visible')
+      .click({ force: true });
 
-    // OSD 3.5.0 may use a new saved query UI with a flyout
-    cy.get('[data-test-subj="saved-query-management-popover"]', {
-      timeout: 10000,
-    }).then(($popover) => {
-      if (
-        $popover.find('[data-test-subj="saved-query-management-open-button"]')
-          .length
-      ) {
-        // New UI: open the saved query flyout
-        cy.get('[data-test-subj="saved-query-management-open-button"]').click();
-        cy.contains('Sample Saved Query', { timeout: 30000 })
-          .should('be.visible')
-          .click();
-        // Click the delete button in the flyout card
-        cy.get('[data-test-subj="deleteSavedQueryButton"]')
-          .should('be.visible')
-          .click();
-      } else {
-        // Old UI: delete button is an extraAction on hover
-        cy.contains('Sample Saved Query', { timeout: 30000 }).should(
-          'be.visible'
-        );
-        cy.get(
-          '[data-test-subj="delete-saved-query-Sample Saved Query-button"]'
-        ).click({ force: true });
-      }
-    });
+    cy.get('[class="euiListGroupItem__button"]')
+      .contains('Sample Saved Query')
+      .parents('li.euiListGroupItem')
+      .realHover()
+      .find('[data-test-subj="delete-saved-query-Sample Saved Query-button"]')
+      .should('be.visible')
+      .realClick();
 
     cy.get('[data-test-subj="confirmModalConfirmButton"]', {
-      timeout: 30000,
+      timeout: 10000,
     })
       .should('be.visible')
       .click({ force: true });

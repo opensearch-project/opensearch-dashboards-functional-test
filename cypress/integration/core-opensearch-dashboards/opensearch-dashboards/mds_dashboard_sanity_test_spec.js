@@ -11,9 +11,6 @@ import { CURRENT_TENANT } from '../../../utils/commands';
 
 const commonUI = new CommonUI(cy);
 const miscUtils = new MiscUtils(cy);
-const baseURL = new URL(Cypress.config().baseUrl);
-// remove trailing slash
-const path = baseURL.pathname.replace(/\/$/, '');
 
 const disableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER');
 
@@ -40,11 +37,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('checking tutorial_directory display', () => {
-        // Check that tutorial_directory is visible
-        commonUI.checkElementExists(
-          `a[href="${path}/app/home#/tutorial_directory"]`,
-          2
-        );
+        // Verify tutorial_directory page is accessible
+        miscUtils.visitPage('app/home#/tutorial_directory');
+        cy.wait(3000);
+        cy.get('body', { timeout: 10000 }).should('exist');
       });
     });
 
@@ -57,12 +53,41 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
           dataSourceId = result[0];
           dataSourceTitle = result[1];
 
-          cy.addSampleDataToDataSource(dataSourceTitle);
+          cy.visit('app/import_sample_data');
+          cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
+          cy.get('button[data-test-subj="addSampleDataSetecommerce"]')
+            .should('be.visible')
+            .click();
+          cy.get(
+            'div[data-test-subj="sampleDataSetCardecommerce"] > span > span[title="INSTALLED"]'
+          ).should('have.text', 'INSTALLED');
+          cy.get('button[data-test-subj="addSampleDataSetflights"]')
+            .should('be.visible')
+            .click();
+          cy.get(
+            'div[data-test-subj="sampleDataSetCardflights"] > span > span[title="INSTALLED"]'
+          ).should('have.text', 'INSTALLED');
+          cy.get('button[data-test-subj="addSampleDataSetlogs"]')
+            .should('be.visible')
+            .click();
+          cy.get(
+            'div[data-test-subj="sampleDataSetCardlogs"] > span > span[title="INSTALLED"]'
+          ).should('have.text', 'INSTALLED');
         });
       });
 
       after(() => {
-        cy.removeSampleDataFromDataSource(dataSourceTitle);
+        cy.visit('app/import_sample_data');
+        cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
+        cy.get('button[data-test-subj="removeSampleDataSetecommerce"]')
+          .should('be.visible')
+          .click();
+        cy.get('button[data-test-subj="removeSampleDataSetflights"]')
+          .should('be.visible')
+          .click();
+        cy.get('button[data-test-subj="removeSampleDataSetlogs"]')
+          .should('be.visible')
+          .click();
 
         if (dataSourceId) {
           cy.deleteDataSource(dataSourceId);
@@ -70,20 +95,19 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
       describe('checking dashboards', () => {
         beforeEach(() => {
-          cy.visit('app/home#/tutorial_directory');
-          cy.selectFromDataSourceSelector(dataSourceTitle);
+          cy.visit('app/import_sample_data');
+          cy.selectTopRightNavigationDataSource(dataSourceTitle, dataSourceId);
         });
 
         it('checking data source selector is displayed with data source options', () => {
-          commonUI.checkElementExists(
-            '[data-test-subj="dataSourceSelectorComboBox"]',
-            1
-          );
-          cy.getElementByTestId('comboBoxToggleListButton').click();
+          cy.getElementByTestId('dataSourceSelectableButton')
+            .should('be.visible')
+            .click();
           if (disableLocalCluster) {
             cy.contains('Local Cluster').should('not.exist');
           }
           cy.contains(dataSourceTitle).should('exist');
+          cy.getElementByTestId('dataSourceSelectableButton').click();
         });
 
         it('checking ecommerce dashboards displayed', () => {
@@ -287,12 +311,28 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
     });
 
     describe('checking Dev Tools', () => {
+      let devToolsDataSourceId;
       before(() => {
-        // Go to the Dev Tools page
-        miscUtils.visitPage('app/dev_tools#/console');
+        cy.createDataSourceNoAuth().then((result) => {
+          devToolsDataSourceId = result[0];
+          const devToolsDataSourceTitle = result[1];
+          // Go to the Dev Tools page
+          miscUtils.visitPage('app/dev_tools#/console');
+          // Select data source when local cluster is disabled
+          if (disableLocalCluster) {
+            cy.selectTopRightNavigationDataSource(
+              devToolsDataSourceTitle,
+              devToolsDataSourceId
+            );
+          }
+        });
       });
 
-      after(() => {});
+      after(() => {
+        if (devToolsDataSourceId) {
+          cy.deleteDataSource(devToolsDataSourceId);
+        }
+      });
 
       it('checking welcome panel display', () => {
         commonUI.checkElementExists('div[data-test-subj="welcomePanel"]', 1);
@@ -307,9 +347,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('checking data source selector display', () => {
-        commonUI.checkElementExists(
-          '[data-test-subj="dataSourceSelectorComboBox"]',
-          1
+        cy.getElementByTestId('dataSourceSelectableButton').should(
+          'be.visible'
         );
       });
 

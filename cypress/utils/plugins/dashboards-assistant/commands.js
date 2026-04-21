@@ -347,10 +347,12 @@ Cypress.Commands.add('openAssistantChatbot', () => {
 
     attempts++;
 
+    // Wait for header to stabilize after potential re-renders
+    cy.wait(1000);
     cy.get('button[aria-label="toggle chat flyout icon"]', { timeout: 60000 })
       .should('exist')
       .and('be.visible')
-      .click();
+      .click({ force: true });
 
     cy.wait(500); // Wait for if flyout disappear
     cy.get('body').then(($body) => {
