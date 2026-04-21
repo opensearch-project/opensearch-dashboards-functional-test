@@ -329,8 +329,9 @@ describe('Saved Queries', () => {
     cy.get('[class="euiListGroupItem__button"]')
       .contains('Sample Saved Query')
       .parents('li.euiListGroupItem')
-      .realHover()
-      .find('[data-test-subj="delete-saved-query-Sample Saved Query-button"]')
+      .realHover();
+
+    cy.get('[data-test-subj="delete-saved-query-Sample Saved Query-button"]')
       .should('be.visible')
       .realClick();
 

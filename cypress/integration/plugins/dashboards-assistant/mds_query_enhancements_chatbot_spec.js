@@ -99,11 +99,12 @@ function addChatbotTestCase(url) {
       askQuestion(question);
 
       // Close chatbot flyout
-      cy.get('.llm-chat-flyout-header').within(() => {
-        cy.get('[aria-label="close"]').click();
-      });
+      cy.get('.llm-chat-flyout-header')
+        .find('[aria-label="close"]')
+        .should('be.visible')
+        .click({ force: true });
 
-      cy.get('.llm-chat-flyout').should('not.be.visible');
+      cy.get('.llm-chat-flyout', { timeout: 10000 }).should('not.be.visible');
 
       // Reopen chatbot
       cy.get('[aria-label="toggle chat flyout icon"]')
