@@ -274,7 +274,17 @@ Cypress.Commands.add('cleanProvisionedAgents', () => {
 Cypress.Commands.add('startDummyServer', () => {
   // Not a good practice to start a server inside Cypress https://docs.cypress.io/guides/references/best-practices#Web-Servers
   // But in out case, we need to reuse release e2e template and let's make it a tradeoff.
-  cy.exec(`nohup yarn start-dummy-llm-server > /dev/null 2>&1 &`);
+  cy.exec(`nohup yarn start-dummy-llm-server > /tmp/dummy-llm.log 2>&1 &`);
+  // Wait for server to start and verify it's running
+  cy.wait(3000);
+  cy.exec(
+    'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 || echo "failed"',
+    {
+      failOnNonZeroExit: false,
+    }
+  ).then((result) => {
+    cy.log(`Dummy LLM server status: ${result.stdout}`);
+  });
 });
 
 Cypress.Commands.add('stopDummyServer', () => {

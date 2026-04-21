@@ -43,6 +43,15 @@ describe('discover field visualize button', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    // Wait for either search results or the uninitialized "Start searching" state
+    cy.get(
+      '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+      { timeout: 60000 }
+    ).then(($el) => {
+      if ($el.filter('[data-test-subj="discover-refreshDataButton"]').length) {
+        cy.getElementByTestId('discover-refreshDataButton').click();
+      }
+    });
     cy.waitForSearch();
   });
 
@@ -73,7 +82,7 @@ describe('discover field visualize button', () => {
 
   it('should preserve app filters in visualize', () => {
     cy.submitFilterFromDropDown('bytes', 'exists');
-    cy.getElementByTestId('fieldFilterSearchInput').type('geo.src');
+    cy.getElementByTestId('fieldFilterSearchInput').clear().type('geo.src');
     cy.log('visualize a geo.src field with filter applied');
     cy.getElementByTestId('field-geo.src-showDetails').click({ force: true });
     cy.getElementByTestId('fieldVisualize-geo.src').click();

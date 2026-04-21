@@ -26,7 +26,6 @@ export const WorkspaceCopyTestCases = () => {
   };
 
   const verifyDuplicateModalContent = (expectedContent) => {
-    // 等待模态框完全加载
     cy.wait(1000);
 
     cy.getElementByTestId('savedObjectsDuplicateModal', { timeout: 30000 })
@@ -35,20 +34,17 @@ export const WorkspaceCopyTestCases = () => {
         cy.contains(expectedContent).should('be.visible');
         cy.getElementByTestId('duplicateConfirmButton').should('be.visible');
 
-        // 等待下拉框按钮可点击
         cy.getElementByTestId('comboBoxToggleListButton', {
           timeout: 10000,
         }).click({ force: true });
       });
 
-    // 等待下拉选项渲染
     cy.wait(500);
     cy.get('.euiFilterSelectItem', { timeout: 15000 })
       .contains(targetWorkspaceName)
       .should('be.visible')
       .click({ force: true });
 
-    // 等待选择完成
     cy.wait(500);
   };
 
@@ -65,7 +61,6 @@ export const WorkspaceCopyTestCases = () => {
     const copyContent =
       expectedAssetCount > 1 ? 'assets copied' : 'asset copied';
 
-    // 修复：使用更具体的选择器，排除侧边栏导航flyout
     cy.get(
       '.euiFlyout[class*="euiFlyout--medium"], .euiFlyout:not(.context-nav-wrapper)',
       { timeout: 20000 }
@@ -77,7 +72,6 @@ export const WorkspaceCopyTestCases = () => {
         cy.contains(`${expectedAssetCount} Successful`).should('be.visible');
       });
 
-    // 修复：关闭结果flyout，使用关闭按钮而不是ESC
     cy.get(
       '.euiFlyout[class*="euiFlyout--medium"] button[data-test-subj="euiFlyoutCloseButton"], .euiFlyout__closeButton',
       { timeout: 10000 }
@@ -85,7 +79,6 @@ export const WorkspaceCopyTestCases = () => {
       .first()
       .click({ force: true });
 
-    // 等待flyout关闭
     cy.wait(1000);
 
     miscUtils.visitPage(`w/${targetId}/app/objects`);
@@ -202,20 +195,14 @@ export const WorkspaceCopyTestCases = () => {
       });
 
       it('should successfully copy selected assets', () => {
-        // 由于复选框选中在EUI表格中不可靠，此测试改为验证选中2个资源时的复制流程
-        // 等待表格稳定
         cy.wait(2000);
 
-        // 点击表头全选框，然后取消选中部分行，保留2个选中
-        // 先尝试点击表头的checkbox来选中所有
         cy.getElementByTestId('savedObjectsTable')
           .find('thead .euiCheckbox__input, thead .euiCheckbox')
           .first()
           .click({ force: true });
         cy.wait(1000);
 
-        // 取消选中其他行，只保留前2个
-        // 从第3行开始取消选中
         for (let i = 2; i < 14; i++) {
           cy.getElementByTestId('savedObjectsTable')
             .find('.euiTableRow .euiCheckbox__input')
@@ -224,7 +211,6 @@ export const WorkspaceCopyTestCases = () => {
           cy.wait(200);
         }
 
-        // 等待按钮变为可用状态
         cy.getElementByTestId('savedObjectsManagementDuplicate', {
           timeout: 10000,
         })
@@ -232,7 +218,6 @@ export const WorkspaceCopyTestCases = () => {
           .click({ force: true });
         cy.wait(1000);
 
-        // 不验证具体数字，只验证模态框出现
         cy.getElementByTestId('savedObjectsDuplicateModal', {
           timeout: 20000,
         }).should('be.visible');
@@ -247,9 +232,7 @@ export const WorkspaceCopyTestCases = () => {
           dataSourceId2
         );
 
-        // 修复：等待 createTargetWorkspace 完成
         createTargetWorkspace(dataSourceId2).then(() => {
-          // 修复：确保页面完全加载
           miscUtils.visitPage(`w/${sourceWorkspaceId}/app/objects`);
           cy.wait(3000);
           waitForTableStable();
@@ -260,7 +243,6 @@ export const WorkspaceCopyTestCases = () => {
             .click({ force: true });
           cy.wait(3000);
 
-          // 修复：使用更灵活的验证，只验证模态框出现
           cy.getElementByTestId('savedObjectsDuplicateModal', {
             timeout: 30000,
           })
@@ -286,7 +268,6 @@ export const WorkspaceCopyTestCases = () => {
 
           cy.wait('@copyAssetsRequest');
 
-          // 修复：使用更具体的选择器
           cy.get(
             '.euiFlyout[class*="euiFlyout--medium"], .euiFlyout:not(.context-nav-wrapper)',
             { timeout: 20000 }
@@ -301,7 +282,6 @@ export const WorkspaceCopyTestCases = () => {
             .its('response.statusCode')
             .should('eq', 200);
 
-          // 修复：使用更具体的选择器
           cy.get(
             '.euiFlyout[class*="euiFlyout--medium"], .euiFlyout:not(.context-nav-wrapper)'
           ).contains(/\d+\s+Successful/);

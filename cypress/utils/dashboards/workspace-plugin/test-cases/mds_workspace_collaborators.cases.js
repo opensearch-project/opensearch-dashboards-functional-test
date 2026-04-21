@@ -90,11 +90,9 @@ export const WorkspaceCollaboratorsTestCases = () => {
       });
 
       it('should change access level successfully', () => {
-        // 等待表格完全加载
         cy.get('table', { timeout: 20000 }).should('be.visible');
         cy.wait(1000);
 
-        // 修复：点击复选框的label来选中（EUI组件需要这种方式）
         cy.contains('td', 'read_user', { timeout: 10000 })
           .closest('tr')
           .find('.euiCheckbox__label, input[type="checkbox"]')
@@ -131,11 +129,9 @@ export const WorkspaceCollaboratorsTestCases = () => {
       });
 
       it('should delete collaborators successfully', () => {
-        // 等待表格完全加载
         cy.get('table', { timeout: 20000 }).should('be.visible');
         cy.wait(1000);
 
-        // 修复：点击复选框的label来选中（EUI组件需要这种方式）
         cy.contains('td', 'read_user', { timeout: 10000 })
           .closest('tr')
           .find('.euiCheckbox__label, input[type="checkbox"]')

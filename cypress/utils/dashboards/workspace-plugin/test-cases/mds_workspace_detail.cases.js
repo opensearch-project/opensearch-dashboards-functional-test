@@ -37,7 +37,6 @@ export const WorkspaceDetailTestCases = () => {
   };
 
   const enterEditMode = () => {
-    // 等待页面完全加载
     cy.get('.euiLoadingSpinner', { timeout: 30000 }).should('not.exist');
     cy.wait(1000);
 
@@ -46,18 +45,14 @@ export const WorkspaceDetailTestCases = () => {
       .as('editBtn');
     cy.get('@editBtn').click({ force: true });
 
-    // 等待编辑表单加载完成
     cy.get('.euiLoadingSpinner', { timeout: 20000 }).should('not.exist');
     cy.wait(1500);
 
-    // 只在安全启用时等待隐私设置选择器出现
-    // 在 test-without-security 环境下，隐私设置选择器不存在
     if (Cypress.env('SECURITY_ENABLED')) {
       cy.getElementByTestId('workspacePrivacySettingSelector', {
         timeout: 30000,
       }).should('be.visible');
     } else {
-      // 在非安全环境下，等待其他表单元素出现来确认表单已加载
       cy.getElementByTestId('workspaceForm-workspaceDetails-nameInputText', {
         timeout: 30000,
       }).should('be.visible');
@@ -278,7 +273,6 @@ export const WorkspaceDetailTestCases = () => {
 
           afterEach(() => {
             miscUtils.visitPage(`w/${workspaceId}/app/workspace_detail`);
-            // 修复：增加更长的 timeout 和多次等待
             cy.get('.euiLoadingSpinner', { timeout: 60000 }).should(
               'not.exist'
             );

@@ -16,12 +16,18 @@ const indexSet = [
 describe('discover doc table', { testIsolation: false }, () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
+    cy.fleshTenantSettings();
 
     cy.importJSONDocIfNeeded(
       indexSet,
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
     );
+
+    cy.createIndexPattern('logstash-*', {
+      title: 'logstash-*',
+      timeFieldName: '@timestamp',
+    });
 
     cy.setAdvancedSetting({
       defaultIndex: 'logstash-*',
@@ -31,6 +37,15 @@ describe('discover doc table', { testIsolation: false }, () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    // Handle the uninitialized "Start searching" state if searchOnPageLoad is off
+    cy.get(
+      '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+      { timeout: 60000 }
+    ).then(($el) => {
+      if ($el.filter('[data-test-subj="discover-refreshDataButton"]').length) {
+        cy.getElementByTestId('discover-refreshDataButton').click();
+      }
+    });
     cy.waitForSearch();
   });
 

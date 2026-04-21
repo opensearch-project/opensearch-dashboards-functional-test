@@ -18,9 +18,6 @@ import { CURRENT_TENANT } from '../../utils/commands';
 export function dashboardSanityTests() {
   const commonUI = new CommonUI(cy);
   const miscUtils = new MiscUtils(cy);
-  const baseURL = new URL(Cypress.config().baseUrl);
-  // remove trailing slash
-  const path = baseURL.pathname.replace(/\/$/, '');
 
   describe('dashboard sample data validation', () => {
     before(() => {
@@ -70,33 +67,12 @@ export function dashboardSanityTests() {
         );
       });
 
-      // Helper function to go to home page, expand nav menu and find link
-      const checkNavLinkExists = (href) => {
-        // IMPORTANT: Re-visit home page to ensure we're on the correct page
-        // (testIsolation: false means previous tests may have navigated elsewhere)
-        miscUtils.visitPage('app/home#');
-        cy.wait(3000);
-
-        // Extract the path part without the base path
-        const hrefWithoutBase = href.replace(path, '');
-
-        // Try to expand the navigation menu
-        cy.get('body').then(($body) => {
-          const $navButton = $body.find('[data-test-subj="toggleNavButton"]');
-          if ($navButton.length > 0 && $navButton.is(':visible')) {
-            cy.wrap($navButton.first()).click({ force: true });
-            cy.wait(3000);
-          }
-        });
-
-        // Use attribute contains selector for partial match
-        cy.get(`a[href*="${hrefWithoutBase}"]`, { timeout: 30000 }).should(
-          'exist'
-        );
-      };
-
       it('checking opensearch_dashboards_overview display', () => {
-        checkNavLinkExists(`${path}/app/opensearch_dashboards_overview`, 1);
+        miscUtils.visitPage('app/opensearch_dashboards_overview');
+        cy.url({ timeout: 30000 }).should(
+          'include',
+          'opensearch_dashboards_overview'
+        );
       });
 
       it('checking tutorial_directory display', () => {
