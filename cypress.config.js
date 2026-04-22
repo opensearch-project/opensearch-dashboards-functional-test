@@ -78,7 +78,7 @@ module.exports = defineConfig({
       // Configure Chromium browser launch options for memory optimization
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'chromium') {
-          launchOptions.args.push('--js-flags=--max-old-space-size=8192');
+          launchOptions.args.push('--js-flags=--max-old-space-size=4096');
           launchOptions.args.push('--use-gl=disabled');
           launchOptions.args.push('--use-angle=disabled');
           launchOptions.args.push('--disable-gpu');
