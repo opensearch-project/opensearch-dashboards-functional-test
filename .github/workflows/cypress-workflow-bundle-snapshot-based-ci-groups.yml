@@ -46,7 +46,7 @@ jobs:
           IFS="," read -a groups <<< "${{ env.CI_GROUPS }}"
           for group in "${groups[@]}"; do
             item="{\"ciGroup\": \"${group}\", \"specs\": "
-            specs_of_ci_group=`ci_grouped_specs_finder ${group}`
+            specs_of_ci_group=`ci_grouped_specs_finder ${group} | sed 's/,$//'`
             FORMATTED_SPEC="\"${specs_of_ci_group}\" }"
             if [[ "${result}" != "[" ]];
             then
