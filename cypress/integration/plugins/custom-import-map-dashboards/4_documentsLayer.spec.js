@@ -53,7 +53,9 @@ describe('Documents layer', () => {
     cy.wait(1000).contains('Border color').click();
     cy.get(`button[aria-label="Select #DA8B45 as the color"]`).click();
     cy.wait(1000).get(`button[testSubj="settingsTab"]`).click();
-    cy.get('[name="layerName"]').clear().type('Documents layer 1');
+    cy.get('[name="layerName"]')
+      .clear({ force: true })
+      .type('Documents layer 1', { force: true });
     cy.get(`button[data-test-subj="updateButton"]`).click();
     cy.get('[data-test-subj="layerControlPanel"]').should(
       'contain',

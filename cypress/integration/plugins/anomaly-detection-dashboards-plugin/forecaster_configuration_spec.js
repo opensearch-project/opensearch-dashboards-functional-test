@@ -186,7 +186,9 @@ context('edit forecaster workflow', () => {
 
     // Verify validation for history field
     cy.getElementByTestId('editForecasterSettingsButton').first().click();
-    cy.get('input[name="history"]').clear().type('3');
+    cy.get('input[name="history"]')
+      .clear({ force: true })
+      .type('3', { force: true });
     cy.getElementByTestId('updateForecasterSettingsButton').click();
 
     // Assert that the validation error message is visible
@@ -199,8 +201,12 @@ context('edit forecaster workflow', () => {
 
     cy.getElementByTestId('editForecasterSettingsButton').first().click();
     // enter valid history value and try again.
-    cy.get('input[name="history"]').clear().type('40');
-    cy.get('input[name="interval"]').clear().type('40');
+    cy.get('input[name="history"]')
+      .clear({ force: true })
+      .type('40', { force: true });
+    cy.get('input[name="interval"]')
+      .clear({ force: true })
+      .type('40', { force: true });
     cy.getElementByTestId('updateTestForecasterSettingsButton').click();
 
     cy.contains(`Forecaster updated: ${TEST_FORECASTER_NAME}`, {
@@ -217,7 +223,9 @@ context('edit forecaster workflow', () => {
     ).should('be.visible');
 
     cy.getElementByTestId('editForecasterSettingsButton').first().click();
-    cy.get('input[name="interval"]').clear().type('2');
+    cy.get('input[name="interval"]')
+      .clear({ force: true })
+      .type('2', { force: true });
     cy.getElementByTestId('updateTestForecasterSettingsButton').click();
     cy.contains('Test complete', { timeout: 180000 }).should('be.visible');
     cy.get('body').should(

@@ -149,7 +149,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       // case 1: single match
       it('should be able to search for single match', () => {
         // Clear & Type in ds_z in search input
-        cy.get(searchFieldIdentifier).focus().clear().type('ds_z');
+        cy.get(searchFieldIdentifier)
+          .focus()
+          .clear({ force: true })
+          .type('ds_z', { force: true });
 
         // Confirm we only see ds_z in table
         cy.get('tbody > tr').should(($tr) => {
@@ -160,7 +163,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       // case 2: multiple match
       it('should be able to search for multiple matches', () => {
         // Type 'test' in search input
-        cy.get(searchFieldIdentifier).focus().clear().type('test');
+        cy.get(searchFieldIdentifier)
+          .focus()
+          .clear({ force: true })
+          .type('test', { force: true });
 
         // Confirm we only see one row table
         cy.get('tbody > tr').should(($tr) => {
@@ -170,7 +176,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       // case 2.1: multiple match with different letter casing
       it('should be able to search even when letter casing is different', () => {
         // Clear & Type in test in search input
-        cy.get(searchFieldIdentifier).focus().clear().type('TeSt');
+        cy.get(searchFieldIdentifier)
+          .focus()
+          .clear({ force: true })
+          .type('TeSt', { force: true });
 
         // Confirm we more than 1 rows
         cy.get('tbody > tr').should(($tr) => {
@@ -180,7 +189,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       // case 3: No match
       it('should not display any rows when search finds NO MATCH', () => {
         // clear & Type in testNoMaTCH in search input
-        cy.get(searchFieldIdentifier).focus().clear().type('testNoMaTCH');
+        cy.get(searchFieldIdentifier)
+          .focus()
+          .clear({ force: true })
+          .type('testNoMaTCH', { force: true });
 
         // Confirm we don't see any results
         cy.contains('No items found');
@@ -305,10 +317,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // Select first 2 rows
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(0)
-          .check();
+          .check({ force: true });
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(1)
-          .check();
+          .check({ force: true });
 
         // Verify tha delete button exists & displays expected text
         cy.getElementByTestId('deleteDataSourceConnections').should('exist');
@@ -337,7 +349,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .first()
-          .check();
+          .check({ force: true });
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
@@ -363,19 +375,19 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         // select first 5 rows
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(0)
-          .check();
+          .check({ force: true });
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(1)
-          .check();
+          .check({ force: true });
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(2)
-          .check();
+          .check({ force: true });
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(3)
-          .check();
+          .check({ force: true });
         cy.get('tbody > tr > td.euiTableRowCellCheckbox [type="checkbox"]')
           .eq(4)
-          .check();
+          .check({ force: true });
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
@@ -396,7 +408,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       });
 
       it('Select all rows should select only current page rows', () => {
-        cy.getElementByTestId('checkboxSelectAll').check();
+        cy.getElementByTestId('checkboxSelectAll').check({ force: true });
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
           'Delete 10 connections'
@@ -405,7 +417,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('should lose selection when selection is made and sort happens', () => {
         // Select all rows
-        cy.getElementByTestId('checkboxSelectAll').check();
+        cy.getElementByTestId('checkboxSelectAll').check({ force: true });
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
           'Delete 10 connections'
@@ -425,7 +437,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('should lose selection when selection is made and pagination changes happens', () => {
         // Select all rows
-        cy.getElementByTestId('checkboxSelectAll').check();
+        cy.getElementByTestId('checkboxSelectAll').check({ force: true });
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
           'Delete 10 connections'
@@ -444,7 +456,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
 
       it('should lose selection when selection is made and search happens', () => {
         // Select all rows
-        cy.getElementByTestId('checkboxSelectAll').check();
+        cy.getElementByTestId('checkboxSelectAll').check({ force: true });
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'contain.text',
           'Delete 10 connections'
@@ -454,7 +466,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         );
 
         // Clear & Type in ds_z in search input
-        cy.get(searchFieldIdentifier).focus().clear().type('ds_z');
+        cy.get(searchFieldIdentifier)
+          .focus()
+          .clear({ force: true })
+          .type('ds_z', { force: true });
 
         cy.getElementByTestId('deleteDataSourceConnections').should(
           'not.exist'

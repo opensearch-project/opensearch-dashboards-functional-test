@@ -83,7 +83,9 @@ context('create forecaster workflow', () => {
     cy.get('input[name="interval"]').type('10');
 
     // Verify validation for history field
-    cy.get('input[name="history"]').clear().type('3');
+    cy.get('input[name="history"]')
+      .clear({ force: true })
+      .type('3', { force: true });
     cy.getElementByTestId('createTestForecasterButton').click();
 
     // Assert that the click does not cause a redirect
@@ -93,7 +95,9 @@ context('create forecaster workflow', () => {
     cy.contains('Must be an integer of at least 40.').should('be.visible');
 
     // enter valid history value and try again.
-    cy.get('input[name="history"]').clear().type('40');
+    cy.get('input[name="history"]')
+      .clear({ force: true })
+      .type('40', { force: true });
 
     cy.getElementByTestId('createTestForecasterButton').click();
 

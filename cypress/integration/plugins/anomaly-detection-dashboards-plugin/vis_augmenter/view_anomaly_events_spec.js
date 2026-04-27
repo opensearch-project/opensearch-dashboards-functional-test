@@ -89,7 +89,9 @@ describe('View anomaly events in flyout', () => {
 
   it('Basic components show up in flyout', () => {
     openViewEventsFlyout(dashboardName, visualizationName);
-    cy.get('.euiFlyoutHeader').contains(visualizationName);
+    cy.get('.euiFlyout:not(.context-nav-wrapper) .euiFlyoutHeader').contains(
+      visualizationName
+    );
     cy.getElementByTestId('baseVis');
     cy.getElementByTestId('eventVis');
     cy.getElementByTestId('timelineVis');

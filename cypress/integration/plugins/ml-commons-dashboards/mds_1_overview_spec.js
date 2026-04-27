@@ -137,11 +137,11 @@ if (
           expect(request.url).contains(dataSourceId);
         });
 
-        cy.get('div[role="dialog"]')
+        cy.get('div[role="dialog"]:not(.context-nav-wrapper)')
           .contains(PRE_TRAIN_MODEL_NAME)
           .should('be.visible');
 
-        cy.get('div[role="dialog"]')
+        cy.get('div[role="dialog"]:not(.context-nav-wrapper)')
           .contains(modelRespondingState)
           .should('be.visible');
 

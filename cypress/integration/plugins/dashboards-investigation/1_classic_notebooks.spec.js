@@ -123,7 +123,7 @@ if (Cypress.env('DASHBOARDS_INVESTIGATION_ENABLED')) {
     it('deletes notebook', () => {
       cy.contains('.euiTableRow', NOTEBOOK_NAME)
         .find('input[type="checkbox"]')
-        .check();
+        .check({ force: true });
 
       cy.getElementByTestId('deleteSelectedNotebooks').click();
 

@@ -48,7 +48,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Load into Private Tenant initially and check if index Pattern matches to the one saved in Private tenant.
       cy.visit(SAVED_OBJECTS_PATH);
       cy.waitForLoader();
-      
+
       cy.contains('se*');
 
       // Switch tenants button should exist when multi-tenancy is enabled.
@@ -80,7 +80,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Saved index pattern should only have the ones saved in Global tenant.
       cy.visit(SAVED_OBJECTS_PATH);
       cy.waitForLoader();
-      
+
       cy.contains('s*');
 
       // Enable Multi-tenancy before closing test.
@@ -101,7 +101,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Load into Private Tenant initially and check if index Pattern matches to the one saved in Private tenant.
       cy.visit(SAVED_OBJECTS_PATH);
       cy.waitForLoader();
-      
+
       cy.contains('se*');
 
       // Check if switching to private tenant is enabled.
@@ -134,7 +134,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
       // Saved index pattern should only have the ones saved in Global tenant.
       cy.visit(SAVED_OBJECTS_PATH);
       cy.waitForLoader();
-      
+
       cy.contains('s*');
 
       // Enable private tenant before exiting test.

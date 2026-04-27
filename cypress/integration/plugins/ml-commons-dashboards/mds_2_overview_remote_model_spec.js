@@ -91,7 +91,7 @@ if (
         expect(request.url).contains(dataSourceId);
       });
 
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="dialog"]:not(.context-nav-wrapper)')
         .contains(remoteModelName)
         .should('be.visible');
 

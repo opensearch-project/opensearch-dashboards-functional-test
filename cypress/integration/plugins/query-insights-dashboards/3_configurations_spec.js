@@ -116,7 +116,10 @@ describe('Query Insights Configurations Page', () => {
       .type('50')
       .should('have.value', '50');
     // Validate invalid input
-    cy.get('input[type="number"]').first().clear().type('200'); // Enter value above max limit
+    cy.get('input[type="number"]')
+      .first()
+      .clear({ force: true })
+      .type('200', { force: true }); // Enter value above max limit
     cy.get('.euiFormHelpText').should('contain.text', 'Max allowed limit 100');
   });
 

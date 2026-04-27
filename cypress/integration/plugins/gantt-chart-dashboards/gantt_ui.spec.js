@@ -140,7 +140,7 @@ describe('Configure panel settings', () => {
     cy.get('.euiFieldSearch').type(GANTT_VIS_NAME);
     cy.wait('@searchRequest');
     cy.wait(5000);
-    cy.contains(GANTT_VIS_NAME).should('exist').click();
+    cy.contains(GANTT_VIS_NAME).should('be.visible').click({ force: true });
     cy.contains('Panel settings').click({ force: true });
   });
 

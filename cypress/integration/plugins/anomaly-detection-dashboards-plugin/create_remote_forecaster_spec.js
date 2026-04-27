@@ -262,7 +262,9 @@ context('Create remote forecaster workflow', () => {
           // Verify that the interval input field exists on the page.
           cy.get('input[name="interval"]').should('exist');
 
-          cy.get('input[name="interval"]').clear().type('1440');
+          cy.get('input[name="interval"]')
+            .clear({ force: true })
+            .type('1440', { force: true });
         } else {
           cy.task('log', `Version is ${majorMinorVersion} (not 3.1)`);
         }

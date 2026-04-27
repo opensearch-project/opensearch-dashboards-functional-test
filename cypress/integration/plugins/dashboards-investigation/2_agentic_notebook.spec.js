@@ -137,7 +137,9 @@ describe('Agentic Notebook Investigation Tests', () => {
       );
 
       // Enter custom question and start
-      cy.get(SELECTORS.questionTextarea).clear().type(investigationQuestion);
+      cy.get(SELECTORS.questionTextarea)
+        .clear({ force: true })
+        .type(investigationQuestion, { force: true });
       cy.contains('button.euiButton', 'Start Investigation').click();
 
       cy.url().should('contain', 'app/investigation-notebooks#/agentic/');
@@ -215,7 +217,7 @@ describe('Agentic Notebook Investigation Tests', () => {
         });
 
       // Step trace flyout
-      cy.get('div[role="dialog"]')
+      cy.get('div[role="dialog"]:not(.context-nav-wrapper)')
         .should('exist')
         .within(() => {
           cy.contains('Step trace').should('exist');
