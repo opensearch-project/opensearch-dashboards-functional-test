@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 const { defineConfig } = require('cypress');
+const webpackPreprocessor = require('@cypress/webpack-preprocessor');
 
 module.exports = defineConfig({
   chromeWebSecurity: false,
@@ -75,6 +76,22 @@ module.exports = defineConfig({
     experimentalMemoryManagement: true,
     numTestsKeptInMemory: 0,
     setupNodeEvents(on, config) {
+      const webpackOptions = {
+        webpackOptions: {
+          module: {
+            rules: [
+              {
+                test: /\.m?js$/,
+                resolve: {
+                  fullySpecified: false,
+                },
+              },
+            ],
+          },
+        },
+      };
+      on('file:preprocessor', webpackPreprocessor(webpackOptions));
+
       // Configure Chromium browser launch options for memory optimization
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'chromium') {
