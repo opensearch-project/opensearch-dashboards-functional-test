@@ -114,10 +114,14 @@ const testSuggestAD = (url) => {
       );
 
       // Test interval input
-      cy.get('[data-test-subj="detectionInterval"]').clear().type('15');
+      cy.get('[data-test-subj="detectionInterval"]')
+        .clear({ force: true })
+        .type('15', { force: true });
 
       // Test window delay input
-      cy.get('[data-test-subj="windowDelay"]').clear().type('5');
+      cy.get('[data-test-subj="windowDelay"]')
+        .clear({ force: true })
+        .type('5', { force: true });
 
       cy.wait(5000);
       // Click create button

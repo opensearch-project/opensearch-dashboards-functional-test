@@ -2,6 +2,9 @@
   "env": {
     "node": true
   },
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
   "extends": [
       "eslint:recommended",
       "plugin:cypress/recommended",
@@ -18,6 +21,7 @@
       "prettier/prettier": "error",
       "header/header": [2, "block", ["", " * Copyright OpenSearch Contributors", " * SPDX-License-Identifier: Apache-2.0", " "]],
       // turn off no-unnecessary-waiting for now due to the issue: https://github.com/cypress-io/eslint-plugin-cypress/issues/43
+      "cypress/unsafe-to-chain-command": "off",
       "cypress/no-unnecessary-waiting": "off"
     },
     "ignorePatterns": ["**/*.d.ts"]

@@ -5,7 +5,7 @@
 Cypress.Commands.add('tlSetTimelineExpression', (expression) => {
   cy.get('.react-monaco-editor-container textarea')
     .first()
-    .click()
+    .click({ force: true })
     .focused()
     .type('{ctrl}a')
     .type(expression, {

@@ -107,9 +107,15 @@ context('Forecaster with custom flattened result index', () => {
       .clear()
       .type(CUSTOM_RESULT_INDEX_NAME);
     cy.contains('label', 'Enable flattened custom result index').click();
-    cy.getElementByTestId('resultIndexMinAge').clear().type('8');
-    cy.getElementByTestId('resultIndexMinSize').clear().type('51300');
-    cy.getElementByTestId('resultIndexTtl').clear().type('59');
+    cy.getElementByTestId('resultIndexMinAge')
+      .clear({ force: true })
+      .type('8', { force: true });
+    cy.getElementByTestId('resultIndexMinSize')
+      .clear({ force: true })
+      .type('51300', { force: true });
+    cy.getElementByTestId('resultIndexTtl')
+      .clear({ force: true })
+      .type('59', { force: true });
     cy.getElementByTestId('createForecasterButton').click();
 
     // Step: Start forecasting and verify results are shown

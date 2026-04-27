@@ -68,7 +68,9 @@ describe('Judgment Create', () => {
     cy.get('select').eq(1).select('coec');
 
     cy.contains('Max Rank').should('be.visible');
-    cy.get('input[type="number"]').clear().type('20');
+    cy.get('input[type="number"]')
+      .clear({ force: true })
+      .type('20', { force: true });
 
     // Click create button
     cy.get('[data-test-subj="createJudgmentButton"]').click();

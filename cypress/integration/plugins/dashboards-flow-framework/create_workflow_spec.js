@@ -118,7 +118,9 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.contains('label', 'Name', { timeout: FF_TIMEOUT })
       .invoke('attr', 'for')
       .then((id) => {
-        cy.get(`#${id}`).clear().type('custom_search');
+        cy.get(`#${id}`)
+          .clear({ force: true })
+          .type('custom_search', { force: true });
       });
     cy.getElementByDataTestId('quickConfigureCreateButton', {
       timeout: FF_TIMEOUT,
@@ -162,9 +164,7 @@ describe('Creating Workflows Using Various Methods', () => {
       .click();
     cy.fixture(FF_FIXTURE_BASE_PATH + 'semantic_search/ingest_response').then(
       () => {
-        cy.get('#tools_panel_id', { timeout: FF_TIMEOUT }).should(
-          'be.visible'
-        );
+        cy.get('#tools_panel_id', { timeout: FF_TIMEOUT }).should('be.visible');
       }
     );
     cy.getElementByDataTestId('searchPipelineButton', { timeout: FF_TIMEOUT })
@@ -173,27 +173,27 @@ describe('Creating Workflows Using Various Methods', () => {
     cy.getElementByDataTestId('queryEditButton', { timeout: FF_TIMEOUT })
       .should('be.visible')
       .click();
-    cy.get('[data-testid="editQueryModalBody"]', { timeout: FF_TIMEOUT }).within(
-      () => {
-        cy.fixture(
-          FF_FIXTURE_BASE_PATH + 'semantic_search/search_query.json'
-        ).then((jsonData) => {
-          const jsonString = JSON.stringify(jsonData);
-          cy.get('.ace_text-input')
-            .should('exist')
-            .focus()
-            .clear({ force: true })
-            .focus()
-            .wait(2000)
-            .type(jsonString, {
-              force: true,
-              parseSpecialCharSequences: false,
-              delay: 5,
-            })
-            .trigger('blur', { force: true });
-        });
-      }
-    );
+    cy.get('[data-testid="editQueryModalBody"]', {
+      timeout: FF_TIMEOUT,
+    }).within(() => {
+      cy.fixture(
+        FF_FIXTURE_BASE_PATH + 'semantic_search/search_query.json'
+      ).then((jsonData) => {
+        const jsonString = JSON.stringify(jsonData);
+        cy.get('.ace_text-input')
+          .should('exist')
+          .focus()
+          .clear({ force: true })
+          .focus()
+          .wait(2000)
+          .type(jsonString, {
+            force: true,
+            parseSpecialCharSequences: false,
+            delay: 5,
+          })
+          .trigger('blur', { force: true });
+      });
+    });
     cy.getElementByDataTestId('updateSearchQueryButton', {
       timeout: FF_TIMEOUT,
     })

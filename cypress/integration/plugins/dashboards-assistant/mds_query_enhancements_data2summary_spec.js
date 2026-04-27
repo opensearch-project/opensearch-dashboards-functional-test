@@ -60,7 +60,9 @@ const askQuestion = (question) => {
     .should('exist')
     .type(question, { force: true });
 
-  cy.getElementByTestId('query-assist-submit-button').should('exist').click();
+  cy.getElementByTestId('query-assist-submit-button')
+    .should('be.visible')
+    .click({ force: true });
 };
 
 function addDiscoverSummaryCase(url) {

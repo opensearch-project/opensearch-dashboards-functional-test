@@ -126,7 +126,7 @@ describe('Saved Objects Import', () => {
     it('should import saved objects via UI', () => {
       cy.visit(SAVED_OBJECTS_PATH);
       cy.getElementByTestId('importObjects').click();
-      cy.get('.euiFlyout').should('exist');
+      cy.get('.euiFlyout:not(.context-nav-wrapper)').should('exist');
 
       cy.fixture(FIXTURE_PATH, 'binary').then((fileContent) => {
         const blob = Cypress.Blob.binaryStringToBlob(fileContent);
@@ -153,7 +153,7 @@ describe('Saved Objects Import', () => {
       cy.visit(SAVED_OBJECTS_PATH);
       cy.getElementByTestId('importObjects').click();
 
-      cy.get('.euiFlyout').within(() => {
+      cy.get('.euiFlyout:not(.context-nav-wrapper)').within(() => {
         cy.contains('Import').should('exist');
         cy.get('.euiFilePicker').should('exist');
       });

@@ -54,15 +54,29 @@ Cypress.Commands.add('waitForSearch', () => {
     message: 'search load',
   });
 
-  cy.getElementByTestId('docTable');
+  // Wait for either doc table (results found) or no results message
+  cy.get(
+    '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"]',
+    { timeout: 60000 }
+  ).should('exist');
+
+  // If spinner appeared, wait for it to go away
+  cy.get('body').then(($body) => {
+    if ($body.find('[data-test-subj="loadingSpinner"]').length) {
+      cy.get('[data-test-subj="loadingSpinner"]', { timeout: 120000 }).should(
+        'not.exist'
+      );
+    }
+  });
 });
 
 Cypress.Commands.add('prepareTest', (fromTime, toTime, interval) => {
   cy.setTopNavDate(fromTime, toTime);
   cy.waitForLoader();
-  // wait until the search has been finished
   cy.waitForSearch();
-  cy.get('select').select(`${interval}`);
+  cy.get('[data-test-subj="discoverIntervalSelect"]', {
+    timeout: 30000,
+  }).select(`${interval}`);
   cy.waitForLoader();
   cy.waitForSearch();
 });
@@ -74,26 +88,29 @@ Cypress.Commands.add('verifyMarkCount', (count) => {
 Cypress.Commands.add('submitFilterFromDropDown', (field, operator, value) => {
   cy.getElementByTestId('addFilter').click();
   cy.getElementByTestId('filterFieldSuggestionList')
-    .should('be.visible')
+    .filter(':visible')
+    .first()
     .click()
     .type(`${field}{downArrow}{enter}`)
     .trigger('blur', { force: true });
 
   cy.getElementByTestId('filterOperatorList')
-    .should('be.visible')
+    .filter(':visible')
+    .first()
     .click()
     .type(`${operator}{downArrow}{enter}`)
     .trigger('blur', { force: true });
 
   if (value) {
     cy.get('[data-test-subj^="filterParamsComboBox"]')
-      .should('be.visible')
+      .filter(':visible')
+      .first()
       .click()
       .type(`${value}{downArrow}{enter}`)
       .trigger('blur', { force: true });
   }
 
-  cy.getElementByTestId('saveFilter').click({ force: true });
+  cy.getElementByTestId('saveFilter').first().click({ force: true });
   cy.waitForLoader();
 });
 

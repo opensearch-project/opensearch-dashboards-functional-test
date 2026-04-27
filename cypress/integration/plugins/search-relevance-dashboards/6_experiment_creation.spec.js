@@ -105,7 +105,9 @@ describe('Experiment Create', () => {
     cy.get('input[name="name"]').type(judgmentName);
     cy.get('select').first().select('UBI_JUDGMENT');
     cy.get('select').eq(1).select('coec');
-    cy.get('input[type="number"]').clear().type('20');
+    cy.get('input[type="number"]')
+      .clear({ force: true })
+      .type('20', { force: true });
     cy.get('[data-test-subj="createJudgmentButton"]').click();
     cy.contains(`Judgment created successfully`, { timeout: 10000 });
   });

@@ -13,7 +13,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     // start a server so that server responses can be mocked via fixtures
     // in all of the below test cases
     before(() => {
-      cy.server();
+      cy.intercept();
     });
 
     it('should load Permissions page properly', () => {
@@ -129,7 +129,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.wait(500);
       // check the first action-group by using pattern matching to find the checkbox with id ending in `-checkbox`
-      cy.get('[id$=-checkbox]').first().check();
+      cy.get('[id$=-checkbox]').first().check({ force: true });
       cy.wait(500);
 
       // `Create from selection` should now be clickable

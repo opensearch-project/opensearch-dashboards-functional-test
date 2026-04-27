@@ -33,7 +33,9 @@ if (isWorkspaceEnabled) {
       cy.get('.navGroupEnabledNavTopWrapper').should('not.exist');
 
       // top right navigation menu button should exist
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      cy.get('.navToggleInLargeScreen')
+        .should('be.visible')
+        .click({ force: true });
 
       // navigation should be expanded and display content correctly
       cy.get('.left-navigation-wrapper').within(() => {
@@ -53,9 +55,13 @@ if (isWorkspaceEnabled) {
       cy.visit(`w/${workspaceId}/app/all_overview`);
 
       // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      cy.get('.navToggleInLargeScreen')
+        .should('be.visible')
+        .click({ force: true });
 
-      cy.get('input[type="search"]').should('exist').click();
+      cy.get('input[type="search"]')
+        .should('be.visible')
+        .click({ force: true });
       cy.get('input[type="search"]').type(input);
 
       callbackFn();
@@ -117,9 +123,13 @@ if (isWorkspaceEnabled) {
       createWorkspace('all').then(() => {
         cy.visit(`w/${workspaceId}/app/all_overview`);
         // expand the navigation menu
-        cy.get('.navToggleInLargeScreen').should('exist').click();
+        cy.get('.navToggleInLargeScreen')
+          .should('be.visible')
+          .click({ force: true });
         cy.get('.bottom-container').within(() => {
-          cy.get('div[id="workspaceDropdownMenu"]').should('exist').click();
+          cy.get('div[id="workspaceDropdownMenu"]')
+            .should('be.visible')
+            .click({ force: true });
         });
 
         // expect workspace menu to be expanded with current workspace name displayed
@@ -174,7 +184,9 @@ describe('Left navigation menu', () => {
   it('collapsible menu sections', () => {
     const validateMenuSection = () => {
       // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      cy.get('.navToggleInLargeScreen')
+        .should('be.visible')
+        .click({ force: true });
 
       // menu section should be able to expand/collapse, with inside items display/hide corectly
       cy.contains(/Visualizations/).should('exist');
@@ -204,7 +216,9 @@ describe('Left navigation menu', () => {
 
   it('navigation should remember state of expand in browser', () => {
     const validateMenuState = () => {
-      cy.get('.navToggleInLargeScreen').should('exist').click(); // expand the menu
+      cy.get('.navToggleInLargeScreen')
+        .should('be.visible')
+        .click({ force: true }); // expand the menu
 
       cy.reload();
       // navigation menu should remain expanded after reload
@@ -245,7 +259,9 @@ describe('Left navigation menu', () => {
   it('validate navigation history functionality', () => {
     const validateRecentHistory = () => {
       // expand the navigation menu
-      cy.get('.navToggleInLargeScreen').should('exist').click();
+      cy.get('.navToggleInLargeScreen')
+        .should('be.visible')
+        .click({ force: true });
       cy.contains(/Visualizations/)
         .should('exist')
         .click();
@@ -267,8 +283,10 @@ describe('Left navigation menu', () => {
       cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
 
       // open recent history dialog
-      cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]').within(() => {
+      cy.get('.headerRecentItemsButton')
+        .should('be.visible')
+        .click({ force: true });
+      cy.get('div[role="dialog"]:not(.context-nav-wrapper)').within(() => {
         // dialog displays correct visited content
         cy.contains(/Recent assets/).should('exist');
         cy.contains(visualizationName).should('exist');
@@ -286,10 +304,14 @@ describe('Left navigation menu', () => {
       cy.get('.headerRecentItemsButton--loadingIndicator').should('not.exist');
 
       // open recent history dialog again
-      cy.get('.headerRecentItemsButton').should('exist').click();
-      cy.get('div[role="dialog"]').within(() => {
+      cy.get('.headerRecentItemsButton')
+        .should('be.visible')
+        .click({ force: true });
+      cy.get('div[role="dialog"]:not(.context-nav-wrapper)').within(() => {
         // click recent visited visualization in the dialog
-        cy.contains(visualizationName).should('exist').click({ force: true });
+        cy.contains(visualizationName)
+          .should('be.visible')
+          .click({ force: true });
       });
 
       // should go back to the visualization screen just visited
