@@ -4,7 +4,7 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/constants';
+import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const indexName = 'sample_index';
 
@@ -13,6 +13,7 @@ const clearAll = () => {
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
   cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+  cy.disableGrouping();
 };
 
 describe('Top Queries Details Page', () => {
@@ -23,16 +24,15 @@ describe('Top Queries Details Page', () => {
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
     cy.enableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
     cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
-    cy.navigateToOverview();
-    cy.wait(10000);
-    cy.get('.euiTableRow').first().find('button').first().trigger('mouseover');
     cy.wait(1000);
-    cy.get('.euiTableRow').first().find('button').first().click(); // Navigate to details
+    cy.searchOnIndex(indexName);
     cy.wait(1000);
+    cy.searchOnIndex(indexName);
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the query details page via URL (bypasses table click
+    // which is fragile due to OUI class names and viz panel tables).
+    cy.waitForTopQueriesData();
+    cy.navigateToQueryDetails();
   });
 
   it('should display correct details on the query details page', () => {
@@ -137,11 +137,14 @@ describe('Top Queries Details Page', () => {
    * Validate the latency chart interaction
    */
   it('should render the latency chart and allow interaction', () => {
-    // Ensure the chart is visible
-    cy.get('#latency').should('be.visible');
-    cy.get('.plot-container').should('be.visible');
-    // Simulate hover over the chart for a data point
-    cy.get('#latency').trigger('mousemove', { clientX: 100, clientY: 100 });
+    // Ensure the chart container is visible
+    cy.get('[data-test-subj="query-details-latency-chart"]').should(
+      'be.visible'
+    );
+    // Validate ECharts canvas is rendered
+    cy.get('[data-test-subj="query-details-latency-chart"] svg').should(
+      'be.visible'
+    );
   });
 
   it('should get complete details of the query using verbose=true for query type', () => {

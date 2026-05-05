@@ -18,20 +18,17 @@ describe('Query Group Details Page', () => {
     cy.wait(5000);
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stablize
+    // waiting for the query insights to stabilize
     cy.wait(5000);
     cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
-    cy.navigateToOverview();
-    cy.wait(10000);
-    cy.get('.euiTableRow').first().find('button').first().trigger('mouseover');
     cy.wait(1000);
-    // Click the first button in the 'group' row
-    cy.get('.euiTableRow').first().find('button').first().click(); // Navigate to details
+    cy.searchOnIndex(indexName);
     cy.wait(1000);
+    cy.searchOnIndex(indexName);
+    // Poll the OpenSearch API until data is available, then navigate
+    // directly to the group details page via URL.
+    cy.waitForTopQueriesData();
+    cy.navigateToGroupDetails();
   });
 
   it('should display correct details on the group details page', () => {
@@ -52,7 +49,9 @@ describe('Query Group Details Page', () => {
     cy.get('.euiPanel').contains('Query').should('be.visible');
 
     // Validate the presence of the latency chart
-    cy.get('#latency').should('be.visible');
+    cy.get('[data-test-subj="query-group-details-latency-chart"] svg').should(
+      'be.visible'
+    );
   });
 
   it('should validate the aggregate summary fields', () => {
@@ -100,12 +99,12 @@ describe('Query Group Details Page', () => {
 
   it('should display the latency panel correctly', () => {
     // Validate the fourth EuiPanel contains the Latency section
-    cy.get('.euiPanel')
-      .eq(3)
-      .within(() => {
+    cy.get('[data-test-subj="query-group-details-latency-chart"]').within(
+      () => {
         cy.contains('h2', 'Latency').should('be.visible');
-        cy.get('#latency').should('be.visible');
-      });
+        cy.get('svg').should('be.visible');
+      }
+    );
   });
   it('should get complete details of the query using verbose=true for group type', () => {
     const to = new Date().toISOString();
