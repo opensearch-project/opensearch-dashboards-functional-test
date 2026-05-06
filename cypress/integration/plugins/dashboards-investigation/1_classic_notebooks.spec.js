@@ -12,63 +12,43 @@ const createWorkspaceWithEcommerceData = () => {
     .substring(7)}`;
 
   return cy
-    .createDataSourceNoAuth()
-    .then((result) => {
-      const dataSourceId = result[0];
-      return cy
-        .createWorkspace({
-          name: workspaceName,
-          description: 'Workspace for classic notebook testing',
-          features: ['use-case-all'],
-          settings: {
-            permissions: {
-              library_write: { users: ['%me%'] },
-              write: { users: ['%me%'] },
-            },
-            dataSources: [dataSourceId],
-          },
-        })
-        .then((workspaceId) => ({
-          workspaceId,
-          dataSourceId,
-        }));
+    .createWorkspace({
+      name: workspaceName,
+      description: 'Workspace for classic notebook testing',
+      features: ['use-case-all'],
+      settings: {
+        permissions: {
+          library_write: { users: ['%me%'] },
+          write: { users: ['%me%'] },
+        },
+      },
     })
-    .then(({ workspaceId, dataSourceId }) =>
-      cy
-        .loadSampleDataForWorkspace('ecommerce', workspaceId, dataSourceId)
-        .then(() =>
-          cy.wrap({
-            workspaceId,
-            dataSourceId,
-          })
-        )
+    .then((workspaceId) => ({
+      workspaceId,
+    }))
+    .then(({ workspaceId }) =>
+      cy.loadSampleDataForWorkspace('ecommerce', workspaceId).then(() =>
+        cy.wrap({
+          workspaceId,
+        })
+      )
     );
 };
 
 if (Cypress.env('DASHBOARDS_INVESTIGATION_ENABLED')) {
   describe('Checking notebooks page', () => {
     let workspaceId = '';
-    let dataSourceId = '';
     before(() => {
       createWorkspaceWithEcommerceData().then((result) => {
         workspaceId = result.workspaceId;
-        dataSourceId = result.dataSourceId;
       });
     });
 
     after(() => {
       if (workspaceId) {
-        if (dataSourceId) {
-          cy.removeSampleDataForWorkspace(
-            'ecommerce',
-            workspaceId,
-            dataSourceId
-          );
-        }
+        cy.removeSampleDataForWorkspace('ecommerce', workspaceId);
+
         cy.deleteWorkspaceById(workspaceId);
-      }
-      if (dataSourceId) {
-        cy.deleteDataSource(dataSourceId);
       }
     });
 

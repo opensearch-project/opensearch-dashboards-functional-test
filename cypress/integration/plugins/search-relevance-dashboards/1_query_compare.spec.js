@@ -51,48 +51,81 @@ describe('Compare queries', () => {
   it('Should get comparison results', () => {
     // Navigate directly to single query comparison page
     cy.visit(
-      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/singleQueryComparison`
+      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/queryAnalysis`
     );
     cy.wait(5000);
 
     // Type search text in search box
-    cy.get('input[type="search"]', { timeout: 30000 }).type(SAMPLE_SEARCH_TEXT, {
-      force: true,
-    });
+    cy.get('#searchRelevance-searchBar', { timeout: 30000 })
+      .should('be.visible')
+      .should('not.be.disabled')
+      .type(SAMPLE_SEARCH_TEXT, { force: true, delay: 10 });
 
     // Select index 1
-    cy.get('div.search-relevance-config:nth-child(1) select').select(
-      SAMPLE_INDEX
-    );
+    cy.get('[aria-label="Search Index"]')
+      .eq(0)
+      .select(SAMPLE_INDEX, { force: true });
     // Select index 2
-    cy.get('div.search-relevance-config:nth-child(2) select').select(
-      SAMPLE_INDEX
-    );
+    cy.get('[aria-label="Search Index"]')
+      .eq(1)
+      .select(SAMPLE_INDEX, { force: true });
 
-    // Type query 1
-    cy.get(
-      'div.search-relevance-config:nth-child(1) div[data-test-subj="codeEditorContainer"]'
-    ).type(SAMPLE_QUERY_TEXT, {
-      parseSpecialCharSequences: false,
-    });
-    // Type query 2
-    cy.get(
-      'div.search-relevance-config:nth-child(2) div[data-test-subj="codeEditorContainer"]'
-    ).type(SAMPLE_QUERY_TEXT, {
-      parseSpecialCharSequences: false,
-    });
+    // Type query 1 - Cypress V13 fix for Ace Editor
+    // Wait for Ace Editor to fully load and be interactive
+    cy.get('[data-test-subj="queryEditor1"]', { timeout: 30000 })
+      .should('be.visible')
+      .should('exist');
+
+    // First click on the Ace Editor container to focus it
+    cy.get('[data-test-subj="queryEditor1"] .ace_editor')
+      .should('be.visible')
+      .click({ force: true });
+
+    // Then interact with the textarea using force
+    cy.get('[data-test-subj="queryEditor1"]')
+      .find('textarea.ace_text-input')
+      .should('exist')
+      .type(SAMPLE_QUERY_TEXT, {
+        parseSpecialCharSequences: false,
+        delay: 10,
+        force: true,
+      });
+
+    // Type query 2 - Cypress V13 fix for Ace Editor
+    cy.get('[data-test-subj="queryEditor2"]', { timeout: 30000 })
+      .should('be.visible')
+      .should('exist');
+
+    // First click on the Ace Editor container to focus it
+    cy.get('[data-test-subj="queryEditor2"] .ace_editor')
+      .should('be.visible')
+      .click({ force: true });
+
+    // Then interact with the textarea using force
+    cy.get('[data-test-subj="queryEditor2"]')
+      .find('textarea.ace_text-input')
+      .should('exist')
+      .type(SAMPLE_QUERY_TEXT, {
+        parseSpecialCharSequences: false,
+        delay: 10,
+        force: true,
+      });
 
     // Click search button
-    cy.get('button[aria-label="searchRelevance-searchButton"]').click({
-      force: true,
-    });
+    cy.get('button[aria-label="searchRelevance-searchButton"]')
+      .should('be.visible')
+      .click({
+        force: true,
+      });
 
     // Confirm get results on both result panel
-    cy.get(
-      '.search-relevance-result-panel:nth-child(1) > div > div:nth-child(2) > h2'
-    ).should('not.equal', NO_RESULTS);
-    cy.get(
-      '.search-relevance-result-panel:nth-child(2) > div > div:nth-child(2) > h2'
-    ).should('not.equal', NO_RESULTS);
+    cy.get('.search-relevance-result-panel')
+      .eq(0)
+      .find('h2')
+      .should('not.equal', NO_RESULTS);
+    cy.get('.search-relevance-result-panel')
+      .eq(1)
+      .find('h2')
+      .should('not.equal', NO_RESULTS);
   });
 });

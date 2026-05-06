@@ -132,7 +132,11 @@ Cypress.Commands.add('sa_deleteAllDetectors', () => {
     failOnStatusCode: false,
   }).as('deleteAllDetectors');
   cy.get('@deleteAllDetectors').should((response) => {
-    expect(response.status).to.be.oneOf([200, 404]);
+    expect(response.status).to.be.oneOf([
+      200, // Config index has been successfully deleted
+      400, // System indexes cannot be deleted by cypress tests in some test environments
+      404, // Config index has already been cleaned up
+    ]);
   });
 });
 
@@ -448,7 +452,11 @@ Cypress.Commands.add('sa_deleteAllCustomRules', () => {
     body: { query: { match_all: {} } },
   }).as('deleteAllCustomRules');
   cy.get('@deleteAllCustomRules').should((response) => {
-    expect(response.status).to.be.oneOf([200, 404]);
+    expect(response.status).to.be.oneOf([
+      200, // Custom rules index has been successfully deleted
+      400, // System indexes cannot be deleted by cypress tests in some test environments
+      404, // Custom rules index has already been cleaned up
+    ]);
   });
 });
 

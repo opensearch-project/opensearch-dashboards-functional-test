@@ -3,17 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import {
-  MiscUtils,
-  TestFixtureHandler,
-} from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
+import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 
 const miscUtils = new MiscUtils(cy);
-const testFixtureHandler = new TestFixtureHandler(
-  cy,
-  Cypress.env('openSearchUrl')
-);
 const indexSet = [
   'logstash-2015.09.22',
   'logstash-2015.09.21',
@@ -23,16 +16,16 @@ const indexSet = [
 describe('discover field visualize button', () => {
   before(() => {
     CURRENT_TENANT.newTenant = 'global';
-    testFixtureHandler.importJSONMapping(
+    cy.importJSONMapping(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.mappings.json.txt'
     );
 
-    testFixtureHandler.importJSONDoc(
+    cy.importJSONDoc(
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/discover/discover.json.txt'
     );
 
     // import logstash functional
-    testFixtureHandler.importJSONDocIfNeeded(
+    cy.importJSONDocIfNeeded(
       indexSet,
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.mappings.json.txt',
       'cypress/fixtures/dashboard/opensearch_dashboards/data_explorer/logstash/logstash.json.txt'
@@ -50,6 +43,15 @@ describe('discover field visualize button', () => {
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForLoader();
+    // Wait for either search results or the uninitialized "Start searching" state
+    cy.get(
+      '[data-test-subj="docTable"], [data-test-subj="discoverNoResults"], [data-test-subj="loadingSpinner"], [data-test-subj="discover-refreshDataButton"]',
+      { timeout: 60000 }
+    ).then(($el) => {
+      if ($el.filter('[data-test-subj="discover-refreshDataButton"]').length) {
+        cy.getElementByTestId('discover-refreshDataButton').click();
+      }
+    });
     cy.waitForSearch();
   });
 
@@ -80,7 +82,7 @@ describe('discover field visualize button', () => {
 
   it('should preserve app filters in visualize', () => {
     cy.submitFilterFromDropDown('bytes', 'exists');
-    cy.getElementByTestId('fieldFilterSearchInput').type('geo.src');
+    cy.getElementByTestId('fieldFilterSearchInput').clear().type('geo.src');
     cy.log('visualize a geo.src field with filter applied');
     cy.getElementByTestId('field-geo.src-showDetails').click({ force: true });
     cy.getElementByTestId('fieldVisualize-geo.src').click();

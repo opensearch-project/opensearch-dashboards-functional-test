@@ -11,7 +11,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     const tenantName = 'private';
 
     before(() => {
-      cy.server();
+      cy.intercept();
       localStorage.setItem('home:welcome:show', false);
       localStorage.setItem('home:newThemeModal:show', false);
     });

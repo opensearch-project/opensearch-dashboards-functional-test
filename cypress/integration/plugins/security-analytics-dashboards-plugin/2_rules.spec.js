@@ -3,7 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { OPENSEARCH_DASHBOARDS_URL, NODE_API } from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
+/* eslint-disable no-unused-vars, import/no-duplicates */
+
+import {
+  OPENSEARCH_DASHBOARDS_URL,
+  NODE_API,
+} from '../../../utils/plugins/security-analytics-dashboards-plugin/constants';
 import {
   getLogTypeLabel,
   detectionRuleNameError,
@@ -17,15 +22,25 @@ const SAMPLE_RULE = {
   name: `Cypress test rule ${uniqueId}`,
   logType: 'windows',
   description: 'This is a rule used to test the rule creation workflow.',
-  detectionLine: ['condition: Selection_1', 'Selection_1:', 'FieldKey|all:', '- FieldValue'],
+  detectionLine: [
+    'condition: Selection_1',
+    'Selection_1:',
+    'FieldKey|all:',
+    '- FieldValue',
+  ],
   severity: 'Critical',
-  tags: ['attack.persistence', 'attack.privilege_escalation', 'attack.t1543.003'],
+  tags: [
+    'attack.persistence',
+    'attack.privilege_escalation',
+    'attack.t1543.003',
+  ],
   references: 'https://nohello.com',
   falsePositive: 'unknown',
   author: 'Cypress Test Runner',
   status: 'experimental',
 };
 
+// eslint-disable-next-line no-unused-vars
 const YAML_RULE_LINES = [
   `id:`,
   `logsource:`,
@@ -61,7 +76,9 @@ const checkRulesFlyout = () => {
     .click({ force: true })
     .within(() => {
       // Validate name
-      cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(SAMPLE_RULE.name);
+      cy.get('[data-test-subj="rule_flyout_rule_name"]').contains(
+        SAMPLE_RULE.name
+      );
 
       // Validate log type
       cy.get('[data-test-subj="rule_flyout_rule_log_type"]').contains(
@@ -69,10 +86,14 @@ const checkRulesFlyout = () => {
       );
 
       // Validate description
-      cy.get('[data-test-subj="rule_flyout_rule_description"]').contains(SAMPLE_RULE.description);
+      cy.get('[data-test-subj="rule_flyout_rule_description"]').contains(
+        SAMPLE_RULE.description
+      );
 
       // Validate author
-      cy.get('[data-test-subj="rule_flyout_rule_author"]').contains(SAMPLE_RULE.author);
+      cy.get('[data-test-subj="rule_flyout_rule_author"]').contains(
+        SAMPLE_RULE.author
+      );
 
       // Validate source is "custom"
       cy.get('[data-test-subj="rule_flyout_rule_source"]').contains('Custom');
@@ -88,7 +109,9 @@ const checkRulesFlyout = () => {
       );
 
       // Validate references
-      cy.get('[data-test-subj="rule_flyout_rule_references"]').contains(SAMPLE_RULE.references);
+      cy.get('[data-test-subj="rule_flyout_rule_references"]').contains(
+        SAMPLE_RULE.references
+      );
 
       // Validate false positives
       cy.get('[data-test-subj="rule_flyout_rule_false_positives"]').contains(
@@ -96,7 +119,9 @@ const checkRulesFlyout = () => {
       );
 
       // Validate status
-      cy.get('[data-test-subj="rule_flyout_rule_status"]').contains(SAMPLE_RULE.status);
+      cy.get('[data-test-subj="rule_flyout_rule_status"]').contains(
+        SAMPLE_RULE.status
+      );
 
       // Validate detection
       SAMPLE_RULE.detectionLine.forEach((line) =>
@@ -115,7 +140,9 @@ const checkRulesFlyout = () => {
         expect(yamlContent).to.include('id:');
         expect(yamlContent).to.include(`product: ${SAMPLE_RULE.logType}`);
         expect(yamlContent).to.include(`title: ${SAMPLE_RULE.name}`);
-        expect(yamlContent).to.include(`description: ${SAMPLE_RULE.description}`);
+        expect(yamlContent).to.include(
+          `description: ${SAMPLE_RULE.description}`
+        );
         expect(yamlContent).to.include(SAMPLE_RULE.references);
       });
 
@@ -128,24 +155,31 @@ const checkRulesFlyout = () => {
 
 const getCreateButton = () => cy.get('[data-test-subj="create_rule_button"]');
 const getImportButton = () => cy.get('[data-test-subj="import_rule_button"]');
-const getImportRuleFilePicker = () => cy.get('[data-test-subj="import_rule_file_picker"]');
+const getImportRuleFilePicker = () =>
+  cy.get('[data-test-subj="import_rule_file_picker"]');
 const getNameField = () => cy.sa_getFieldByLabel('Rule name');
 const getRuleStatusField = () => cy.sa_getFieldByLabel('Rule Status');
-const getDescriptionField = () => cy.sa_getFieldByLabel('Description - optional');
+const getDescriptionField = () =>
+  cy.sa_getFieldByLabel('Description - optional');
 const getAuthorField = () => cy.sa_getFieldByLabel('Author');
 const getLogTypeField = () => cy.sa_getFieldByLabel('Log type');
 const getRuleLevelField = () => cy.sa_getFieldByLabel('Rule level (severity)');
 const getSelectionPanelByIndex = (index) =>
   cy.get(`[data-test-subj="detection-visual-editor-${index}"]`);
 const getSelectionNameField = () => cy.get('[data-test-subj="selection_name"]');
-const getMapKeyField = () => cy.get('[data-test-subj="selection_field_key_name"]');
-const getMapValueField = () => cy.get('[data-test-subj="selection_field_value"]');
+const getMapKeyField = () =>
+  cy.get('[data-test-subj="selection_field_key_name"]');
+const getMapValueField = () =>
+  cy.get('[data-test-subj="selection_field_value"]');
 const getMapListField = () => cy.get('[data-test-subj="selection_field_list"]');
 const getListRadioField = () => cy.get('[for="selection-map-list-0-0"]');
 const getTextRadioField = () => cy.get('[for="selection-map-value-0-0"]');
-const getConditionField = () => cy.get('[data-test-subj="rule_detection_field"]');
-const getRuleSubmitButton = () => cy.get('[data-test-subj="submit_rule_form_button"]');
-const getTagField = (index) => cy.get(`[data-test-subj="rule_tags_field_${index}"]`);
+const getConditionField = () =>
+  cy.get('[data-test-subj="rule_detection_field"]');
+const getRuleSubmitButton = () =>
+  cy.get('[data-test-subj="submit_rule_form_button"]');
+const getTagField = (index) =>
+  cy.get(`[data-test-subj="rule_tags_field_${index}"]`);
 const getReferenceFieldByIndex = (index) =>
   cy.get(`[data-test-subj="rule_references_field_${index}"]`);
 const getFalsePositiveFieldByIndex = (index) =>
@@ -179,7 +213,8 @@ const fillCreateForm = () => {
   // rule additional details
   SAMPLE_RULE.tags.forEach((tag, idx) => {
     getTagField(idx).type(tag);
-    idx < SAMPLE_RULE.tags.length - 1 && cy.sa_getButtonByText('Add tag').click({ force: true });
+    idx < SAMPLE_RULE.tags.length - 1 &&
+      cy.sa_getButtonByText('Add tag').click({ force: true });
   });
 
   getReferenceFieldByIndex(0).type(SAMPLE_RULE.references);

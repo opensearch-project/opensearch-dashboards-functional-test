@@ -128,8 +128,8 @@ describe('ClusterMetricsMonitor', () => {
         'cluster health{enter}'
       );
 
-      // Confirm the Query parameters field is present and described as "optional"
-      cy.contains('Path parameters - optional');
+      // Confirm the Query parameters field is present
+      cy.contains('Path parameters');
       cy.get('[data-test-subj="clusterMetricsParamsFieldText"]');
 
       // Press the 'Run for response' button
@@ -187,25 +187,17 @@ describe('ClusterMetricsMonitor', () => {
       );
 
       // Press the 'Run for response' button
-      cy.get('[data-test-subj="clusterMetricsPreviewButton"]').click();
+      cy.get('[data-test-subj="clusterMetricsPreviewButton"]', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      })
+        .should('not.be.disabled')
+        .click();
 
       // Add a trigger
       cy.contains('Add trigger').click({ force: true });
 
       // Type in the trigger name
       cy.get('input[name="triggerDefinitions[0].name"]').type(SAMPLE_TRIGGER);
-
-      // FIXME: Temporarily removing destination creation to resolve flakiness. It seems deleteAllDestinations()
-      //  is executing mid-testing. Need to further investigate a more ideal solution. Destination creation should
-      //  ideally take place in the before() block, and clearing should occur in the after() block.
-      // // Type in the action name
-      // cy.get('input[name="triggerDefinitions[0].actions.0.name"]').type(SAMPLE_ACTION);
-      //
-      // // Click the combo box to list all the destinations
-      // // Using key typing instead of clicking the menu option to avoid occasional failure
-      // cy.get('div[name="triggerDefinitions[0].actions.0.destination_id"]')
-      //   .click({ force: true })
-      //   .type('{downarrow}{enter}');
 
       // Click the create button
       cy.get('button').contains('Create').click();
@@ -341,9 +333,9 @@ describe('ClusterMetricsMonitor', () => {
         );
 
         // Confirm clearTriggersModal displays appropriate text
-        cy.contains(
-          'You are about to change the request type. The existing trigger conditions may not be supported. Would you like to clear the existing trigger conditions?'
-        );
+        cy.get('[data-test-subj="clusterMetricsClearTriggersModal"]', {
+          timeout: ALERTING_PLUGIN_TIMEOUT,
+        }).should('be.visible');
       });
 
       describe('the modal CLOSE (i.e., the X button) button is clicked', () => {

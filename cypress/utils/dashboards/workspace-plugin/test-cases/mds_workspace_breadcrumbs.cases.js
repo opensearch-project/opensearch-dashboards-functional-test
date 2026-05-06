@@ -47,18 +47,20 @@ export const WorkspaceBreadcrumbsTestCases = () => {
         miscUtils.visitPage(`w/${workspaceId}/app/objects`);
 
         // get div with class newTopNavHeader
-        cy.get('.newTopNavHeader').within(() => {
-          cy.getElementByTestId('breadcrumb first')
-            .should('exist')
-            .within(() => {
-              // Check for the icon
-              cy.getElementByTestId(`${workspaceId}-icon`).should('exist');
-              // Check for the workspace name
-              cy.contains(workspaceName).should('exist').click();
-              // click on breadcrumbs goes to overview page
-              cy.url().should('include', `w/${workspaceId}/app/all_overview`);
-            });
-        });
+        cy.get('.newTopNavHeader')
+          .first()
+          .within(() => {
+            cy.getElementByTestId('breadcrumb first')
+              .should('exist')
+              .within(() => {
+                // Check for the icon
+                cy.getElementByTestId(`${workspaceId}-icon`).should('exist');
+                // Check for the workspace name
+                cy.contains(workspaceName).should('exist').click();
+                // click on breadcrumbs goes to overview page
+                cy.url().should('include', `w/${workspaceId}/app/all_overview`);
+              });
+          });
       });
 
       it('should show breadcrumbs in recent popover', () => {
@@ -96,15 +98,17 @@ export const WorkspaceBreadcrumbsTestCases = () => {
         miscUtils.visitPage('app/workspace_list');
         cy.contains('h1', 'Workspaces');
 
-        cy.get('.newTopNavHeader').within(() => {
-          cy.getElementByTestId('breadcrumb first')
-            .should('exist')
-            .within(() => {
-              // Check for the use case name
-              cy.contains('Settings and setup').click();
-              cy.url().should('include', 'app/settings_landing');
-            });
-        });
+        cy.get('.newTopNavHeader')
+          .first()
+          .within(() => {
+            cy.getElementByTestId('breadcrumb first')
+              .should('exist')
+              .within(() => {
+                // Check for the use case name
+                cy.contains('Settings and setup').click();
+                cy.url().should('include', 'app/settings_landing');
+              });
+          });
 
         // check breadcrumbs in recent popover
         cy.getElementByTestId('recentItemsSectionButton').should(
@@ -131,14 +135,16 @@ export const WorkspaceBreadcrumbsTestCases = () => {
         miscUtils.visitPage('app/data_administration_landing');
         cy.contains('h1', 'Data administration overview');
 
-        cy.get('.newTopNavHeader').within(() => {
-          cy.getElementByTestId('breadcrumb first')
-            .should('exist')
-            .within(() => {
-              // Check for the use case name
-              cy.contains('Data administration');
-            });
-        });
+        cy.get('.newTopNavHeader')
+          .first()
+          .within(() => {
+            cy.getElementByTestId('breadcrumb first')
+              .should('exist')
+              .within(() => {
+                // Check for the use case name
+                cy.contains('Data administration');
+              });
+          });
 
         // check breadcrumbs in recent popover
         cy.getElementByTestId('recentItemsSectionButton').should(

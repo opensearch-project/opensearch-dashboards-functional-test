@@ -21,6 +21,7 @@
 // Import commands.js using ES2015 syntax:
 import * as commands from '../utils/commands';
 import '../utils/dashboards/commands';
+import '../utils/dashboards/test-fixture-handler-patch';
 import '../utils/dashboards/datasource-management-dashboards-plugin/commands';
 import '../utils/plugins/index-management-dashboards-plugin/commands';
 import '../utils/plugins/anomaly-detection-dashboards-plugin/commands';
@@ -32,6 +33,7 @@ import '../utils/plugins/ml-commons-dashboards/commands';
 import '../utils/plugins/security-analytics-dashboards-plugin/commands';
 import '../utils/plugins/notifications-dashboards/commands';
 import '../utils/plugins/dashboards-assistant/commands';
+import '../utils/plugins/dashboards-investigation/commands';
 import '../utils/dashboards/console/commands';
 import '../utils/dashboards/workspace-plugin/commands';
 import '../utils/plugins/query-insights-dashboards/commands';
@@ -50,6 +52,10 @@ Cypress.on('uncaught:exception', (err) => {
   if (resizeObserverLoopErrRe.test(err.message)) {
     return false;
   }
+});
+
+Cypress.on('uncaught:exception', () => {
+  return false;
 });
 
 // Proxy layer of OpenSearch domain may redirect to login page

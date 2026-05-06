@@ -8,8 +8,8 @@ import {
   ALERTING_PLUGIN_NAME,
   ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query';
-import sampleVisualEditorMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_visual_editor_bucket_level_monitor';
+import sampleAggregationQuery from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_aggregation_query.json';
+import sampleVisualEditorMonitor from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_visual_editor_bucket_level_monitor.json';
 import { BASE_PATH } from '../../../utils/base_constants';
 
 const SAMPLE_EXTRACTION_QUERY_MONITOR =

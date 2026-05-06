@@ -22,7 +22,7 @@ const cypressIndexDns = 'cypress-index-dns';
 const cypressIndexWindows = 'cypress-index-windows';
 const detectorName = 'test detector';
 const cypressLogTypeDns = 'dns';
-const creationFailedMessage = 'Create detector failed.';
+const creationFailedMessage = 'Failed to create detector';
 
 const cypressDNSRule = dns_name_rule_data.title;
 
@@ -366,7 +366,7 @@ describe('Detectors', () => {
         .blur()
         .parentsUntil('.euiFormRow__fieldWrapper')
         .siblings()
-        .contains('Select an input source.');
+        .contains('Select an input source for the detector.');
 
       getDataSourceField().sa_selectComboboxItem(cypressIndexDns);
       getDataSourceField()
@@ -435,7 +435,7 @@ describe('Detectors', () => {
 
     it('...can fail creation', () => {
       createDetector(`${detectorName}_fail`, '.kibana_1', true);
-      cy.sa_getElementByText('.euiCallOut', creationFailedMessage);
+      cy.contains(creationFailedMessage);
     });
 
     it('...can be created', () => {
@@ -558,8 +558,10 @@ describe('Detectors', () => {
       validateFieldMappingsTable('rules are changed');
     });
 
-    it('...can be stopped and started back from detectors list action menu', () => {
+    it('...can be stopped from detectors list action menu', () => {
+      // Short wait to reduce flakiness
       cy.wait(1000);
+
       cy.get('tbody > tr')
         .first()
         .within(() => {
@@ -580,24 +582,35 @@ describe('Detectors', () => {
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
-      // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(2000);
+      cy.contains('Inactive');
+    });
+
+    it('...can be started from detectors list action menu', () => {
+      // Short wait to reduce flakiness
+      cy.wait(1000);
+
+      cy.get('tbody > tr')
+        .first()
+        .within(() => {
+          cy.get('[class="euiCheckbox__input"]').click({ force: true });
+        });
+
+      // Waiting for Actions menu button to be enabled
+      cy.wait(1000);
 
       setupIntercept(
         cy,
         `${NODE_API.DETECTORS_BASE}/_search`,
         'detectorsSearch'
       );
+
       cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
       cy.get('[data-test-subj="toggleDetectorButton').contains('Start');
       cy.get('[data-test-subj="toggleDetectorButton').click({ force: true });
 
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
-      // Need this extra wait time for the Actions button to become enabled again
-      cy.wait(2000);
-
-      cy.get('[data-test-subj="detectorsActionsButton').click({ force: true });
-      cy.get('[data-test-subj="toggleDetectorButton').contains('Stop');
+      cy.contains('Inactive').should('not.exist');
+      cy.contains('Active');
     });
 
     it('...can be deleted', () => {
@@ -615,7 +628,11 @@ describe('Detectors', () => {
           });
           setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
           cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-          cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
+          cy.wait('@detectorsSearch').should(
+            'have.property',
+            'state',
+            'Complete'
+          );
           cy.contains(detectorName).should('not.exist');
         });
     });
