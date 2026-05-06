@@ -275,6 +275,11 @@ function dashboardAdminUiSettingsTestCases() {
           .should('exist')
           .click();
 
+        // Wait for the saved object to be deleted
+        cy.getElementByTestId(
+          'savedObjectsTableRow row-_dashboard_admin'
+        ).should('not.exist');
+
         cy.visit(`${BASE_PATH}/app/settings`);
 
         // AI feature toggle should be restored back to default

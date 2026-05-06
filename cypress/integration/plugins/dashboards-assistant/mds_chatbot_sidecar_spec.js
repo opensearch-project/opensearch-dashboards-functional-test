@@ -78,7 +78,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.wait(5000);
 
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
         cy.get('[class~="chatbot-sidecar"]').should('be.visible');
         cy.get('[class~="app-wrapper"]').should(
           'have.css',
@@ -115,7 +115,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
         cy.wait(5000);
 
         // enable to toggle and open sidecar, OSD will be pushed accordingly.
-        cy.get(`button[aria-label="toggle chat flyout icon"]`).click();
+        cy.openAssistantChatbot();
         // switch to docked left
         cy.get('[id="sidecarModeIcon"]').click();
         cy.get('[data-test-subj="sidecar-mode-icon-menu-item-left"]').click();

@@ -306,10 +306,10 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         ).should('not.exist');
       });
       it('should verify that changes were updated successfully', () => {
-        // credential: Username & password
-        cy.getElementByTestId('editDataSourceSelectAuthType').contains(
-          'Username & Password'
-        );
+        cy.reload();
+        cy.getElementByTestId('editDataSourceSelectAuthType', TIMEOUT_OPTS)
+          .should('exist')
+          .should('contain', 'Username & Password');
         cy.get('[name="datasourceUsername"]').should(
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.username
@@ -601,12 +601,14 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         ).should('not.exist');
       });
       it('should verify that changes were updated successfully', () => {
-        cy.get('[name="dataSourceTitle"]').should(
+        cy.reload();
+        cy.get('[name="dataSourceTitle"]', TIMEOUT_OPTS).should(
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.title
         );
         // credential: No Authentication
-        cy.getElementByTestId('editDataSourceSelectAuthType').contains(
+        cy.getElementByTestId('editDataSourceSelectAuthType').should(
+          'contain',
           'No authentication'
         );
         cy.get('[name="datasourceUsername"]').should('not.exist');
@@ -745,16 +747,17 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         ).should('not.exist');
       });
       it('should verify that changes were updated successfully', () => {
-        cy.getElementByTestId('editDataSourceSelectAuthType').contains(
-          'AWS SigV4'
-        );
+        cy.reload();
+        cy.getElementByTestId('editDataSourceSelectAuthType', TIMEOUT_OPTS)
+          .should('exist')
+          .should('contain', 'AWS SigV4');
         cy.getElementByTestId('editDataSourceFormRegionField').should(
           'have.value',
           DS_JSON_UNIQUE_VALUES.attributes.auth.credentials.region
         );
         cy.getElementByTestId(
           'editDataSourceFormSigV4ServiceTypeSelect'
-        ).contains('Amazon OpenSearch Serverless');
+        ).should('contain', 'Amazon OpenSearch Serverless');
         cy.getElementByTestId('editDataSourceFormAccessKeyField').should(
           'be.disabled'
         );

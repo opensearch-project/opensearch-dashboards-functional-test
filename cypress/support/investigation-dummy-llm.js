@@ -73,6 +73,7 @@ const investigationResult = {
 };
 
 // Track ReAct agent iteration count per session
+// eslint-disable-next-line no-undef
 const reactIterations = new Map();
 
 /**

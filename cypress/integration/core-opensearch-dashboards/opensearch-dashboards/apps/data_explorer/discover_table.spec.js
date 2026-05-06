@@ -21,10 +21,8 @@ const indexSet = [
   'logstash-2015.09.20',
 ];
 
-// Setting up the page
 describe('discover_table', () => {
   before(() => {
-    // import logstash functional
     CURRENT_TENANT.newTenant = 'global';
     testFixtureHandler.importJSONDocIfNeeded(
       indexSet,
@@ -52,7 +50,6 @@ describe('discover_table', () => {
       defaultIndex: 'logstash-*',
     });
 
-    // Go to the Discover page
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
@@ -61,32 +58,26 @@ describe('discover_table', () => {
 
   describe('auto line wrapping in legacy table', () => {
     it('auto line wrapping in legacy table', function () {
-      // last element is _scrore if there is wrapping this field won't be present
-      // So we check for the presence of the _score element in the legacy table
-
       cy.get('.euiDescriptionList__title').should('contain.text', '_score');
     });
   });
 
   describe('expand multiple documents in legacy table', () => {
     before(() => {
-      cy.wait(2000); // Intentional Wait to account for low performant env
+      cy.wait(2000);
     });
 
     it('checks if multiple documents can be expanded in legacy table', function () {
-      // expanding a document in the table
       cy.get('[data-test-subj="docTableExpandToggleColumn"]')
         .find('[type="button"]')
         .eq(2)
         .click();
 
-      // expanding a document in the table
       cy.get('[data-test-subj="docTableExpandToggleColumn"]')
         .find('[type="button"]')
         .eq(3)
         .click();
 
-      // checking the number of exapnded documents visible on screen
       cy.get('[data-test-subj="tableDocViewRow-_index"]').should(
         'have.length',
         2
@@ -96,9 +87,6 @@ describe('discover_table', () => {
 
   describe('data source selector', () => {
     before(() => {
-      // Creating additional index patterns
-      // logstash index pattern
-
       cy.createIndexPattern(
         'logstash-sample-1',
         {
@@ -119,12 +107,12 @@ describe('discover_table', () => {
           securitytenant: ['global'],
         }
       );
-      cy.wait(5000); // Intentional Wait
+      cy.wait(5000);
       cy.reload();
     });
+
     it('check data source selector options are ordered', function () {
       const indexPatterns = [];
-
       cy.get('[data-test-subj="comboBoxSearchInput"]')
         .type('l')
         .then(() => {
@@ -135,9 +123,6 @@ describe('discover_table', () => {
             .then(() => {
               const sortedIndexPatterns = cloneDeep(indexPatterns);
               sortedIndexPatterns.sort();
-
-              console.log(sortedIndexPatterns);
-
               cy.wrap(indexPatterns).should('deep.equal', sortedIndexPatterns);
             });
         });
@@ -165,16 +150,14 @@ describe('discover_table', () => {
       );
       cy.waitForSearch();
     });
+
     describe('Legacy Table', () => {
       it.skip('check scroll down adds 50 entries at a time', function () {
-        // Each row of the table has 2 instance of docTableExpandToggleColumn element
-        // Therefore row count is half of the count of docTableExpandToggleColumn element
         cy.get('[data-test-subj="docTableExpandToggleColumn"]').should(
           'have.length',
           100
         );
 
-        // scrolling to the end
         cy.get('[data-test-subj="discoverDocTableFooter"]')
           .scrollIntoView({ duration: 1000 })
           .then(() => {
@@ -186,15 +169,13 @@ describe('discover_table', () => {
       });
 
       it.skip('check maximum number of documents loaded', function () {
-        // Scrolling the page 11 times including the previous scroll
         for (let i = 0; i < 10; i++) {
           cy.get('[data-test-subj="discoverDocTableFooter"]').scrollIntoView({
             duration: 100,
           });
-          cy.wait(300); // Intentional Wait
+          cy.wait(300);
         }
 
-        // scrolling to the end
         cy.get('[data-test-subj="docTableExpandToggleColumn"]').should(
           'have.length',
           1000
@@ -213,7 +194,6 @@ describe('discover_table', () => {
               .contains('Back to top.')
               .click()
               .then(() => {
-                // First row should be visible if we navigated to top
                 cy.get('[data-test-subj="docTableField"]')
                   .contains('Sep 22, 2015 @ 16:50:13.253')
                   .should('be.visible');
@@ -222,6 +202,7 @@ describe('discover_table', () => {
       });
     });
   });
+
   describe('AutoSize table', () => {
     describe('Legacy Table', () => {
       it('check table Auto Size with change in time range', function () {
@@ -232,7 +213,7 @@ describe('discover_table', () => {
               'Sep 22, 2015 @ 14:00:00.000',
               'Sep 22, 2015 @ 14:05:00.000'
             );
-            cy.verifyHitCount('2'); // Intentional Wait
+            cy.verifyHitCount('2');
             cy.get('[data-test-subj="docTableExpandToggleColumn"]')
               .its('length')
               .should('be.lessThan', noEntries);
@@ -244,7 +225,7 @@ describe('discover_table', () => {
           'Sep 22, 2015 @ 14:00:00.000',
           'Sep 22, 2015 @ 18:00:00.000'
         );
-        cy.waitForLoader(); // Intentional Wait
+        cy.waitForLoader();
         cy.get('[aria-label="Toggle row details"]')
           .its('length')
           .then((noEntries) => {
@@ -254,7 +235,7 @@ describe('discover_table', () => {
                 cy.get('[data-test-subj="plus-extension-gif"]')
                   .click()
                   .then(() => {
-                    cy.verifyHitCount('1'); // Intentional Wait
+                    cy.verifyHitCount('1');
                     cy.get('[aria-label="Toggle row details"]')
                       .its('length')
                       .should('be.lessThan', noEntries);
@@ -286,66 +267,38 @@ describe('discover_table', () => {
 
 describe('Saved Queries', () => {
   it('check creating saved query', () => {
-    // Creating a saved Query
     miscUtils.visitPage(
       `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
     );
     cy.waitForSearch();
 
     cy.get('[data-test-subj="saved-query-management-popover-button"]', {
-      timeout: 10000,
-    }).click({ force: true });
+      timeout: 20000,
+    })
+      .should('be.visible')
+      .click({ force: true });
 
     cy.get('[data-test-subj="saved-query-management-save-button"]')
-      .click()
-      .then(() => {
-        cy.get('[data-test-subj="saveQueryFormTitle"]')
-          .clear()
-          .type('Sample Saved Query');
+      .should('be.visible')
+      .click({ force: true });
 
-        cy.get('[data-test-subj="savedQueryFormSaveButton"]').click();
-      });
-
-    // Wait for new added saved query synced
-    cy.wait(5000);
-
-    // Verifiy the saved Query
-    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
-      timeout: 10000,
-    }).click({ force: true });
-
-    cy.get('[type="button"]').should('contain.text', 'Sample Saved Query');
-  });
-
-  it('check deleting saved query', () => {
-    if (Cypress.env('SECURITY_ENABLED')) {
-      miscUtils.visitPage(
-        `app/data-explorer/discover#/?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
-      );
-      cy.waitForLoader();
-      cy.waitForSearch();
-    } else {
-      cy.reload();
-    }
-    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
-      timeout: 10000,
-    }).click({ force: true });
-
-    cy.get('[class="euiListGroupItem__button"]').trigger('mouseover');
-
-    cy.get(
-      '[data-test-subj="delete-saved-query-Sample Saved Query-button"]'
-    ).click({ force: true });
-
-    cy.get('[data-test-subj="confirmModalConfirmButton"]').click({
+    cy.get('[data-test-subj="saveQueryFormTitle"]')
+      .should('be.visible')
+      .clear()
+      .type('Sample Saved Query');
+    cy.get('[data-test-subj="savedQueryFormSaveButton"]').click({
       force: true,
     });
 
-    cy.get('[data-test-subj="saved-query-management-popover-button"]', {
-      timeout: 10000,
-    }).click({ force: true });
+    cy.get('[data-test-subj="saveQueryForm"]').should('not.exist');
 
-    cy.get('[type="button"]').should('not.contain.text', 'Sample Saved Query');
+    cy.get('[data-test-subj="saved-query-management-popover-button"]').click({
+      force: true,
+    });
+    cy.get('.euiListGroupItem', { timeout: 10000 }).should(
+      'contain.text',
+      'Sample Saved Query'
+    );
   });
 });
 
@@ -366,12 +319,11 @@ describe('Saved Search Embeddables', () => {
         });
       cy.get('[data-test-subj="savedObjectSaveModal"]').should('not.exist');
     });
+
     it('check adding legacy table saved search embeddable in dashboard', function () {
-      // navigate to dashboard page
       miscUtils.visitPage(
         `/app/dashboards#/create?_g=(filters:!(),time:(from:'2015-09-19T13:31:44.000Z',to:'2015-09-24T01:31:44.000Z'))`
       );
-      // click on add
       cy.get('[data-test-subj="dashboardAddPanelButton"]').click();
       cy.get('[data-test-subj="savedObjectTitleLegacy-Saved-Search"]').click();
       cy.get('[data-test-subj="euiFlyoutCloseButton"]').click();

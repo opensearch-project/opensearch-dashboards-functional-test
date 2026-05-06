@@ -7,11 +7,92 @@ import {
   ALERTING_PLUGIN_NAME,
   ALERTING_PLUGIN_TIMEOUT,
 } from '../../../utils/plugins/alerting-dashboards-plugin/constants';
-import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger';
-import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow';
+import sampleQueryLevelMonitorWithAlwaysTrueTrigger from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_with_always_true_trigger.json';
+import sampleQueryLevelMonitorWorkflow from '../../../fixtures/plugins/alerting-dashboards-plugin/sample_query_level_monitor_workflow.json';
 import { BASE_PATH } from '../../../utils/base_constants';
 
 const TESTING_INDEX = 'alerting_test';
+
+// Helper function to type in search box
+const searchForMonitor = (uniqueNumber) => {
+  // Wait for page to stabilize
+  cy.wait(3000);
+
+  // Find and use search box with retry
+  cy.get('body', { timeout: 10000 }).then(($body) => {
+    const selectors = [
+      'input[type="search"]',
+      '[data-test-subj="alertStateSearchBox"]',
+      '[data-test-subj="searchField"]',
+      '.euiFieldSearch',
+      'input[placeholder*="Search"]',
+      'input.euiFieldText[type="text"]',
+    ];
+
+    let found = false;
+    for (const selector of selectors) {
+      const $el = $body.find(selector);
+      if ($el.length > 0 && $el.is(':visible')) {
+        cy.wrap($el.first())
+          .clear({ force: true })
+          .type(uniqueNumber, { force: true })
+          .then(() => {
+            cy.log(`Search for monitor with unique number: ${uniqueNumber}`);
+          });
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      // Fail the test if search box not found
+      throw new Error(
+        `Search input not found for unique number: ${uniqueNumber}. ` +
+          `Tried selectors: ${selectors.join(', ')}`
+      );
+    }
+  });
+
+  // Wait for search results to update table
+  cy.wait(3000);
+};
+
+// Helper function to verify alert state in table
+const verifyAlertState = (state, uniqueNumber) => {
+  // Wait for table to load and stabilize
+  cy.wait(3000);
+
+  // Try multiple strategies to find the state
+  cy.get('body').then(($body) => {
+    const pageText = $body.text();
+
+    // Check if the unique number exists on the page
+    if (!pageText.includes(uniqueNumber)) {
+      cy.log(
+        `WARN: Unique number ${uniqueNumber} not found on page, monitor may not have created an alert yet`
+      );
+    } else {
+      cy.log(`OK: Unique number ${uniqueNumber} found on page`);
+    }
+
+    // Check if state exists on page
+    if (!pageText.includes(state)) {
+      cy.log(`WARN: State "${state}" not found on page yet`);
+    } else {
+      cy.log(`OK: State "${state}" found on page`);
+    }
+
+    // Log table content for debugging
+    const tableText = $body.find('table').text() || 'No table found';
+    cy.log(`Table content preview: ${tableText.substring(0, 500)}...`);
+  });
+
+  // Use cy.contains with retry to find the state
+  // This will wait up to ALERTING_PLUGIN_TIMEOUT for the state to appear
+  cy.contains(new RegExp(state), { timeout: ALERTING_PLUGIN_TIMEOUT }).should(
+    'exist'
+  );
+};
 
 describe('Alerts', () => {
   beforeEach(() => {
@@ -21,8 +102,42 @@ describe('Alerts', () => {
     // Visit Alerting OpenSearch Dashboards
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
-    // Common text to wait for to confirm page loaded, give up to 30 seconds for initial load
-    cy.contains('Acknowledge', { timeout: ALERTING_PLUGIN_TIMEOUT });
+    // Wait for the page to load - "Alerts" is usually in the breadcrumbs or title
+    // This is more robust than "Acknowledge" which only appears if alerts exist
+    cy.get('h1, .euiTitle, .euiBreadcrumb', {
+      timeout: ALERTING_PLUGIN_TIMEOUT,
+    }).should('contain', 'Alerts');
+
+    // Wait for the page to fully render (table may take time to load)
+    cy.wait(3000);
+
+    // Clear search box and uncheck rows to ensure a clean state (if elements exist)
+    cy.get('body', { timeout: 10000 }).then(($body) => {
+      // Try multiple selectors for search box
+      const searchSelectors = [
+        'input[type="search"]',
+        '.euiFieldSearch',
+        'input[placeholder*="Search"]',
+      ];
+
+      for (const selector of searchSelectors) {
+        const $searchInputs = $body.find(selector);
+        if ($searchInputs.length > 0) {
+          cy.wrap($searchInputs.first()).clear({ force: true });
+          break;
+        }
+      }
+
+      // Uncheck any checked rows
+      const $checkedRows = $body.find(
+        'input[data-test-subj^="checkboxSelectRow-"]:checked'
+      );
+      if ($checkedRows.length > 0) {
+        $checkedRows.each((index, el) => {
+          cy.wrap(el).click({ force: true });
+        });
+      }
+    });
   });
 
   describe("can be in 'Active' state", () => {
@@ -44,10 +159,13 @@ describe('Alerts', () => {
       // Reload the page
       cy.reload();
 
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for page to load
+      cy.get('h1, .euiTitle, .euiBreadcrumb', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('contain', 'Alerts');
+
+      // Search for the monitor
+      searchForMonitor(`${Cypress.config('unique_number')}`);
 
       // Confirm we can see one and only alert in Active state
       cy.get('tbody > tr').should(($tr) => {
@@ -69,18 +187,24 @@ describe('Alerts', () => {
     });
 
     it('by clicking the button in Dashboard', () => {
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for monitor to execute and generate alert
+      cy.wait(60000);
 
-      //Confirm there is an active alert
-      cy.contains('Active');
+      // Search for the monitor and verify state
+      searchForMonitor(`${Cypress.config('unique_number')}`);
+
+      // Confirm there is an active alert
+      verifyAlertState('Active', `${Cypress.config('unique_number')}`);
+
+      // Wait for the table to load and render the checkbox
+      cy.get('tbody > tr').should('have.length.at.least', 1);
 
       // Select checkbox for the existing alert
       // There may be multiple alerts in the cluster, first() is used to get the active alert
       cy.get('input[data-test-subj^="checkboxSelectRow-"]')
         .first()
+        .should('exist') // The input itself might have opacity: 0 but should exist
+        .should('not.be.checked')
         .click({ force: true });
 
       // Click Acknowledge button
@@ -105,13 +229,23 @@ describe('Alerts', () => {
     });
 
     it('when the trigger condition is not met after met once', () => {
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for monitor to execute and generate alert
+      cy.wait(60000);
 
-      // Confirm there is an active alert
-      cy.contains('Active');
+      // Refresh to get latest alert status
+      cy.reload();
+      cy.wait(3000);
+
+      // Wait for page to fully load before searching
+      cy.get('h1, .euiTitle, .euiBreadcrumb', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('contain', 'Alerts');
+
+      // Search for the monitor and verify state
+      searchForMonitor(`${Cypress.config('unique_number')}`);
+
+      // Confirm there is an active alert - look in table or anywhere on page
+      verifyAlertState('Active', `${Cypress.config('unique_number')}`);
 
       // The trigger condition is: there is no document in the indices 'alerting*'
       // The following commands create a document in the index to complete the alert
@@ -127,13 +261,19 @@ describe('Alerts', () => {
       // Reload the page
       cy.reload();
 
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for page to fully load after reload
+      cy.get('h1, .euiTitle, .euiBreadcrumb', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('contain', 'Alerts');
+
+      // Wait for page to stabilize and search input to appear
+      cy.wait(3000);
+
+      // Search for the monitor
+      searchForMonitor(`${Cypress.config('unique_number')}`);
 
       // Confirm we can see the alert is in 'Completed' state
-      cy.contains('Completed');
+      verifyAlertState('Completed', `${Cypress.config('unique_number')}`);
     });
 
     after(() => {
@@ -158,13 +298,18 @@ describe('Alerts', () => {
     });
 
     it('by using a wrong destination', () => {
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for monitor to execute and generate alert
+      cy.wait(60000);
+
+      // Refresh to get latest alert status
+      cy.reload();
+      cy.wait(3000);
+
+      // Search for the monitor and verify state
+      searchForMonitor(`${Cypress.config('unique_number')}`);
 
       // Confirm we can see the alert is in 'Error' state
-      cy.contains('Error');
+      verifyAlertState('Error', `${Cypress.config('unique_number')}`);
     });
   });
 
@@ -180,13 +325,18 @@ describe('Alerts', () => {
     });
 
     it('by deleting the monitor', () => {
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for monitor to execute and generate alert
+      cy.wait(60000);
 
-      //Confirm there is an active alert
-      cy.contains('Active');
+      // Refresh to get latest alert status
+      cy.reload();
+      cy.wait(3000);
+
+      // Search for the monitor and verify state
+      searchForMonitor(`${Cypress.config('unique_number')}`);
+
+      // Confirm there is an active alert
+      verifyAlertState('Active', `${Cypress.config('unique_number')}`);
 
       // Delete all existing monitors
       cy.deleteAllMonitors();
@@ -194,13 +344,19 @@ describe('Alerts', () => {
       // Reload the page
       cy.reload();
 
-      // Type in monitor name in search box to filter out the alert
-      cy.get(`input[type="search"]`)
-        .focus()
-        .type(`${Cypress.config('unique_number')}`);
+      // Wait for page to load
+      cy.get('h1, .euiTitle, .euiBreadcrumb', {
+        timeout: ALERTING_PLUGIN_TIMEOUT,
+      }).should('contain', 'Alerts');
+
+      // Wait for page to stabilize after reload
+      cy.wait(3000);
+
+      // Search for the monitor
+      searchForMonitor(`${Cypress.config('unique_number')}`);
 
       // Confirm we can see the alert is in 'Deleted' state
-      cy.contains('Deleted');
+      verifyAlertState('Deleted', `${Cypress.config('unique_number')}`);
     });
   });
 

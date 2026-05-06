@@ -32,6 +32,10 @@ if (Cypress.env('VISBUILDER_ENABLED')) {
     beforeEach(() => {
       CURRENT_TENANT.newTenant = 'global';
       cy.fleshTenantSettings();
+
+      cy.window().then((win) => {
+        win.location.reload();
+      });
     });
 
     it('Show existing visualizations in Visualize and navigate to it', () => {

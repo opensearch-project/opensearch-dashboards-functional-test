@@ -43,14 +43,26 @@ describe('AcknowledgeAlertsModal', () => {
   });
 
   beforeEach(() => {
-    const getMonitorsUrl = new RegExp('.*api/alerting/monitors/_search.*');
-    cy.intercept(getMonitorsUrl).as('searchMonitors');
-
     // Reloading the page to close any modals that were not closed by other tests that had failures.
     cy.visit(`${BASE_PATH}/app/${ALERTING_PLUGIN_NAME}#/dashboard`);
 
-    // Wait for the monitor search call to finish before checking for the monitors below
-    cy.wait('@searchMonitors');
+    // Clear search box if it exists
+    cy.get('body').then(($body) => {
+      if ($body.find('input[type="search"]').length > 0) {
+        cy.get('input[type="search"]').clear({ force: true });
+      }
+      // Uncheck any checked rows to ensure a clean state
+      if (
+        $body.find('input[data-test-subj^="checkboxSelectRow-"]:checked')
+          .length > 0
+      ) {
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]:checked').each(
+          ($el) => {
+            cy.wrap($el).click({ force: true });
+          }
+        );
+      }
+    });
 
     // Confirm dashboard is displaying rows for the test monitors.
     cy.contains(BUCKET_MONITOR, { timeout: TWENTY_SECONDS });
@@ -67,8 +79,14 @@ describe('AcknowledgeAlertsModal', () => {
     );
 
     // Select the first and last rows in the table.
-    cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
-    cy.get('input[data-test-subj^="checkboxSelectRow-"]').last().click();
+    cy.get('input[data-test-subj^="checkboxSelectRow-"]')
+      .first()
+      .should('not.be.checked')
+      .click({ force: true });
+    cy.get('input[data-test-subj^="checkboxSelectRow-"]')
+      .last()
+      .should('not.be.checked')
+      .click({ force: true });
 
     // Click the 'Alerts by trigger' dashboard 'Acknowledge' button.
     cy.get('[data-test-subj="acknowledgeAlertsButton"]').should('be.disabled');
@@ -84,10 +102,15 @@ describe('AcknowledgeAlertsModal', () => {
     );
 
     // Find the row for the trigger, and check off the checkbox.
-    cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
+    cy.get('input[data-test-subj^="checkboxSelectRow-"]')
+      .first()
+      .should('not.be.checked')
+      .click({ force: true });
 
     // Click the 'Alerts by trigger' dashboard 'Acknowledge' button.
-    cy.get('[data-test-subj="acknowledgeAlertsButton"]').click();
+    cy.get('[data-test-subj="acknowledgeAlertsButton"]')
+      .should('not.be.disabled')
+      .click();
 
     // Perform the test checks within the modal component.
     cy.get(`[data-test-subj="alertsDashboardModal_${BUCKET_TRIGGER}"]`).within(
@@ -111,17 +134,19 @@ describe('AcknowledgeAlertsModal', () => {
           timeout: TWENTY_SECONDS,
         })
           .first()
-          .click();
+          .click({ force: true });
         cy.get('input[data-test-subj^="checkboxSelectRow-"]', {
           timeout: TWENTY_SECONDS,
         })
           .last()
-          .click();
+          .click({ force: true });
 
         // Press the modal 'Acknowledge button, and wait for the AcknowledgeAlerts API call to complete.
         cy.get(
           '[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]'
-        ).click();
+        )
+          .should('not.be.disabled')
+          .click();
       }
     );
 
@@ -162,10 +187,15 @@ describe('AcknowledgeAlertsModal', () => {
     );
 
     // Find the row for the trigger, and check off the checkbox.
-    cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
+    cy.get('input[data-test-subj^="checkboxSelectRow-"]')
+      .first()
+      .should('not.be.checked')
+      .click({ force: true });
 
     // Click the 'Alerts by trigger' dashboard 'Acknowledge' button.
-    cy.get('[data-test-subj="acknowledgeAlertsButton"]').click();
+    cy.get('[data-test-subj="acknowledgeAlertsButton"]')
+      .should('not.be.disabled')
+      .click();
 
     // Perform the test checks within the modal component.
     cy.get(`[data-test-subj="alertsDashboardModal_${QUERY_TRIGGER}"]`).within(
@@ -184,12 +214,16 @@ describe('AcknowledgeAlertsModal', () => {
         );
 
         // Select the alert.
-        cy.get('input[data-test-subj^="checkboxSelectRow-"]').first().click();
+        cy.get('input[data-test-subj^="checkboxSelectRow-"]')
+          .first()
+          .click({ force: true });
 
         // Press the modal 'Acknowledge' button, and wait for the AcknowledgeAlerts API call to complete.
         cy.get(
           '[data-test-subj="alertsDashboardModal_acknowledgeAlertsButton"]'
-        ).click();
+        )
+          .should('not.be.disabled')
+          .click();
       }
     );
 

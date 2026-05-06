@@ -11,18 +11,35 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Default data sources', () => {
     before(() => {
       // Clean up before creating new data sources for testing
-      cy.deleteAllDataSourcesOnUI();
+      // Use API deletion for reliability
+      cy.deleteAllDataSources();
+      cy.wait(3000);
     });
 
     describe('The default data source can behave normal when edit data source table', () => {
       before(() => {
+        // Create test data sources with longer wait between each
         for (let i = 1; i < 4; i++) {
           const title = `ds_${i}`;
           cy.createDataSourceNoAuthWithTitle(title);
-          cy.wait(6000);
+          cy.wait(8000);
         }
+
+        // Visit listing page with retry
         cy.visitDataSourcesListingPage();
-        cy.wait(6000);
+        cy.wait(8000);
+
+        // Verify page loaded
+        cy.get('body', { timeout: 30000 }).then(($body) => {
+          const pageText = $body.text();
+          if (
+            !pageText.includes('Create and manage data source connections.')
+          ) {
+            cy.log('Page not fully loaded, refreshing...');
+            cy.reload();
+            cy.wait(8000);
+          }
+        });
       });
       after(() => {
         // Clean up after all test are run
@@ -55,6 +72,8 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.get('@row_ds_2').contains('span', 'Default').should('exist');
       });
       it('Go the edit data source page of default data source, the set_default button should be disabled', () => {
+        cy.visitDataSourcesListingPage();
+        cy.wait(5000);
         cy.contains('a', 'ds_2')
           .should('exist') // Ensure the anchor tag exists
           .invoke('attr', 'href') // Get the href attribute
@@ -64,14 +83,17 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
             miscUtils.visitPage(
               `app/management/opensearch-dashboards/dataSources/${uniqueId}`
             );
-            cy.getElementByTestId('editSetDefaultDataSource')
-              .should('be.exist')
-              .should('not.enabled');
-            cy.wait(1000);
+            cy.wait(3000);
+            cy.getElementByTestId('editSetDefaultDataSource', {
+              timeout: 30000,
+            })
+              .should('exist')
+              .should('be.disabled');
           });
       });
       it('Go the edit data source page of non-default data source, the set_default button should be enabled and can set to default ds', () => {
         cy.visitDataSourcesListingPage();
+        cy.wait(5000);
 
         cy.contains('a', 'ds_3')
           .should('exist') // Ensure the anchor tag exists
@@ -82,13 +104,17 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
             miscUtils.visitPage(
               `app/management/opensearch-dashboards/dataSources/${uniqueId}`
             );
-            cy.getElementByTestId('editSetDefaultDataSource')
-              .should('be.exist')
+            cy.wait(3000);
+            cy.getElementByTestId('editSetDefaultDataSource', {
+              timeout: 30000,
+            })
+              .should('exist')
               .should('be.enabled')
               .click({ force: true });
-            cy.wait(1000);
+            cy.wait(3000);
           });
         cy.visitDataSourcesListingPage();
+        cy.wait(5000);
         cy.contains('td.euiTableRowCell', 'ds_3').as('ds_3');
         cy.get('@ds_3').parents('tr').as('row_ds_3');
         cy.get('@row_ds_3').contains('span', 'Default').should('exist');

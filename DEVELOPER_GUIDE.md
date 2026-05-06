@@ -88,7 +88,7 @@ $ yarn cypress:run-with-security --spec "cypress/integration/core-opensearch-das
 
 These tests run in headless mode by default.
 
-And you can override certain [cypress config or environment variable](cypress.json) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
+And you can override certain [cypress config or environment variable](cypress.config.js) by applying additional cli arguments, for example to override the baseUrl and openSearchUrl to test a remote OpenSearch endpoint:
 
 ```
 $ yarn cypress run --spec "cypress/integration/core-opensearch-dashboards/opensearch-dashboards/*.js" --config "baseUrl=https://<endpoint>/_dashboards" --env "openSearchUrl=https://<endpoint>,SECURITY_ENABLED=true,username=admin,password=xxxxxxxx,ENDPOINT_WITH_PROXY=true"
@@ -174,7 +174,7 @@ Similar to the regular tests, OSD Core tests go to the [folder](integration/core
 
 2. Develop tests with a flag to turn on and off
 
-Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. (Define such in [cypress configuration](cypress.json). Refer to `SECURITY_ENABLED` as an example) This is to ensure backward compatibility when integrating with [opensearch-build repo](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet.
+Add an environment variable (e.g boolean) to only run tests for the experiemental feature when it is true. (Define such in [cypress configuration](cypress.config.js). Refer to `SECURITY_ENABLED` as an example) This is to ensure backward compatibility when integrating with [opensearch-build repo](https://github.com/opensearch-project/opensearch-build/blob/main/src/test_workflow/integ_test/service_opensearch_dashboards.py) whose OpenSearch Dashboards execution command or yml configuration may not be updated to support the experimental feature yet.
 
 3. Set up Github action to run the tests inside the current repo
 
