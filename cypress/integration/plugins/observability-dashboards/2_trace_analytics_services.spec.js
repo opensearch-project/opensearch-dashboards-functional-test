@@ -45,31 +45,3 @@ describe('Testing services table', { testIsolation: true }, () => {
   });
 });
 
-describe('Testing service view empty state', () => {
-  beforeEach(() => {
-    // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-    cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('ResizeObserver loop')) return false;
-    });
-    cy.visit(`app/observability-traces#/services/${SERVICE_NAME}`, {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
-  });
-});
-
-describe('Testing service view', () => {
-  beforeEach(() => {
-    // exception is thrown on loading EuiDataGrid in cypress only, ignore for now
-    cy.on('uncaught:exception', (err) => {
-      if (err.message.includes('ResizeObserver loop')) return false;
-    });
-    cy.visit(`app/observability-traces#/services/${SERVICE_NAME}`, {
-      onBeforeLoad: (win) => {
-        win.sessionStorage.clear();
-      },
-    });
-    setTimeFilter(undefined, false);
-  });
-});
