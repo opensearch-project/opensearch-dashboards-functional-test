@@ -8,10 +8,6 @@ import { switchTenantTo } from './switch_tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
-    before(() => {
-      cy.intercept();
-    });
-
     it('Tests that when the short URL is copied and pasted, it will route correctly with the right tenant', function () {
       const randomNumber = Cypress._.random(0, 1e6);
       const dashboardName = 'Cypress dashboard - ' + randomNumber;
