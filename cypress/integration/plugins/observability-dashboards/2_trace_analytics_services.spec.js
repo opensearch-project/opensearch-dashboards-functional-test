@@ -44,4 +44,3 @@ describe('Testing services table', { testIsolation: true }, () => {
     cy.get('body').should('contain', 'Overview');
   });
 });
-
