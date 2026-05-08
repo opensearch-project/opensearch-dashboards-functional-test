@@ -10,18 +10,13 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Audit logs page', () => {
-    // start a server so that server responses can be mocked via fixtures
-    // in all of the below test cases
-    before(() => {
-      cy.intercept();
-    });
-
     it('should load Audit logs page properly', () => {
       cy.mockAuditLogsAction(
         SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
         () => {
           cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('h1', 'Audit logging');
@@ -30,7 +25,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should toggle enable-disable switch for audit logging', () => {
-      cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+      cy.mockAuditLogsAction(
+        SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
+        () => {
+          cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+        },
+        { reloadAfterAction: true }
+      );
 
       // enabled by default
       cy.contains('.euiSwitch', 'Enabled');
@@ -61,7 +62,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should configure general settings successfully', () => {
-      cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+      cy.mockAuditLogsAction(
+        SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
+        () => {
+          cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+        },
+        { reloadAfterAction: true }
+      );
 
       cy.get('button[data-test-subj="general-settings-configure"]')
         .first()
@@ -96,7 +103,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('should configure compliance settings successfully', () => {
-      cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+      cy.mockAuditLogsAction(
+        SEC_AUDIT_FIXTURES_PATH + '/audit_info_response.json',
+        () => {
+          cy.visit(SEC_UI_AUDIT_LOGGING_PATH);
+        },
+        { reloadAfterAction: true }
+      );
 
       cy.get('button[data-test-subj="compliance-settings-configure"]')
         .first()

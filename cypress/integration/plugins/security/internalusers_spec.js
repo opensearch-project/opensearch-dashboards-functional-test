@@ -11,18 +11,13 @@ import {
 
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Internal users page', () => {
-    // start a server so that server responses can be mocked via fixtures
-    // in all of the below test cases
-    before(() => {
-      cy.intercept();
-    });
-
     it('should load internal users page properly', () => {
       cy.mockInternalUsersAction(
         SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
         () => {
           cy.visit(SEC_UI_INTERNAL_USERS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('h3', 'Internal users');
@@ -36,7 +31,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
         () => {
           cy.visit(SEC_UI_INTERNAL_USERS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.get('a[href*="#/users/edit/logstash"]').click({ force: true });
@@ -54,7 +50,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_INTERNALUSERS_FIXTURES_PATH + '/internalusers_info_response.json',
         () => {
           cy.visit(SEC_UI_INTERNAL_USERS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('span', 'Create internal user');

@@ -33,8 +33,6 @@ const TEST_CONFIG = {
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Read Only mode', () => {
     before(() => {
-      cy.intercept();
-
       cy.createTenant(TEST_CONFIG.tenant.name, {
         description: TEST_CONFIG.tenant.description,
       });
@@ -63,6 +61,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
           );
           window.localStorage.setItem('home:newThemeModal:show', false);
           window.localStorage.setItem('home:welcome:show', false);
+          window.localStorage.setItem(
+            'home:enhancedDiscover:dismissed',
+            'true'
+          );
         },
       });
       cy.waitForLoader();

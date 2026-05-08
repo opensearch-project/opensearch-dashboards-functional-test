@@ -11,9 +11,9 @@ if (Cypress.env('SECURITY_ENABLED')) {
     const tenantName = 'private';
 
     before(() => {
-      cy.intercept();
       localStorage.setItem('home:welcome:show', false);
       localStorage.setItem('home:newThemeModal:show', false);
+      localStorage.setItem('home:enhancedDiscover:dismissed', 'true');
     });
     it('Checks that the tenant switcher can switch tenants despite a different tenant being present in the tenant query parameter.', function () {
       CURRENT_TENANT.newTenant = tenantName;
@@ -22,7 +22,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         cy.waitForLoader();
         switchTenantTo('global');
         cy.waitForLoader();
-        cy.getElementByTestId('account-popover').click();
+        cy.getElementByTestId('account-popover').click({ force: true });
         cy.get('#tenantName').should('contain.text', 'Global');
       });
     });

@@ -63,7 +63,7 @@ module.exports = (on, config) => {
   const options = {
     webpackOptions: {
       resolve: {
-        extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx'],
+        extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx', '.json'],
       },
       module: {
         rules: [
