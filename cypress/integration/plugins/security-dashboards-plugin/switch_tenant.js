@@ -4,7 +4,7 @@
  */
 
 export function switchTenantTo(newTenant) {
-  cy.getElementByTestId('account-popover').click();
+  cy.getElementByTestId('account-popover').click({ force: true });
   cy.intercept({
     method: 'GET',
     url: '/api/v1/auth/dashboardsinfo*',
@@ -15,24 +15,26 @@ export function switchTenantTo(newTenant) {
     url: '/api/v1/configuration/account*',
   }).as('waitForAccountInfo');
 
-  cy.getElementByTestId('switch-tenants').click();
+  cy.getElementByTestId('switch-tenants').click({ force: true });
 
   if (['global', 'private'].includes(newTenant)) {
     cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should(
       'be.enabled'
     );
-    cy.get('.euiRadio__label[for="' + newTenant + '"]').click();
+    cy.get('.euiRadio__label[for="' + newTenant + '"]').click({
+      force: true,
+    });
   } else {
     cy.get('[id="custom"][name="tenantSwitchRadios"]').should('be.enabled');
 
     cy.getElementByTestId('tenant-switch-modal')
       .find('[data-test-subj="comboBoxInput"]')
-      .click();
+      .click({ force: true });
 
     // typo in data-test-subj
     cy.getElementByTestId('comboBoxOptionsList ')
       .find(`[title="${newTenant}"]`)
-      .click();
+      .click({ force: true });
   }
 
   cy.intercept({
@@ -41,7 +43,7 @@ export function switchTenantTo(newTenant) {
   }).as('waitForUpdatingTenants');
   cy.getElementByTestId('tenant-switch-modal')
     .find('[data-test-subj="confirm"]')
-    .click();
+    .click({ force: true });
 
   cy.wait('@waitForUpdatingTenants');
 

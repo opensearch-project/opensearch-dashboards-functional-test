@@ -15,7 +15,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
           cy.visit(SEC_UI_PERMISSIONS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('h3', 'Permissions');
@@ -29,7 +30,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
           cy.visit(SEC_UI_PERMISSIONS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.get('tr[class="euiTableRow euiTableRow-isExpandedRow"]').should(
@@ -52,7 +54,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_PERMISSIONS_FIXTURES_PATH + '/actiongroups_response.json',
         () => {
           cy.visit(SEC_UI_PERMISSIONS_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('button', 'Create from blank').should('not.exist');

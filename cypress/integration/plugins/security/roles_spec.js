@@ -16,7 +16,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_ROLES_FIXTURES_PATH + '/roles_response.json',
         () => {
           cy.visit(SEC_UI_ROLES_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('h3', 'Roles');
@@ -31,7 +32,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_ROLES_FIXTURES_PATH + '/roles_response.json',
         () => {
           cy.visit(SEC_UI_ROLES_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       // one of the cluster permissions
@@ -53,7 +55,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         SEC_ROLES_FIXTURES_PATH + '/roles_response.json',
         () => {
           cy.visit(SEC_UI_ROLES_PATH);
-        }
+        },
+        { reloadAfterAction: true }
       );
 
       cy.contains('span', 'Create role');

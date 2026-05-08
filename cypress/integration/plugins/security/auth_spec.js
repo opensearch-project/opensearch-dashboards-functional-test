@@ -11,9 +11,13 @@ import {
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Authc and Authz page', () => {
     it('authentication and authorization section should exist', () => {
-      cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
-        cy.visit(SEC_UI_AUTH_PATH);
-      });
+      cy.mockAuthAction(
+        SEC_FIXTURES_BASE_PATH + '/auth_response.json',
+        () => {
+          cy.visit(SEC_UI_AUTH_PATH);
+        },
+        { reloadAfterAction: true }
+      );
 
       cy.contains('h3', 'Authentication sequences');
       cy.contains('span', 'kerberos_auth_domain');
@@ -23,9 +27,13 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('View Expression Modal should display and close correctly', () => {
-      cy.mockAuthAction(SEC_FIXTURES_BASE_PATH + '/auth_response.json', () => {
-        cy.visit(SEC_UI_AUTH_PATH);
-      });
+      cy.mockAuthAction(
+        SEC_FIXTURES_BASE_PATH + '/auth_response.json',
+        () => {
+          cy.visit(SEC_UI_AUTH_PATH);
+        },
+        { reloadAfterAction: true }
+      );
 
       cy.get('.euiModal').should('not.exist');
 

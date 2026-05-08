@@ -61,6 +61,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
           );
           window.localStorage.setItem('home:newThemeModal:show', false);
           window.localStorage.setItem('home:welcome:show', false);
+          window.localStorage.setItem(
+            'home:enhancedDiscover:dismissed',
+            'true'
+          );
         },
       });
       cy.waitForLoader();
