@@ -16,9 +16,22 @@ import tenantDescription from '../../../fixtures/plugins/security-dashboards-plu
 
 const tenantName = 'test';
 
+const setTenancyConfig = (config) => {
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_security/api/tenancy/config`,
+    body: config,
+  });
+};
+
 if (Cypress.env('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
+
       cy.createTenant(tenantName, tenantDescription);
       cy.createIndexPattern(
         'index-pattern1',
@@ -55,26 +68,21 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('#user-icon-btn').click();
       cy.contains('button', 'Switch tenants').should('exist');
 
-      // Disable multi-tenancy.
+      // Disable multi-tenancy via API.
+      setTenancyConfig({
+        multitenancy_enabled: false,
+        private_tenant_enabled: true,
+        default_tenant: 'Private',
+      });
+
       cy.visit(TENANTS_MANAGE_PATH);
-      cy.waitForLoader();
-
-      cy.contains('button', 'Configure').click();
-      cy.waitForLoader();
-      cy.get('#EnableMultitenancyCheckBox').uncheck({ force: true });
-      cy.contains('button', 'Save Changes').click();
-
-      cy.get('#tenancyChangeCheckbox').check({ force: true });
-      cy.contains('button', 'Apply changes').click();
-
-      cy.reload();
       cy.waitForLoader();
 
       // Switch tenants button should not exist when multi-tenancy is disabled.
       cy.get('#user-icon-btn').click();
       cy.contains('button', 'Switch tenants').should('not.exist');
 
-      //Tenancy disbaled warning should show on manage page.
+      //Tenancy disabled warning should show on manage page.
       cy.contains('Tenancy is disabled').should('exist');
 
       // Saved index pattern should only have the ones saved in Global tenant.
@@ -84,14 +92,12 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('s*');
 
       // Enable Multi-tenancy before closing test.
-      cy.visit(TENANTS_MANAGE_PATH);
-      cy.waitForLoader();
-      cy.contains('button', 'Configure').click();
-      cy.waitForLoader();
-      cy.get('#EnableMultitenancyCheckBox').check({ force: true });
-      cy.contains('button', 'Save Changes').click();
-      cy.get('#tenancyChangeCheckbox').check({ force: true });
-      cy.contains('button', 'Apply changes').click();
+      setTenancyConfig({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'Private',
+      });
+
       cy.reload();
       cy.waitForLoader();
     });
@@ -110,22 +116,17 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('#private').should('be.enabled');
       cy.contains('button', 'Cancel').click();
 
-      // Disable private tenant.
+      // Disable private tenant via API.
+      setTenancyConfig({
+        multitenancy_enabled: true,
+        private_tenant_enabled: false,
+        default_tenant: 'Global',
+      });
+
       cy.visit(TENANTS_MANAGE_PATH);
       cy.waitForLoader();
 
-      cy.contains('button', 'Configure').click();
-      cy.waitForLoader();
-      cy.get('#EnablePrivateTenantCheckBox').uncheck({ force: true });
-      cy.contains('button', 'Save Changes').click();
-
-      cy.get('#privateTenancyChangeCheckbox').check({ force: true });
-      cy.contains('button', 'Apply changes').click();
-
-      cy.reload();
-      cy.waitForLoader();
-
-      // Check if switching to private tenant is enabled.
+      // Check if switching to private tenant is disabled.
       cy.get('#user-icon-btn').click();
       cy.contains('button', 'Switch tenants').click();
       cy.get('#private').should('be.disabled');
@@ -138,14 +139,12 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.contains('s*');
 
       // Enable private tenant before exiting test.
-      cy.visit(TENANTS_MANAGE_PATH);
-      cy.waitForLoader();
-      cy.contains('button', 'Configure').click();
-      cy.waitForLoader();
-      cy.get('#EnablePrivateTenantCheckBox').check({ force: true });
-      cy.contains('button', 'Save Changes').click();
-      cy.get('#privateTenancyChangeCheckbox').check({ force: true });
-      cy.contains('button', 'Apply changes').click();
+      setTenancyConfig({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'Private',
+      });
+
       cy.reload();
       cy.waitForLoader();
     });
