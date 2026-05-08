@@ -19,7 +19,9 @@ const tenantName = 'test';
 const setTenancyConfig = (config) => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_plugins/_security/api/tenancy/config`,
+    url: `${Cypress.env(
+      'openSearchUrl'
+    )}/_plugins/_security/api/tenancy/config`,
     body: config,
   });
 };
