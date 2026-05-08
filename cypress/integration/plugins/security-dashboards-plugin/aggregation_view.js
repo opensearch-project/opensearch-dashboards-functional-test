@@ -27,6 +27,9 @@ const kibanaRoleName = 'kibana_user';
 if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
   describe('Saved objects table test', () => {
     before(() => {
+      cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
+      cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
+
       cy.createTenant(tenantName, tenantDescription);
 
       cy.createIndexPattern('index-pattern1', {
@@ -68,13 +71,14 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
       cy.contains('a', 'Saved objects');
 
       cy.contains('button', 'Tenant').click({ force: true });
-      cy.contains('Private').click();
-      cy.contains('s*');
+      cy.contains('.euiFilterSelectItem', 'Private').click();
+      cy.contains('button', 'Tenant').click({ force: true });
       cy.contains('se*').should('not.exist');
+      cy.contains('s*');
 
-      cy.wait(3000);
-
-      cy.contains('test').click();
+      cy.contains('button', 'Tenant').click({ force: true });
+      cy.contains('.euiFilterSelectItem', 'test').click();
+      cy.contains('button', 'Tenant').click({ force: true });
       cy.contains('s*');
       cy.contains('se*');
     });
