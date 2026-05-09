@@ -10,6 +10,14 @@ import { selectTopItemFromFilter } from '../../../utils/helpers';
 describe('AD Dashboard page', () => {
   before(() => {});
 
+  beforeEach(() => {
+    // Force a fresh page state between tests to prevent stale responses
+    // from interfering with cy.intercept on subsequent navigations
+    cy.window().then((win) => {
+      win.sessionStorage.clear();
+    });
+  });
+
   it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
