@@ -12,61 +12,54 @@ import { SEC_API } from '../../constants';
  */
 
 Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
-  cy.request(
+  return cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
     tenantJson
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('createInternalUser', (userID, userJson) => {
-  cy.request(
+  return cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
     userJson
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('deleteInternalUser', (userID) => {
-  cy.request(
+  return cy.request(
     'DELETE',
     `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
-  cy.request(
+  return cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
     roleJson
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('deleteRole', (roleID) => {
-  cy.request(
+  return cy.request(
     'DELETE',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
-  cy.request(
+  return cy.request(
     'PUT',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
     rolemappingJson
   );
-  cy.wait(10000);
 });
 
 Cypress.Commands.add('deleteRoleMapping', (roleID) => {
-  cy.request(
+  return cy.request(
     'DELETE',
     `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`
   );
-  cy.wait(10000);
 });
