@@ -4,7 +4,6 @@
  */
 
 import {
-  AD_NODE_API_PATH,
   getADStartDetectorNodeApiPath,
   getADStopDetectorNodeApiPath,
   getADDeleteDetectorNodeApiPath,
@@ -38,44 +37,44 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockGetDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
+    cy.intercept('GET', '**/api/anomaly_detectors/detectors/_list*', {
       fixture: fixtureFileName,
     }).as('getDetectors');
 
     funcMockedOn();
 
-    cy.wait('@getDetectors');
+    cy.wait('@getDetectors', { timeout: 60000 });
   }
 );
 
 Cypress.Commands.add(
   'mockGetDetectorsAndIndicesOnAction',
   function (detectorsFixtureFileName, indexFixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
+    cy.intercept('GET', '**/api/anomaly_detectors/detectors/_list*', {
       fixture: detectorsFixtureFileName,
     }).as('getDetectors');
 
-    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
+    cy.intercept('GET', '**/api/anomaly_detectors/_indices*', {
       fixture: indexFixtureFileName,
     }).as('getIndices');
 
     funcMockedOn();
 
-    cy.wait('@getDetectors');
-    cy.wait('@getIndices');
+    cy.wait('@getDetectors', { timeout: 60000 });
+    cy.wait('@getIndices', { timeout: 60000 });
   }
 );
 
 Cypress.Commands.add(
   'mockSearchIndexOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
+    cy.intercept('GET', '**/api/anomaly_detectors/_indices*', {
       fixture: fixtureFileName,
     }).as('getIndices');
 
     funcMockedOn();
 
-    cy.wait('@getIndices');
+    cy.wait('@getIndices', { timeout: 60000 });
   }
 );
 
