@@ -375,7 +375,7 @@ describe('Left navigation menu', () => {
           cy.contains(/Recent assets/).should('be.visible');
           cy.contains(visualizationName)
             .should('be.visible')
-            .click({ force: true });
+            .click({ force: false });
 
           cy.getElementByTestId('headerAppActionMenu').within(() => {
             cy.url().should('contain', 'edit').should('contain', 'visualize');
