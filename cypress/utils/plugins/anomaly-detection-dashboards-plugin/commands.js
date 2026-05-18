@@ -15,6 +15,15 @@ import {
 } from '../../constants';
 import { selectTopItemFromFilter } from './helpers';
 
+const noStoreFixtureResponse = (fixtureFileName) => ({
+  fixture: fixtureFileName,
+  headers: {
+    'cache-control': 'no-store, no-cache, must-revalidate',
+    pragma: 'no-cache',
+    expires: '0',
+  },
+});
+
 Cypress.Commands.add(
   'handleTenantDialog',
   {
@@ -38,9 +47,10 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockGetDetectorOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
-      fixture: fixtureFileName,
-    }).as('getDetectors');
+    cy.intercept(
+      AD_NODE_API_PATH.GET_DETECTORS,
+      noStoreFixtureResponse(fixtureFileName)
+    ).as('getDetectors');
 
     funcMockedOn();
 
@@ -51,13 +61,15 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockGetDetectorsAndIndicesOnAction',
   function (detectorsFixtureFileName, indexFixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_DETECTORS, {
-      fixture: detectorsFixtureFileName,
-    }).as('getDetectors');
+    cy.intercept(
+      AD_NODE_API_PATH.GET_DETECTORS,
+      noStoreFixtureResponse(detectorsFixtureFileName)
+    ).as('getDetectors');
 
-    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
-      fixture: indexFixtureFileName,
-    }).as('getIndices');
+    cy.intercept(
+      AD_NODE_API_PATH.GET_INDICES,
+      noStoreFixtureResponse(indexFixtureFileName)
+    ).as('getIndices');
 
     funcMockedOn();
 
@@ -69,9 +81,10 @@ Cypress.Commands.add(
 Cypress.Commands.add(
   'mockSearchIndexOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(AD_NODE_API_PATH.GET_INDICES, {
-      fixture: fixtureFileName,
-    }).as('getIndices');
+    cy.intercept(
+      AD_NODE_API_PATH.GET_INDICES,
+      noStoreFixtureResponse(fixtureFileName)
+    ).as('getIndices');
 
     funcMockedOn();
 
@@ -277,9 +290,10 @@ Cypress.Commands.add('deleteAllRemoteIndices', () => {
 Cypress.Commands.add(
   'mockGetForecastersOnAction',
   function (fixtureFileName, funcMockedOn) {
-    cy.intercept(FORECAST_NODE_API_PATH.GET_FORECASTERS, {
-      fixture: fixtureFileName,
-    }).as('getForecasters');
+    cy.intercept(
+      FORECAST_NODE_API_PATH.GET_FORECASTERS,
+      noStoreFixtureResponse(fixtureFileName)
+    ).as('getForecasters');
 
     funcMockedOn();
 
