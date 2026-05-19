@@ -7,9 +7,7 @@ import { AD_FIXTURE_BASE_PATH, AD_URL } from '../../../utils/constants';
 import { selectTopItemFromFilter } from '../../../utils/helpers';
 
 // Contains basic sanity tests on AD Dashboards page
-describe('AD Dashboard page', () => {
-  before(() => {});
-
+describe('AD Dashboard page', { testIsolation: true }, () => {
   it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
