@@ -11,9 +11,7 @@ import {
 } from '../../../utils/constants';
 import { selectTopItemFromFilter } from '../../../utils/helpers';
 
-describe('Detector list page', () => {
-  before(() => {});
-
+describe('Detector list page', { testIsolation: true }, () => {
   it('Empty - no detector index', () => {
     cy.mockGetDetectorOnAction(
       AD_FIXTURE_BASE_PATH + 'no_detector_index_response.json',
