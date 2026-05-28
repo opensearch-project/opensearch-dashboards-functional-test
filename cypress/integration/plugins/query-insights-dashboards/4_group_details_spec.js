@@ -18,17 +18,31 @@ describe('Query Group Details Page', () => {
     cy.wait(5000);
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stabilize
+    // waiting for the query insights to stablize
     cy.wait(5000);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until data is available, then navigate
-    // directly to the group details page via URL.
-    cy.waitForTopQueriesData();
-    cy.navigateToGroupDetails();
+    // waiting for the query insights queue to drain
+    cy.wait(10000);
+    cy.navigateToOverview();
+    cy.get('.euiBasicTable')
+      .last()
+      .find('.euiTableRow')
+      .first()
+      .find('button')
+      .first()
+      .trigger('mouseover');
+    cy.wait(1000);
+    // Click the first button in the 'group' row
+    cy.get('.euiBasicTable')
+      .last()
+      .find('.euiTableRow')
+      .first()
+      .find('button')
+      .first()
+      .click(); // Navigate to details
+    cy.wait(1000);
   });
 
   it('should display correct details on the group details page', () => {
@@ -61,6 +75,7 @@ describe('Query Group Details Page', () => {
       'Average CPU Time',
       'Average Memory Usage',
       'Group by',
+      'Query Group Hashcode',
     ];
 
     // Validate all field labels exist in the first EuiPanel
@@ -134,6 +149,7 @@ describe('Query Group Details Page', () => {
 
         const firstQuery = responseData.top_queries[0];
         expect(firstQuery).to.include.all.keys([
+          'failed',
           'group_by',
           'id',
           'indices',
