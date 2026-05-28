@@ -163,11 +163,13 @@ one. Current cases:
 - `navigateToQueryDetails` and `navigateToGroupDetails` (in
   `commands.js`) fetch a query id directly from
   `/_insights/top_queries` and visit `#/query-details?id=...` /
-  `#/query-group-details?id=...`. Upstream's specs click into the table
-  to navigate, which is fragile here because of OUI/EUI class drift in
-  this repo's bundle and because there are multiple `.euiBasicTable`s
-  on the overview page. Keep these helpers and use them in
-  `2_query_details_spec.js` / `4_group_details_spec.js`.
+  `#/query-group-details?id=...`. Upstream's specs click into the
+  overview's last `.euiBasicTable` to navigate, which is fragile here:
+  the new Stats & Visualizations panel adds chart tables to the
+  overview, and "last" sometimes picks one of them, routing to
+  `query-details?id=<short-bucket-id>` and rendering "No Data
+  Available". Use these helpers in `2_query_details_spec.js` /
+  `4_group_details_spec.js` instead of the click-through navigation.
 - `waitForTopQueriesData` polls the API so the `before each` hook can
   proceed only once the QI backend has captured at least one query.
 

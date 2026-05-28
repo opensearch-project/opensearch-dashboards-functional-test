@@ -23,26 +23,13 @@ describe('Query Group Details Page', () => {
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
     cy.searchOnIndex(indexName);
-    // waiting for the query insights queue to drain
-    cy.wait(10000);
-    cy.navigateToOverview();
-    cy.get('.euiBasicTable')
-      .last()
-      .find('.euiTableRow')
-      .first()
-      .find('button')
-      .first()
-      .trigger('mouseover');
-    cy.wait(1000);
-    // Click the first button in the 'group' row
-    cy.get('.euiBasicTable')
-      .last()
-      .find('.euiTableRow')
-      .first()
-      .find('button')
-      .first()
-      .click(); // Navigate to details
-    cy.wait(1000);
+    // Poll the OpenSearch _insights/top_queries API until data is available, then
+    // navigate directly to /query-group-details by id. Upstream clicks the first
+    // row of `.euiBasicTable:last` in the overview, but with the new
+    // Stats & Visualizations panel that selector occasionally lands on a chart
+    // table row and routes to a details URL with a short bucket id.
+    cy.waitForTopQueriesData();
+    cy.navigateToGroupDetails();
   });
 
   it('should display correct details on the group details page', () => {
