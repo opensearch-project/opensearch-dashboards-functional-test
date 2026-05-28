@@ -3,9 +3,23 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// Synced from opensearch-project/query-insights-dashboards' cypress/support/commands.js.
+// See COMPATIBILITY.md for the list of intentional divergences:
+//   - constants are aliased to QUERY_INSIGHTS_* names
+//   - the visit/request overrides from the plugin repo are dropped because this
+//     repo handles auth globally via cypress/utils/commands.js
+//   - navigateToQueryDetails/navigateToGroupDetails are kept (only here, used by
+//     2_query_details_spec.js / 4_group_details_spec.js for deterministic
+//     navigation by query id rather than clicking table rows)
+//   - the WLM commands (enableWlmMode, waitForWlmPlugin) and the WLM specs
+//     are NOT synced — they require an HTTPS cluster with the WLM plugin
+//     installed and `wlm.workload_group.mode=enabled`, which the QI release
+//     workflow's bundle-snapshot test cluster doesn't provide.
+
 const {
   QUERY_INSIGHTS_OVERVIEW_PATH,
   QUERY_INSIGHTS_CONFIGURATION_PATH,
+  QUERY_INSIGHTS_LIVEQUERIES_PATH,
 } = require('./constants');
 
 Cypress.Commands.add('getElementByText', (locator, text) => {
@@ -22,7 +36,7 @@ Cypress.Commands.add('enableTopQueries', (metric) => {
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: true,
-        [`search.insights.top_queries.${metric}.window_size`]: '5m',
+        [`search.insights.top_queries.${metric}.window_size`]: '1m',
         [`search.insights.top_queries.${metric}.top_n_size`]: 100,
       },
     },
@@ -59,9 +73,9 @@ Cypress.Commands.add('enableGrouping', () => {
         'search.insights.top_queries.latency.top_n_size': 5,
         'search.insights.top_queries.cpu.top_n_size': 5,
         'search.insights.top_queries.memory.top_n_size': 5,
-        'search.insights.top_queries.latency.window_size': '5m',
-        'search.insights.top_queries.cpu.window_size': '5m',
-        'search.insights.top_queries.memory.window_size': '5m',
+        'search.insights.top_queries.latency.window_size': '1m',
+        'search.insights.top_queries.cpu.window_size': '1m',
+        'search.insights.top_queries.memory.window_size': '1m',
         'search.insights.top_queries.exporter.type': 'none',
       },
     },
@@ -80,6 +94,21 @@ Cypress.Commands.add('disableGrouping', () => {
         'search.insights.top_queries.memory.enabled': false,
         'search.insights.top_queries.grouping.group_by': 'none',
         'search.insights.top_queries.exporter.type': 'none',
+      },
+    },
+    failOnStatusCode: true,
+  });
+});
+
+Cypress.Commands.add('setWindowSize', (size = '1m') => {
+  cy.request({
+    method: 'PUT',
+    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    body: {
+      persistent: {
+        'search.insights.top_queries.latency.window_size': size,
+        'search.insights.top_queries.cpu.window_size': size,
+        'search.insights.top_queries.memory.window_size': size,
       },
     },
     failOnStatusCode: true,
@@ -155,15 +184,53 @@ Cypress.Commands.add('navigateToConfiguration', () => {
   });
 });
 
+Cypress.Commands.add('navigateToLiveQueries', () => {
+  cy.visit(QUERY_INSIGHTS_LIVEQUERIES_PATH);
+  cy.waitForPageLoad(QUERY_INSIGHTS_LIVEQUERIES_PATH, {
+    contains: 'Query insights - In-flight queries',
+  });
+});
+
+Cypress.Commands.add('waitForPluginToLoad', () => {
+  // CI environments need much longer waits for plugin initialization
+  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const waitTime = isCI ? 10000 : 3000;
+
+  cy.log(
+    `waitForPluginToLoad: ${
+      isCI ? 'CI' : 'Local'
+    } environment, waiting ${waitTime}ms`
+  );
+  cy.wait(waitTime);
+});
+
 Cypress.Commands.add('waitForQueryInsightsPlugin', () => {
   const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
   const timeout = isCI ? 360000 : 120000;
 
   cy.visit(QUERY_INSIGHTS_OVERVIEW_PATH, { timeout: 60000 });
 
+  // Wait for the plugin page to render. In CI, bundles may still be
+  // compiling on first visit — OSD serves a loading page that auto-refreshes
+  // when ready. Cypress's built-in retry on contains() handles this without
+  // explicit reloads (which can interfere with bundle compilation).
   cy.contains('Query insights - Top N queries', { timeout }).should(
     'be.visible'
   );
+});
+
+Cypress.Commands.add('setTypeFilter', (type) => {
+  cy.contains('button', 'Type').click();
+  cy.contains('[role="option"]', type).click();
+  cy.get('body').click(0, 0);
+});
+
+Cypress.Commands.add('resetTypeFilterToNone', () => {
+  cy.contains('button', 'Type').click();
+  cy.get('[role="option"][aria-selected="true"]').each(($el) => {
+    cy.wrap($el).click();
+  });
+  cy.get('body').click(0, 0);
 });
 
 /**
