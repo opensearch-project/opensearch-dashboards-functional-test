@@ -66,6 +66,13 @@ function closeHypothesisDetail() {
   cy.url().should('not.contain', 'hypothesis');
 }
 
+function setIndex(indexName) {
+  cy.get('[data-test-subj="datasetSelectButton"]', { timeout: 60000 }).click();
+  cy.get(`[data-test-subj="datasetSelectOption-${indexName}"]`)
+    .should('be.visible')
+    .click();
+}
+
 function setWideTimeRange() {
   // Wait for the page to stabilize before interacting with date picker
   cy.wait(1000);
@@ -84,10 +91,6 @@ function setWideTimeRange() {
       .click();
   });
   cy.getElementByTestId('superDatePickerRelativeTab').first().click();
-  cy.getElementByTestId('superDatePickerRelativeDateInputNumber')
-    .first()
-    .clear()
-    .type('15');
   cy.getElementByTestId('superDatePickerRelativeDateInputUnitSelector').select(
     'Years ago'
   );
@@ -125,6 +128,7 @@ describe('Agentic Notebook Investigation Tests', () => {
     it('should trigger investigation from Start Investigation button', () => {
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
 
+      setIndex('opensearch_dashboards_sample_data_ecommerce');
       setWideTimeRange();
 
       cy.contains('Start Investigation').click();
@@ -133,13 +137,13 @@ describe('Agentic Notebook Investigation Tests', () => {
       cy.contains('button.euiButton', 'Root cause analytics').click();
       cy.get(SELECTORS.questionTextarea).should(
         'have.value',
-        'Analyze anomaly and root cause in this dataset.'
+        'Analyze anomaly in this dataset, if there are major errors, find the root cause.'
       );
 
       cy.contains('button.euiButton', 'Performance issues').click();
       cy.get(SELECTORS.questionTextarea).should(
         'have.value',
-        'Why these request take time?'
+        'Why do these requests take time?'
       );
 
       // Enter custom question and start
@@ -463,19 +467,21 @@ describe('Agentic Notebook Investigation Tests', () => {
       cy.get('div.euiModal').should('exist');
       cy.get('button.euiModal__closeIcon').should('exist');
 
-      // Verify existing question
-      cy.get('textarea.euiTextArea').should(
-        'have.value',
-        investigationQuestion
-      );
+      // Verify existing question — scope to modal because other textarea.euiTextArea
+      // elements may be present on the page (e.g. add-finding input)
+      cy.get('div.euiModal')
+        .find('textarea.euiTextArea')
+        .should('have.value', investigationQuestion);
       cy.contains('button', 'Confirm').should('not.be.disabled');
 
       // Validation
-      cy.get('textarea.euiTextArea').clear();
+      cy.get('div.euiModal').find('textarea.euiTextArea').clear();
       cy.contains('button', 'Confirm').should('be.disabled');
 
       // New question
-      cy.get('textarea.euiTextArea').type('new investigation question');
+      cy.get('div.euiModal')
+        .find('textarea.euiTextArea')
+        .type('new investigation question');
       cy.contains('button', 'Confirm').should('not.be.disabled');
 
       // Options
@@ -493,6 +499,7 @@ describe('Agentic Notebook Investigation Tests', () => {
     it('should trigger investigation from log action menu', () => {
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
 
+      setIndex('opensearch_dashboards_sample_data_ecommerce');
       setWideTimeRange();
 
       cy.getElementByTestId('logActionMenuButton')
@@ -504,7 +511,7 @@ describe('Agentic Notebook Investigation Tests', () => {
         .click();
 
       cy.get('code.euiCodeBlock__code.json').should('exist');
-      cy.contains('button.euiButton', 'Root cause analytics').should('exist');
+      cy.contains('button.euiButton', 'Root cause analysis').should('exist');
       cy.contains('button.euiButton', 'Performance issues').should('exist');
 
       cy.get(SELECTORS.questionTextarea)
@@ -536,6 +543,7 @@ describe('Agentic Notebook Investigation Tests', () => {
       // Navigate to explore logs and run a PPL query that produces a visualization
       cy.visit(`${BASE_PATH}/w/${workspaceId}/app/explore/logs`);
 
+      setIndex('opensearch_dashboards_sample_data_ecommerce');
       setWideTimeRange();
 
       cy.get('textarea[aria-label="Editor content"]').then(($textarea) => {
@@ -547,6 +555,7 @@ describe('Agentic Notebook Investigation Tests', () => {
         textarea.dispatchEvent(new Event('change', { bubbles: true }));
       });
       cy.getElementByTestId('exploreQueryExecutionButton').click();
+      cy.getElementByTestId('exploreTab-explore_visualization_tab').click();
       cy.getElementByTestId('exploreVisualizationLoader').should('be.visible');
 
       // Add visualization to a new dashboard
