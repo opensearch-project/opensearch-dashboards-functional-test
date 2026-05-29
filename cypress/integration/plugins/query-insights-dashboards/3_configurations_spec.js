@@ -3,75 +3,38 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
+import { QUERY_INSIGHTS_METRICS as METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const clearAll = () => {
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+  cy.disableTopQueries(METRICS.LATENCY);
+  cy.disableTopQueries(METRICS.CPU);
+  cy.disableTopQueries(METRICS.MEMORY);
 };
 
 const toggleMetricEnabled = () => {
-  // Check current state first and wait for it to be ready
-  cy.get('button[data-test-subj="top-n-metric-toggle"]', { timeout: 30000 })
-    .should('exist')
-    .should('be.visible')
-    .then(($toggle) => {
-      const isChecked = $toggle.attr('aria-checked') === 'true';
-      if (!isChecked) {
-        // Only click if not already enabled
-        cy.get('button[data-test-subj="top-n-metric-toggle"]').click({
-          force: true,
+  // Read current state, click only if not already enabled, then wait for the
+  // aria-checked transition to confirm the toggle actually fired. Retry the
+  // click if the React handler hadn't bound yet on the first attempt.
+  const ensureEnabled = (attempt = 0) => {
+    cy.get('button[data-test-subj="top-n-metric-toggle"]', { timeout: 30000 })
+      .should('exist')
+      .should('be.visible')
+      .then(($toggle) => {
+        if ($toggle.attr('aria-checked') === 'true') return;
+        cy.wrap($toggle).click({ force: true });
+        cy.wait(500);
+        cy.get('button[data-test-subj="top-n-metric-toggle"]').then(($t) => {
+          if ($t.attr('aria-checked') !== 'true' && attempt < 3) {
+            ensureEnabled(attempt + 1);
+          }
         });
-      }
-    });
-  // Wait for the toggle to be enabled with a longer timeout
+      });
+  };
+  ensureEnabled();
   cy.get('button[data-test-subj="top-n-metric-toggle"]', {
     timeout: 30000,
   }).should('have.attr', 'aria-checked', 'true');
 };
-
-// Helper function to find and click save button with multiple fallback selectors
-const clickSaveButton = () => {
-  // Wait a bit for UI to detect changes
-  cy.wait(2000);
-
-  // Try multiple selectors for save button
-  const selectors = [
-    'button[data-test-subj="save-config-button"]',
-    'button[data-test-subj="saveConfigurationButton"]',
-    'button:contains("Save")',
-    '.euiButton--fill:contains("Save")',
-    '[data-test-subj="queryInsightsConfigSaveButton"]',
-  ];
-
-  cy.get('body').then(($body) => {
-    let found = false;
-    for (const selector of selectors) {
-      const $btn = $body.find(selector);
-      if ($btn.length > 0 && $btn.is(':visible') && !$btn.is(':disabled')) {
-        cy.wrap($btn.first()).click({ force: true });
-        found = true;
-        cy.log(`Found save button with selector: ${selector}`);
-        break;
-      }
-    }
-
-    if (!found) {
-      // If no save button found, try to find any button containing "Save"
-      // eslint-disable-next-line no-undef
-      const $saveBtn = $body.find('button').filter((index, el) => {
-        return Cypress.$(el).text().toLowerCase().includes('save');
-      });
-      if ($saveBtn.length > 0) {
-        cy.wrap($saveBtn.first()).click({ force: true });
-      } else {
-        throw new Error('Save button not found with any selector');
-      }
-    }
-  });
-};
-console.log(clickSaveButton);
 
 describe('Query Insights Configurations Page', () => {
   beforeEach(() => {
@@ -97,8 +60,8 @@ describe('Query Insights Configurations Page', () => {
       'euiTab-isSelected'
     );
     // Validate the panels
-    // 6 panels: Settings, Status, Group Settings, Group Status, Delete After Settings, Delete After Status
-    cy.get('.euiPanel').should('have.length', 6);
+    // 8 panels: Settings, Status, Group Settings, Group Status, Export Settings, Export Status, Remote Exporter Settings, Remote Exporter Status
+    cy.get('.euiPanel').should('have.length', 8);
   });
 
   /**
@@ -285,23 +248,29 @@ describe('Query Insights Configurations Page', () => {
    * Validate the save button, changes should be saved and redirect to overview
    * After saving the status panel should show the correct status
    */
-  // the save button is no longer available, so delete this test case
-  // it('should allow saving the configuration', () => {
-  //   toggleMetricEnabled();
-  //   cy.get('select#timeUnit').select('MINUTES');
-  //   cy.get('select#minutes').select('5');
-
-  //   // Scroll to bottom to ensure save button is visible
-  //   cy.scrollTo('bottom', { ensureScrollable: false });
-
-  //   // Use helper function to find and click save button
-  //   clickSaveButton();
-
-  //   cy.url().should('include', '/queryInsights');
-  //   cy.navigateToConfiguration();
-  //   cy.get('.euiHealth').contains('Enabled').should('be.visible');
-  //   cy.get('.euiText').contains('Latency').should('be.visible');
-  // });
+  it('should allow saving the configuration', () => {
+    // Force a fresh page load so the form's baseline state matches the cluster's
+    // actual settings (clearAll already disabled all metrics). Without this,
+    // testIsolation:false leaves prior-test DOM state and the form's isChanged
+    // diff stays false, so the Save bottom bar never renders.
+    cy.reload();
+    cy.contains('Query insights - Configuration').should('be.visible');
+    toggleMetricEnabled();
+    // Wait until the form actually re-renders with the time-unit dropdown enabled
+    // (React state lag — aria-checked flips before child controls re-mount).
+    cy.get('select#timeUnit', { timeout: 15000 }).should('not.be.disabled');
+    cy.get('select#timeUnit').select('HOURS');
+    cy.get('select#timeUnit').select('MINUTES');
+    cy.get('select#minutes').select('10');
+    cy.get('select#minutes').select('5');
+    cy.get('button[data-test-subj="save-config-button"]', {
+      timeout: 30000,
+    }).click();
+    cy.url().should('include', '/queryInsights');
+    cy.navigateToConfiguration();
+    cy.get('.euiHealth').contains('Enabled').should('be.visible');
+    cy.get('.euiText').contains('Latency').should('be.visible');
+  });
 
   after(() => clearAll());
 });
