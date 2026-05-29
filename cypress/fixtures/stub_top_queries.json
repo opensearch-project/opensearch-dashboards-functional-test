@@ -10,6 +10,7 @@
         "node_id": "UYKFun8PSAeJvkkt9cWf0w",
         "wlm_group_id": "DEFAULT_WORKLOAD_GROUP",
         "group_by": "NONE",
+        "failed": false,
         "total_shards": 1,
         "labels": {
           "X-Opaque-Id": "90eb5c3b-8448-4af3-84ce-a941eee9ed5f"
@@ -45,6 +46,7 @@
         "node_id": "UYKFun8PSAeJvkkt9cWf0w",
         "wlm_group_id": "SEARCH_GROUP",
         "group_by": "NONE",
+        "failed": true,
         "total_shards": 1,
         "labels": {
           "X-Opaque-Id": "90eb5c3b-8448-4af3-84ce-a941eee9ed5f"
@@ -63,6 +65,7 @@
         "node_id": "KINGun8PSAeJvkkt9cWf0w",
         "wlm_group_id": "DEFAULT_WORKLOAD_GROUP",
         "group_by": "NONE",
+        "failed": false,
         "total_shards": 1,
         "labels": {
           "X-Opaque-Id": "8a936346-8d19-409c-9fe6-8b890eca1f7c"

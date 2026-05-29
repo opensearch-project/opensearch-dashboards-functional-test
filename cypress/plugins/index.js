@@ -86,6 +86,19 @@ module.exports = (on, config) => {
     },
 
     /**
+     * Delete a file on disk. Used by the QI Profiler spec to clean up
+     * downloaded JSON files between tests.
+     */
+    deleteFile(filePath) {
+      try {
+        fs.unlinkSync(filePath);
+      } catch (e) {
+        console.error(e);
+      }
+      return null;
+    },
+
+    /**
      * Import JSON mapping file server-side (for large fixture files).
      * Reads the file, parses index definitions, and creates them via PUT.
      */
