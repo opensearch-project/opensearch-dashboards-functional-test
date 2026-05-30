@@ -4,44 +4,47 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
+import { QUERY_INSIGHTS_METRICS as METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const indexName = 'sample_index';
 
 const clearAll = () => {
   cy.deleteIndexByName(indexName);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
-  cy.disableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
-  cy.disableGrouping();
+  cy.disableTopQueries(METRICS.LATENCY);
+  cy.disableTopQueries(METRICS.CPU);
+  cy.disableTopQueries(METRICS.MEMORY);
 };
 
 describe('Top Queries Details Page', () => {
   beforeEach(() => {
     clearAll();
     cy.createIndexByName(indexName, sampleDocument);
-    cy.enableTopQueries(QUERY_INSIGHTS_METRICS.LATENCY);
-    cy.enableTopQueries(QUERY_INSIGHTS_METRICS.CPU);
-    cy.enableTopQueries(QUERY_INSIGHTS_METRICS.MEMORY);
+    cy.enableTopQueries(METRICS.LATENCY);
+    cy.enableTopQueries(METRICS.CPU);
+    cy.enableTopQueries(METRICS.MEMORY);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until data is available, then navigate
-    // directly to the query details page via URL (bypasses table click
-    // which is fragile due to OUI class names and viz panel tables).
+    // Poll the OpenSearch _insights/top_queries API until data is available, then
+    // navigate directly to /query-details by query id. Upstream clicks the first
+    // row of `.euiBasicTable:last` in the overview, but with the new
+    // Stats & Visualizations panel that selector occasionally lands on a chart
+    // table row and routes to a query-details URL with a short bucket id, which
+    // shows "No Data Available" and breaks every assertion in this describe.
     cy.waitForTopQueriesData();
     cy.navigateToQueryDetails();
   });
 
   it('should display correct details on the query details page', () => {
-    // cy.get('.euiBasicTable a').first().click(); // Navigate to details
     cy.url().should('include', '/query-details');
     // Validate the page title
     cy.get('h1').contains('Query details').should('be.visible');
     // Validate the summary section
     cy.get('[data-test-subj="query-details-summary-section"]').should(
+      'be.visible'
+    );
+    // Validate the task resource usage section
+    cy.get('[data-test-subj="query-details-task-resource-usages"]').should(
       'be.visible'
     );
     // Validate the presence of latency chart
@@ -68,6 +71,7 @@ describe('Top Queries Details Page', () => {
       'Search Type',
       'Coordinator Node ID',
       'Total Shards',
+      'Status',
     ];
     fieldLabels.forEach((label) => {
       cy.get('.euiPanel').contains('h4', label).should('be.visible');
@@ -131,6 +135,31 @@ describe('Top Queries Details Page', () => {
           expect(shardCount).to.be.a('number').and.to.be.greaterThan(0);
         });
     });
+  });
+
+  /**
+   * Validate Task Resource Usage panel renders when verbose=true
+   */
+  it('should display the Task Resource Usage panel with coordinator and shard tasks', () => {
+    cy.get('[data-test-subj="query-details-task-resource-usages"]').should(
+      'be.visible'
+    );
+    cy.get('[data-test-subj="query-details-task-resource-usages"]').within(
+      () => {
+        cy.contains('h2', 'Task Resource Usage').should('be.visible');
+        cy.contains('h3', 'Coordinator Task').should('be.visible');
+        cy.contains('h3', 'Shard Tasks').should('be.visible');
+        // Coordinator task fields
+        cy.contains('Task ID').should('be.visible');
+        cy.contains('Node ID').should('be.visible');
+        cy.contains('CPU Time (ms)').should('be.visible');
+        cy.contains('Memory (bytes)').should('be.visible');
+        // Shard tasks table
+        cy.get('.euiBasicTable').should('be.visible');
+        cy.get('.euiTableHeaderCell').contains('Phase').should('be.visible');
+        cy.get('.euiTableRow').should('have.length.greaterThan', 0);
+      }
+    );
   });
 
   /**

@@ -18,15 +18,16 @@ describe('Query Group Details Page', () => {
     cy.wait(5000);
     cy.createIndexByName(indexName, sampleDocument);
     cy.enableGrouping();
-    // waiting for the query insights to stabilize
+    // waiting for the query insights to stablize
     cy.wait(5000);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    cy.wait(1000);
     cy.searchOnIndex(indexName);
-    // Poll the OpenSearch API until data is available, then navigate
-    // directly to the group details page via URL.
+    // Poll the OpenSearch _insights/top_queries API until data is available, then
+    // navigate directly to /query-group-details by id. Upstream clicks the first
+    // row of `.euiBasicTable:last` in the overview, but with the new
+    // Stats & Visualizations panel that selector occasionally lands on a chart
+    // table row and routes to a details URL with a short bucket id.
     cy.waitForTopQueriesData();
     cy.navigateToGroupDetails();
   });
@@ -61,6 +62,7 @@ describe('Query Group Details Page', () => {
       'Average CPU Time',
       'Average Memory Usage',
       'Group by',
+      'Query Group Hashcode',
     ];
 
     // Validate all field labels exist in the first EuiPanel
@@ -134,6 +136,7 @@ describe('Query Group Details Page', () => {
 
         const firstQuery = responseData.top_queries[0];
         expect(firstQuery).to.include.all.keys([
+          'failed',
           'group_by',
           'id',
           'indices',
