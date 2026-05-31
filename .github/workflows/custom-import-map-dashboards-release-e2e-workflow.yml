@@ -23,3 +23,4 @@ jobs:
     with:
       test-name: Observability
       test-command: yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/custom-import-map-dashboards/*'
+      osd-serve-args: --home.disableExperienceModal=true --home.disableWelcomeScreen=true
