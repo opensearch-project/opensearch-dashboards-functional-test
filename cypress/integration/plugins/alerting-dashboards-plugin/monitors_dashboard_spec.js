@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+// Each spec runs in its own process via matrix strategy to prevent memory crashes
+
 import {
   ALERTING_INDEX,
   ALERTING_PLUGIN_NAME,
