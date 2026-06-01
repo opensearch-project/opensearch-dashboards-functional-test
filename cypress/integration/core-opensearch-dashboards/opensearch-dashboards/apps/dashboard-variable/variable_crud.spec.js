@@ -152,7 +152,9 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.contains('Custom').click();
 
         cy.getElementByTestId('variableEditorName').clear().type('env');
-        cy.getElementByTestId('variableEditorLabel').clear().type('Enviroment');
+        cy.getElementByTestId('variableEditorLabel')
+          .clear()
+          .type('Environment');
         cy.getElementByTestId('variableEditorDescription')
           .clear()
           .type('Environment');
@@ -273,7 +275,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
         cy.getElementByTestId('variableEditorName').should('have.value', 'env');
         cy.getElementByTestId('variableEditorLabel').should(
           'have.value',
-          'Enviroment'
+          'Environment'
         );
         cy.getElementByTestId('variableEditorDescription').should(
           'have.value',
