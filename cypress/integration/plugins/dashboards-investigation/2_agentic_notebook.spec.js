@@ -112,6 +112,16 @@ describe('Agentic Notebook Investigation Tests', () => {
       name: workspaceName,
       description: 'Workspace for cypress testing',
       features: ['use-case-observability'],
+      settings: {
+        permissions: {
+          library_write: {
+            users: ['%me%'],
+          },
+          write: {
+            users: ['%me%'],
+          },
+        },
+      },
     }).then((wsId) => {
       workspaceId = wsId;
       cy.loadSampleDataForWorkspace('ecommerce', workspaceId);
