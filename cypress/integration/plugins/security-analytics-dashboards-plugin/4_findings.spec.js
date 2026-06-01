@@ -131,6 +131,11 @@ describe('Findings', () => {
     ruleTags.forEach((tag) => {
       cy.contains(tag);
     });
+
+    // Close the flyout to prevent overlay issues in subsequent tests
+    cy.get('.euiFlexItem--flexGrowZero > .euiButtonIcon').click({
+      force: true,
+    });
   });
 
   // TODO - upon reaching rules page, trigger appropriate rules detail flyout

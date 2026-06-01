@@ -430,6 +430,10 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+      // Short wait to ensure previous test operations are complete
+      cy.wait(2000);
+      // Force reload to ensure detectorsSearch request fires even if already on this page
+      cy.reload();
       cy.wait('@detectorsSearch').should('have.property', 'state', 'Complete');
     });
 
@@ -628,6 +632,7 @@ describe('Detectors', () => {
           });
           setupIntercept(cy, NODE_API.SEARCH_DETECTORS, 'detectorsSearch');
           cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
+          cy.reload();
           cy.wait('@detectorsSearch').should(
             'have.property',
             'state',
