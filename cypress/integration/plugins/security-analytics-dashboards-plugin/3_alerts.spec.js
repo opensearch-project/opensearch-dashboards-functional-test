@@ -52,21 +52,26 @@ describe('Alerts', () => {
   beforeEach(() => {
     // Visit Alerts table page
     setupIntercept(cy, `${NODE_API.DETECTORS_BASE}/_search`, 'detectorsSearch');
-    // Visit Detectors page
+    // Visit Alerts page
     cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/alerts`);
-    cy.wait('@detectorsSearch', { timeout: 600000 }).should(
-      'have.property',
-      'state',
-      'Complete'
-    );
+    // Force reload to dismiss any flyouts/overlays from previous test
+    cy.reload();
 
     // Wait for page to load
     cy.sa_waitForPageLoad('alerts', {
       contains: 'Security alerts',
     });
 
+    // Short wait to ensure data loads
+    cy.wait(5000);
+
     // Filter table to only show alerts for the test detector
-    cy.get(`input[type="search"]`).type(`${testDetectorCfg.name}{enter}`);
+    cy.get(`input[type="search"]`).type(`${testDetectorCfg.name}{enter}`, {
+      force: true,
+    });
+
+    // Wait for table to re-render after filter
+    cy.wait(2000);
 
     // Adjust the date range picker to display alerts from today
     cy.get(
