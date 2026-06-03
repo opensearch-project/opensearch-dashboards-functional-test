@@ -118,8 +118,8 @@ fi
 npm install
 
 TEST_FILES=`get_test_list $TEST_COMPONENTS`
-echo -e "Test Files List:"
-echo $TEST_FILES | tr ',' '\n'
+TEST_FILES=`echo $TEST_FILES | tr ',' ' '`
+echo "Test Files List: $TEST_FILES"
 echo "BROWSER_PATH: $BROWSER_PATH"
 
 # Can be used as Jenkins environment variable set for the orchestrator feature flag, default: true
@@ -235,10 +235,47 @@ if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]
     powershell -Command "Set-TimeZone -Id 'Pacific Standard Time' -PassThru"
 fi
 
+## Pre-3.7.0, as cypress 9 does not have memory issues
+#if [ "$SECURITY_ENABLED" = "true" ]; then
+#    echo "Running security enabled tests"
+#    yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+#else
+#    echo "Running security disabled tests"
+#    yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+#fi
+
+## Post-3.7.0, cypress > 9 have memory issues, running each spec with its own cypress process sequentially
+## https://github.com/cypress-io/cypress/issues/30988
+## https://github.com/cypress-io/cypress/issues/27415
+FAILED_NUM=0
+FAILED_TESTS=""
+TEST_FILES_NUM=`echo $TEST_FILES | wc -w`
+TEST_FILES_NUM_CURR=0
+
 if [ "$SECURITY_ENABLED" = "true" ]; then
     echo "Running security enabled tests"
-    yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+    TEST_MODE=run-with-security
 else
     echo "Running security disabled tests"
-    yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+    TEST_MODE=run-without-security
+fi
+
+for test_file in $TEST_FILES; do
+    TEST_STATUS=pass
+    TEST_FILES_NUM_CURR=$(( TEST_FILES_NUM_CURR + 1 ))
+    echo -e "\nTest ($TEST_FILES_NUM_CURR/$TEST_FILES_NUM): $test_file"
+    yarn cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
+
+    if [ "$TEST_STATUS" = "fail" ]; then
+        FAILED_NUM=$(( FAILED_NUM + 1 ))
+        FAILED_TESTS="$FAILED_TESTS $test_file"
+    fi
+done
+
+if [ "$FAILED_NUM" -ne 0 ]; then
+    echo "Failed test: $FAILED_NUM"
+    echo "Failed list: $FAILED_TESTS"
+    exit 1
+else
+    echo "All tests passing"
 fi
