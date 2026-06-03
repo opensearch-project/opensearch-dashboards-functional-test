@@ -5,27 +5,30 @@
 
 import { BASE_PATH, TIMEOUT } from '../../../utils/constants';
 
+function waitForReportDefinitions(retries = 5) {
+  cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
+    waitForGetTenant: true,
+  });
+  cy.location('pathname', { timeout: TIMEOUT }).should(
+    'include',
+    '/reports-dashboards'
+  );
+  cy.wait(5000);
+  cy.get('body').then(($body) => {
+    if (
+      $body.find('#reportDefinitionDetailsLink').length === 0 &&
+      retries > 0
+    ) {
+      cy.wait(10000);
+      waitForReportDefinitions(retries - 1);
+    }
+  });
+  cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should('exist');
+}
+
 describe('Cypress', () => {
   beforeEach(() => {
-    // Wait before visiting to allow index refresh after previous test's save
-    cy.wait(5000);
-    cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
-      waitForGetTenant: true,
-    });
-    cy.location('pathname', { timeout: TIMEOUT }).should(
-      'include',
-      '/reports-dashboards'
-    );
-    // Retry: if the list doesn't load, reload the page
-    cy.get('body').then(($body) => {
-      if ($body.find('#reportDefinitionDetailsLink').length === 0) {
-        cy.wait(5000);
-        cy.reload();
-      }
-    });
-    cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should(
-      'exist'
-    );
+    waitForReportDefinitions();
   });
 
   it('Visit edit page, update name and description', () => {
