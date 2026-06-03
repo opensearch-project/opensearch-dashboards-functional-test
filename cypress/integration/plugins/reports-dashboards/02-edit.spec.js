@@ -66,11 +66,7 @@ describe('Cypress', () => {
 
     cy.url().should('include', 'edit');
 
-    cy.get('#reportDefinitionTriggerTypes > div:nth-child(2)').click({
-      force: true,
-    });
-
-    cy.get('#Schedule').check({ force: true });
+    cy.get('label[for="Schedule"]').click();
     cy.get('#editReportDefinitionButton')
       .contains('Save Changes')
       .trigger('mouseover')
@@ -90,9 +86,7 @@ describe('Cypress', () => {
 
     cy.url().should('include', 'edit');
 
-    cy.get('#reportDefinitionTriggerTypes > div:nth-child(1)').click({
-      force: true,
-    });
+    cy.get('label[for="On demand"]').click();
 
     cy.get('#editReportDefinitionButton')
       .contains('Save Changes')

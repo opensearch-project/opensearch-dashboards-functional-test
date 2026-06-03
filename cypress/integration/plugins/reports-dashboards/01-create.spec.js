@@ -241,8 +241,9 @@ function setReportDefinitionDescription(description) {
   cy.get('#reportSettingsDescription').type(description);
 }
 
-function selectReportSource(name) {
-  cy.get(name).click({ force: true });
+function selectReportSource(id) {
+  // Click the label associated with the radio input to reliably trigger React onChange
+  cy.get(`label[for="${id.replace('#', '')}"]`).click();
 }
 
 function selectReportSourceComboBox() {
@@ -250,7 +251,7 @@ function selectReportSourceComboBox() {
 }
 
 function setReportTriggerToSchedule() {
-  cy.get('#Schedule').check({ force: true });
+  cy.get('label[for="Schedule"]').click();
 }
 
 function selectIntervalScheduleFrequency() {
@@ -258,7 +259,7 @@ function selectIntervalScheduleFrequency() {
 }
 
 function selectCronBasedRequestTime() {
-  cy.contains('Cron based').click({ force: true });
+  cy.get('label[for="Cron based"]').click();
 }
 
 function inputTextIntoField(selector, text) {
