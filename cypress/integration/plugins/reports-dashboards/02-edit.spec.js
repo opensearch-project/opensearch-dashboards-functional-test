@@ -44,6 +44,9 @@ describe('Cypress', () => {
       '{selectall}{backspace} update description'
     );
 
+    // ensure file format is selected (radio may not be pre-populated on edit)
+    cy.get('#csv').check({ force: true });
+
     cy.get('#editReportDefinitionButton')
       .contains('Save Changes')
       .trigger('mouseover')
@@ -62,6 +65,9 @@ describe('Cypress', () => {
     cy.get('#editReportDefinitionButton').click();
 
     cy.url().should('include', 'edit');
+
+    // ensure file format is selected
+    cy.get('#csv').check({ force: true });
 
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(2)').click({
       force: true,
@@ -86,6 +92,9 @@ describe('Cypress', () => {
     cy.get('#editReportDefinitionButton').click();
 
     cy.url().should('include', 'edit');
+
+    // ensure file format is selected
+    cy.get('#csv').check({ force: true });
 
     cy.get('#reportDefinitionTriggerTypes > div:nth-child(1)').click({
       force: true,
