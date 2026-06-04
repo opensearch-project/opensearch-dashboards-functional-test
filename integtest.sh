@@ -225,8 +225,7 @@ fi
 
 if [ "$DISABLE_VIDEO" = "true" ]; then
     echo "Disable video recording when running tests in Cypress"
-    jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
-    mv -v cypress_new.json cypress.json
+    sed -i 's/video: true/video: false/g' cypress.config.js
 fi
 
 # Windows does not set timezone even when you specify `env TZ=America/Los_Angeles`
@@ -234,15 +233,6 @@ fi
 if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
     powershell -Command "Set-TimeZone -Id 'Pacific Standard Time' -PassThru"
 fi
-
-## Pre-3.7.0, as cypress 9 does not have memory issues
-#if [ "$SECURITY_ENABLED" = "true" ]; then
-#    echo "Running security enabled tests"
-#    yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
-#else
-#    echo "Running security disabled tests"
-#    yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
-#fi
 
 ## Post-3.7.0, cypress > 9 have memory issues, running each spec with its own cypress process sequentially
 ## https://github.com/cypress-io/cypress/issues/30988
@@ -258,6 +248,11 @@ if [ "$SECURITY_ENABLED" = "true" ]; then
 else
     echo "Running security disabled tests"
     TEST_MODE=run-without-security
+fi
+
+# Temp fix to only enable assistantDashboards until the llm js startup is moved to test itself, not env var
+if [[ "$TEST_COMPONENTS" == *"assistantDashboards"* ]]; then
+    export CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true
 fi
 
 for test_file in $TEST_FILES; do

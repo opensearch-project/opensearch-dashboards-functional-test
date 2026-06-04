@@ -274,7 +274,10 @@ Cypress.Commands.add('cleanProvisionedAgents', () => {
 Cypress.Commands.add('startDummyServer', () => {
   // Not a good practice to start a server inside Cypress https://docs.cypress.io/guides/references/best-practices#Web-Servers
   // But in out case, we need to reuse release e2e template and let's make it a tradeoff.
-  cy.exec(`nohup yarn start-dummy-llm-server > /tmp/dummy-llm.log 2>&1 &`);
+  cy.exec(
+    "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & sleep 1 && ps -ef | grep [a]ssistant-dummy-llm.js | head -n 1 | awk '{print $2}' > /tmp/assistant-llm.pid",
+    { timeout: 10000 }
+  );
   // Wait for server to start and verify it's running
   cy.wait(3000);
   cy.exec(
@@ -288,20 +291,8 @@ Cypress.Commands.add('startDummyServer', () => {
 });
 
 Cypress.Commands.add('stopDummyServer', () => {
-  /**
-   * For windows and Linux
-   */
-  cy.exec(`netstat -ano | grep "3000" | awk '{print $5}' | xargs kill -9`, {
+  cy.exec('kill -9 $(cat /tmp/assistant-llm.pid) || true', {
     failOnNonZeroExit: false,
-  }).then((result) => {
-    if (result.stderr) {
-      /**
-       * For Macos
-       */
-      cy.exec(`lsof -ti :3000 -sTCP:LISTEN | xargs kill`, {
-        failOnNonZeroExit: false,
-      });
-    }
   });
 });
 
