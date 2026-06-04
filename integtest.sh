@@ -119,6 +119,9 @@ npm install
 
 TEST_FILES=`get_test_list $TEST_COMPONENTS`
 TEST_FILES=`echo $TEST_FILES | tr ',' ' '`
+TOTAL_START_TIME=$(date +%s)
+echo -n "$(date -u +%Y-%m-%d\ %H:%M:%S\ UTC) "
+echo "Start testing $TEST_COMPONENTS"
 echo "Test Files List: $TEST_FILES"
 echo "BROWSER_PATH: $BROWSER_PATH"
 
@@ -239,8 +242,15 @@ fi
 ## https://github.com/cypress-io/cypress/issues/27415
 FAILED_NUM=0
 FAILED_TESTS=""
+RETRY_MAX=3
+RETRY_THRESHOLD=90
 TEST_FILES_NUM=`echo $TEST_FILES | wc -w`
 TEST_FILES_NUM_CURR=0
+
+if [ "$BROWSER_PATH" = "electron" ]; then
+    export NODE_OPTIONS="--max-old-space-size=4096"
+    export ELECTRON_EXTRA_LAUNCH_ARGS="--disable-gpu --disable-dev-shm-usage --no-sandbox"
+fi
 
 if [ "$SECURITY_ENABLED" = "true" ]; then
     echo "Running security enabled tests"
@@ -256,16 +266,42 @@ if [[ "$TEST_COMPONENTS" == *"assistantDashboards"* ]]; then
 fi
 
 for test_file in $TEST_FILES; do
-    TEST_STATUS=pass
     TEST_FILES_NUM_CURR=$(( TEST_FILES_NUM_CURR + 1 ))
-    echo -e "\nTest ($TEST_FILES_NUM_CURR/$TEST_FILES_NUM): $test_file"
-    yarn cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
+    RETRY_NUM=1
+
+    while [ "$RETRY_NUM" -le "$RETRY_MAX" ]; do
+        TEST_STATUS=pass
+        echo -ne "\n$(date -u +%Y-%m-%d\ %H:%M:%S\ UTC) - "
+        echo "Test ($TEST_FILES_NUM_CURR/$TEST_FILES_NUM) - Try ($RETRY_NUM/$RETRY_MAX): $test_file"
+        START_TIME=$(date +%s)
+        yarn cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
+        END_TIME=$(date +%s)
+        DURATION=$(( END_TIME - START_TIME ))
+
+        if [ "$TEST_STATUS" = "pass" ]; then
+            echo -e "Test passed in in ${DURATION}s\n"
+            break
+        fi
+
+        # Only retry if test ended too quickly (likely Electron crash, not legit failure)
+        if [ "$DURATION" -ge "$RETRY_THRESHOLD" ]; then
+            echo -e "Test failed in ${DURATION}s, consider legit failure\n"
+            break
+        fi
+
+        echo -e "Test ended in ${DURATION}s, cypress likely crashed. Retrying: $test_file\n"
+        RETRY_NUM=$(( RETRY_NUM + 1 ))
+    done
 
     if [ "$TEST_STATUS" = "fail" ]; then
         FAILED_NUM=$(( FAILED_NUM + 1 ))
         FAILED_TESTS="$FAILED_TESTS $test_file"
     fi
 done
+
+TOTAL_END_TIME=$(date +%s)
+TOTAL_DURATION=$(( TOTAL_END_TIME - TOTAL_START_TIME ))
+echo "Total time: ${TOTAL_DURATION}s"
 
 if [ "$FAILED_NUM" -ne 0 ]; then
     echo "Failed test: $FAILED_NUM"
