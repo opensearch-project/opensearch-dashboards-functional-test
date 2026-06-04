@@ -15,7 +15,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     });
 
     after(() => {
-      cy.exec('cat /tmp/dummy-llm.log || true', {
+      cy.exec('cat /tmp/assistant-llm.log || true', {
         failOnNonZeroExit: false,
       }).then((result) => {
         cy.log('Dummy LLM logs:', result.stdout);
