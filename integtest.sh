@@ -241,7 +241,6 @@ FAILED_NUM=0
 FAILED_TESTS=""
 TEST_FILES_NUM=`echo $TEST_FILES | wc -w`
 TEST_FILES_NUM_CURR=0
-YARN_CMD="yarn"
 
 if [ "$SECURITY_ENABLED" = "true" ]; then
     echo "Running security enabled tests"
@@ -253,14 +252,14 @@ fi
 
 # Temp fix to only enable assistantDashboards until the llm js startup is moved to test itself, not env var
 if [[ "$TEST_COMPONENTS" == *"assistantDashboards"* ]]; then
-    YARN_CMD="CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn"
+    export CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true
 fi
 
 for test_file in $TEST_FILES; do
     TEST_STATUS=pass
     TEST_FILES_NUM_CURR=$(( TEST_FILES_NUM_CURR + 1 ))
     echo -e "\nTest ($TEST_FILES_NUM_CURR/$TEST_FILES_NUM): $test_file"
-    $YARN_CMD cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
+    yarn cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
 
     if [ "$TEST_STATUS" = "fail" ]; then
         FAILED_NUM=$(( FAILED_NUM + 1 ))
