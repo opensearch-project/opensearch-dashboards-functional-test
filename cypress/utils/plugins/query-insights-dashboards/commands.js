@@ -4,7 +4,7 @@
  */
 
 // Synced from opensearch-project/query-insights-dashboards' cypress/support/commands.js.
-// See COMPATIBILITY.md for the list of intentional divergences:
+// See docs/query-insights-dashboards-cypress-compatibility.md for the list of intentional divergences:
 //   - constants are aliased to QUERY_INSIGHTS_* names
 //   - the visit/request overrides from the plugin repo are dropped because this
 //     repo handles auth globally via cypress/utils/commands.js
