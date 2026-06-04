@@ -15,6 +15,7 @@ describe('Policies', () => {
 
     // Visit ISM OSD
     cy.visit(`${BASE_PATH}/app/${IM_PLUGIN_NAME}`);
+    cy.reload(true);
 
     // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
     cy.contains('Create policy', { timeout: 60000 });

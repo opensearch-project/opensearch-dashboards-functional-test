@@ -25,6 +25,7 @@ describe('Managed indices', () => {
 
     // Visit ISM OSD
     cy.visit(`${BASE_PATH}/app/${IM_PLUGIN_NAME}#/managed-indices`);
+    cy.reload(true);
 
     // Common text to wait for to confirm page loaded, give up to 60 seconds for initial load
     cy.contains('Edit rollover alias', { timeout: 60000 });
