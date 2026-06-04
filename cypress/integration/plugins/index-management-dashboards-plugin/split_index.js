@@ -18,6 +18,7 @@ describe('Split Index', () => {
     beforeEach(() => {
       // Visit ISM OSD
       cy.visit(`${BASE_PATH}/app/${IM_PLUGIN_NAME}#/indices`);
+      cy.reload(true);
       cy.contains('Rows per page', { timeout: 60000 });
     });
 
