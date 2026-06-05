@@ -10,9 +10,12 @@ Cypress.Commands.add('getVisPanelByTitle', (title) =>
 );
 
 Cypress.Commands.add('openVisContextMenu', { prevSubject: true }, (panel) => {
-  cy.wrap(panel)
-    .find(`[data-test-subj="embeddablePanelContextMenuClosed"]`)
-    .click();
+  const title = panel.find('[data-title]').attr('data-title');
+  const contextMenuButtonSelector = title
+    ? `.embPanel:has([data-title="${title}"]) [data-test-subj="embeddablePanelContextMenuClosed"]`
+    : '[data-test-subj="embeddablePanelContextMenuClosed"]';
+
+  cy.get(contextMenuButtonSelector).click();
 
   return cy.get('.euiContextMenu');
 });
