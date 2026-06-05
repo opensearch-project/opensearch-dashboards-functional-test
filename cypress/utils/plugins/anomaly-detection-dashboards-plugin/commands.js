@@ -319,7 +319,10 @@ Cypress.Commands.add('openAdVisContextMenu', { prevSubject: true }, (panel) => {
   const contextMenuButtonSelector = title
     ? `.embPanel:has([data-title="${title
         .replace(/\\/g, '\\\\')
-        .replace(/"/g, '\\"')}"]) [data-test-subj="embeddablePanelContextMenuClosed"]`
+        .replace(
+          /"/g,
+          '\\"'
+        )}"]) [data-test-subj="embeddablePanelContextMenuClosed"]`
     : '[data-test-subj="embeddablePanelContextMenuClosed"]';
 
   cy.get(contextMenuButtonSelector).click();
