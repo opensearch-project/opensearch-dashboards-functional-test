@@ -14,7 +14,6 @@ jobs:
         filters: |
           tests:
             - 'cypress/**/anomaly-detection-dashboards-plugin/**'
-            - 'cypress/utils/dashboards/vis-augmenter/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
             - '.github/workflows/anomaly-detection-release-e2e-workflow.yml'
 
