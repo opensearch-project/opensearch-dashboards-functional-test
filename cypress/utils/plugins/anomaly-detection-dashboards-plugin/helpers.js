@@ -45,8 +45,8 @@ export const createSampleDetector = (createButtonDataTestSubj) => {
 const openAnomalyDetectionPanel = (dashboardName, visualizationName) => {
   cy.visitDashboard(dashboardName);
   cy.getVisPanelByTitle(visualizationName)
-    .openVisContextMenu()
-    .clickVisPanelMenuItem('Anomaly Detection');
+    .openAdVisContextMenu()
+    .clickAdVisPanelMenuItem('Anomaly Detection');
 };
 
 export const openDetectorDetailsPageFromFlyout = () => {
@@ -58,7 +58,7 @@ export const openAddAnomalyDetectorFlyout = (
   visualizationName
 ) => {
   openAnomalyDetectionPanel(dashboardName, visualizationName);
-  cy.clickVisPanelMenuItem('Add anomaly detector');
+  cy.clickAdVisPanelMenuItem('Add anomaly detector');
   cy.wait(5000);
 };
 
@@ -67,14 +67,14 @@ export const openAssociatedDetectorsFlyout = (
   visualizationName
 ) => {
   openAnomalyDetectionPanel(dashboardName, visualizationName);
-  cy.clickVisPanelMenuItem('Associated detectors');
+  cy.clickAdVisPanelMenuItem('Associated detectors');
 };
 
 export const openViewEventsFlyout = (dashboardName, visualizationName) => {
   cy.visitDashboard(dashboardName);
   cy.getVisPanelByTitle(visualizationName)
-    .openVisContextMenu()
-    .clickVisPanelMenuItem('View Events');
+    .openAdVisContextMenu()
+    .clickAdVisPanelMenuItem('View Events');
   cy.wait(5000);
 };
 

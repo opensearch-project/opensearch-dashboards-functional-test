@@ -68,8 +68,8 @@ describe('View anomaly events in flyout', () => {
 
   it('Action does not exist if there are no VisLayers for a visualization', () => {
     cy.getVisPanelByTitle(visualizationName)
-      .openVisContextMenu()
-      .getMenuItems()
+      .openAdVisContextMenu()
+      .getAdMenuItems()
       .contains('View Events')
       .should('not.exist');
   });
@@ -81,8 +81,8 @@ describe('View anomaly events in flyout', () => {
 
     cy.visitDashboard(dashboardName);
     cy.getVisPanelByTitle(visualizationName)
-      .openVisContextMenu()
-      .getMenuItems()
+      .openAdVisContextMenu()
+      .getAdMenuItems()
       .contains('View Events')
       .should('exist');
   });
@@ -105,8 +105,8 @@ describe('View anomaly events in flyout', () => {
     unlinkDetectorFromVis(dashboardName, visualizationName, detectorName);
     cy.visitDashboard(dashboardName);
     cy.getVisPanelByTitle(visualizationName)
-      .openVisContextMenu()
-      .getMenuItems()
+      .openAdVisContextMenu()
+      .getAdMenuItems()
       .contains('View Events')
       .should('not.exist');
   });

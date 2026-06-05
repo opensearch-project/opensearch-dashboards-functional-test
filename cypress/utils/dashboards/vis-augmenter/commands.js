@@ -10,21 +10,21 @@ Cypress.Commands.add('getVisPanelByTitle', (title) =>
 );
 
 Cypress.Commands.add('openVisContextMenu', { prevSubject: true }, (panel) => {
-  cy.wrap(panel)
-    .find(`[data-test-subj="embeddablePanelContextMenuClosed"]`)
-    .click();
-
-  return cy.get('.euiContextMenu');
+  return cy
+    .wrap(panel)
+    .find('[data-test-subj="embeddablePanelContextMenuClosed"]')
+    .click()
+    .get('.euiContextMenu');
 });
 
 Cypress.Commands.add(
   'clickVisPanelMenuItem',
-  { prevSubject: 'optional' },
-  (_menu, text) => cy.get('.euiContextMenu button').contains(text).click()
+  { prevSubject: true },
+  (menu, text) => cy.wrap(menu).find('button').contains(text).click()
 );
 
-Cypress.Commands.add('getMenuItems', { prevSubject: 'optional' }, () =>
-  cy.get('.euiContextMenu button')
+Cypress.Commands.add('getMenuItems', { prevSubject: true }, (menu) =>
+  cy.wrap(menu).find('button')
 );
 
 Cypress.Commands.add('visitDashboard', (dashboardName) => {

@@ -313,3 +313,29 @@ Cypress.Commands.add(
     cy.wait('@stopForecaster');
   }
 );
+
+Cypress.Commands.add('openAdVisContextMenu', { prevSubject: true }, (panel) => {
+  const title = panel.find('[data-title]').attr('data-title');
+  const contextMenuButtonSelector = title
+    ? `.embPanel:has([data-title="${title
+        .replace(/\\/g, '\\\\')
+        .replace(
+          /"/g,
+          '\\"'
+        )}"]) [data-test-subj="embeddablePanelContextMenuClosed"]`
+    : '[data-test-subj="embeddablePanelContextMenuClosed"]';
+
+  cy.get(contextMenuButtonSelector).click();
+
+  return cy.get('.euiContextMenu');
+});
+
+Cypress.Commands.add(
+  'clickAdVisPanelMenuItem',
+  { prevSubject: 'optional' },
+  (_menu, text) => cy.get('.euiContextMenu button').contains(text).click()
+);
+
+Cypress.Commands.add('getAdMenuItems', { prevSubject: 'optional' }, () =>
+  cy.get('.euiContextMenu button')
+);
