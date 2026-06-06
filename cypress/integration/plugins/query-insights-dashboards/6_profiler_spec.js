@@ -139,10 +139,18 @@ describe('Query Profiler', () => {
     cy.get('.ace_content').last().invoke('text').should('include', 'Error');
   });
 
+  // The output editor mirrors `output` state via a useEffect, and `handleVisualize` is a
+  // useCallback memoized on `output`. cy.wait('@profilerQuery') resolves on response receipt
+  // — before React commits setOutput and rebinds the Visualize click handler. Waiting until
+  // the response body is visible in the output editor ensures the click sees the fresh closure.
+  const waitForProfilerOutput = () =>
+    cy.get('.ace_content').last().invoke('text').should('include', '"took"');
+
   it('Visualize renders profile results after query', () => {
     cy.intercept('POST', '**/api/profiler-proxy').as('profilerQuery');
     cy.get('.conApp__editorActionButton--success').first().click();
     cy.wait('@profilerQuery');
+    waitForProfilerOutput();
     cy.contains('Visualize profile').click();
     cy.contains('Profile Results').should('be.visible');
   });
@@ -151,6 +159,7 @@ describe('Query Profiler', () => {
     cy.intercept('POST', '**/api/profiler-proxy').as('profilerQuery');
     cy.get('.conApp__editorActionButton--success').first().click();
     cy.wait('@profilerQuery');
+    waitForProfilerOutput();
     cy.contains('Visualize profile').click();
     cy.contains('Profile Results').should('be.visible');
     cy.get('input[placeholder="Search shard"]').should('exist');
@@ -160,6 +169,7 @@ describe('Query Profiler', () => {
     cy.intercept('POST', '**/api/profiler-proxy').as('profilerQuery');
     cy.get('.conApp__editorActionButton--success').first().click();
     cy.wait('@profilerQuery');
+    waitForProfilerOutput();
     cy.contains('Visualize profile').click();
     cy.contains('Profile Results').should('be.visible');
     cy.contains('.euiTab', 'Search').should('be.visible');
