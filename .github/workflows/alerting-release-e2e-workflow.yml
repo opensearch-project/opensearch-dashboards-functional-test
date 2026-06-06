@@ -16,10 +16,74 @@ jobs:
             - 'cypress/**/alerting-dashboards-plugin/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
 
-  tests:
+  tests-acknowledge-alerts-modal:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
-      test-name: Alerting
-      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/*'
+      test-name: Alerting (acknowledge_alerts_modal_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/acknowledge_alerts_modal_spec.js'
+
+  tests-alert:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (alert_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/alert_spec.js'
+
+  tests-alerts-dashboard-flyout:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (alerts_dashboard_flyout_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/alerts_dashboard_flyout_spec.js'
+
+  tests-bucket-level-monitor:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (bucket_level_monitor_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/bucket_level_monitor_spec.js'
+
+  tests-cluster-metrics-monitor:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (cluster_metrics_monitor_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/cluster_metrics_monitor_spec.js'
+
+  tests-composite-level-monitor:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (composite_level_monitor_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/composite_level_monitor_spec.js'
+
+  tests-document-level-monitor:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (document_level_monitor_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/document_level_monitor_spec.js'
+
+  tests-monitors-dashboard:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (monitors_dashboard_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/monitors_dashboard_spec.js'
+
+  tests-query-level-monitor:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Alerting (query_level_monitor_spec.js)
+      test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/alerting-dashboards-plugin/query_level_monitor_spec.js'

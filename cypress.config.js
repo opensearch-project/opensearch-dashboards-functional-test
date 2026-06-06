@@ -75,24 +75,17 @@ module.exports = defineConfig({
     experimentalMemoryManagement: true,
     numTestsKeptInMemory: 0,
     setupNodeEvents(on, config) {
-      // Configure Chromium browser launch options for memory optimization
       on('before:browser:launch', (browser = {}, launchOptions) => {
         if (browser.family === 'chromium') {
           launchOptions.args.push('--js-flags=--max-old-space-size=4096');
-          launchOptions.args.push('--use-gl=disabled');
-          launchOptions.args.push('--use-angle=disabled');
           launchOptions.args.push('--disable-gpu');
-          launchOptions.args.push('--disable-software-rasterizer');
-          launchOptions.args.push('--disable-vulkan');
-          launchOptions.args.push('--disable-features=Vulkan,VulkanFromANGLE');
-          launchOptions.args.push('--disable-gpu-compositing');
+          launchOptions.args.push('--use-gl=swiftshader');
           launchOptions.args.push(
             '--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE,UseSkiaRenderer'
           );
 
           launchOptions.args.push('--no-sandbox');
           launchOptions.args.push('--disable-dev-shm-usage');
-          launchOptions.args.push('--disable-setuid-sandbox');
 
           launchOptions.args.push('--disable-renderer-backgrounding');
           launchOptions.args.push('--disable-background-timer-throttling');

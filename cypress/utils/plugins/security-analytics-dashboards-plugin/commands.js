@@ -466,7 +466,11 @@ Cypress.Commands.add(
     prevSubject: true,
   },
   (subject, text) => {
-    return cy.get(subject).clear().sa_ospType(text).realPress('Enter');
+    return cy
+      .get(subject)
+      .clear({ force: true })
+      .sa_ospType(text)
+      .realPress('Enter');
   }
 );
 

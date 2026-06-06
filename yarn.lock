@@ -144,10 +144,9 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@opensearch-dashboards-test/opensearch-dashboards-test-library@https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.6.tar.gz":
-  version "1.0.6"
-  resolved "https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.6.tar.gz"
-  integrity sha512-vNO9ZlwfTucL2L2/YSEqLbSpT8ihrKUGApRDSkkIwq+kxg5OOwI+Gw+5En/I9tIrnC8IzGew9vc11Mvrm8M8cQ==
+"@opensearch-dashboards-test/opensearch-dashboards-test-library@https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.7.tar.gz":
+  version "1.0.7"
+  resolved "https://github.com/opensearch-project/opensearch-dashboards-test-library/archive/refs/tags/1.0.7.tar.gz#32af05ec531cca05922cb3010af5c33b757232a7"
 
 "@rtsao/scc@^1.1.0":
   version "1.1.0"

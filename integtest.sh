@@ -118,8 +118,11 @@ fi
 npm install
 
 TEST_FILES=`get_test_list $TEST_COMPONENTS`
-echo -e "Test Files List:"
-echo $TEST_FILES | tr ',' '\n'
+TEST_FILES=`echo $TEST_FILES | tr ',' ' '`
+TOTAL_START_TIME=$(date +%s)
+echo -n "$(date -u +%Y-%m-%d\ %H:%M:%S\ UTC) "
+echo "Start testing $TEST_COMPONENTS"
+echo "Test Files List: $TEST_FILES"
 echo "BROWSER_PATH: $BROWSER_PATH"
 
 # Can be used as Jenkins environment variable set for the orchestrator feature flag, default: true
@@ -225,8 +228,7 @@ fi
 
 if [ "$DISABLE_VIDEO" = "true" ]; then
     echo "Disable video recording when running tests in Cypress"
-    jq '. + {"video": false}' cypress.json > cypress_new.json # jq does not allow reading and writing on same file
-    mv -v cypress_new.json cypress.json
+    sed -i 's/video: true/video: false/g' cypress.config.js
 fi
 
 # Windows does not set timezone even when you specify `env TZ=America/Los_Angeles`
@@ -235,10 +237,76 @@ if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]
     powershell -Command "Set-TimeZone -Id 'Pacific Standard Time' -PassThru"
 fi
 
+## Post-3.7.0, cypress > 9 have memory issues, running each spec with its own cypress process sequentially
+## https://github.com/cypress-io/cypress/issues/30988
+## https://github.com/cypress-io/cypress/issues/27415
+FAILED_NUM=0
+FAILED_TESTS=""
+RETRY_MAX=3
+RETRY_THRESHOLD=90
+TEST_FILES_NUM=`echo $TEST_FILES | wc -w`
+TEST_FILES_NUM_CURR=0
+
+if [ "$BROWSER_PATH" = "electron" ]; then
+    export NODE_OPTIONS="--max-old-space-size=4096"
+    export ELECTRON_EXTRA_LAUNCH_ARGS="--disable-gpu --disable-dev-shm-usage --no-sandbox"
+fi
+
 if [ "$SECURITY_ENABLED" = "true" ]; then
     echo "Running security enabled tests"
-    yarn cypress:run-with-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+    TEST_MODE=run-with-security
 else
     echo "Running security disabled tests"
-    yarn cypress:run-without-security --browser "$BROWSER_PATH" --spec "$TEST_FILES"
+    TEST_MODE=run-without-security
+fi
+
+# Temp fix to only enable assistantDashboards until the llm js startup is moved to test itself, not env var
+if [[ "$TEST_COMPONENTS" == *"assistantDashboards"* ]]; then
+    export CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true
+fi
+
+for test_file in $TEST_FILES; do
+    TEST_FILES_NUM_CURR=$(( TEST_FILES_NUM_CURR + 1 ))
+    RETRY_NUM=1
+
+    while [ "$RETRY_NUM" -le "$RETRY_MAX" ]; do
+        TEST_STATUS=pass
+        echo -ne "\n$(date -u +%Y-%m-%d\ %H:%M:%S\ UTC) - "
+        echo "Test ($TEST_FILES_NUM_CURR/$TEST_FILES_NUM) - Try ($RETRY_NUM/$RETRY_MAX): $test_file"
+        START_TIME=$(date +%s)
+        yarn cypress:$TEST_MODE --browser "$BROWSER_PATH" --spec "$test_file" || TEST_STATUS=fail
+        END_TIME=$(date +%s)
+        DURATION=$(( END_TIME - START_TIME ))
+
+        if [ "$TEST_STATUS" = "pass" ]; then
+            echo -e "Test passed in in ${DURATION}s\n"
+            break
+        fi
+
+        # Only retry if test ended too quickly (likely Electron crash, not legit failure)
+        if [ "$DURATION" -ge "$RETRY_THRESHOLD" ]; then
+            echo -e "Test failed in ${DURATION}s, consider legit failure\n"
+            break
+        fi
+
+        echo -e "Test ended in ${DURATION}s, cypress likely crashed. Retrying: $test_file\n"
+        RETRY_NUM=$(( RETRY_NUM + 1 ))
+    done
+
+    if [ "$TEST_STATUS" = "fail" ]; then
+        FAILED_NUM=$(( FAILED_NUM + 1 ))
+        FAILED_TESTS="$FAILED_TESTS $test_file"
+    fi
+done
+
+TOTAL_END_TIME=$(date +%s)
+TOTAL_DURATION=$(( TOTAL_END_TIME - TOTAL_START_TIME ))
+echo "Total time: ${TOTAL_DURATION}s"
+
+if [ "$FAILED_NUM" -ne 0 ]; then
+    echo "Failed test: $FAILED_NUM"
+    echo "Failed list: $FAILED_TESTS"
+    exit 1
+else
+    echo "All tests passing"
 fi
