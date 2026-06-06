@@ -80,7 +80,9 @@ module.exports = defineConfig({
           launchOptions.args.push('--js-flags=--max-old-space-size=4096');
           launchOptions.args.push('--disable-gpu');
           launchOptions.args.push('--use-gl=swiftshader');
-          launchOptions.args.push('--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE,UseSkiaRenderer');
+          launchOptions.args.push(
+            '--disable-features=IsolateOrigins,site-per-process,Vulkan,VulkanFromANGLE,UseSkiaRenderer'
+          );
 
           launchOptions.args.push('--no-sandbox');
           launchOptions.args.push('--disable-dev-shm-usage');
