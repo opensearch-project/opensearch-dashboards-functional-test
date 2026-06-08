@@ -112,7 +112,7 @@ fi
 # And is not baked in images due to slow startup time
 # We are forcing the installation from opensearch ci bucket
 if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
-    CYPRESS_INSTALL_BINARY=https://ci.opensearch.org/ci/dbc/tools/Cypress-9.5.4-x64-windows.zip npm install cypress
+    CYPRESS_INSTALL_BINARY=https://ci.opensearch.org/ci/dbc/tools/Cypress-13.17.0-x64-windows.zip npm install cypress
 fi
 
 npm install
