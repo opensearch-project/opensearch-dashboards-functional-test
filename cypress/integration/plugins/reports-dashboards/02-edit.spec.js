@@ -5,62 +5,38 @@
 
 import { BASE_PATH, TIMEOUT } from '../../../utils/constants';
 
-// The reportsDashboards backend reads `report_params.core_params.origin` from
-// the HTTP `Origin` header, which Chromium does not always send for same-origin
-// fetch (e.g. PUT). When the header is absent, validation fails with
-// `[report_params.core_params.origin]: expected value of type [string] but got
-// [undefined]` and the request returns 400. Use `cy.intercept` to inject the
-// `origin` field into the PUT body.
-const setupOriginIntercept = () => {
-  cy.intercept('PUT', '/api/reporting/reportDefinitions/*', (req) => {
-    let body = req.body;
-    let wasString = false;
-    if (typeof body === 'string') {
-      wasString = true;
-      try {
-        body = JSON.parse(body);
-      } catch (e) {
-        return;
-      }
-    }
+const REPORT_DEFINITION_API = '**/api/reporting/reportDefinitions/**';
+
+const setupEditIntercepts = () => {
+  cy.intercept('GET', REPORT_DEFINITION_API).as('getReportDefinition');
+
+  cy.intercept('PUT', REPORT_DEFINITION_API, (req) => {
+    req.headers['origin'] = BASE_PATH;
     if (
-      body &&
-      body.report_params &&
-      body.report_params.core_params &&
-      !body.report_params.core_params.origin
+      req.body &&
+      req.body.report_params &&
+      req.body.report_params.core_params
     ) {
-      body.report_params.core_params.origin =
-        BASE_PATH || 'http://localhost:5601';
+      req.body.report_params.core_params.origin = BASE_PATH;
     }
-    req.body = wasString ? JSON.stringify(body) : body;
   }).as('updateReportDefinition');
 };
 
-const setupReportSourceIntercepts = () => {
-  cy.intercept('GET', '**/api/reporting/getReportSource/dashboard').as(
-    'getDashboard'
-  );
-  cy.intercept('GET', '**/api/reporting/getReportSource/visualization').as(
-    'getVisualization'
-  );
-  cy.intercept('GET', '**/api/reporting/getReportSource/search').as(
-    'getSearch'
-  );
-};
-
 const openEditPage = () => {
-  cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT })
-    .first()
-    .click({ force: true });
-  cy.get('#editReportDefinitionButton', { timeout: TIMEOUT })
-    .should('exist')
-    .click();
+  cy.get('#reportDefinitionDetailsLink').first().click({ force: true });
+
+  cy.get('#editReportDefinitionButton', { timeout: TIMEOUT }).should('exist');
+  cy.get('#editReportDefinitionButton').click();
+
   cy.url().should('include', 'edit');
-  // Wait for the edit form to load report sources before interacting
-  cy.wait(['@getDashboard', '@getVisualization', '@getSearch'], {
-    timeout: TIMEOUT,
-  });
-  cy.get('#reportSettingsName', { timeout: TIMEOUT }).should('be.visible');
+
+  cy.wait('@getReportDefinition', { timeout: TIMEOUT });
+
+  cy.get('#reportSettingsName', { timeout: TIMEOUT })
+    .should('exist')
+    .and(($el) => {
+      expect($el.val()).to.not.equal('');
+    });
 };
 
 const clickSaveChanges = () => {
@@ -68,15 +44,19 @@ const clickSaveChanges = () => {
     .contains('Save Changes')
     .trigger('mouseover')
     .click({ force: true });
+
   cy.wait('@updateReportDefinition', { timeout: TIMEOUT })
     .its('response.statusCode')
     .should('eq', 200);
+
+  // check that re-direct to home page
+  cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should('exist');
 };
 
 describe('Cypress', () => {
   beforeEach(() => {
-    setupOriginIntercept();
-    setupReportSourceIntercepts();
+    setupEditIntercepts();
+
     // Wait before visiting to allow index refresh after previous test's save
     cy.wait(5000);
     cy.visit(`${BASE_PATH}/app/reports-dashboards#/`, {
@@ -110,38 +90,29 @@ describe('Cypress', () => {
     );
 
     clickSaveChanges();
-
-    // check that re-direct to home page
-    cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should(
-      'exist'
-    );
   });
 
   it('Visit edit page, change report trigger', () => {
     openEditPage();
 
-    cy.get('#Schedule').check({ force: true });
-    cy.get('#Schedule').should('be.checked');
+    cy.get('#reportDefinitionTriggerTypes > div:nth-child(2)').click({
+      force: true,
+    });
+
+    cy.get('#Schedule').check({ force: true }).should('be.checked');
 
     clickSaveChanges();
-
-    // check that re-direct to home page
-    cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should(
-      'exist'
-    );
   });
 
   it('Visit edit page, change report trigger back', () => {
     openEditPage();
 
-    cy.get('#On\\ demand').check({ force: true });
-    cy.get('#On\\ demand').should('be.checked');
+    cy.get('#reportDefinitionTriggerTypes > div:nth-child(1)').click({
+      force: true,
+    });
+
+    cy.get('#On\\ demand').check({ force: true }).should('be.checked');
 
     clickSaveChanges();
-
-    // check that re-direct to home page
-    cy.get('#reportDefinitionDetailsLink', { timeout: TIMEOUT }).should(
-      'exist'
-    );
   });
 });
