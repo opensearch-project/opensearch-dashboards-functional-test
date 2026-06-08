@@ -19,6 +19,21 @@ describe('Inflight Queries Dashboard', () => {
     // never fires for subsequent tests.
     cy.reload();
     cy.wait('@getLiveQueries', { timeout: 60000 });
+
+    // Disable auto-refresh to keep the DOM stable across assertions. Without this,
+    // every refreshInterval (default 5s) the table re-renders, detaching row and
+    // pagination handles mid-test (root cause of the pagination 'detached from DOM'
+    // and WLM-disabled content-match failures).
+    cy.get('[data-test-subj="live-queries-autorefresh-toggle"]').then(($t) => {
+      if ($t.attr('aria-checked') === 'true') {
+        cy.wrap($t).click();
+      }
+    });
+    cy.get('[data-test-subj="live-queries-autorefresh-toggle"]').should(
+      'have.attr',
+      'aria-checked',
+      'false'
+    );
   });
 
   it('displays the correct page title', () => {
@@ -110,9 +125,15 @@ describe('Inflight Queries Dashboard', () => {
   });
 
   it('navigates to next page in table pagination', () => {
-    cy.wait('@getLiveQueries');
     cy.get('.euiPagination').should('be.visible');
-    cy.get('.euiPagination__item').contains('2').click();
+    cy.get('[data-test-subj="pagination-button-1"]')
+      .should('be.visible')
+      .click();
+    cy.get('[data-test-subj="pagination-button-1"]').should(
+      'have.attr',
+      'aria-current',
+      'true'
+    );
     cy.get('tbody tr').should('exist');
   });
 
@@ -152,6 +173,10 @@ describe('Inflight Queries Dashboard', () => {
     cy.get('[data-test-subj="live-queries-autorefresh-toggle"]').as('toggle');
     cy.get('[data-test-subj="live-queries-refresh-interval"]').as('dropdown');
 
+    // beforeEach already disabled auto-refresh; re-enable then toggle off so the
+    // observable transition to disabled is exercised.
+    cy.get('@toggle').click();
+    cy.get('@toggle').should('have.attr', 'aria-checked', 'true');
     cy.get('@toggle').click();
     cy.get('@toggle').should('have.attr', 'aria-checked', 'false');
     cy.get('@dropdown').should('be.disabled');
@@ -359,13 +384,11 @@ describe('Inflight Queries Dashboard', () => {
   });
 
   it('displays WLM group as text when WLM is disabled', () => {
-    cy.get('tbody tr')
-      .first()
-      .within(() => {
-        cy.get('td')
-          .contains('ANALYTICS_WORKLOAD_GROUP')
-          .should('not.have.attr', 'href');
-      });
+    // Use cy.contains(selector, text) which requeries on retry instead of latching
+    // onto a `tbody tr:first` handle that can go stale across React re-renders.
+    cy.contains('tbody td', 'ANALYTICS_WORKLOAD_GROUP', { timeout: 60000 })
+      .should('be.visible')
+      .and('not.have.attr', 'href');
   });
 });
 

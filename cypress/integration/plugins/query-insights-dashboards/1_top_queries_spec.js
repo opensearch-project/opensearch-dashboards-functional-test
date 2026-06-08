@@ -390,8 +390,11 @@ describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
       'WLM Group',
       'Total Shards',
     ];
-    getHeaders().should('deep.equal', expected);
+    // assertRowCountEquals uses .should('have.length', N) which retries until items
+    // has populated; once row count matches, columnsToShow has evaluated against the
+    // populated data and headers are stable for the deep-equal assertion.
     assertRowCountEquals(getRowsFromRaw(QUERY_ONLY).length);
+    getHeaders().should('deep.equal', expected);
   });
 });
 
@@ -418,8 +421,11 @@ describe('Query Insights — Dynamic Columns (GROUP ONLY fixture)', () => {
       'Average CPU Time',
       'Average Memory Usage',
     ];
-    getHeaders().should('deep.equal', expected);
+    // assertRowCountEquals uses .should('have.length', N) which retries until items
+    // has populated; once row count matches, columnsToShow has evaluated against the
+    // populated data and headers are stable for the deep-equal assertion.
     assertRowCountEquals(getRowsFromRaw(GROUP_ONLY).length);
+    getHeaders().should('deep.equal', expected);
   });
 
   it('renders dash in status column for group rows', () => {
@@ -439,7 +445,16 @@ describe('Query Insights — Stats & Visualizations Panel', () => {
     // Force reload because testIsolation is disabled in this repo's cypress.config —
     // without it, cy.visit() to the same URL is a no-op and the intercepted request never fires.
     cy.reload();
+    // The page fires three GETs (latency, cpu, memory) and only flips loading=false
+    // after all three resolve. Wait for all three plus the table to render so the
+    // visualizations panel is stable and React state has settled.
     cy.wait('@topQueries', { timeout: 60000 });
+    cy.wait('@topQueries', { timeout: 60000 });
+    cy.wait('@topQueries', { timeout: 60000 });
+    cy.get('.euiBasicTable', { timeout: 30000 })
+      .last()
+      .find('.euiTableRow')
+      .should('have.length.greaterThan', 0);
   });
 
   it('displays visualizations panel with Query/Group toggle', () => {
@@ -637,7 +652,19 @@ describe('Query Insights — DynamicSearchBar', () => {
     // Force reload because testIsolation is disabled in this repo's cypress.config —
     // without it, cy.visit() to the same URL is a no-op and the intercepted request never fires.
     cy.reload();
+    // The page fires three GETs (latency, cpu, memory) and only flips loading=false
+    // after all three resolve. The DynamicSearchBar is conditionally rendered on
+    // `!loading`, so wait for all three plus the table to render before any test
+    // interacts with the search input — otherwise the input may be detached/re-mounted
+    // between Cypress commands, surfacing as a misleading 'disabled element' error.
     cy.wait('@topQueries', { timeout: 60000 });
+    cy.wait('@topQueries', { timeout: 60000 });
+    cy.wait('@topQueries', { timeout: 60000 });
+    cy.get('.euiBasicTable', { timeout: 30000 })
+      .last()
+      .find('.euiTableRow')
+      .should('have.length.greaterThan', 0);
+    cy.get(`input[placeholder="${SEARCH_PLACEHOLDER}"]`).should('be.visible');
   });
 
   it('renders the search bar with correct placeholder', () => {
