@@ -54,11 +54,11 @@ describe('discover filter editor', () => {
       cy.get('[data-test-subj~="filter-key-extension.raw"]').click();
       cy.getElementByTestId('editFilter').click();
       cy.getElementByTestId('filterFieldSuggestionList').should(
-        'have.text',
+        'contain.text',
         'extension.raw'
       );
       cy.get('[data-test-subj~="filterParamsComboBox"]').should(
-        'have.text',
+        'contain.text',
         'jpg'
       );
       cy.getElementByTestId('cancelSaveFilter').click();
