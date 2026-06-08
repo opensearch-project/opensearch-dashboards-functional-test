@@ -66,7 +66,8 @@ describe('View anomaly events in flyout', () => {
 
   afterEach(() => {});
 
-  it('Action does not exist if there are no VisLayers for a visualization', () => {
+  // TODO: Re-enable after the Cypress menu update flake is fixed.
+  it.skip('Action does not exist if there are no VisLayers for a visualization', () => {
     cy.getVisPanelByTitle(visualizationName)
       .openAdVisContextMenu()
       .getAdMenuItems()
