@@ -126,9 +126,12 @@ describe('Inflight Queries Dashboard', () => {
 
   it('navigates to next page in table pagination', () => {
     cy.get('.euiPagination').should('be.visible');
-    cy.get('[data-test-subj="pagination-button-1"]')
-      .should('be.visible')
-      .click();
+    // Break chain and force the click — the EuiPagination button can briefly
+    // re-render between visibility check and click on slow CI; aliasing then
+    // forcing avoids the 'page updated while this command was executing' race.
+    cy.get('[data-test-subj="pagination-button-1"]').as('nextPage');
+    cy.get('@nextPage').should('be.visible');
+    cy.get('@nextPage').click({ force: true });
     cy.get('[data-test-subj="pagination-button-1"]').should(
       'have.attr',
       'aria-current',
@@ -221,6 +224,9 @@ describe('Inflight Queries Dashboard', () => {
     });
 
     cy.navigateToLiveQueries();
+    // Force reload — under testIsolation:false, cy.visit() to the same URL is a
+    // no-op, so the new intercept above never fires without an explicit reload.
+    cy.reload();
 
     cy.wait('@getPeriodicQueries');
     cy.wait('@getPeriodicQueries');
@@ -243,6 +249,9 @@ describe('Inflight Queries Dashboard', () => {
     }).as('getEmptyQueries');
 
     cy.navigateToLiveQueries();
+    // Force reload — under testIsolation:false, cy.visit() to the same URL is a
+    // no-op, so the new intercept above never fires without an explicit reload.
+    cy.reload();
     cy.wait('@getEmptyQueries');
     cy.get('[data-test-subj="panel-active-queries"]').within(() => {
       cy.contains('Active queries');
@@ -270,6 +279,9 @@ describe('Inflight Queries Dashboard', () => {
       }).as('getCancelledQuery');
 
       cy.navigateToLiveQueries();
+      // Force reload — under testIsolation:false, cy.visit() to the same URL is
+      // a no-op, so the new intercept above never fires without an explicit reload.
+      cy.reload();
       cy.wait('@getCancelledQuery');
 
       cy.contains(data.response.live_queries[0].id)
