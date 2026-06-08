@@ -274,10 +274,18 @@ Cypress.Commands.add('cleanProvisionedAgents', () => {
 Cypress.Commands.add('startDummyServer', () => {
   // Not a good practice to start a server inside Cypress https://docs.cypress.io/guides/references/best-practices#Web-Servers
   // But in out case, we need to reuse release e2e template and let's make it a tradeoff.
-  cy.exec(
-    "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & sleep 1 && ps -ef | grep [a]ssistant-dummy-llm.js | head -n 1 | awk '{print $2}' > /tmp/assistant-llm.pid",
-    { timeout: 10000 }
-  );
+  const isWindows = Cypress.platform === 'win32';
+  if (isWindows) {
+    cy.exec(
+      'nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/assistant-llm.winpid && sleep 1',
+      { timeout: 10000 }
+    );
+  } else {
+    cy.exec(
+      "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & sleep 1 && ps -ef | grep [a]ssistant-dummy-llm.js | head -n 1 | awk '{print $2}' > /tmp/assistant-llm.pid",
+      { timeout: 10000 }
+    );
+  }
   // Wait for server to start and verify it's running
   cy.wait(3000);
   cy.exec(
@@ -291,9 +299,17 @@ Cypress.Commands.add('startDummyServer', () => {
 });
 
 Cypress.Commands.add('stopDummyServer', () => {
-  cy.exec('kill -9 $(cat /tmp/assistant-llm.pid) || true', {
-    failOnNonZeroExit: false,
-  });
+  const isWindows = Cypress.platform === 'win32';
+  if (isWindows) {
+    cy.exec(
+      'pid=$(cat /tmp/assistant-llm.winpid); while child=$(wmic process where "ParentProcessId=$pid" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n "$child" ]; do pid=$child; done; taskkill //F //PID $pid',
+      { failOnNonZeroExit: false }
+    );
+  } else {
+    cy.exec('kill -9 $(cat /tmp/assistant-llm.pid) || true', {
+      failOnNonZeroExit: false,
+    });
+  }
 });
 
 Cypress.Commands.add('sendAssistantMessage', (body, dataSourceId) => {
