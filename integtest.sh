@@ -2,6 +2,19 @@
 
 set -e
 
+DIR="$(dirname "$0")"
+pwd && cd $DIR
+
+# Handle keys properly with path set for assistantDashboards and investigationDashboards
+if [ "$OSTYPE" = "msys" ] || [ "$OSTYPE" = "cygwin" ] || [ "$OSTYPE" = "win32" ]; then
+  PATH="$(cygpath -w "$HOME/scoop/shims"):$PATH"
+  export CYPRESS_SECURITY_CERT_PATH="$(cygpath -w "$(pwd)/cypress/resources/kirk.pem")"
+  export CYPRESS_SECURITY_KEY_PATH="$(cygpath -w "$(pwd)/cypress/resources/kirk-key.pem")"
+else
+  export CYPRESS_SECURITY_CERT_PATH="$(pwd)/cypress/resources/kirk.pem"
+  export CYPRESS_SECURITY_KEY_PATH="$(pwd)/cypress/resources/kirk-key.pem"
+fi
+
 . ./browser_downloader.sh
 
 function usage() {

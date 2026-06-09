@@ -217,9 +217,19 @@ Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
     !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
-    return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
-    );
+    if (Cypress.platform === 'win32') {
+      return cy.exec(
+        `curl -k --cert "${Cypress.env(
+          'SECURITY_CERT_PATH'
+        )}" --key "${Cypress.env(
+          'SECURITY_KEY_PATH'
+        )}" -XPUT "${endpoint}" -H "Content-Type: application/json" -d "{\\"type\\":\\"os_chat_root_agent\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}"`
+      );
+    } else {
+      return cy.exec(
+        `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
+      );
+    }
   } else {
     return cy.request('PUT', endpoint, {
       type,
@@ -241,9 +251,19 @@ Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
     !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
-    return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`
-    );
+    if (Cypress.platform === 'win32') {
+      return cy.exec(
+        `curl -k --cert "${Cypress.env(
+          'SECURITY_CERT_PATH'
+        )}" --key "${Cypress.env(
+          'SECURITY_KEY_PATH'
+        )}" -XDELETE "${endpoint}" -H "Content-Type: application/json"`
+      );
+    } else {
+      return cy.exec(
+        `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`
+      );
+    }
   } else {
     return cy.request('DELETE', endpoint);
   }
@@ -277,7 +297,7 @@ Cypress.Commands.add('startDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
     cy.exec(
-      'nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/assistant-llm.winpid && sleep 1',
+      'bash -c "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/assistant-llm.winpid && sleep 1"',
       { timeout: 10000 }
     );
   } else {
@@ -302,7 +322,7 @@ Cypress.Commands.add('stopDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
     cy.exec(
-      'pid=$(cat /tmp/assistant-llm.winpid); while child=$(wmic process where "ParentProcessId=$pid" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n "$child" ]; do pid=$child; done; taskkill //F //PID $pid',
+      'bash -c "pid=$(cat /tmp/assistant-llm.winpid); while child=$(wmic process where \\"ParentProcessId=$pid\\" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n \\"$child\\" ]; do pid=$child; done; taskkill //F //PID $pid"',
       { failOnNonZeroExit: false }
     );
   } else {

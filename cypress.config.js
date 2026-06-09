@@ -39,6 +39,8 @@ module.exports = defineConfig({
     SAVED_OBJECTS_PERMISSION_ENABLED: false,
     DASHBOARDS_INVESTIGATION_ENABLED: true,
     DISABLE_LOCAL_CLUSTER: false,
+    SECURITY_CERT_PATH: 'cypress/resources/kirk.pem',
+    SECURITY_KEY_PATH: 'cypress/resources/kirk-key.pem',
     browserPermissions: {
       clipboard: 'allow',
     },

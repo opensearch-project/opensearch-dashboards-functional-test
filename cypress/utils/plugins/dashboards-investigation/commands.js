@@ -237,9 +237,19 @@ Cypress.Commands.add(
       agentName
     )}`;
     if (BACKEND_BASE_PATH.startsWith('https')) {
-      return cy.exec(
-        `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"${type}","configuration":{"agent_id":"${agentId}"}}'`
-      );
+      if (Cypress.platform === 'win32') {
+        return cy.exec(
+          `curl -k --cert "${Cypress.env(
+            'SECURITY_CERT_PATH'
+          )}" --key "${Cypress.env(
+            'SECURITY_KEY_PATH'
+          )}" -XPUT "${endpoint}" -H "Content-Type: application/json" -d "{\\"type\\":\\"${type}\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}"`
+        );
+      } else {
+        return cy.exec(
+          `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"${type}","configuration":{"agent_id":"${agentId}"}}'`
+        );
+      }
     } else {
       return cy.request('PUT', endpoint, {
         type,
@@ -255,10 +265,21 @@ Cypress.Commands.add('deleteInvestigationAgentConfig', ({ agentName }) => {
     agentName
   )}`;
   if (BACKEND_BASE_PATH.startsWith('https')) {
-    return cy.exec(
-      `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`,
-      { failOnNonZeroExit: false }
-    );
+    if (Cypress.platform === 'win32') {
+      return cy.exec(
+        `curl -k --cert "${Cypress.env(
+          'SECURITY_CERT_PATH'
+        )}" --key "${Cypress.env(
+          'SECURITY_KEY_PATH'
+        )}" -XDELETE "${endpoint}" -H "Content-Type: application/json"`,
+        { failOnNonZeroExit: false }
+      );
+    } else {
+      return cy.exec(
+        `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`,
+        { failOnNonZeroExit: false }
+      );
+    }
   } else {
     return cy.request({
       method: 'DELETE',
@@ -313,7 +334,7 @@ Cypress.Commands.add('startInvestigationDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
     cy.exec(
-      'nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/investigation-llm.winpid && sleep 1',
+      'bash -c "nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/investigation-llm.winpid && sleep 1"',
       { timeout: 10000 }
     );
   } else {
@@ -329,7 +350,7 @@ Cypress.Commands.add('stopInvestigationDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
     cy.exec(
-      'pid=$(cat /tmp/investigation-llm.winpid); while child=$(wmic process where "ParentProcessId=$pid" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n "$child" ]; do pid=$child; done; taskkill //F //PID $pid',
+      'bash -c "pid=$(cat /tmp/investigation-llm.winpid); while child=$(wmic process where \\"ParentProcessId=$pid\\" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n \\"$child\\" ]; do pid=$child; done; taskkill //F //PID $pid"',
       { failOnNonZeroExit: false }
     );
   } else {
