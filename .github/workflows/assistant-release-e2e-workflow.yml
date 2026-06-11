@@ -16,8 +16,9 @@ jobs:
               - 'cypress/**/dashboards-assistant/**'
               - 'cypress/support/assistant-dummy-llm.js'
               - '.github/workflows/release-e2e-workflow-template.yml'
+              - '.github/workflows/release-e2e-workflow-template-windows.yml'
 
-  tests-with-security:
+  tests-with-security-linux:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
@@ -25,9 +26,9 @@ jobs:
       test-name: dashboards assistant
       test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
-      artifact-name-suffix: '-with-security'
+      artifact-name-suffix: '-linux-with-security'
 
-  tests-without-security:
+  tests-without-security-linux:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
@@ -36,10 +37,10 @@ jobs:
       test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-without-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: false
-      artifact-name-suffix: '-without-security'
+      artifact-name-suffix: '-linux-without-security'
       multi-opensearch-enabled: false
 
-  tests-with-multiple-data-source-and-disabled-local-cluster:
+  tests-with-multiple-data-source-and-disabled-local-cluster-linux:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
@@ -48,9 +49,9 @@ jobs:
       test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/mds_chatbot*.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
-      artifact-name-suffix: '-with-security-and-mds'
+      artifact-name-suffix: '-linux-with-security-and-mds'
 
-  tests-with-query-enhancements:
+  tests-with-query-enhancements-linux:
     needs: changes
     if: ${{ needs.changes.outputs.tests == 'true' }}
     uses: ./.github/workflows/release-e2e-workflow-template.yml
@@ -59,4 +60,26 @@ jobs:
       test-command: env CYPRESS_DISABLE_LOCAL_CLUSTER=true CYPRESS_DATASOURCE_MANAGEMENT_ENABLED=true CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true CYPRESS_WORKSPACE_ENABLED=true CYPRESS_SKIP_HEAVY_DISCOVER_TESTS=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/mds_query_enhancements*.js'
       osd-serve-args: --data_source.enabled=true --data_source.ssl.verificationMode=none --data_source.hideLocalCluster=true --assistant.chat.enabled=true --assistant.alertInsight.enabled=true --assistant.smartAnomalyDetector.enabled=true --queryEnhancements.queryAssist.summary.enabled=true --uiSettings.overrides.home:useNewHomePage=true --uiSettings.overrides.query:enhancements:enabled=true --workspace.enabled=true --savedObjects.permission.enabled=true --assistant.text2viz.enabled=true  --opensearchDashboards.dashboardAdmin.users='["admin"]' --opensearch_security.multitenancy.enabled=false --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
-      artifact-name-suffix: '-with-query-enhancements'
+      artifact-name-suffix: '-linux-with-query-enhancements'
+
+  tests-with-security-windows:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+    with:
+      test-name: dashboards assistant
+      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
+      osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
+      security-enabled: true
+      artifact-name-suffix: '-windows-with-security'
+
+  tests-without-security-windows:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template-windows.yml
+    with:
+      test-name: dashboards assistant
+      test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-without-security --browser chrome --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
+      osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
+      security-enabled: false
+      artifact-name-suffix: '-windows-without-security'

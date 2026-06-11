@@ -8,7 +8,13 @@ on:
       test-command:
         required: true
         type: string
+      osd-serve-args:
+        required: false
+        type: string
       security-enabled:
+        required: false
+        type: string
+      artifact-name-suffix:
         required: false
         type: string
 jobs:
@@ -96,20 +102,28 @@ jobs:
         with:
           node-version: ${{ env.node_version }}
           registry-url: 'https://registry.npmjs.org'
+      - name: Apply OSD serve args to config
+        if: ${{ inputs.osd-serve-args != '' }}
+        run: |
+          cd opensearch-dashboards-${{ env.VERSION }}
+          # Convert CLI --key=value args to opensearch_dashboards.yml entries
+          for arg in ${{ inputs.osd-serve-args }}; do
+            # Strip leading dashes
+            arg="${arg#--}"
+            key="${arg%%=*}"
+            value="${arg#*=}"
+            # Convert dot notation to yaml (nested keys written in dot form are supported)
+            echo "${key}: ${value}" >> config/opensearch_dashboards.yml
+          done
+        shell: bash
       - name: Run OpenSearch-Dashboards server
         run: |
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
           cd opensearch-dashboards-${{ env.VERSION }}
-          # Temporary solution to add vis_builder and data_source enabled parameters
           echo "vis_builder.enabled: true" >> config/opensearch_dashboards.yml
           echo "data_source.enabled: true" >> config/opensearch_dashboards.yml
           echo "banner.enabled: true" >> config/opensearch_dashboards.yml
           echo 'banner.content: "This is an important announcement for all users. [Learn more](http://opensearch.org) about OpenSearch."' >> config/opensearch_dashboards.yml
-          # echo "data_source.encryption.wrappingKeyName: 'changeme'" >> config/opensearch_dashboards.yml
-          # echo "data_source.encryption.wrappingKeyNamespace: 'changeme'" >> config/opensearch_dashboards.yml
-          # echo "data_source.encryption.wrappingKey: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]" >> config/opensearch_dashboards.yml
-          # Not useful now as error shows when trying to force a background run with parameters on Windows
-          # bin/opensearch-dashboards.bat serve ${{ inputs.osd-serve-args }} &
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove Dashboards Security"
               ./bin/opensearch-dashboards-plugin.bat remove securityDashboards
@@ -141,17 +155,17 @@ jobs:
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
-          name: cypress-screenshots
+          name: cypress-screenshots${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: cypress-videos
+          name: cypress-videos${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
-          name: cypress-results
+          name: cypress-results${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/results
