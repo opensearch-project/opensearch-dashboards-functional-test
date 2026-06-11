@@ -17,6 +17,10 @@ on:
       artifact-name-suffix:
         required: false
         type: string
+      multi-opensearch-enabled:
+        required: false
+        type: boolean
+        default: true
 jobs:
   tests:
     name: Run Cypress E2E tests for ${{ inputs.test-name }} (Windows)
@@ -78,15 +82,17 @@ jobs:
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
         shell: bash
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
           port: 9201
       - uses: ./.github/actions/start-opensearch
+        if: ${{ inputs.multi-opensearch-enabled }}
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
-          admin-password: admin
+          admin-password: myStrongPassword123!
           port: 9202
       - name: Get and run OpenSearch-Dashboards
         run: |

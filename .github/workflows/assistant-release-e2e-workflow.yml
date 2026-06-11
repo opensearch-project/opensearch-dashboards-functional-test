@@ -83,3 +83,4 @@ jobs:
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: false
       artifact-name-suffix: '-windows-without-security'
+      multi-opensearch-enabled: false
