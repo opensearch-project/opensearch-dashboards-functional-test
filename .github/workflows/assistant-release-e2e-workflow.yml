@@ -27,6 +27,7 @@ jobs:
       test-command: env CYPRESS_DASHBOARDS_ASSISTANT_ENABLED=true yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/dashboards-assistant/*chatbot*.js'
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       artifact-name-suffix: '-linux-with-security'
+      multi-opensearch-enabled: false
 
   tests-without-security-linux:
     needs: changes
@@ -72,6 +73,7 @@ jobs:
       osd-serve-args: --assistant.chat.enabled=true --home.disableExperienceModal=true --home.disableWelcomeScreen=true
       security-enabled: true
       artifact-name-suffix: '-windows-with-security'
+      multi-opensearch-enabled: false
 
   tests-without-security-windows:
     needs: changes
