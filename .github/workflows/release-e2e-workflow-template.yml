@@ -32,13 +32,13 @@ jobs:
       OPENSEARCH_INITIAL_ADMIN_PASSWORD: 'myStrongPassword123!'
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
         with:
           java-version: 21
       - name: Checkout cypress-test
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
         with:
           repository: ${{github.repository}}
           path: cypress-test
@@ -92,7 +92,7 @@ jobs:
           node_version_temp=$(node -p "(require('./opensearch-dashboards-${{ env.VERSION }}/package.json').engines.node).match(/[.0-9]+/)[0]")
           echo "node_version=$node_version_temp" >> $GITHUB_ENV
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1
         with:
           node-version: ${{ steps.versions.outputs.node_version }}
           registry-url: 'https://registry.npmjs.org'
@@ -120,7 +120,7 @@ jobs:
           echo "cypress_version=$cypress_version_temp" >> $GITHUB_ENV
       - name: Cache Cypress
         id: cache-cypress
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
         with:
           path: ~/.cache/Cypress
           key: cypress-cache-v2-${{ runner.os }}-${{ hashFiles('**/package.json') }}
@@ -129,25 +129,25 @@ jobs:
       - run: npx cypress cache list
       - run: npx cypress cache path
       - name: Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@f5bea478b80a774068179089247f13d60abc5010 # v2
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: failure()
         with:
           name: cypress-screenshots${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: cypress-videos${{ inputs.artifact-name-suffix }}
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()
         with:
           name: cypress-results${{ inputs.artifact-name-suffix }}
