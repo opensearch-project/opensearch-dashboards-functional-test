@@ -18,7 +18,7 @@ jobs:
       NODE_OPTIONS: '--max-old-space-size=6144 --dns-result-order=ipv4first'
     steps:
       - name: Checkout cypress-test
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
         with:
           repository: ${{github.repository}}
           path: cypress-test
