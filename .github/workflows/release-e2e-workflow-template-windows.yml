@@ -75,29 +75,19 @@ jobs:
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
-          port: 9201
+          port: 9211
       - uses: ./.github/actions/start-opensearch
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
           admin-password: admin
           port: 9202
-      - name: Start OpenSearch Proxy
+      - name: Start OpenSearch Proxy for remote datasource
         working-directory: cypress-test
         run: |
-          if [ "$SECURITY_ENABLED" = 'true' ]; then
-            OPENSEARCH_TARGET="https://localhost:9200"
-          else
-            OPENSEARCH_TARGET="http://localhost:9200"
-          fi
-          node opensearch-proxy.js --port 9220 --target $OPENSEARCH_TARGET &
+          node opensearch-proxy.js --port 9201 --target http://localhost:9211 &
           sleep 2
-          if [ "$SECURITY_ENABLED" = 'true' ]; then
-            curl -s -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} http://localhost:9220 | jq .
-          else
-            curl -s http://localhost:9220 | jq .
-          fi
-          echo "OpenSearch proxy started on port 9220 -> $OPENSEARCH_TARGET"
+          curl -s http://localhost:9201 | jq .
         shell: bash
       - name: Get and run OpenSearch-Dashboards
         run: |
@@ -117,9 +107,6 @@ jobs:
         run: |
           netstat -anP tcp | grep LISTEN | grep 9200 || netstat -ntlp | grep 9200
           cd opensearch-dashboards-${{ env.VERSION }}
-          # Point Dashboards to the proxy instead of direct OpenSearch
-          sed -i 's|opensearch.hosts:.*|opensearch.hosts: ["http://localhost:9220"]|' config/opensearch_dashboards.yml
-          sed -i '/^opensearch.ssl/d' config/opensearch_dashboards.yml
           # Temporary solution to add vis_builder and data_source enabled parameters
           echo "vis_builder.enabled: true" >> config/opensearch_dashboards.yml
           echo "data_source.enabled: true" >> config/opensearch_dashboards.yml

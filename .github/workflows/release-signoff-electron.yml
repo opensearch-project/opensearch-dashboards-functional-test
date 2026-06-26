@@ -34,12 +34,6 @@ jobs:
           cd opensearch-${{ env.VERSION }}/
           ./opensearch-tar-install.sh &
           timeout 900 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} -k https://localhost:9200)" != "200" ]]; do sleep 5; done'
-      - name: Start OpenSearch Proxy
-        working-directory: functional-test
-        run: |
-          node opensearch-proxy.js --port 9220 --target https://localhost:9200 &
-          sleep 2
-          curl -s -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} http://localhost:9220 | jq .
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
@@ -57,8 +51,6 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
-          sed -i 's|opensearch.hosts:.*|opensearch.hosts: ["http://localhost:9220"]|' config/opensearch_dashboards.yml
-          sed -i '/^opensearch.ssl/d' config/opensearch_dashboards.yml
           bin/opensearch-dashboards serve &
           timeout 300 bash -c 'while [[ "$(curl -s -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} localhost:5601/api/status | jq -r '.status.overall.state')" != "green" ]]; do sleep 5; done'
       - name: Get Cypress version
