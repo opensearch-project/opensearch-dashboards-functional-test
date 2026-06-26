@@ -92,6 +92,22 @@ jobs:
           admin-password: myStrongPassword123!
           port: 9202
           transport_port: 9302
+      - name: Start OpenSearch Proxy
+        working-directory: cypress-test
+        run: |
+          if [ "$SECURITY_ENABLED" = 'true' ]; then
+            OPENSEARCH_TARGET="https://localhost:9200"
+          else
+            OPENSEARCH_TARGET="http://localhost:9200"
+          fi
+          node opensearch-proxy.js --port 9220 --target $OPENSEARCH_TARGET &
+          sleep 2
+          if [ "$SECURITY_ENABLED" = 'true' ]; then
+            curl -s -u admin:${{ env.OPENSEARCH_INITIAL_ADMIN_PASSWORD }} http://localhost:9220 | jq .
+          else
+            curl -s http://localhost:9220 | jq .
+          fi
+          echo "OpenSearch proxy started on port 9220 -> $OPENSEARCH_TARGET"
       - name: Get OpenSearch-Dashboards
         run: |
           wget https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/linux/x64/tar/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-linux-x64.tar.gz
@@ -110,6 +126,9 @@ jobs:
       - name: Run OpenSearch-Dashboards server
         run: |
           cd opensearch-dashboards-${{ env.VERSION }}
+          # Point Dashboards to the proxy instead of direct OpenSearch
+          sed -i 's|opensearch.hosts:.*|opensearch.hosts: ["http://localhost:9220"]|' config/opensearch_dashboards.yml
+          sed -i '/^opensearch.ssl/d' config/opensearch_dashboards.yml
           if [ "$SECURITY_ENABLED" = 'false' ]; then
               echo "Remove Dashboards Security"
               ./bin/opensearch-dashboards-plugin remove securityDashboards
