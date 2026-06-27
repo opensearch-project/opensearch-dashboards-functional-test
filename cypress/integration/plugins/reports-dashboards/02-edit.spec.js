@@ -31,9 +31,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
-      'notebook'
-    );
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.intercept(
       'GET',
@@ -101,9 +102,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
-      'notebook'
-    );
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.intercept(
       'GET',
@@ -166,9 +168,10 @@ describe('Cypress', () => {
       'search'
     );
 
-    cy.intercept('GET', `${BASE_PATH}/api/observability/notebooks/`).as(
-      'notebook'
-    );
+    cy.intercept(
+      'GET',
+      `${BASE_PATH}/api/observability/notebooks/savedNotebook`
+    ).as('notebook');
 
     cy.intercept(
       'GET',
