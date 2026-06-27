@@ -219,11 +219,12 @@ Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     if (Cypress.platform === 'win32') {
       return cy.exec(
-        `curl -k --cert "${Cypress.env(
+        `bash -c "curl -k --cert '${Cypress.env(
           'SECURITY_CERT_PATH'
-        )}" --key "${Cypress.env(
+        )}' --key '${Cypress.env(
           'SECURITY_KEY_PATH'
-        )}" -XPUT "${endpoint}" -H "Content-Type: application/json" -d "{\\"type\\":\\"os_chat_root_agent\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}"`
+        )}' -XPUT '${endpoint}' -H 'Content-Type: application/json' -d '{\\"type\\":\\"os_chat_root_agent\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}'"`,
+        { timeout: 30000 }
       );
     } else {
       return cy.exec(
@@ -253,11 +254,12 @@ Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     if (Cypress.platform === 'win32') {
       return cy.exec(
-        `curl -k --cert "${Cypress.env(
+        `bash -c "curl -k --cert '${Cypress.env(
           'SECURITY_CERT_PATH'
-        )}" --key "${Cypress.env(
+        )}' --key '${Cypress.env(
           'SECURITY_KEY_PATH'
-        )}" -XDELETE "${endpoint}" -H "Content-Type: application/json"`
+        )}' -XDELETE '${endpoint}' -H 'Content-Type: application/json'"`,
+        { timeout: 30000, failOnNonZeroExit: false }
       );
     } else {
       return cy.exec(
@@ -265,7 +267,11 @@ Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
       );
     }
   } else {
-    return cy.request('DELETE', endpoint);
+    return cy.request({
+      method: 'DELETE',
+      url: endpoint,
+      failOnStatusCode: false,
+    });
   }
 });
 
