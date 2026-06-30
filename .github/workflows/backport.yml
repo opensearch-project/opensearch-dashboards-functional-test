@@ -1,31 +1,12 @@
+---
 name: Backport
 on:
   pull_request_target:
-    types:
-      - closed
-      - labeled
+    types: [closed, labeled]
 
 jobs:
   backport:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      pull-requests: write
-    name: Backport
-    steps:
-      - name: GitHub App token
-        id: github_app_token
-        uses: tibdex/github-app-token@918e03f91c95714f3d75f0140b3a5c5f738300df # v1.5.0
-        with:
-          app_id: ${{ secrets.APP_ID }}
-          private_key: ${{ secrets.APP_PRIVATE_KEY }}
-          # opensearch-trigger-bot installation ID
-          installation_id: 22958780
-
-      # Using fork of https://github.com/tibdex/backport
-      # https://github.com/tibdex/backport/pull/81
-      - name: Backport
-        uses: VachaShah/backport@c2be57a934c3c4bb88508ca4a9023f3ce85339dc # v1.1.4
-        with:
-          github_token: ${{ steps.github_app_token.outputs.token }}
-          branch_name: backport/backport-${{ github.event.number }}
+    if: github.repository == 'opensearch-project/opensearch-dashboards-functional-test'
+    uses: opensearch-project/opensearch-build/.github/workflows/backport-pr.yml@main
+    secrets:
+      OPENSEARCH_CI_BOT_TOKEN: ${{ secrets.OPENSEARCH_CI_BOT_TOKEN }}
