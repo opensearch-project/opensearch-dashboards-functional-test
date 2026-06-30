@@ -75,13 +75,20 @@ jobs:
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: false
-          port: 9201
+          port: 9211
       - uses: ./.github/actions/start-opensearch
         with:
           opensearch-version: ${{ env.VERSION }}
           security-enabled: true
           admin-password: admin
           port: 9202
+      - name: Start OpenSearch Proxy for remote datasource
+        working-directory: cypress-test
+        run: |
+          node opensearch-proxy.js --port 9201 --target http://localhost:9211 &
+          sleep 2
+          curl -s http://localhost:9201 | jq .
+        shell: bash
       - name: Get and run OpenSearch-Dashboards
         run: |
           curl -SLO https://ci.opensearch.org/ci/dbc/distribution-build-opensearch-dashboards/${{ env.VERSION }}/latest/${{ env.PLATFORM }}/x64/zip/dist/opensearch-dashboards/opensearch-dashboards-${{ env.VERSION }}-${{ env.PLATFORM }}-x64.zip
