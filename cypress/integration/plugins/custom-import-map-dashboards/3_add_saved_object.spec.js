@@ -13,13 +13,18 @@ describe('Add flights dataset saved object', () => {
       retryOnStatusCodeFailure: true,
       timeout: 60000,
     });
-    cy.wait(5000);
+    // Accept either "Add data" (flights not installed) or "View data"
+    // (already installed from an earlier spec whose after-hook may not have
+    // completed uninstall in time). Matches spec #2's own regex.
     cy.get('div[data-test-subj="sampleDataSetCardflights"]', {
       timeout: 60000,
     })
-      .contains(/Add data/)
+      .contains(/(Add|View) data/)
       .click();
-    cy.wait(60000);
+    cy.get(
+      'div[data-test-subj="sampleDataSetCardflights"] > span > span[title="INSTALLED"]',
+      { timeout: 60000 }
+    ).should('have.text', 'INSTALLED');
   });
 
   after(() => {
