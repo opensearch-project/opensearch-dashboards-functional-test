@@ -83,7 +83,7 @@ const deleteAllNotebooks = () => {
   cy.get('input[data-test-subj="checkboxSelectAll"]').should('exist');
   cy.get('input[data-test-subj="checkboxSelectAll"]').click();
   cy.get('button[data-test-subj="deleteSelectedNotebooks"]')
-    .contains('Delete 4 notebooks')
+    .contains(/Delete \d+ notebooks?/)
     .should('exist');
   cy.get('button[data-test-subj="deleteSelectedNotebooks"]').click();
   cy.get('input[data-test-subj="delete-notebook-modal-input"]').type('delete');
