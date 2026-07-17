@@ -59,15 +59,15 @@ Cypress.on('uncaught:exception', () => {
 });
 
 // Proxy layer of OpenSearch domain may redirect to login page
-//  if you haven't authenticate
+//  if you haven't authenticated.
+// Cypress >= 12 removed Cypress.Cookies.debug() and
+// Cypress.Cookies.preserveOnce(). Use cy.session() to log in once and restore
+// the auth cookie before every test instead of preserving it manually.
 if (Cypress.env('ENDPOINT_WITH_PROXY')) {
-  Cypress.Cookies.debug(false);
-  before(() => {
-    cy.login();
-  });
-
   beforeEach(() => {
-    Cypress.Cookies.preserveOnce('security_authentication');
+    cy.session('security_authentication', () => {
+      cy.login();
+    });
   });
 }
 
