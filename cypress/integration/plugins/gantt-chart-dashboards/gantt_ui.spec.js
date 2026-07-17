@@ -8,11 +8,12 @@
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import dayjs from 'dayjs';
 import { BASE_PATH } from '../../../utils/constants';
-import { devToolsRequest } from '../../../utils/helpers';
 import { CURRENT_TENANT } from '../../../utils/commands';
 
 dayjs.extend(customParseFormat);
+const delay = 100;
 
+const INDEX = 'jaeger';
 const GANTT_VIS_NAME =
   'A test gantt chart ' + Math.random().toString(36).substring(2);
 const Y_LABEL = 'A unique label for Y-axis';
@@ -26,38 +27,41 @@ describe('Dump test data', () => {
   });
 
   it('Indexes test data for gantt chart', () => {
-    const dumpDataSet = (ndjson, index) =>
-      cy.request({
-        method: 'POST',
-        form: false,
-        url: 'api/console/proxy',
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          'osd-xsrf': true,
-        },
-        qs: {
-          path: `${index}/_bulk`,
-          method: 'POST',
-        },
-        body: ndjson,
-      });
     cy.fixture('plugins/gantt-chart-dashboards/jaeger-sample.txt').then(
-      (ndjson) => {
-        dumpDataSet(ndjson, 'jaeger');
-      }
+      (ndjson) =>
+        cy.request({
+          method: 'POST',
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          // refresh=wait_for makes the bulk-indexed docs immediately searchable
+          qs: { path: `${INDEX}/_bulk?refresh=wait_for`, method: 'POST' },
+          body: ndjson,
+        })
     );
 
+    // Create the index pattern with its field list for editor to read the stored `fields` attribute
     cy.request({
-      method: 'POST',
-      failOnStatusCode: false,
-      url: 'api/saved_objects/index-pattern/jaeger',
-      headers: {
-        'content-type': 'application/json',
-        'osd-xsrf': true,
-      },
-      body: JSON.stringify({ attributes: { title: 'jaeger' } }),
+      method: 'GET',
+      url: 'api/index_patterns/_fields_for_wildcard',
+      qs: { pattern: INDEX },
+      headers: { 'osd-xsrf': true },
+    }).then((resp) => {
+      cy.request({
+        method: 'POST',
+        failOnStatusCode: false,
+        url: `api/saved_objects/index-pattern/${INDEX}`,
+        headers: { 'content-type': 'application/json', 'osd-xsrf': true },
+        body: JSON.stringify({
+          attributes: {
+            title: INDEX,
+            fields: JSON.stringify(resp.body.fields),
+          },
+        }),
+      });
     });
-    devToolsRequest('.kibana*/_refresh', 'POST');
   });
 });
 
@@ -106,25 +110,33 @@ describe('Render and configure a gantt chart', () => {
 
   it('Renders the chart', () => {
     cy.get('button.euiSuperSelectControl').eq(0).click({ force: true });
+    cy.wait(delay);
     cy.get('.euiContextMenuItem__text')
       .contains(/^spanID$/)
       .click({ force: true });
     // Click away so the dropdown closes
     cy.get('.euiTitle').eq(1).click();
+    cy.wait(delay);
     cy.get('button.euiSuperSelectControl').eq(1).click({ force: true });
+    cy.wait(delay);
     cy.get('.euiContextMenuItem__text')
       .contains(/^startTime$/)
       .click({ force: true });
     // Click away so the dropdown closes
     cy.get('.euiTitle').eq(1).click();
+    cy.wait(delay);
     cy.get('button.euiSuperSelectControl').eq(2).click({ force: true });
+    cy.wait(delay);
     cy.get('.euiContextMenuItem__text')
       .contains(/^duration$/)
       .click({ force: true });
+    cy.wait(delay);
     cy.get('.euiButton__text').contains('Update').click({ force: true });
+    cy.wait(delay);
 
     cy.get('.traces').should('have.length', DEFAULT_SIZE);
     cy.get('.euiButton__text').contains('Save').click({ force: true });
+    cy.wait(delay);
     cy.get('button[data-test-subj="confirmSaveSavedObjectButton"]').click({
       force: true,
     });
