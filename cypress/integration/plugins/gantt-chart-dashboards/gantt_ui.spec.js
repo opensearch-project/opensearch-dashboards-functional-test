@@ -18,38 +18,44 @@ const Y_LABEL = 'A unique label for Y-axis';
 const X_LABEL = 'A unique label for X-axis';
 const DEFAULT_SIZE = 10;
 
+const INDEX = 'jaeger';
+
 describe('Dump test data', () => {
   it('Indexes test data for gantt chart', () => {
-    const dumpDataSet = (ndjson, index) =>
-      cy.request({
-        method: 'POST',
-        form: false,
-        url: 'api/console/proxy',
-        headers: {
-          'content-type': 'application/json;charset=UTF-8',
-          'osd-xsrf': true,
-        },
-        qs: {
-          path: `${index}/_bulk`,
-          method: 'POST',
-        },
-        body: ndjson,
-      });
     cy.fixture('plugins/gantt-chart-dashboards/jaeger-sample.txt').then(
-      (ndjson) => {
-        dumpDataSet(ndjson, 'jaeger');
-      }
+      (ndjson) =>
+        cy.request({
+          method: 'POST',
+          url: 'api/console/proxy',
+          headers: {
+            'content-type': 'application/json;charset=UTF-8',
+            'osd-xsrf': true,
+          },
+          // refresh=wait_for makes the bulk-indexed docs immediately searchable
+          qs: { path: `${INDEX}/_bulk?refresh=wait_for`, method: 'POST' },
+          body: ndjson,
+        })
     );
 
+    // Create the index pattern with its field list for editor to read the stored `fields` attribute
     cy.request({
-      method: 'POST',
-      failOnStatusCode: false,
-      url: 'api/saved_objects/index-pattern/jaeger',
-      headers: {
-        'content-type': 'application/json',
-        'osd-xsrf': true,
-      },
-      body: JSON.stringify({ attributes: { title: 'jaeger' } }),
+      method: 'GET',
+      url: 'api/index_patterns/_fields_for_wildcard',
+      qs: { pattern: INDEX },
+      headers: { 'osd-xsrf': true },
+    }).then((resp) => {
+      cy.request({
+        method: 'POST',
+        failOnStatusCode: false,
+        url: `api/saved_objects/index-pattern/${INDEX}`,
+        headers: { 'content-type': 'application/json', 'osd-xsrf': true },
+        body: JSON.stringify({
+          attributes: {
+            title: INDEX,
+            fields: JSON.stringify(resp.body.fields),
+          },
+        }),
+      });
     });
   });
 });
