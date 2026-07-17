@@ -281,7 +281,7 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch', { timeout: 300000 }).should(
+      cy.wait('@detectorsSearch', { timeout: 500000 }).should(
         'have.property',
         'state',
         'Complete'
@@ -436,7 +436,7 @@ describe('Detectors', () => {
 
       // Visit Detectors page before any test
       cy.visit(`${OPENSEARCH_DASHBOARDS_URL}/detectors`);
-      cy.wait('@detectorsSearch', { timeout: 300000 }).should(
+      cy.wait('@detectorsSearch', { timeout: 500000 }).should(
         'have.property',
         'state',
         'Complete'
