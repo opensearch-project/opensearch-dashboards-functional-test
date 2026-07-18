@@ -213,12 +213,23 @@ describe('Experiment Create', () => {
       `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/searchEvaluation`
     );
     cy.wait(3000);
-    cy.waitForLoader();
+    // NOTE: Do not use cy.waitForLoader() here. This page fires several data
+    // fetches on mount (query_sets, search_configurations, judgments) that can
+    // keep the browser 'load' event pending, so waitForLoader()'s homeIcon
+    // assertion times out even though the page is usable. Gate on the page's
+    // own readiness instead: wait for the Query Set combo box to finish loading
+    // (it renders "Loading..." until its query_sets fetch resolves).
+    cy.get('[data-test-subj="comboBoxInput"]', { timeout: 60000 })
+      .first()
+      .should('be.visible')
+      .and('not.be.disabled');
 
     // Select query set from dropdown
     cy.get('[data-test-subj="comboBoxInput"]').first().click();
     cy.wait(500);
-    cy.contains('.euiComboBoxOption__content', querySetName).click();
+    cy.contains('.euiComboBoxOption__content', querySetName, {
+      timeout: 30000,
+    }).click();
 
     // Select search configuration
     cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
