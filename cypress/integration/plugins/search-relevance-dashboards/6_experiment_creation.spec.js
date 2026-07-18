@@ -11,6 +11,7 @@ import {
   initializeUbiIndices,
   enableWorkbenchUI,
   prepareSampleIndex,
+  waitForJudgmentCompleted,
 } from '../../../utils/plugins/search-relevance-dashboards/common-setup';
 
 describe('Experiment Create', () => {
@@ -108,6 +109,11 @@ describe('Experiment Create', () => {
     cy.get('input[type="number"]').clear().type('20');
     cy.get('[data-test-subj="createJudgmentButton"]').click();
     cy.contains(`Judgment created successfully`, { timeout: 10000 });
+
+    // Judgment ratings are computed asynchronously. The search evaluation
+    // experiment below consumes this judgment, so wait for it to reach
+    // COMPLETED before running the tests.
+    waitForJudgmentCompleted(judgmentName);
   });
 
   beforeEach(() => {
