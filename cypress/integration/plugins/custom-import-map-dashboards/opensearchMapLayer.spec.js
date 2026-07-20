@@ -8,7 +8,7 @@ import { BASE_PATH } from '../../../utils/constants';
 if (!Cypress.env('SECURITY_ENABLED')) {
   describe('Default OpenSearch base map layer', () => {
     before(() => {
-      cy.visit(`${BASE_PATH}/app/home#/tutorial_directory/sampleData`, {
+      cy.visit(`${BASE_PATH}/app/home#/tutorial_directory`, {
         retryOnStatusCodeFailure: true,
         timeout: 60000,
       });
@@ -17,7 +17,10 @@ if (!Cypress.env('SECURITY_ENABLED')) {
       })
         .contains(/(Add|View) data/)
         .click();
-      cy.wait(60000);
+      cy.get(
+        'div[data-test-subj="sampleDataSetCardflights"] > span > span[title="INSTALLED"]',
+        { timeout: 60000 }
+      ).should('have.text', 'INSTALLED');
     });
 
     it('check if default OpenSearch map layer can be open', () => {
@@ -27,22 +30,12 @@ if (!Cypress.env('SECURITY_ENABLED')) {
         'contain',
         'Default map'
       );
-      cy.get('canvas.maplibregl-canvas').trigger('mousemove', {
-        x: 100,
-        y: 100,
-        force: true,
-      });
-      cy.get('canvas.maplibregl-canvas').trigger('mousemove', {
-        x: 200,
-        y: 200,
-        force: true,
-      });
-      for (let i = 0; i < 21; i++) {
-        cy.wait(1000)
-          .get('canvas.maplibregl-canvas')
-          .trigger('dblclick', { force: true });
+
+      for (let i = 0; i < 5; i++) {
+        cy.wait(500)
+        cy.get('.maplibregl-ctrl-zoom-in').click();
       }
-      cy.get('[data-test-subj="mapStatusBar"]').should('contain', 'zoom: 22');
+      cy.get('[data-test-subj="mapStatusBar"]').should('contain', 'zoom: 6');
     });
 
     after(() => {
