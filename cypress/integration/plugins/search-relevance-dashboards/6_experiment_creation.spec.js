@@ -208,40 +208,77 @@ describe('Experiment Create', () => {
     const configName1 = Cypress.env('configName1');
     const judgmentName = Cypress.env('judgmentName');
 
-    // Navigate to search evaluation page
-    cy.visit(
-      `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/searchEvaluation`
-    );
-    cy.wait(3000);
-    // NOTE: Do not use cy.waitForLoader() here. This page fires several data
-    // fetches on mount (query_sets, search_configurations, judgments) that can
-    // keep the browser 'load' event pending, so waitForLoader()'s homeIcon
-    // assertion times out even though the page is usable. Gate on the page's
-    // own readiness instead: wait for the Query Set combo box to finish loading
-    // (it renders "Loading..." until its query_sets fetch resolves).
-    cy.get('[data-test-subj="comboBoxInput"]', { timeout: 60000 })
-      .first()
-      .should('be.visible')
-      .and('not.be.disabled');
+    // The combo boxes on this form (QuerySetsComboBox, SearchConfigForm,
+    // JudgmentsComboBox) fetch their options once on mount and briefly show
+    // "Loading..." before the options render. Occasionally against the managed
+    // domain a combo stays stuck on "Loading..." (its on-mount fetch does not
+    // populate), which is only fixable by re-mounting the page. Since re-mounting
+    // wipes any selections already made, verify the options have loaded BEFORE
+    // selecting anything -- open the query set combo (all three fetch on the
+    // same mount, so it is a reliable canary) and, if its option is missing,
+    // re-navigate to re-fire the fetches and retry. Once confirmed loaded, select
+    // all three in one pass.
+    //
+    // NOTE: Re-mount by re-visiting the URL, NOT cy.reload(). Reloading this
+    // client-side hash route lands on a blank OpenSearch Dashboards app shell;
+    // a fresh cy.visit() re-bootstraps the SPA the same way the initial load
+    // does.
+    const openSearchEvaluationForm = (attemptsLeft = 3) => {
+      cy.visit(
+        `${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/experiment/create/searchEvaluation`
+      );
+      cy.wait(3000);
 
-    // Select query set from dropdown
-    cy.get('[data-test-subj="comboBoxInput"]').first().click();
-    cy.wait(500);
-    cy.contains('.euiComboBoxOption__content', querySetName, {
-      timeout: 30000,
-    }).click();
+      // NOTE: Do not use cy.waitForLoader() here. This page's on-mount data
+      // fetches can keep the browser 'load' event pending, so waitForLoader()'s
+      // homeIcon assertion times out even though the page is usable. Wait for
+      // the first combo box to render and become enabled instead.
+      cy.get('[data-test-subj="comboBoxInput"]', { timeout: 60000 })
+        .first()
+        .should('be.visible')
+        .and('not.be.disabled');
 
-    // Select search configuration
-    cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
-    cy.wait(500);
-    cy.contains('.euiComboBoxOption__content', configName1).click();
-    cy.get('h2').first().click(); // Click on a blank area to close dropdown
-    cy.wait(500); // Wait for dropdown to close
+      // Open the query set combo and check whether its options populated.
+      cy.get('[data-test-subj="comboBoxInput"]').first().click();
+      cy.wait(1000);
+      cy.get('body').then(($body) => {
+        const optionLoaded =
+          $body
+            .find('.euiComboBoxOption__content')
+            .filter((_i, el) => (el.textContent || '').includes(querySetName))
+            .length > 0;
 
-    // Select judgment
-    cy.get('[data-test-subj="comboBoxInput"]').eq(2).click();
-    cy.wait(500);
-    cy.contains('.euiComboBoxOption__content', judgmentName).click();
+        if (!optionLoaded && attemptsLeft > 1) {
+          // Re-mount via a fresh visit (the recursive call re-visits the URL).
+          openSearchEvaluationForm(attemptsLeft - 1);
+          return;
+        }
+
+        // Select query set (retry a little longer here in case it is still
+        // finishing the brief "Loading..." state).
+        cy.contains('.euiComboBoxOption__content', querySetName, {
+          timeout: 30000,
+        }).click();
+
+        // Select search configuration
+        cy.get('[data-test-subj="comboBoxInput"]').eq(1).click();
+        cy.wait(500);
+        cy.contains('.euiComboBoxOption__content', configName1, {
+          timeout: 30000,
+        }).click();
+        cy.get('h2').first().click(); // Click on a blank area to close dropdown
+        cy.wait(500); // Wait for dropdown to close
+
+        // Select judgment
+        cy.get('[data-test-subj="comboBoxInput"]').eq(2).click();
+        cy.wait(500);
+        cy.contains('.euiComboBoxOption__content', judgmentName, {
+          timeout: 30000,
+        }).click();
+      });
+    };
+
+    openSearchEvaluationForm();
 
     // Click start evaluation button
     cy.contains('button', 'Start Evaluation').click();
