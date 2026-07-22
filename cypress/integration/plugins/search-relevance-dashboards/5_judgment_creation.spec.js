@@ -10,6 +10,7 @@ import { BASE_PATH } from '../../../utils/base_constants';
 import {
   initializeUbiIndices,
   enableWorkbenchUI,
+  waitForJudgmentCompleted,
 } from '../../../utils/plugins/search-relevance-dashboards/common-setup';
 
 const PLUGIN_TIMEOUT = 30000;
@@ -97,9 +98,16 @@ describe('Judgment Create', () => {
       ).to.be.true;
     });
 
+    // Judgment ratings are computed asynchronously (status PROCESSING -> COMPLETED).
+    // Wait for completion before opening the detail view, which fetches once and
+    // does not poll.
+    waitForJudgmentCompleted('Test UBI Judgment');
+
     cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/judgment`);
     cy.contains('Test UBI Judgment', { timeout: PLUGIN_TIMEOUT }).click();
     cy.url().should('include', '/judgment/view/');
-    cy.contains('futon frames full size without mattress').should('be.visible');
+    cy.contains('futon frames full size without mattress', {
+      timeout: PLUGIN_TIMEOUT,
+    }).should('be.visible');
   });
 });
