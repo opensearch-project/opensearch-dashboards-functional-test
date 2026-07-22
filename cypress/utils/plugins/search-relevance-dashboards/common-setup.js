@@ -5,6 +5,41 @@
 
 // Common setup functions for search relevance tests
 
+import { SEARCH_RELEVANCE_PLUGIN_NAME } from './constants';
+import { BASE_PATH } from '../../base_constants';
+
+/**
+ * Wait for an asynchronously-created judgment to finish processing.
+ *
+ * UBI/LLM judgments are created asynchronously: the create call returns HTTP 200
+ * immediately with status=PROCESSING and an empty ratings list, then the ratings
+ * are computed in the background and the status flips to COMPLETED. The judgment
+ * detail view fetches once on mount and does not poll, so asserting on ratings
+ * right after the create call races the background job and intermittently sees an
+ * empty ("No items found") ratings table. The listing page reflects the final
+ * COMPLETED status, so poll it (reloading each attempt to get a fresh DOM) until
+ * the named judgment completes before navigating to the detail view.
+ */
+export const waitForJudgmentCompleted = (judgmentName, attemptsLeft = 18) => {
+  cy.visit(`${BASE_PATH}/app/${SEARCH_RELEVANCE_PLUGIN_NAME}#/judgment`);
+  cy.contains('tr', judgmentName, { timeout: 30000 }).then(($row) => {
+    const rowText = $row.text();
+    if (rowText.includes('COMPLETED')) {
+      return;
+    }
+    if (rowText.includes('ERROR')) {
+      throw new Error(`Judgment "${judgmentName}" finished with ERROR status`);
+    }
+    if (attemptsLeft <= 0) {
+      throw new Error(
+        `Judgment "${judgmentName}" did not reach COMPLETED status in time`
+      );
+    }
+    cy.wait(10000);
+    waitForJudgmentCompleted(judgmentName, attemptsLeft - 1);
+  });
+};
+
 /**
  * Enable the search relevance workbench UI toggle
  */
