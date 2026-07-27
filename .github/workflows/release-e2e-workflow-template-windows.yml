@@ -22,11 +22,11 @@ jobs:
       TERM: xterm
     steps:
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
         with:
           java-version: 14
       - name: Checkout cypress-test
-        uses: actions/checkout@v2
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2
         with:
           repository: ${{github.repository}}
           path: cypress-test
@@ -75,7 +75,7 @@ jobs:
           echo "node_version=$(jq -r '.engines.node' ./opensearch-dashboards-${{ env.VERSION }}/package.json)" >> $GITHUB_ENV
         shell: bash
       - name: Setup node
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@f1f314fca9dfce2769ece7d933488f076716723e # v1
         with:
           node-version: ${{ env.node_version }}
           registry-url: 'https://registry.npmjs.org'
@@ -113,25 +113,25 @@ jobs:
           npm install
         shell: bash
       - name: Cypress tests
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@f5bea478b80a774068179089247f13d60abc5010 # v2
         with:
           working-directory: cypress-test
           command: ${{ inputs.test-command }}
           wait-on: 'http://localhost:5601'
       # Screenshots are only captured on failure, will change this once we do visual regression tests
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5 # v1
         if: failure()
         with:
           name: cypress-screenshots
           path: cypress-test/cypress/screenshots
       # Test run video was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5 # v1
         if: always()
         with:
           name: cypress-videos
           path: cypress-test/cypress/videos
       # Test reports was always captured, so this action uses "always()" condition
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@3446296876d12d4e3a0f3145a3c87e67bf0a16b5 # v1
         if: always()
         with:
           name: cypress-results
