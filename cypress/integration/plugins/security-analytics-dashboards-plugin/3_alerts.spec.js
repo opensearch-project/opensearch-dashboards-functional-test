@@ -369,10 +369,12 @@ describe('Alerts', () => {
 
   it('can be acknowledged via row button', () => {
     // Filter the table to show only "Active" alerts
-    cy.get('[data-text="Status"]').click({ force: true });
-    cy.get('[class="euiFilterSelect__items"]').within(() => {
-      cy.contains('Active').click({ force: true });
-    });
+    cy.get('[data-text="Status"]').should('be.visible').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('Active').click({ force: true });
+      });
 
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
@@ -385,16 +387,24 @@ describe('Alerts', () => {
         cy.get('[aria-label="Acknowledge"]').click({ force: true });
       });
 
+    // Wait for acknowledge to go through
+    cy.wait(2000);
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
       .should('have.length', 1);
 
     // Filter the table to show only "Acknowledged" alerts
-    cy.get('[class="euiFilterSelect__items"]').within(() => {
-      cy.contains('Active').click({ force: true });
-      cy.contains('Acknowledged').click({ force: true });
-    });
+    cy.wait(2000);
+    cy.get('[data-text="Status"]').should('be.visible').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('Active').click({ force: true });
+        cy.contains('Acknowledged').click({ force: true });
+      });
 
+    // Wait for filter to apply
+    cy.wait(2000);
     // Confirm there are now 3 "Acknowledged" alerts
     cy.get('tbody > tr')
       .filter(`:contains(${alertName})`)
