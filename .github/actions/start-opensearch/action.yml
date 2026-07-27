@@ -38,7 +38,7 @@ runs:
       shell: pwsh
 
     - name: Set up JDK
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@b6e674f4b717d7b0ae3baee0fbe79f498905dfde # v1
       with:
         java-version: 21
 
@@ -49,14 +49,14 @@ runs:
 
     # Download OpenSearch
     - name: Download OpenSearch for Windows
-      uses: peternied/download-file@v2
+      uses: peternied/download-file@6a5025a112bb8811a2eb5ee6dd3417acf6d928e4 # v2
       if: ${{ runner.os == 'Windows' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/windows/x64/zip/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-windows-x64.zip
 
 
     - name: Download OpenSearch for Linux
-      uses: peternied/download-file@v2
+      uses: peternied/download-file@6a5025a112bb8811a2eb5ee6dd3417acf6d928e4 # v2
       if: ${{ runner.os == 'Linux' }}
       with:
         url: https://ci.opensearch.org/ci/dbc/distribution-build-opensearch/${{ inputs.opensearch-version }}/latest/linux/x64/tar/dist/opensearch/opensearch-${{ inputs.opensearch-version }}-linux-x64.tar.gz
@@ -151,7 +151,7 @@ runs:
 
     # Give the OpenSearch process some time to boot up before sending any requires, might need to increase the default time!
     - name: Sleep while OpenSearch starts
-      uses: peternied/action-sleep@v1
+      uses: peternied/action-sleep@7472dd1367f502fffd8b22251e44b0ac1a89ed80 # v1
       with:
         seconds: 30
 
