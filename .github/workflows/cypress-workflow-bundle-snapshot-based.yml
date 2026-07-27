@@ -11,7 +11,7 @@ jobs:
     outputs:
       tests: ${{ steps.filter.outputs.tests }}
     steps:
-      - uses: dorny/paths-filter@v2
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2
         id: filter
         with:
           filters: |
