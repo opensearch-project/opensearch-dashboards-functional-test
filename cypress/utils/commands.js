@@ -99,12 +99,13 @@ Cypress.Commands.add('login', () => {
 // This function does not delete all indices
 Cypress.Commands.add('deleteAllIndices', () => {
   cy.log('Deleting all indices');
-  cy.request(
-    'DELETE',
-    `${Cypress.env(
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env(
       'openSearchUrl'
-    )}/index*,sample*,opensearch_dashboards*,test*,cypress*`
-  );
+    )}/index*,sample*,opensearch_dashboards*,test*,cypress*`,
+    failOnStatusCode: false,
+  });
 });
 
 Cypress.Commands.add('deleteADSystemIndices', () => {
