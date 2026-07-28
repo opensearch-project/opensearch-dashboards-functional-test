@@ -127,7 +127,7 @@ describe('Query-Level Monitors', () => {
       cy.get('input[name="name"]').type(SAMPLE_MONITOR, { force: true });
 
       // Wait for input to load and then type in the index name
-      cy.contains('Select clusters');
+      cy.contains('Select data');
       cy.get('#index').type('*', { force: true });
 
       // Add a trigger
@@ -220,7 +220,7 @@ describe('Query-Level Monitors', () => {
       });
 
       // Wait for page to load
-      cy.contains('Select clusters');
+      cy.contains('Select data');
 
       // Click on the Index field and type in multiple index names to replicate the bug
       cy.get('#index')
@@ -350,7 +350,7 @@ describe('Query-Level Monitors', () => {
       cy.get('[data-test-subj="visualEditorRadioCard"]').click({ force: true });
 
       // Wait for page to load
-      cy.contains('Select clusters');
+      cy.contains('Select data');
 
       // Wait for input to load and then type in the index name
       cy.get('#index').type(
