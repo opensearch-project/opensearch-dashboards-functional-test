@@ -353,8 +353,11 @@ describe('Bucket-Level Monitors', () => {
           .click({ force: true })
           .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
             force: true,
-          })
-          .trigger('blur', { force: true });
+          });
+
+        // Re-query the element before triggering blur since typing {enter}
+        // causes a React re-render that detaches the original input element
+        cy.get('#index').trigger('blur', { force: true });
 
         // Confirm Index field only contains the expected text
         cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
