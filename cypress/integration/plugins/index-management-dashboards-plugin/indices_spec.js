@@ -428,8 +428,15 @@ describe('Indices', () => {
       // Check for Shrink page
       cy.contains('Shrink index');
 
+      // Dismiss any toast that may overlay the form
+      cy.get('body').then(($body) => {
+        if ($body.find('[data-test-subj="toastCloseButton"]').length) {
+          cy.get('[data-test-subj="toastCloseButton"]').click({ force: true });
+        }
+      });
+
       // Enter target index name
-      cy.get(`input[data-test-subj="targetIndexNameInput"]`).type(
+      cy.get(`input[data-test-subj="targetIndexNameInput"]`, { timeout: 120000 }).type(
         `${SAMPLE_INDEX}_shrunken`
       );
 
