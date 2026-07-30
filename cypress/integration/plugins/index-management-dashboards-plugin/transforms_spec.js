@@ -102,7 +102,7 @@ describe('Transforms', () => {
       cy.contains('category.keyword_terms');
 
       // Add aggregable field
-      cy.contains('50 columns hidden').click({ force: true });
+      cy.contains(/\d+ columns hidden/).click({ force: true });
       cy.contains('taxless_total_price').click({ force: true });
       // Click out of the window
       cy.contains('Select fields to transform').click({ force: true });
