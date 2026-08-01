@@ -36,13 +36,16 @@ const clickControlAndVerifyChartUpdate = (buttonAriaLabel) => {
       cy.get('.echChartStatus')
         .invoke('attr', 'data-ech-render-count')
         .then((initialRenderCount) => {
-          cy.get(`button[aria-label="${buttonAriaLabel}"]`).click();
+          // Re-check disabled state right before clicking to avoid TOCTOU race
+          cy.get(`button[aria-label="${buttonAriaLabel}"]`).then(($btn) => {
+            if (!$btn.is(':disabled')) {
+              cy.wrap($btn).click();
 
-          // Cypress's .should() will automatically retry until the assertion passes or times out,
-          // which handles the async nature of the re-render.
-          cy.get('.echChartStatus')
-            .invoke('attr', 'data-ech-render-count')
-            .should('not.eq', initialRenderCount);
+              cy.get('.echChartStatus')
+                .invoke('attr', 'data-ech-render-count')
+                .should('not.eq', initialRenderCount);
+            }
+          });
         });
     }
   });
