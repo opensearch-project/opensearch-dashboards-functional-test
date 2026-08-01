@@ -222,15 +222,13 @@ describe('Query-Level Monitors', () => {
       // Wait for page to load
       cy.contains('Select data');
 
-      // Click on the Index field and type in multiple index names to replicate the bug
-      cy.get('#index')
-        .click({ force: true })
-        .type(`${TESTING_INDEX_A}{enter}${TESTING_INDEX_B}{enter}`, {
-          force: true,
-        });
-
-      // Re-query the element before triggering blur since typing {enter}
-      // causes a React re-render that detaches the original input element
+      // Click on the Index field and type in multiple index names to replicate the bug.
+      // Each step re-queries the element because clicking triggers an async fetch
+      // of remote indexes, and each {enter} causes a React re-render that detaches
+      // the original input element from the DOM.
+      cy.get('#index').click({ force: true });
+      cy.get('#index').type(`${TESTING_INDEX_A}{enter}`, { force: true });
+      cy.get('#index').type(`${TESTING_INDEX_B}{enter}`, { force: true });
       cy.get('#index').trigger('blur', { force: true });
 
       // Confirm Index field only contains the expected text
