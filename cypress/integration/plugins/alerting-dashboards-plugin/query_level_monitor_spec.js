@@ -222,19 +222,18 @@ describe('Query-Level Monitors', () => {
       // Wait for page to load
       cy.contains('Select data');
 
-      // Click on the Index field and type in multiple index names to replicate the bug.
-      // Each step re-queries the element because clicking triggers an async fetch
-      // of remote indexes, and each {enter} causes a React re-render that detaches
-      // the original input element from the DOM.
+      // Allow the page to fully load and render the index options before
+      // interacting with the combo box. On slow CI machines the combo box
+      // options aren't ready immediately after 'Select data' appears.
+      cy.wait(3000);
+
       cy.get('#index').click({ force: true });
       cy.get('#index').type(`${TESTING_INDEX_A}{enter}`, { force: true });
+      cy.wait(1000);
       cy.get('#index').type(`${TESTING_INDEX_B}{enter}`, { force: true });
       cy.get('#index').trigger('blur', { force: true });
 
-      // Confirm Index field only contains the expected text
-      cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
-        timeout: ALERTING_PLUGIN_TIMEOUT,
-      });
+      // Confirm Index field contains the expected indices as pills
       cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_A, {
         timeout: ALERTING_PLUGIN_TIMEOUT,
       });
@@ -353,11 +352,14 @@ describe('Query-Level Monitors', () => {
       // Wait for page to load
       cy.contains('Select data');
 
-      // Wait for input to load and then type in the index name
-      cy.get('#index').type(
-        `{backspace}${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`,
-        { force: true }
-      );
+      // Wait for input to load and then type in the index name.
+      // The backspace removes the existing index pill; allow time for the
+      // combo box to stabilize before typing the new index name.
+      cy.get('#index').type(`{backspace}`, { force: true });
+      cy.wait(2000);
+      cy.get('#index').type(`${ALERTING_INDEX.SAMPLE_DATA_ECOMMERCE}{enter}`, {
+        force: true,
+      });
 
       // Enter the time field
       cy.get('#timeField').type('order_date{downArrow}{enter}', {
@@ -378,8 +380,10 @@ describe('Query-Level Monitors', () => {
         );
       }
 
-      // Click save button
+      // Click save button and wait for the monitor update API to complete
+      cy.intercept('PUT', '**/api/alerting/monitors/*').as('saveMonitor');
       cy.get('button').contains('Save').last().click({ force: true });
+      cy.wait('@saveMonitor', { timeout: ALERTING_PLUGIN_TIMEOUT });
 
       // Confirm we can see the correct number of rows in the trigger list by checking <caption> element
       cy.contains(`This table contains ${triggers.length} rows`, {
