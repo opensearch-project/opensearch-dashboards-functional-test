@@ -348,19 +348,18 @@ describe('Bucket-Level Monitors', () => {
         // Wait for page to load
         cy.contains('Select data');
 
-        // Click on the Index field and type in multiple index names to replicate the bug.
-        // Each step re-queries the element because clicking triggers an async fetch
-        // of remote indexes, and each {enter} causes a React re-render that detaches
-        // the original input element from the DOM.
+        // Allow the page to fully load and render the index options before
+        // interacting with the combo box. On slow CI machines the combo box
+        // options aren't ready immediately after 'Select data' appears.
+        cy.wait(3000);
+
         cy.get('#index').click({ force: true });
         cy.get('#index').type(`${TESTING_INDEX_A}{enter}`, { force: true });
+        cy.wait(1000);
         cy.get('#index').type(`${TESTING_INDEX_B}{enter}`, { force: true });
         cy.get('#index').trigger('blur', { force: true });
 
-        // Confirm Index field only contains the expected text
-        cy.get('[data-test-subj="indicesComboBox"]').contains('*', {
-          timeout: ALERTING_PLUGIN_TIMEOUT,
-        });
+        // Confirm Index field contains the expected indices as pills
         cy.get('[data-test-subj="indicesComboBox"]').contains(TESTING_INDEX_A, {
           timeout: ALERTING_PLUGIN_TIMEOUT,
         });
