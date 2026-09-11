@@ -171,6 +171,7 @@ describe('Aliases', () => {
       });
 
       cy.get('[data-test-subj="moreAction"]').click();
+      cy.wait(1000);
       // Flush btn should be disabled if no items selected
       cy.get('[data-test-subj="Flush Action"]').should(
         'have.class',

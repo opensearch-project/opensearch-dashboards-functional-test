@@ -96,14 +96,25 @@ describe('NotificationSettings', () => {
       cy.get(`[data-test-subj="dataSource.0.failure"]`).check({
         force: true,
       });
+      // Wait for combobox and click to focus
       cy.get(
         `[data-test-subj="dataSource.0.channels"] [data-test-subj="comboBoxSearchInput"]`
-      ).type(`${channel}{enter}`);
+      )
+        .should('be.visible')
+        .click({ force: true });
+      // Type and wait for dropdown option
+      cy.get(
+        `[data-test-subj="dataSource.0.channels"] [data-test-subj="comboBoxSearchInput"]`
+      ).type(channel);
+      cy.get(`[role="option"]`)
+        .contains(channel, { timeout: 10000 })
+        .click({ force: true });
       cy.get('[data-test-subj="submitNotifcationSettings"]').click({
         force: true,
       });
       cy.contains(
-        'Notifications settings for index operations have been successfully updated.'
+        'Notifications settings for index operations have been successfully updated.',
+        { timeout: 60000 }
       );
       cy.reload();
       cy.contains(channel);

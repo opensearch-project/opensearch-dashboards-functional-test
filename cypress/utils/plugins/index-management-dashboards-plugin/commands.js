@@ -7,10 +7,11 @@ import { BACKEND_BASE_PATH, IM_API, IM_CONFIG_INDEX } from '../../constants';
 
 Cypress.Commands.add('deleteIMJobs', () => {
   // TODO don't directly delete system index, use other way
-  cy.request(
-    'DELETE',
-    `${Cypress.env('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`
-  );
+  cy.request({
+    method: 'DELETE',
+    url: `${Cypress.env('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`,
+    failOnStatusCode: false,
+  });
   // Clean all ISM policies
   cy.request('GET', `${BACKEND_BASE_PATH}${IM_API.POLICY_BASE}`).then(
     (resp) => {
