@@ -126,6 +126,33 @@ Cypress.Commands.add('sa_deleteDetector', (detectorName) => {
 });
 
 Cypress.Commands.add('sa_deleteAllDetectors', () => {
+  // Since security-analytics 3.9 the detectors config index is registered as a
+  // system index, so with the security plugin enabled a direct index DELETE
+  // returns 403 even for the admin user. Delete detectors through the plugin
+  // API first so no detectors leak into later specs, then best-effort delete
+  // the index itself for environments where that is still permitted.
+  cy.request({
+    method: 'POST',
+    url: `${BACKEND_BASE_PATH}${NODE_API.DETECTORS_BASE}/_search`,
+    failOnStatusCode: false,
+    body: { from: 0, size: 5000, query: { match_all: {} } },
+  }).then((response) => {
+    if (response.status === 200) {
+      for (let hit of response.body.hits.hits) {
+        cy.request({
+          method: 'DELETE',
+          url: `${BACKEND_BASE_PATH}${NODE_API.DETECTORS_BASE}/${hit._id}`,
+          failOnStatusCode: false,
+        }).then((deleteResponse) => {
+          expect(deleteResponse.status).to.be.oneOf([
+            200, // Detector deleted
+            404, // Detector already gone
+          ]);
+        });
+      }
+    }
+  });
+
   cy.request({
     method: 'DELETE',
     url: `${BACKEND_BASE_PATH}/.opensearch-sap-detectors-config`,
@@ -135,6 +162,7 @@ Cypress.Commands.add('sa_deleteAllDetectors', () => {
     expect(response.status).to.be.oneOf([
       200, // Config index has been successfully deleted
       400, // System indexes cannot be deleted by cypress tests in some test environments
+      403, // System index protection denies index deletion when security is enabled
       404, // Config index has already been cleaned up
     ]);
   });
