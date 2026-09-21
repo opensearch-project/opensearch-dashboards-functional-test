@@ -6,7 +6,7 @@
 import { CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     it('Tests that when the short URL is copied and pasted, it will route correctly with the right tenant', function () {
       const randomNumber = Cypress._.random(0, 1e6);

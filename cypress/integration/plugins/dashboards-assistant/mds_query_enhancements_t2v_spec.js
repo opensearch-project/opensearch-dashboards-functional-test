@@ -183,9 +183,9 @@ function textToVisualizationTestCases(url) {
 }
 
 if (
-  Cypress.env('WORKSPACE_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')
+  Cypress.expose('WORKSPACE_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') &&
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')
 ) {
   textToVisualizationTestCases(Cypress.config().baseUrl);
 }

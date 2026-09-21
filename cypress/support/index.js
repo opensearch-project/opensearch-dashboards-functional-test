@@ -63,7 +63,7 @@ Cypress.on('uncaught:exception', () => {
 // Cypress >= 12 removed Cypress.Cookies.debug() and
 // Cypress.Cookies.preserveOnce(). Use cy.session() to log in once and restore
 // the auth cookie before every test instead of preserving it manually.
-if (Cypress.env('ENDPOINT_WITH_PROXY')) {
+if (Cypress.expose('ENDPOINT_WITH_PROXY')) {
   beforeEach(() => {
     cy.session('security_authentication', () => {
       cy.login();
@@ -76,8 +76,8 @@ if (Cypress.env('ENDPOINT_WITH_PROXY')) {
  * won't need to call these commands.
  */
 if (
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
-  !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED') &&
+  !Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   before(() => {
     cy.addAssistantRequiredSettings();
@@ -95,8 +95,8 @@ if (
  * won't need to call these commands.
  */
 if (
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   before(() => {
     const originalBackendEndpoint = currentBackendEndpoint.get();

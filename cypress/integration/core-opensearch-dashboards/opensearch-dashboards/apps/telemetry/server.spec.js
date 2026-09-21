@@ -11,7 +11,7 @@ describe('server', () => {
     CURRENT_TENANT.newTenant = 'global';
   });
 
-  if (Cypress.env('UIMETRIC_ENABLED')) {
+  if (Cypress.expose('UIMETRIC_ENABLED')) {
     it('test server side batching', function () {
       cy.wait(60000); // Intentional Wait to burst previous batching
       // verify we don't have any entries forGET_cat.indices

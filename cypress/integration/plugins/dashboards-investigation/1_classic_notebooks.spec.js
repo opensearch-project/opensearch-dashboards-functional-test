@@ -35,7 +35,7 @@ const createWorkspaceWithEcommerceData = () => {
     );
 };
 
-if (Cypress.env('DASHBOARDS_INVESTIGATION_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_INVESTIGATION_ENABLED')) {
   describe('Checking notebooks page', () => {
     let workspaceId = '';
     before(() => {

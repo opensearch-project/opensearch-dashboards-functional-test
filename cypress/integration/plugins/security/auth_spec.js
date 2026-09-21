@@ -8,7 +8,7 @@ import {
   SEC_FIXTURES_BASE_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Authc and Authz page', () => {
     it('authentication and authorization section should exist', () => {
       cy.mockAuthAction(

@@ -48,7 +48,7 @@ export const WorkspaceDetailTestCases = () => {
     cy.get('.euiLoadingSpinner', { timeout: 20000 }).should('not.exist');
     cy.wait(1500);
 
-    if (Cypress.env('SECURITY_ENABLED')) {
+    if (Cypress.expose('SECURITY_ENABLED')) {
       cy.getElementByTestId('workspacePrivacySettingSelector', {
         timeout: 30000,
       }).should('be.visible');
@@ -59,10 +59,10 @@ export const WorkspaceDetailTestCases = () => {
     }
   };
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('Workspace detail', () => {
       before(() => {
-        if (Cypress.env('SECURITY_ENABLED')) {
+        if (Cypress.expose('SECURITY_ENABLED')) {
           cy.createInternalUser(
             NONE_DASHBOARDS_ADMIN_USERNAME,
             workspaceTestUser
@@ -81,7 +81,7 @@ export const WorkspaceDetailTestCases = () => {
 
       after(() => {
         cy.deleteWorkspaceById(workspaceId);
-        if (Cypress.env('SECURITY_ENABLED')) {
+        if (Cypress.expose('SECURITY_ENABLED')) {
           cy.deleteRoleMapping(WORKSPACE_TEST_ROLE_NAME);
           cy.deleteInternalUser(NONE_DASHBOARDS_ADMIN_USERNAME);
           cy.deleteRole(WORKSPACE_TEST_ROLE_NAME);
@@ -175,8 +175,8 @@ export const WorkspaceDetailTestCases = () => {
       });
 
       if (
-        Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-        Cypress.env('SECURITY_ENABLED')
+        Cypress.expose('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+        Cypress.expose('SECURITY_ENABLED')
       ) {
         describe('update with different workspace access level', () => {
           beforeEach(() => {

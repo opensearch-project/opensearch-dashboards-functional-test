@@ -9,7 +9,7 @@ Cypress.Commands.add('deleteIMJobs', () => {
   // TODO don't directly delete system index, use other way
   cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`
+    `${Cypress.expose('openSearchUrl')}/.opendistro-ism*?expand_wildcards=all`
   );
   // Clean all ISM policies
   cy.request('GET', `${BACKEND_BASE_PATH}${IM_API.POLICY_BASE}`).then(
@@ -43,7 +43,7 @@ Cypress.Commands.add('deleteIMJobs', () => {
 Cypress.Commands.add('createPolicy', (policyId, policyJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.POLICY_BASE}/${policyId}`,
+    `${Cypress.expose('openSearchUrl')}${IM_API.POLICY_BASE}/${policyId}`,
     policyJSON
   );
 });
@@ -66,7 +66,7 @@ Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
     };
     cy.request(
       'POST',
-      `${Cypress.env('openSearchUrl')}/${
+      `${Cypress.expose('openSearchUrl')}/${
         IM_CONFIG_INDEX.OPENDISTRO_ISM_CONFIG
       }/_update_by_query/`,
       body
@@ -77,14 +77,16 @@ Cypress.Commands.add('updateManagedIndexConfigStartTime', (index) => {
 Cypress.Commands.add('createRollup', (rollupId, rollupJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.ROLLUP_JOBS_BASE}/${rollupId}`,
+    `${Cypress.expose('openSearchUrl')}${IM_API.ROLLUP_JOBS_BASE}/${rollupId}`,
     rollupJSON
   );
 });
 
 Cypress.Commands.add('deleteTemplate', (name) => {
   cy.request({
-    url: `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    url: `${Cypress.expose('openSearchUrl')}${
+      IM_API.INDEX_TEMPLATE_BASE
+    }/${name}`,
     failOnStatusCode: false,
     method: 'DELETE',
   });
@@ -92,7 +94,7 @@ Cypress.Commands.add('deleteTemplate', (name) => {
 
 Cypress.Commands.add('deleteTemplateComponents', (name) => {
   cy.request({
-    url: `${Cypress.env('openSearchUrl')}${
+    url: `${Cypress.expose('openSearchUrl')}${
       IM_API.INDEX_TEMPLATE_COMPONENT_BASE
     }/${name}`,
     failOnStatusCode: false,
@@ -103,7 +105,7 @@ Cypress.Commands.add('deleteTemplateComponents', (name) => {
 Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${
+    `${Cypress.expose('openSearchUrl')}${
       IM_API.TRANSFORM_JOBS_BASE
     }/${transformId}`,
     transformJSON
@@ -113,7 +115,7 @@ Cypress.Commands.add('createTransform', (transformId, transformJSON) => {
 Cypress.Commands.add('createPipeline', (pipelineId, pipelineJSON) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}/_ingest/pipeline/${pipelineId}`,
+    `${Cypress.expose('openSearchUrl')}/_ingest/pipeline/${pipelineId}`,
     pipelineJSON
   );
 });
@@ -131,14 +133,14 @@ Cypress.Commands.add('disableJitter', () => {
   };
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     jitterJson
   );
 });
 
 Cypress.Commands.add('addIndexAlias', (alias, index) => {
   cy.request({
-    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    url: `${Cypress.expose('openSearchUrl')}/_aliases`,
     method: 'POST',
     body: {
       actions: [
@@ -156,7 +158,7 @@ Cypress.Commands.add('addIndexAlias', (alias, index) => {
 
 Cypress.Commands.add('removeIndexAlias', (alias) => {
   cy.request({
-    url: `${Cypress.env('openSearchUrl')}/_aliases`,
+    url: `${Cypress.expose('openSearchUrl')}/_aliases`,
     method: 'POST',
     body: {
       actions: [

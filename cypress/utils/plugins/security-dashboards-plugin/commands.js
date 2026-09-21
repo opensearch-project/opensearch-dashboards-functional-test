@@ -14,7 +14,7 @@ import { SEC_API } from '../../constants';
 Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
   return cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
+    `${Cypress.expose('openSearchUrl')}${SEC_API.TENANTS_BASE}/${tenantID}`,
     tenantJson
   );
 });
@@ -22,7 +22,7 @@ Cypress.Commands.add('createTenant', (tenantID, tenantJson) => {
 Cypress.Commands.add('createInternalUser', (userID, userJson) => {
   return cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
+    `${Cypress.expose('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`,
     userJson
   );
 });
@@ -30,14 +30,14 @@ Cypress.Commands.add('createInternalUser', (userID, userJson) => {
 Cypress.Commands.add('deleteInternalUser', (userID) => {
   return cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`
+    `${Cypress.expose('openSearchUrl')}${SEC_API.INTERNALUSERS_BASE}/${userID}`
   );
 });
 
 Cypress.Commands.add('createRole', (roleID, roleJson) => {
   return cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
+    `${Cypress.expose('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`,
     roleJson
   );
 });
@@ -45,14 +45,14 @@ Cypress.Commands.add('createRole', (roleID, roleJson) => {
 Cypress.Commands.add('deleteRole', (roleID) => {
   return cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`
+    `${Cypress.expose('openSearchUrl')}${SEC_API.ROLE_BASE}/${roleID}`
   );
 });
 
 Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
   return cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
+    `${Cypress.expose('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`,
     rolemappingJson
   );
 });
@@ -60,6 +60,6 @@ Cypress.Commands.add('createRoleMapping', (roleID, rolemappingJson) => {
 Cypress.Commands.add('deleteRoleMapping', (roleID) => {
   return cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`
+    `${Cypress.expose('openSearchUrl')}${SEC_API.ROLE_MAPPING_BASE}/${roleID}`
   );
 });

@@ -12,7 +12,7 @@ const workspaceName = `test_workspace_search_${Math.random()
 let workspaceId;
 let datasourceId;
 
-if (Cypress.env('WORKSPACE_ENABLED')) {
+if (Cypress.expose('WORKSPACE_ENABLED')) {
   const createWorkspace = (datasourceId) => {
     cy.createWorkspace({
       name: workspaceName,
@@ -32,7 +32,7 @@ if (Cypress.env('WORKSPACE_ENABLED')) {
   describe('Search card', () => {
     before(() => {
       cy.deleteWorkspaceByName(workspaceName);
-      if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+      if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
         cy.deleteAllDataSources();
         cy.createDataSourceNoAuth().then((result) => {
           datasourceId = result[0];

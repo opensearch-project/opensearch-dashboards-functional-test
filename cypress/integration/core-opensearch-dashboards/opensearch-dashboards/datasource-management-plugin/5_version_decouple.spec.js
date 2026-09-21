@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Create datasources', () => {
     let serverAvailable = true;
 

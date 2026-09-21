@@ -119,7 +119,7 @@ context('top forecaster api', () => {
     // so we skip this check to avoid flaky failures.
     cy.request({
       method: 'GET',
-      url: `${Cypress.env('openSearchUrl')}/`,
+      url: `${Cypress.expose('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
       const versionParts = fullVersion.split('.').map(Number);

@@ -28,17 +28,17 @@ describe('Transforms', () => {
 
   beforeEach(() => {
     // delete test transform and index
-    cy.request('DELETE', `${Cypress.env('openSearchUrl')}/test_transform*`);
+    cy.request('DELETE', `${Cypress.expose('openSearchUrl')}/test_transform*`);
     cy.request({
       method: 'POST',
-      url: `${Cypress.env(
+      url: `${Cypress.expose(
         'openSearchUrl'
       )}/_plugins/_transform/${TRANSFORM_ID}/_stop`,
       failOnStatusCode: false,
     });
     cy.request({
       method: 'DELETE',
-      url: `${Cypress.env(
+      url: `${Cypress.expose(
         'openSearchUrl'
       )}/_plugins/_transform/${TRANSFORM_ID}  `,
       failOnStatusCode: false,

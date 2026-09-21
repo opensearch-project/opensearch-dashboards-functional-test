@@ -16,7 +16,7 @@ import {
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 import { constructTimelineExpression } from './utils';
 
-if (!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (!Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Timeline Visualization', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';

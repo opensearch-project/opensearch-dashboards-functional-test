@@ -19,14 +19,14 @@ const tenantName = 'test';
 const setTenancyConfig = (config) => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env(
+    url: `${Cypress.expose(
       'openSearchUrl'
     )}/_plugins/_security/api/tenancy/config`,
     body: config,
   });
 };
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Multi Tenancy Tests: ', () => {
     before(() => {
       cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });

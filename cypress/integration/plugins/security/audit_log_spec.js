@@ -8,7 +8,7 @@ import {
   SEC_UI_AUDIT_LOGGING_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Audit logs page', () => {
     it('should load Audit logs page properly', () => {
       cy.mockAuditLogsAction(

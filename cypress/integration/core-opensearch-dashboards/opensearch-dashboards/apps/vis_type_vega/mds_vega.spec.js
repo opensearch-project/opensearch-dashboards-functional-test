@@ -17,7 +17,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 import { DS_NO_AUTH_LABEL } from '../../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 import { updateVegaSpec } from './test_utils/utils';
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Vega Visualization (MDS enabled)', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';
@@ -88,7 +88,7 @@ if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
       cy.vegaSetVegaSpec(updatedVegaSpec);
       cy.vegaUpdateVisualization();
 
-      if (Cypress.env('DISABLE_LOCAL_CLUSTER')) {
+      if (Cypress.expose('DISABLE_LOCAL_CLUSTER')) {
         // Visualization should not be drawn
         cy.get('canvas.marks').should('not.exist');
         cy.get('ul.vgaVis__messages').should('exist');

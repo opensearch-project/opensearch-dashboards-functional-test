@@ -16,14 +16,14 @@ const TEST_TIMESTAMP_FIELD = 'timestamp';
 const TEST_VALUE_FIELD = 'value';
 const TEST_HOST_FIELD = 'host';
 
-const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
+const REMOTE_DATA_SOURCE_USERNAME = Cypress.expose(
   'remoteDataSourceBasicAuthUsername'
 );
-const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env('password');
-const isSecure = Cypress.env('SECURITY_ENABLED');
+const REMOTE_DATA_SOURCE_PASSWORD = Cypress.expose('password');
+const isSecure = Cypress.expose('SECURITY_ENABLED');
 const remoteBaseUrl = isSecure
-  ? Cypress.env('remoteDataSourceBasicAuthUrl')
-  : Cypress.env('remoteDataSourceNoAuthUrl');
+  ? Cypress.expose('remoteDataSourceBasicAuthUrl')
+  : Cypress.expose('remoteDataSourceNoAuthUrl');
 const auth = isSecure
   ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
   : '';
@@ -51,7 +51,7 @@ context('Create remote forecaster workflow', () => {
 
   describe('Remote cluster tests', () => {
     before(function () {
-      cy.exec(
+      cy.execShell(
         `curl --silent --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
         { failOnNonZeroExit: false }
       ).then((result) => {
@@ -72,7 +72,7 @@ context('Create remote forecaster workflow', () => {
           Cypress.log({ message: 'Cluster name not found - skipping tests' });
           this.skip();
         }
-        Cypress.env('remoteClusterName', response.body.cluster_name);
+        Cypress.expose('remoteClusterName', response.body.cluster_name);
         remoteClusterName = response.body.cluster_name;
       });
 
@@ -200,7 +200,7 @@ context('Create remote forecaster workflow', () => {
     });
 
     it('Full creation - based on remote index', () => {
-      const remoteClusterName = Cypress.env('remoteClusterName');
+      const remoteClusterName = Cypress.expose('remoteClusterName');
 
       // Define forecaster step
       cy.visit(FORECAST_URL.CREATE_FORECASTER);
@@ -249,7 +249,7 @@ context('Create remote forecaster workflow', () => {
       // 3.1 does not support daily interval and thus suggest API would fail for daily interval data.
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/`,
+        url: `${Cypress.expose('openSearchUrl')}/`,
       }).then((response) => {
         const fullVersion = response.body.version.number;
         const versionParts = fullVersion.split('.').map(Number);

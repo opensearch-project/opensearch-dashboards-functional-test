@@ -14,7 +14,7 @@ export const WorkspaceBreadcrumbsTestCases = () => {
   let workspaceId;
   let workspaceFeatures = ['use-case-all'];
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     const createWorkspace = () => {
       cy.createWorkspace({
         name: workspaceName,

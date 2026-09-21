@@ -183,15 +183,15 @@ function addDiscoverSummaryCase(url) {
 }
 
 if (
-  Cypress.env('WORKSPACE_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')
+  Cypress.expose('WORKSPACE_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') &&
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')
 ) {
   // These tests visit Discover with query enhancements + workspace + assistant
   // features which requires more memory than standard CI runners provide.
   // Skip in CI to avoid Chromium/Electron renderer crashes.
   // To run locally: set CYPRESS_SKIP_HEAVY_DISCOVER_TESTS=false
-  if (Cypress.env('SKIP_HEAVY_DISCOVER_TESTS')) {
+  if (Cypress.expose('SKIP_HEAVY_DISCOVER_TESTS')) {
     describe('discover summary - SKIPPED (renderer memory limit)', () => {
       it('skipped due to CI memory constraints', () => {});
     });

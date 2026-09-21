@@ -248,7 +248,7 @@ export const PPL_FILTER =
  */
 
 export const TYPING_DELAY = 1500;
-export const TIMEOUT_DELAY = Cypress.env('SECURITY_ENABLED') ? 60000 : 30000;
+export const TIMEOUT_DELAY = Cypress.expose('SECURITY_ENABLED') ? 60000 : 30000;
 export const PANELS_TIMEOUT = 120000;
 
 export const moveToHomePage = () => {

@@ -10,7 +10,7 @@ import {
   SEC_API_INTERNAL_USERS_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('OpenSearch Dashboards Security Plugin - Enhanced Sanity Tests', () => {
     const username = 'test';
     const password = 'ew4q56a4d6as51!*asSS';

@@ -8,7 +8,7 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 export const WorkspaceCreateTestCases = () => {
   const miscUtils = new MiscUtils(cy);
   const workspaceName = 'test_workspace_az3RBx6cE';
-  const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
+  const MDSEnabled = Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED');
 
   const inputWorkspaceName = (workspaceName) => {
     const nameInputTestId = 'workspaceForm-workspaceDetails-nameInputText';
@@ -75,7 +75,7 @@ export const WorkspaceCreateTestCases = () => {
       .click({ force: true });
   };
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('Create workspace', () => {
       let dataSourceTitle;
       before(() => {
@@ -220,8 +220,8 @@ export const WorkspaceCreateTestCases = () => {
         });
 
         if (
-          Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-          Cypress.env('SECURITY_ENABLED')
+          Cypress.expose('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+          Cypress.expose('SECURITY_ENABLED')
         ) {
           it('should successfully jump to collaborators page after creating a workspace', () => {
             cy.deleteWorkspaceByName(workspaceName);
@@ -451,8 +451,8 @@ export const WorkspaceCreateTestCases = () => {
       }
 
       if (
-        Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-        Cypress.env('SECURITY_ENABLED')
+        Cypress.expose('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+        Cypress.expose('SECURITY_ENABLED')
       ) {
         describe('Create a workspace with permissions successfully', () => {
           before(() => {
@@ -499,10 +499,10 @@ export const WorkspaceCreateTestCases = () => {
                   features: ['use-case-observability'],
                   permissions: {
                     write: {
-                      users: [`${Cypress.env('username')}`],
+                      users: [`${Cypress.expose('username')}`],
                     },
                     library_write: {
-                      users: [`${Cypress.env('username')}`],
+                      users: [`${Cypress.expose('username')}`],
                     },
                   },
                 };

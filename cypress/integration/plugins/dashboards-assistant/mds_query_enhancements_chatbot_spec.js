@@ -33,8 +33,8 @@ function addChatbotTestCase(url) {
     let workspaceId;
     before(() => {
       if (
-        Cypress.env('WORKSPACE_ENABLED') &&
-        Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+        Cypress.expose('WORKSPACE_ENABLED') &&
+        Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
       ) {
         cy.deleteWorkspaceByName(workspaceName);
         cy.createDataSourceNoAuth().then(([result]) => {
@@ -57,7 +57,7 @@ function addChatbotTestCase(url) {
     });
 
     after(() => {
-      if (Cypress.env('WORKSPACE_ENABLED')) {
+      if (Cypress.expose('WORKSPACE_ENABLED')) {
         cy.deleteWorkspaceByName(workspaceName);
       }
     });
@@ -71,7 +71,7 @@ function addChatbotTestCase(url) {
       );
 
       cy.visit(
-        Cypress.env('WORKSPACE_ENABLED')
+        Cypress.expose('WORKSPACE_ENABLED')
           ? `${url}${workspacePrefix}/app/objects`
           : `${url}/app/home`
       );
@@ -120,6 +120,6 @@ function addChatbotTestCase(url) {
   });
 }
 
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')) {
   addChatbotTestCase(Cypress.config().baseUrl);
 }

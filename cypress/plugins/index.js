@@ -18,6 +18,7 @@
 // the project's config changing)
 
 const webpack = require('@cypress/webpack-preprocessor');
+const childProcess = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
@@ -83,6 +84,33 @@ module.exports = (on, config) => {
     log(message) {
       console.log(message);
       return null;
+    },
+
+    /**
+     * Run a shell command on the machine running Cypress and resolve with the
+     * { code, stdout, stderr } shape cy.exec() used to yield. Backs the
+     * cy.execShell() command, which stands in for cy.exec() now that Cypress 16
+     * has removed it.
+     *
+     * Commands are run through the user's shell rather than /bin/sh so that bash
+     * constructs already relied on here, such as process substitution, keep
+     * working.
+     */
+    execCommand({ command, timeout }) {
+      // eslint-disable-next-line no-undef
+      return new Promise((resolve) => {
+        const options = { timeout, maxBuffer: 10 * 1024 * 1024 };
+        if (process.platform !== 'win32') {
+          options.shell = process.env.SHELL || '/bin/bash';
+        }
+        childProcess.exec(command, options, (error, stdout, stderr) => {
+          let code = 0;
+          if (error) {
+            code = typeof error.code === 'number' ? error.code : 1;
+          }
+          return resolve({ code, stdout, stderr });
+        });
+      });
     },
 
     /**

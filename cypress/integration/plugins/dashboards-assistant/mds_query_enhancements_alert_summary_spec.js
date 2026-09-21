@@ -44,7 +44,7 @@ const createWorkspaceWithEcommerceData = () => {
     );
 };
 
-const dataSourceUrl = Cypress.env('remoteDataSourceNoAuthUrl');
+const dataSourceUrl = Cypress.expose('remoteDataSourceNoAuthUrl');
 
 const clearAll = () => {
   cy.deleteAllAlerts(dataSourceUrl);
@@ -196,9 +196,9 @@ function alertSummaryTestCases(url) {
 }
 
 if (
-  Cypress.env('WORKSPACE_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')
+  Cypress.expose('WORKSPACE_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') &&
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')
 ) {
   alertSummaryTestCases(Cypress.config().baseUrl);
 }

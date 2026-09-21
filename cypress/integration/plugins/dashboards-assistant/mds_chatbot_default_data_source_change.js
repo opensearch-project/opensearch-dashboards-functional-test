@@ -41,8 +41,8 @@ const openChatBotAndSendMessage = () => {
 };
 
 if (
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   describe('Assistant basic spec', () => {
     beforeEach(function () {

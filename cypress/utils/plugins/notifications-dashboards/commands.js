@@ -9,18 +9,18 @@ import { API } from './constants';
 Cypress.Commands.add('deleteAllNotificationConfigs', () => {
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('openSearchUrl')}/_refresh`,
+    url: `${Cypress.expose('openSearchUrl')}/_refresh`,
   });
 
   cy.request({
     method: 'GET',
-    url: `${Cypress.env('openSearchUrl')}${API.CONFIGS_BASE}`,
+    url: `${Cypress.expose('openSearchUrl')}${API.CONFIGS_BASE}`,
   }).then((response) => {
     if (response.status === 200) {
       for (let i = 0; i < response.body.total_hits; i++) {
         cy.request(
           'DELETE',
-          `${Cypress.env('openSearchUrl')}${API.CONFIGS_BASE}/${
+          `${Cypress.expose('openSearchUrl')}${API.CONFIGS_BASE}/${
             response.body.config_list[i].config_id
           }`
         );
@@ -34,7 +34,7 @@ Cypress.Commands.add('deleteAllNotificationConfigs', () => {
 Cypress.Commands.add('createNotificationConfig', (notificationConfigJSON) => {
   cy.request(
     'POST',
-    `${Cypress.env('openSearchUrl')}${API.CONFIGS_BASE}`,
+    `${Cypress.expose('openSearchUrl')}${API.CONFIGS_BASE}`,
     notificationConfigJSON
   );
 });

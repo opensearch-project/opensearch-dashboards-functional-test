@@ -96,8 +96,8 @@ export const WorkspaceCopyTestCases = () => {
         features: ['use-case-observability'],
         settings: {
           permissions: {
-            library_write: { users: [`${Cypress.env('username')}`] },
-            write: { users: [`${Cypress.env('username')}`] },
+            library_write: { users: [`${Cypress.expose('username')}`] },
+            write: { users: [`${Cypress.expose('username')}`] },
           },
           dataSources: [dataSourceId],
         },
@@ -109,8 +109,8 @@ export const WorkspaceCopyTestCases = () => {
   };
 
   if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+    Cypress.expose('WORKSPACE_ENABLED') &&
+    Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     before(() => {
       cy.deleteAllWorkspaces();
@@ -131,8 +131,8 @@ export const WorkspaceCopyTestCases = () => {
             features: ['use-case-observability'],
             settings: {
               permissions: {
-                library_write: { users: [`${Cypress.env('username')}`] },
-                write: { users: [`${Cypress.env('username')}`] },
+                library_write: { users: [`${Cypress.expose('username')}`] },
+                write: { users: [`${Cypress.expose('username')}`] },
               },
               dataSources: [dataSourceId1, dataSourceId2],
             },

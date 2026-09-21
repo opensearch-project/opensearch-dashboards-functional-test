@@ -13,7 +13,7 @@ import {
 import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-test-library';
 
 const miscUtils = new MiscUtils(cy);
-export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
+export const DisableLocalCluster = !!Cypress.expose('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
 
 Cypress.Commands.add('deleteAllDataSources', () => {
   // Clean all data sources
@@ -51,7 +51,7 @@ const fetchDataSourceMetadata = (body) =>
 Cypress.Commands.add(
   'createDataSourceNoAuth',
   ({ title = 'RemoteDataSourceNoAuth' } = {}) => {
-    const endpoint = Cypress.env('remoteDataSourceNoAuthUrl');
+    const endpoint = Cypress.expose('remoteDataSourceNoAuthUrl');
     const createDataSourceNoAuth = (dataSourceMetaData = {}) => {
       cy.request({
         method: 'POST',
@@ -99,12 +99,12 @@ Cypress.Commands.add('createDataSourceBasicAuth', () => {
     body: {
       attributes: {
         title: 'RemoteDataSourceBasicAuth',
-        endpoint: Cypress.env('remoteDataSourceBasicAuthUrl'),
+        endpoint: Cypress.expose('remoteDataSourceBasicAuthUrl'),
         auth: {
           type: 'username_password',
           credentials: {
-            username: Cypress.env('remoteDataSourceBasicAuthUsername'),
-            password: Cypress.env('remoteDataSourceBasicAuthPassword'),
+            username: Cypress.expose('remoteDataSourceBasicAuthUsername'),
+            password: Cypress.expose('remoteDataSourceBasicAuthPassword'),
           },
         },
       },
@@ -147,8 +147,8 @@ Cypress.Commands.add(
   (fixturePath, index) => {
     const sendBulkAPIRequest = (ndjson) => {
       const url = index
-        ? `${Cypress.env('remoteDataSourceNoAuthUrl')}/${index}/_bulk`
-        : `${Cypress.env('remoteDataSourceNoAuthUrl')}/_bulk`;
+        ? `${Cypress.expose('remoteDataSourceNoAuthUrl')}/${index}/_bulk`
+        : `${Cypress.expose('remoteDataSourceNoAuthUrl')}/_bulk`;
       cy.log('bulkUploadDocs')
         .request({
           method: 'POST',
@@ -173,7 +173,7 @@ Cypress.Commands.add(
 
     cy.request({
       method: 'POST',
-      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_all/_refresh`,
+      url: `${Cypress.expose('remoteDataSourceNoAuthUrl')}/_all/_refresh`,
     });
   }
 );
@@ -183,7 +183,7 @@ Cypress.Commands.add(
   (indexName, options = {}) => {
     cy.request({
       method: 'DELETE',
-      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/${indexName}`,
+      url: `${Cypress.expose('remoteDataSourceNoAuthUrl')}/${indexName}`,
       failOnStatusCode: false,
       ...options,
     });

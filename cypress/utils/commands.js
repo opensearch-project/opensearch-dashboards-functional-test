@@ -6,11 +6,11 @@
 import { BASE_PATH, IM_API, BACKEND_BASE_PATH } from './constants';
 import { devToolsRequest } from './helpers';
 
-export const DisableLocalCluster = !!Cypress.env('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
+export const DisableLocalCluster = !!Cypress.expose('DISABLE_LOCAL_CLUSTER'); // = hideLocalCluster
 
 export const ADMIN_AUTH = {
-  username: Cypress.env('username'),
-  password: Cypress.env('password'),
+  username: Cypress.expose('username'),
+  password: Cypress.expose('password'),
   set newUser(changedUsername) {
     this.username = changedUsername;
   },
@@ -29,7 +29,7 @@ export const CURRENT_TENANT = {
 // Overwrite default backend endpoint to customized one, remember set to original value after tests complete.
 export const currentBackendEndpoint = Object.freeze({
   DEFAULT: BACKEND_BASE_PATH,
-  REMOTE_NO_AUTH: Cypress.env('remoteDataSourceNoAuthUrl'),
+  REMOTE_NO_AUTH: Cypress.expose('remoteDataSourceNoAuthUrl'),
   /**
    * Change current backend endpoint
    * @param {*} changedEndPoint
@@ -46,7 +46,7 @@ export const currentBackendEndpoint = Object.freeze({
       throw new Error(`Invalid endpoint:${changedEndPoint}`);
     }
     const updateEndpoint = () => {
-      Cypress.env('currentBackendEndpoint', changedEndPoint);
+      Cypress.expose('currentBackendEndpoint', changedEndPoint);
       cy.log(
         `Current backend endpoint has been changed to: ${changedEndPoint}`
       );
@@ -59,7 +59,7 @@ export const currentBackendEndpoint = Object.freeze({
   },
   get() {
     return (
-      Cypress.env('currentBackendEndpoint') || currentBackendEndpoint.DEFAULT
+      Cypress.expose('currentBackendEndpoint') || currentBackendEndpoint.DEFAULT
     );
   },
 });
@@ -73,11 +73,37 @@ export const supressNoRequestOccurred = () => {
 // TODO: Add commands to ./index.d.ts for IDE discoverability
 
 /**
+ * Run a shell command on the machine running Cypress, yielding
+ * { code, stdout, stderr }.
+ *
+ * Stands in for cy.exec(), which Cypress 16 removed in favour of cy.task().
+ * Like cy.exec(), a non-zero exit code fails the test unless failOnNonZeroExit
+ * is false.
+ *
+ * @example
+ * cy.execShell('curl --silent http://localhost:9200', { failOnNonZeroExit: false })
+ *   .then((result) => cy.log(result.stdout));
+ */
+Cypress.Commands.add('execShell', (command, options = {}) => {
+  const { failOnNonZeroExit = true, timeout, log } = options;
+  return cy
+    .task('execCommand', { command, timeout }, { timeout, log })
+    .then((result) => {
+      if (failOnNonZeroExit && result.code !== 0) {
+        throw new Error(
+          `cy.execShell() failed with exit code ${result.code}.\n\nCommand: ${command}\n\nStderr:\n${result.stderr}`
+        );
+      }
+      return result;
+    });
+});
+
+/**
  * This overwrites the default visit command to authenticate before visiting
  * webpages if SECURITY_ENABLED cypress env var is true
  */
 Cypress.Commands.overwrite('visit', (orig, url, options) => {
-  if (Cypress.env('SECURITY_ENABLED')) {
+  if (Cypress.expose('SECURITY_ENABLED')) {
     let newOptions = options;
     let waitForGetTenant = options && options.waitForGetTenant;
     if (options) {
@@ -113,7 +139,7 @@ Cypress.Commands.overwrite('visit', (orig, url, options) => {
  */
 Cypress.Commands.overwrite('request', (originalFn, ...args) => {
   let defaults = {};
-  if (Cypress.env('SECURITY_ENABLED')) {
+  if (Cypress.expose('SECURITY_ENABLED')) {
     defaults.auth = ADMIN_AUTH;
   }
 
@@ -136,7 +162,7 @@ Cypress.Commands.overwrite('request', (originalFn, ...args) => {
    *
    */
   if (
-    !!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
+    !!Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') &&
     currentBackendEndpoint.get() !== currentBackendEndpoint.DEFAULT &&
     options.url &&
     options.url.startsWith(BACKEND_BASE_PATH)
@@ -166,7 +192,7 @@ Cypress.Commands.add('deleteAllIndices', () => {
   cy.log('Deleting all indices');
   cy.request(
     'DELETE',
-    `${Cypress.env(
+    `${Cypress.expose(
       'openSearchUrl'
     )}/index*,sample*,opensearch_dashboards*,test*,cypress*`
   );
@@ -174,7 +200,7 @@ Cypress.Commands.add('deleteAllIndices', () => {
 
 Cypress.Commands.add('deleteADSystemIndices', () => {
   cy.log('Deleting AD system indices');
-  const url = `${Cypress.env(
+  const url = `${Cypress.expose(
     'openSearchUrl'
   )}/_plugins/_anomaly_detection/detectors/results`;
   cy.request({
@@ -186,7 +212,7 @@ Cypress.Commands.add('deleteADSystemIndices', () => {
 
   cy.request({
     method: 'POST',
-    url: `${Cypress.env(
+    url: `${Cypress.expose(
       'openSearchUrl'
     )}/_plugins/_anomaly_detection/detectors/_search`,
     failOnStatusCode: false,
@@ -196,14 +222,14 @@ Cypress.Commands.add('deleteADSystemIndices', () => {
       for (let hit of response.body.hits.hits) {
         cy.request(
           'POST',
-          `${Cypress.env(
+          `${Cypress.expose(
             'openSearchUrl'
           )}/_plugins/_anomaly_detection/detectors/${hit._id}/_stop`
         ).then((response) => {
           if (response.status === 200) {
             cy.request(
               'DELETE',
-              `${Cypress.env(
+              `${Cypress.expose(
                 'openSearchUrl'
               )}/_plugins/_anomaly_detection/detectors/${hit._id}`
             );
@@ -215,13 +241,13 @@ Cypress.Commands.add('deleteADSystemIndices', () => {
 });
 
 Cypress.Commands.add('getIndexSettings', (index) => {
-  cy.request('GET', `${Cypress.env('openSearchUrl')}/${index}/_settings`);
+  cy.request('GET', `${Cypress.expose('openSearchUrl')}/${index}/_settings`);
 });
 
 Cypress.Commands.add('updateIndexSettings', (index, settings) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}/${index}/_settings`,
+    `${Cypress.expose('openSearchUrl')}/${index}/_settings`,
     settings
   );
 });
@@ -229,7 +255,7 @@ Cypress.Commands.add('updateIndexSettings', (index, settings) => {
 Cypress.Commands.add('createIndexTemplate', (name, template) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
+    `${Cypress.expose('openSearchUrl')}${IM_API.INDEX_TEMPLATE_BASE}/${name}`,
     template
   );
 });
@@ -237,7 +263,7 @@ Cypress.Commands.add('createIndexTemplate', (name, template) => {
 Cypress.Commands.add('createTemplateComponent', (name, template) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${
+    `${Cypress.expose('openSearchUrl')}${
       IM_API.INDEX_TEMPLATE_COMPONENT_BASE
     }/${name}`,
     template
@@ -247,19 +273,19 @@ Cypress.Commands.add('createTemplateComponent', (name, template) => {
 Cypress.Commands.add('createDataStream', (name) => {
   cy.request(
     'PUT',
-    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${name}`
+    `${Cypress.expose('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${name}`
   );
 });
 
 Cypress.Commands.add('deleteDataStreams', (names) => {
   cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${names}`
+    `${Cypress.expose('openSearchUrl')}${IM_API.DATA_STREAM_BASE}/${names}`
   );
 });
 
 Cypress.Commands.add('rollover', (target) => {
-  cy.request('POST', `${Cypress.env('openSearchUrl')}/${target}/_rollover`);
+  cy.request('POST', `${Cypress.expose('openSearchUrl')}/${target}/_rollover`);
 });
 
 // --- Typed commands --
@@ -295,7 +321,7 @@ Cypress.Commands.add('checkClusterHealth', () => {
   return cy
     .request({
       method: 'GET',
-      url: `${Cypress.env('remoteDataSourceNoAuthUrl')}/_cluster/health`,
+      url: `${Cypress.expose('remoteDataSourceNoAuthUrl')}/_cluster/health`,
       failOnStatusCode: false,
     })
     .then((response) => {
@@ -307,13 +333,13 @@ Cypress.Commands.add('checkClusterHealth', () => {
 });
 
 Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${index}`, settings);
+  cy.request('PUT', `${Cypress.expose('openSearchUrl')}/${index}`, settings);
   if (policyID != null) {
     const body = { policy_id: policyID };
 
     cy.request(
       'POST',
-      `${Cypress.env('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
+      `${Cypress.expose('openSearchUrl')}${IM_API.ADD_POLICY_BASE}/${index}`,
       body
     );
   }
@@ -322,7 +348,7 @@ Cypress.Commands.add('createIndex', (index, policyID = null, settings = {}) => {
 Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('openSearchUrl')}/${indexName}`,
+    url: `${Cypress.expose('openSearchUrl')}/${indexName}`,
     failOnStatusCode: false,
     ...options,
   });
@@ -331,7 +357,9 @@ Cypress.Commands.add('deleteIndex', (indexName, options = {}) => {
 Cypress.Commands.add('getIndices', (index = null, settings = {}) => {
   cy.request({
     method: 'GET',
-    url: `${Cypress.env('openSearchUrl')}/_cat/indices/${index ? index : ''}`,
+    url: `${Cypress.expose('openSearchUrl')}/_cat/indices/${
+      index ? index : ''
+    }`,
     failOnStatusCode: false,
     ...settings,
   });
@@ -341,8 +369,8 @@ Cypress.Commands.add('getIndices', (index = null, settings = {}) => {
 Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
   const sendBulkAPIRequest = (ndjson) => {
     const url = index
-      ? `${Cypress.env('openSearchUrl')}/${index}/_bulk`
-      : `${Cypress.env('openSearchUrl')}/_bulk`;
+      ? `${Cypress.expose('openSearchUrl')}/${index}/_bulk`
+      : `${Cypress.expose('openSearchUrl')}/_bulk`;
     cy.log('bulkUploadDocs')
       .request({
         method: 'POST',
@@ -367,7 +395,7 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
 
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('openSearchUrl')}/_all/_refresh`,
+    url: `${Cypress.expose('openSearchUrl')}/_all/_refresh`,
   });
 });
 
@@ -376,7 +404,7 @@ Cypress.Commands.add('bulkUploadDocs', (fixturePath, index) => {
 Cypress.Commands.add('forceMergeSegments', () => {
   cy.request({
     method: 'POST',
-    url: `${Cypress.env('openSearchUrl')}/_forcemerge?max_num_segments=1`,
+    url: `${Cypress.expose('openSearchUrl')}/_forcemerge?max_num_segments=1`,
   });
 });
 
@@ -562,7 +590,7 @@ Cypress.Commands.add('createDashboard', (attributes = {}, headers = {}) => {
 
 Cypress.Commands.add('changeDefaultTenant', (attributes, header = {}) => {
   const url =
-    Cypress.env('openSearchUrl') + '/_plugins/_security/api/tenancy/config';
+    Cypress.expose('openSearchUrl') + '/_plugins/_security/api/tenancy/config';
 
   cy.request({
     method: 'PUT',
@@ -586,7 +614,7 @@ Cypress.Commands.add('setAdvancedSetting', (changes) => {
     .request({
       method: 'POST',
       url,
-      qs: Cypress.env('SECURITY_ENABLED')
+      qs: Cypress.expose('SECURITY_ENABLED')
         ? {
             security_tenant: CURRENT_TENANT.defaultTenant,
           }
@@ -718,7 +746,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('fleshTenantSettings', () => {
-  if (Cypress.env('SECURITY_ENABLED')) {
+  if (Cypress.expose('SECURITY_ENABLED')) {
     // Use xhr request is good enough to flesh tenant
     cy.request({
       url: `${BASE_PATH}/app/home?security_tenant=${CURRENT_TENANT.defaultTenant}`,
@@ -853,7 +881,7 @@ Cypress.Commands.add('clearCache', () => {
 
 Cypress.Commands.add('deleteForecastIndices', () => {
   cy.log('Deleting forecast indices');
-  const url = `${Cypress.env('openSearchUrl')}/opensearch-forecast-result*`;
+  const url = `${Cypress.expose('openSearchUrl')}/opensearch-forecast-result*`;
   cy.request({
     method: 'DELETE',
     url: url,
@@ -863,7 +891,7 @@ Cypress.Commands.add('deleteForecastIndices', () => {
 
   cy.request({
     method: 'POST',
-    url: `${Cypress.env(
+    url: `${Cypress.expose(
       'openSearchUrl'
     )}/_plugins/_forecast/forecasters/_search`,
     failOnStatusCode: false,
@@ -873,16 +901,16 @@ Cypress.Commands.add('deleteForecastIndices', () => {
       for (let hit of response.body.hits.hits) {
         cy.request(
           'POST',
-          `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
+          `${Cypress.expose('openSearchUrl')}/_plugins/_forecast/forecasters/${
             hit._id
           }/_stop`
         ).then((response) => {
           if (response.status === 200) {
             cy.request(
               'DELETE',
-              `${Cypress.env('openSearchUrl')}/_plugins/_forecast/forecasters/${
-                hit._id
-              }`
+              `${Cypress.expose(
+                'openSearchUrl'
+              )}/_plugins/_forecast/forecasters/${hit._id}`
             );
           }
         });

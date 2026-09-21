@@ -32,7 +32,7 @@ Cypress.Commands.add('getElementByText', (locator, text) => {
 Cypress.Commands.add('enableTopQueries', (metric) => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: true,
@@ -47,7 +47,7 @@ Cypress.Commands.add('enableTopQueries', (metric) => {
 Cypress.Commands.add('disableTopQueries', (metric) => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     body: {
       persistent: {
         [`search.insights.top_queries.${metric}.enabled`]: false,
@@ -60,7 +60,7 @@ Cypress.Commands.add('disableTopQueries', (metric) => {
 Cypress.Commands.add('enableGrouping', () => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     body: {
       persistent: {
         'search.insights.top_queries.latency.enabled': true,
@@ -86,7 +86,7 @@ Cypress.Commands.add('enableGrouping', () => {
 Cypress.Commands.add('disableGrouping', () => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     body: {
       persistent: {
         'search.insights.top_queries.latency.enabled': false,
@@ -103,7 +103,7 @@ Cypress.Commands.add('disableGrouping', () => {
 Cypress.Commands.add('setWindowSize', (size = '1m') => {
   cy.request({
     method: 'PUT',
-    url: `${Cypress.env('openSearchUrl')}/_cluster/settings`,
+    url: `${Cypress.expose('openSearchUrl')}/_cluster/settings`,
     body: {
       persistent: {
         'search.insights.top_queries.latency.window_size': size,
@@ -116,13 +116,17 @@ Cypress.Commands.add('setWindowSize', (size = '1m') => {
 });
 
 Cypress.Commands.add('createIndexByName', (indexName, body = {}) => {
-  cy.request('POST', `${Cypress.env('openSearchUrl')}/${indexName}/_doc`, body);
+  cy.request(
+    'POST',
+    `${Cypress.expose('openSearchUrl')}/${indexName}/_doc`,
+    body
+  );
 });
 
 Cypress.Commands.add('searchOnIndex', (indexName, body = {}) => {
   cy.request(
     'GET',
-    `${Cypress.env('openSearchUrl')}/${indexName}/_search`,
+    `${Cypress.expose('openSearchUrl')}/${indexName}/_search`,
     body
   );
 });
@@ -130,7 +134,7 @@ Cypress.Commands.add('searchOnIndex', (indexName, body = {}) => {
 Cypress.Commands.add('deleteIndexByName', (indexName) => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('openSearchUrl')}/${indexName}`,
+    url: `${Cypress.expose('openSearchUrl')}/${indexName}`,
     failOnStatusCode: false,
   });
 });
@@ -150,7 +154,7 @@ Cypress.Commands.add(
     }
 
     if (contains) {
-      const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+      const isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
       const ciTimeout = isCI ? Math.max(timeout, 180000) : timeout;
       cy.log(
         `Waiting for content "${contains}" with timeout: ${ciTimeout}ms (${
@@ -165,7 +169,7 @@ Cypress.Commands.add(
 Cypress.Commands.add('navigateToOverview', () => {
   cy.visit(QUERY_INSIGHTS_OVERVIEW_PATH);
 
-  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
   const baseTimeout = isCI ? 240000 : 90000;
 
   cy.waitForPageLoad(QUERY_INSIGHTS_OVERVIEW_PATH, {
@@ -193,7 +197,7 @@ Cypress.Commands.add('navigateToLiveQueries', () => {
 
 Cypress.Commands.add('waitForPluginToLoad', () => {
   // CI environments need much longer waits for plugin initialization
-  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
   const waitTime = isCI ? 10000 : 3000;
 
   cy.log(
@@ -205,7 +209,7 @@ Cypress.Commands.add('waitForPluginToLoad', () => {
 });
 
 Cypress.Commands.add('waitForQueryInsightsPlugin', () => {
-  const isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  const isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
   const timeout = isCI ? 360000 : 120000;
 
   cy.visit(QUERY_INSIGHTS_OVERVIEW_PATH, { timeout: 60000 });
@@ -244,7 +248,7 @@ Cypress.Commands.add(
     var checkData = function (retries) {
       cy.request({
         method: 'GET',
-        url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
+        url: Cypress.expose('openSearchUrl') + '/_insights/top_queries',
         qs: { type: metric },
         failOnStatusCode: false,
       }).then(function (response) {
@@ -278,14 +282,14 @@ Cypress.Commands.add(
  * and multiple tables on the overview page.
  */
 Cypress.Commands.add('navigateToQueryDetails', function () {
-  var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  var isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
   var timeout = isCI ? 120000 : 60000;
   var to = new Date().toISOString();
   var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
   var fetchAndNavigate = function (retries) {
     cy.request({
       method: 'GET',
-      url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
+      url: Cypress.expose('openSearchUrl') + '/_insights/top_queries',
       qs: { type: 'latency' },
       failOnStatusCode: false,
     }).then(function (response) {
@@ -327,14 +331,14 @@ Cypress.Commands.add('navigateToQueryDetails', function () {
  * Same as navigateToQueryDetails but for group details pages.
  */
 Cypress.Commands.add('navigateToGroupDetails', function () {
-  var isCI = Cypress.env('CI') || !Cypress.config('isInteractive');
+  var isCI = Cypress.expose('CI') || !Cypress.config('isInteractive');
   var timeout = isCI ? 120000 : 60000;
   var to = new Date().toISOString();
   var from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
   var fetchAndNavigate = function (retries) {
     cy.request({
       method: 'GET',
-      url: Cypress.env('openSearchUrl') + '/_insights/top_queries',
+      url: Cypress.expose('openSearchUrl') + '/_insights/top_queries',
       qs: { type: 'latency' },
       failOnStatusCode: false,
     }).then(function (response) {

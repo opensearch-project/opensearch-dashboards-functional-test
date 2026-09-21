@@ -10,7 +10,7 @@ import tenantDescription from '../../../fixtures/plugins/security-dashboards-plu
 
 const tenantName = 'test';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Multi Tenancy Default Tenant Tests: ', () => {
     before(() => {
       cy.createTenant(tenantName, tenantDescription);

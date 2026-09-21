@@ -12,7 +12,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 const miscUtils = new MiscUtils(cy);
 const testFixtureHandler = new TestFixtureHandler(
   cy,
-  Cypress.env('openSearchUrl')
+  Cypress.expose('openSearchUrl')
 );
 
 const indexSet = [

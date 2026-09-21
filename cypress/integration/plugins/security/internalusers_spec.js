@@ -9,7 +9,7 @@ import {
   SEC_UI_USER_CREATE_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Internal users page', () => {
     it('should load internal users page properly', () => {
       cy.mockInternalUsersAction(

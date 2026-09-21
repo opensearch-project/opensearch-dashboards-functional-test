@@ -15,9 +15,9 @@ export const WorkspaceEssentialOverviewTestCases = () => {
   let datasourceId;
   let workspaceFeatures = ['use-case-essentials'];
 
-  const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
+  const MDSEnabled = Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED');
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     const createWorkspace = (datasourceId) => {
       cy.createWorkspace({
         name: workspaceName,

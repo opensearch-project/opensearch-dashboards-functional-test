@@ -134,14 +134,14 @@ Cypress.Commands.add(
 Cypress.Commands.add('deleteDetector', (detectorId) => {
   cy.request(
     'DELETE',
-    `${Cypress.env('openSearchUrl')}/${getADGetDetectorApiPath(detectorId)}`
+    `${Cypress.expose('openSearchUrl')}/${getADGetDetectorApiPath(detectorId)}`
   );
 });
 
 Cypress.Commands.add('stopDetector', (detectorId) => {
   cy.request(
     'POST',
-    `${Cypress.env('openSearchUrl')}/${getADStopDetectorApiPath(detectorId)}`
+    `${Cypress.expose('openSearchUrl')}/${getADStopDetectorApiPath(detectorId)}`
   );
 });
 
@@ -267,10 +267,10 @@ Cypress.Commands.add('createForecaster', (forecasterDetails) => {
  * Custom command to delete all indices on the remote cluster.
  */
 Cypress.Commands.add('deleteAllRemoteIndices', () => {
-  const isSecure = Cypress.env('SECURITY_ENABLED');
+  const isSecure = Cypress.expose('SECURITY_ENABLED');
   const remoteBaseUrl = isSecure
-    ? Cypress.env('remoteDataSourceBasicAuthUrl')
-    : Cypress.env('remoteDataSourceNoAuthUrl');
+    ? Cypress.expose('remoteDataSourceBasicAuthUrl')
+    : Cypress.expose('remoteDataSourceNoAuthUrl');
 
   if (!remoteBaseUrl) {
     cy.log('Remote base URL not configured, skipping remote index deletion.');

@@ -167,11 +167,11 @@ const testSuggestAD = (url) => {
 };
 
 if (
-  Cypress.env('WORKSPACE_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') &&
-  Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')
+  Cypress.expose('WORKSPACE_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') &&
+  Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')
 ) {
-  if (Cypress.env('SKIP_HEAVY_DISCOVER_TESTS')) {
+  if (Cypress.expose('SKIP_HEAVY_DISCOVER_TESTS')) {
     describe('SuggestAnomalyDetector - SKIPPED (renderer memory limit)', () => {
       it('skipped due to CI memory constraints', () => {});
     });

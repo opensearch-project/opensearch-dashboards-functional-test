@@ -8,7 +8,7 @@ import {
   SEC_UI_PERMISSIONS_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Permissions page', () => {
     it('should load Permissions page properly', () => {
       cy.mockPermissionsAction(

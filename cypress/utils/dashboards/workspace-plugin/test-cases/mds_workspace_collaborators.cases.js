@@ -35,9 +35,9 @@ export const WorkspaceCollaboratorsTestCases = () => {
   let workspaceId;
 
   if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-    Cypress.env('SECURITY_ENABLED')
+    Cypress.expose('WORKSPACE_ENABLED') &&
+    Cypress.expose('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+    Cypress.expose('SECURITY_ENABLED')
   ) {
     describe('Workspace collaborators', () => {
       beforeEach(() => {
@@ -48,11 +48,11 @@ export const WorkspaceCollaboratorsTestCases = () => {
           settings: {
             permissions: {
               library_write: {
-                users: [`${Cypress.env('username')}`],
+                users: [`${Cypress.expose('username')}`],
                 groups: ['admin_group'],
               },
               write: {
-                users: [`${Cypress.env('username')}`],
+                users: [`${Cypress.expose('username')}`],
                 groups: ['admin_group'],
               },
               library_read: { users: ['read_user'] },

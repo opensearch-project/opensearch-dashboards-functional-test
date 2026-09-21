@@ -26,7 +26,7 @@ describe('dev_console_ui_metric', () => {
 
     cy.wait(5000); // Intentional wait
   });
-  if (Cypress.env('UIMETRIC_ENABLED')) {
+  if (Cypress.expose('UIMETRIC_ENABLED')) {
     it('check UI Metric are being recorded', function () {
       miscUtils.visitPage('app/home#/');
 

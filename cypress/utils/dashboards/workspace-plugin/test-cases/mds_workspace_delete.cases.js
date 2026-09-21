@@ -16,7 +16,7 @@ export const WorkspaceDeleteTestCases = () => {
   let workspace1Id;
   let workspace2Id;
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('Delete Workspace(s) in 2 ways in workspace list page', () => {
       before(() => {
         cy.deleteWorkspaceByName(workspace1Name);
@@ -191,7 +191,7 @@ export const WorkspaceDeleteTestCases = () => {
       before(() => {
         cy.deleteWorkspaceByName(testWorkspaceName);
 
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           cy.createDataSourceNoAuth().then((result) => {
             datasourceId = result[0];
             expect(datasourceId).to.be.a('string').that.is.not.empty;
@@ -221,7 +221,7 @@ export const WorkspaceDeleteTestCases = () => {
       });
 
       after(() => {
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED') && datasourceId) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED') && datasourceId) {
           cy.deleteDataSource(datasourceId);
         }
       });

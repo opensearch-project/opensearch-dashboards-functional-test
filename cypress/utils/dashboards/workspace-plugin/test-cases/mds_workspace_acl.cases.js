@@ -78,9 +78,9 @@ export const WorkspaceACLTestCases = () => {
   };
 
   if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('SAVED_OBJECTS_PERMISSION_ENABLED') &&
-    Cypress.env('SECURITY_ENABLED')
+    Cypress.expose('WORKSPACE_ENABLED') &&
+    Cypress.expose('SAVED_OBJECTS_PERMISSION_ENABLED') &&
+    Cypress.expose('SECURITY_ENABLED')
   ) {
     describe('Workspace ACL', () => {
       const originalUser = ADMIN_AUTH.username;
@@ -97,7 +97,7 @@ export const WorkspaceACLTestCases = () => {
           users: [NON_DASHBOARDS_ADMIN_USERNAME],
         });
 
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           cy.createDataSourceNoAuth().then((result) => {
             datasourceId = result[0];
             expect(datasourceId).to.be.a('string').that.is.not.empty;
@@ -120,7 +120,7 @@ export const WorkspaceACLTestCases = () => {
         cy.deleteWorkspaceByName(readOnlyWorkspaceName);
         cy.deleteWorkspaceByName(libraryWriteWorkspaceName);
         cy.deleteWorkspaceByName(ownerWorkspaceName);
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           cy.deleteDataSource(datasourceId);
         }
         readOnlyWorkspaceId = '';
@@ -218,7 +218,7 @@ export const WorkspaceACLTestCases = () => {
           );
         });
 
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           it('Normal users should not be able to associate / dissociate data sources from workspace.', () => {
             cy.visit(`${BASE_PATH}/w/${ownerWorkspaceId}/app/dataSources`);
             cy.contains('Data sources');

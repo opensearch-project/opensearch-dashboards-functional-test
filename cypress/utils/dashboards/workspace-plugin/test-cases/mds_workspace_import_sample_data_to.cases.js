@@ -3,10 +3,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
+const MDSEnabled = Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED');
 
 export const WorkspaceImportSampleDataTestCases = () => {
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('workspace import sample data', () => {
       let workspaceId;
       let dataSourceId;

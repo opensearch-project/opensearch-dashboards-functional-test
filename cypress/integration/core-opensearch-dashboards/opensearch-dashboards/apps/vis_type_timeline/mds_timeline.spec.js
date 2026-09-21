@@ -17,7 +17,7 @@ import { CURRENT_TENANT } from '../../../../../utils/commands';
 import { DS_NO_AUTH_LABEL } from '../../../../../utils/dashboards/datasource-management-dashboards-plugin/constants';
 import { constructTimelineExpression } from './utils';
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Timeline Visualization (MDS enabled)', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';

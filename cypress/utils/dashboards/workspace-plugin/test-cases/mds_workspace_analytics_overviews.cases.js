@@ -15,9 +15,9 @@ export const WorkspaceAnalyticsOverviewTestCases = () => {
   let datasourceId;
   let workspaceFeatures = ['use-case-all'];
 
-  const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
+  const MDSEnabled = Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED');
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     const createWorkspace = (dsId) => {
       cy.createWorkspace({
         name: workspaceName,

@@ -14,8 +14,8 @@ export const WorkspaceAssociationTestCases = () => {
   let dataSourceId1;
   let dataSourceId2;
   if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+    Cypress.expose('WORKSPACE_ENABLED') &&
+    Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     describe('Workspace association data source', () => {
       before(() => {

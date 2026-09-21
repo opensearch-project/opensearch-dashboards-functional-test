@@ -9,10 +9,10 @@
  */
 
 const _getAuth = () => {
-  if (Cypress.env('SECURITY_ENABLED')) {
+  if (Cypress.expose('SECURITY_ENABLED')) {
     return {
-      username: Cypress.env('username'),
-      password: Cypress.env('password'),
+      username: Cypress.expose('username'),
+      password: Cypress.expose('password'),
     };
   }
   return null;
@@ -20,7 +20,7 @@ const _getAuth = () => {
 
 Cypress.Commands.add(
   'importJSONMapping',
-  (filename, openSearchUrl = Cypress.env('openSearchUrl')) => {
+  (filename, openSearchUrl = Cypress.expose('openSearchUrl')) => {
     cy.task(
       'importJSONMapping',
       { filename, openSearchUrl, auth: _getAuth() },
@@ -31,7 +31,11 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'importJSONDoc',
-  (filename, openSearchUrl = Cypress.env('openSearchUrl'), bulkMax = 1600) => {
+  (
+    filename,
+    openSearchUrl = Cypress.expose('openSearchUrl'),
+    bulkMax = 1600
+  ) => {
     cy.task(
       'importJSONDoc',
       { filename, openSearchUrl, auth: _getAuth(), bulkMax },
@@ -42,7 +46,7 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'clearJSONMapping',
-  (filename, openSearchUrl = Cypress.env('openSearchUrl')) => {
+  (filename, openSearchUrl = Cypress.expose('openSearchUrl')) => {
     cy.task(
       'clearJSONMapping',
       { filename, openSearchUrl, auth: _getAuth() },
@@ -57,7 +61,7 @@ Cypress.Commands.add(
     index,
     indexMappingPath,
     indexDataPath,
-    openSearchUrl = Cypress.env('openSearchUrl')
+    openSearchUrl = Cypress.expose('openSearchUrl')
   ) => {
     const items = Array.isArray(index) ? index : [index];
     const queryString = items.join(',');

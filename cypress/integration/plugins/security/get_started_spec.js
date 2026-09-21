@@ -8,7 +8,7 @@ import {
   SEC_FIXTURES_BASE_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Home(Get Started) page', () => {
     it('should load Home page properly', () => {
       cy.visit(BASE_SEC_UI_PATH);

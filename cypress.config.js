@@ -4,6 +4,45 @@
  */
 const { defineConfig } = require('cypress');
 
+// CYPRESS_-prefixed variables that configure the Cypress binary or its installer
+// rather than carrying a test value. They are skipped when folding the
+// environment into `expose`.
+const RESERVED_CYPRESS_VARS = [
+  'CYPRESS_CACHE_FOLDER',
+  'CYPRESS_CONFIG_ENV',
+  'CYPRESS_CRASH_REPORTS',
+  'CYPRESS_DOWNLOAD_MIRROR',
+  'CYPRESS_DOWNLOAD_PATH_TEMPLATE',
+  'CYPRESS_DOWNLOAD_USE_CA',
+  'CYPRESS_INSTALL_BINARY',
+  'CYPRESS_INTERNAL_ENV',
+  'CYPRESS_RECORD_KEY',
+  'CYPRESS_RUN_BINARY',
+  'CYPRESS_SKIP_BINARY_INSTALL',
+  'CYPRESS_SKIP_VERIFY',
+  'CYPRESS_VERIFY_TIMEOUT',
+];
+
+/**
+ * Collect CYPRESS_<KEY>=value process variables as { <KEY>: value }.
+ *
+ * Cypress 16 removed Cypress.env(). Its synchronous replacement,
+ * Cypress.expose(), reads only the `expose` config block and the --expose CLI
+ * flag; CYPRESS_-prefixed process variables now reach the async cy.env() alone.
+ * This repository's workflows, and the plugin repositories that pass their own
+ * test command into its reusable workflows, set feature flags as
+ * CYPRESS_<KEY>=value, so those values are folded back into `expose` to keep
+ * every existing invocation working unchanged.
+ */
+function exposeFromProcessEnv() {
+  return Object.entries(process.env).reduce((exposed, [name, value]) => {
+    if (name.startsWith('CYPRESS_') && !RESERVED_CYPRESS_VARS.includes(name)) {
+      exposed[name.slice('CYPRESS_'.length)] = value;
+    }
+    return exposed;
+  }, {});
+}
+
 module.exports = defineConfig({
   chromeWebSecurity: false,
   defaultCommandTimeout: 60000,
@@ -16,7 +55,7 @@ module.exports = defineConfig({
   },
   viewportWidth: 2000,
   viewportHeight: 1320,
-  env: {
+  expose: {
     openSearchUrl: 'http://localhost:9200',
     remoteDataSourceNoAuthUrl: 'http://localhost:9201',
     remoteDataSourceBasicAuthUrl: 'https://localhost:9202',
@@ -74,7 +113,6 @@ module.exports = defineConfig({
     testIsolation: false,
     specPattern: 'cypress/integration/**/*.{js,jsx,ts,tsx,json}',
     supportFile: 'cypress/support/index.js',
-    experimentalMemoryManagement: true,
     numTestsKeptInMemory: 0,
     setupNodeEvents(on, config) {
       on('before:browser:launch', (browser = {}, launchOptions) => {
@@ -96,12 +134,19 @@ module.exports = defineConfig({
         return launchOptions;
       });
 
+      let resolvedConfig = config;
       try {
-        const result = require('./cypress/plugins/index.js')(on, config);
-        return result || config;
+        resolvedConfig =
+          require('./cypress/plugins/index.js')(on, config) || config;
       } catch (e) {
-        return config;
+        resolvedConfig = config;
       }
+
+      resolvedConfig.expose = {
+        ...resolvedConfig.expose,
+        ...exposeFromProcessEnv(),
+      };
+      return resolvedConfig;
     },
     baseUrl: 'http://localhost:5601',
     excludeSpecPattern: ['*.hot-update.js'],

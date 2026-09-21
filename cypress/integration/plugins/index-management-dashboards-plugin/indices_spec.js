@@ -612,7 +612,7 @@ describe('Indices', () => {
       // index a test doc
       cy.request({
         method: 'POST',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_doc`,
+        url: `${Cypress.expose('openSearchUrl')}/${SAMPLE_INDEX}/_doc`,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
         },
@@ -622,7 +622,9 @@ describe('Indices', () => {
       // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${SAMPLE_INDEX}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']
@@ -655,7 +657,9 @@ describe('Indices', () => {
       // confirm uncommitted_operations is 0 after flush
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${SAMPLE_INDEX}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']
@@ -672,7 +676,7 @@ describe('Indices', () => {
       // index a test doc
       cy.request({
         method: 'POST',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_doc`,
+        url: `${Cypress.expose('openSearchUrl')}/${SAMPLE_INDEX}/_doc`,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
         },
@@ -682,7 +686,9 @@ describe('Indices', () => {
       // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${SAMPLE_INDEX}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']
@@ -709,7 +715,9 @@ describe('Indices', () => {
       // confirm uncommitted_operations is 0 after flush
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${SAMPLE_INDEX}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${SAMPLE_INDEX}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']

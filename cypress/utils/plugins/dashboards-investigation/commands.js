@@ -238,15 +238,15 @@ Cypress.Commands.add(
     )}`;
     if (BACKEND_BASE_PATH.startsWith('https')) {
       if (Cypress.platform === 'win32') {
-        return cy.exec(
-          `curl -k --cert "${Cypress.env(
+        return cy.execShell(
+          `curl -k --cert "${Cypress.expose(
             'SECURITY_CERT_PATH'
-          )}" --key "${Cypress.env(
+          )}" --key "${Cypress.expose(
             'SECURITY_KEY_PATH'
           )}" -XPUT "${endpoint}" -H "Content-Type: application/json" -d "{\\"type\\":\\"${type}\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}"`
         );
       } else {
-        return cy.exec(
+        return cy.execShell(
           `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"${type}","configuration":{"agent_id":"${agentId}"}}'`
         );
       }
@@ -266,16 +266,16 @@ Cypress.Commands.add('deleteInvestigationAgentConfig', ({ agentName }) => {
   )}`;
   if (BACKEND_BASE_PATH.startsWith('https')) {
     if (Cypress.platform === 'win32') {
-      return cy.exec(
-        `curl -k --cert "${Cypress.env(
+      return cy.execShell(
+        `curl -k --cert "${Cypress.expose(
           'SECURITY_CERT_PATH'
-        )}" --key "${Cypress.env(
+        )}" --key "${Cypress.expose(
           'SECURITY_KEY_PATH'
         )}" -XDELETE "${endpoint}" -H "Content-Type: application/json"`,
         { failOnNonZeroExit: false }
       );
     } else {
-      return cy.exec(
+      return cy.execShell(
         `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`,
         { failOnNonZeroExit: false }
       );
@@ -327,18 +327,18 @@ Cypress.Commands.add('cleanProvisionedInvestigationAgents', () => {
 });
 
 Cypress.Commands.add('startInvestigationDummyServer', () => {
-  // cy.exec(`lsof -ti :3001 | xargs kill -9 2>/dev/null || true`, {
+  // cy.execShell(`lsof -ti :3001 | xargs kill -9 2>/dev/null || true`, {
   //   failOnNonZeroExit: false,
   // });
   cy.wait(500);
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
-    cy.exec(
+    cy.execShell(
       'bash -c "nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/investigation-llm.winpid && sleep 1"',
       { timeout: 10000 }
     );
   } else {
-    cy.exec(
+    cy.execShell(
       "nohup yarn start-investigation-dummy-llm-server > /tmp/investigation-llm.log 2>&1 & sleep 1 && ps -ef | grep [i]nvestigation-dummy-llm.js | head -n 1 | awk '{print $2}' > /tmp/investigation-llm.pid",
       { timeout: 10000 }
     );
@@ -349,12 +349,12 @@ Cypress.Commands.add('startInvestigationDummyServer', () => {
 Cypress.Commands.add('stopInvestigationDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
-    cy.exec(
+    cy.execShell(
       'bash -c "pid=$(cat /tmp/investigation-llm.winpid); while child=$(wmic process where \\"ParentProcessId=$pid\\" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n \\"$child\\" ]; do pid=$child; done; taskkill //F //PID $pid"',
       { failOnNonZeroExit: false }
     );
   } else {
-    cy.exec('kill -9 $(cat /tmp/investigation-llm.pid) || true', {
+    cy.execShell('kill -9 $(cat /tmp/investigation-llm.pid) || true', {
       failOnNonZeroExit: false,
     });
   }

@@ -28,12 +28,12 @@ export const WorkspaceAssetsTestCases = () => {
       });
   };
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('Workspace assets', () => {
       before(() => {
         cy.deleteWorkspaceByName(sourceWorkspaceName);
         cy.deleteWorkspaceByName(targetWorkspaceName);
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           cy.createDataSourceNoAuth().then((result) => {
             datasourceId = result[0];
             expect(datasourceId).to.be.a('string').that.is.not.empty;
@@ -65,7 +65,7 @@ export const WorkspaceAssetsTestCases = () => {
         );
         cy.deleteWorkspaceByName(sourceWorkspaceName);
         cy.deleteWorkspaceByName(targetWorkspaceName);
-        if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+        if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
           cy.deleteDataSource(datasourceId);
         }
         sourceWorkspaceId = '';

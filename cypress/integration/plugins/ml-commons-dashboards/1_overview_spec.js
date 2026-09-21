@@ -10,7 +10,7 @@ import {
   visitOverviewPage,
 } from '../../../utils/plugins/ml-commons-dashboards/shared/overview';
 
-if (Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED')) {
+if (Cypress.expose('ML_COMMONS_DASHBOARDS_ENABLED')) {
   describe('MLC Overview page', () => {
     testOverviewPageRedirect();
 

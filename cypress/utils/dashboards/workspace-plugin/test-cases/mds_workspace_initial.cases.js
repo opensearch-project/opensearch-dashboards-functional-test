@@ -17,7 +17,7 @@ export const WorkspaceInitialTestCases = () => {
   const NONE_DASHBOARDS_ADMIN_USERNAME = 'workspace-test';
   const WORKSPACE_TEST_ROLE_NAME = 'workspace-test-role';
 
-  if (Cypress.env('WORKSPACE_ENABLED')) {
+  if (Cypress.expose('WORKSPACE_ENABLED')) {
     describe('Workspace initial', () => {
       describe('OSD admin user visits workspace initial page', () => {
         before(() => {
@@ -94,7 +94,7 @@ export const WorkspaceInitialTestCases = () => {
           // Contain left bottom button
           cy.get('[id$="popoverForSettingsIcon"]').should('exist');
           cy.getElementByTestId('openDevToolsModal').should('exist');
-          if (Cypress.env('SECURITY_ENABLED')) {
+          if (Cypress.expose('SECURITY_ENABLED')) {
             cy.getElementByTestId('account-popover').should('exist');
           }
         });
@@ -326,7 +326,7 @@ export const WorkspaceInitialTestCases = () => {
         });
       });
 
-      if (Cypress.env('SECURITY_ENABLED')) {
+      if (Cypress.expose('SECURITY_ENABLED')) {
         describe('Non OSD admin user visits workspace initial page', () => {
           const originalUser = ADMIN_AUTH.username;
           const originalPassword = ADMIN_AUTH.password;

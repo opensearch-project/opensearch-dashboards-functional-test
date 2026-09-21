@@ -7,7 +7,7 @@ import { MiscUtils } from '@opensearch-dashboards-test/opensearch-dashboards-tes
 
 const miscUtils = new MiscUtils(cy);
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Default data sources', () => {
     before(() => {
       // Clean up before creating new data sources for testing

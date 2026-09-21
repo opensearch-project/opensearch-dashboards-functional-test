@@ -30,7 +30,7 @@ const TEST_CONFIG = {
   },
 };
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Read Only mode', () => {
     before(() => {
       cy.createTenant(TEST_CONFIG.tenant.name, {

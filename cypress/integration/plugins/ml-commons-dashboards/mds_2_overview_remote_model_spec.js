@@ -12,8 +12,8 @@ import { currentBackendEndpoint } from '../../../utils/commands';
 import { MLC_DASHBOARD_API } from '../../../utils/constants';
 
 if (
-  Cypress.env('ML_COMMONS_DASHBOARDS_ENABLED') &&
-  Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+  Cypress.expose('ML_COMMONS_DASHBOARDS_ENABLED') &&
+  Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
 ) {
   describe('MLC Overview page with remote models and MDS enabled', () => {
     let dataSourceId;

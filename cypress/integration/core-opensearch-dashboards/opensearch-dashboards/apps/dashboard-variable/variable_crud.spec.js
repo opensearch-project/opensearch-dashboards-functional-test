@@ -16,9 +16,9 @@ import {
 const miscUtils = new MiscUtils(cy);
 const WORKSPACE_NAME = 'test_workspace_variable';
 const DASHBOARD_NAME = 'variable_crud_test_dashboard';
-const MDSEnabled = Cypress.env('DATASOURCE_MANAGEMENT_ENABLED');
+const MDSEnabled = Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED');
 
-if (Cypress.env('WORKSPACE_ENABLED')) {
+if (Cypress.expose('WORKSPACE_ENABLED')) {
   describe('Dashboard Variables CRUD', () => {
     let workspaceId;
     let datasourceId;

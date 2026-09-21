@@ -136,7 +136,7 @@ describe('CompositeLevelMonitor', () => {
       };
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}${
+        url: `${Cypress.expose('openSearchUrl')}${
           ALERTING_API.MONITOR_BASE
         }/_search`,
         failOnStatusCode: false, // In case there is no alerting config index in cluster, where the status code is 404

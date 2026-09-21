@@ -25,7 +25,7 @@ const roleName1 = 'roleWithTest';
 const roleName2 = 'roleWithoutTest';
 const kibanaRoleName = 'kibana_user';
 
-if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
+if (Cypress.expose('SECURITY_ENABLED') && Cypress.expose('AGGREGATION_VIEW')) {
   describe('Saved objects table test', () => {
     const deleteIndexPatternFromTenant = (id, tenantHeader) =>
       cy.deleteIndexPattern(id, {
@@ -182,8 +182,8 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
     });
 
     after(() => {
-      ADMIN_AUTH.newUser = Cypress.env('username');
-      ADMIN_AUTH.newPassword = Cypress.env('password');
+      ADMIN_AUTH.newUser = Cypress.expose('username');
+      ADMIN_AUTH.newPassword = Cypress.expose('password');
       CURRENT_TENANT.newTenant = 'private';
       deleteIndexPatternFromTestTenants('index-pattern1');
       deleteIndexPatternFromTestTenants('index-pattern2');

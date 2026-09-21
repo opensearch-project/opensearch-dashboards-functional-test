@@ -4,7 +4,7 @@
  */
 import { BASE_PATH } from '../../../utils/constants';
 
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant feedback spec', () => {
     before(() => {
       cy.setDefaultDataSourceForAssistant();

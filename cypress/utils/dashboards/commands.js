@@ -18,7 +18,7 @@ Cypress.Commands.add('waitForLoader', () => {
     displayName: 'wait',
     message: 'page load',
   });
-  cy.wait(Cypress.env('WAIT_FOR_LOADER_BUFFER_MS'));
+  cy.wait(Cypress.expose('WAIT_FOR_LOADER_BUFFER_MS'));
   cy.getElementByTestId('homeIcon', opts); // Update to `homeLoader` once useExpandedHeader is enabled
 });
 

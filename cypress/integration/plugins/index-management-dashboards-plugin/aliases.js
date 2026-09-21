@@ -151,7 +151,7 @@ describe('Aliases', () => {
       // index a test doc
       cy.request({
         method: 'POST',
-        url: `${Cypress.env('openSearchUrl')}/${sample_alias}/_doc`,
+        url: `${Cypress.expose('openSearchUrl')}/${sample_alias}/_doc`,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
         },
@@ -161,7 +161,9 @@ describe('Aliases', () => {
       // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${sample_alias}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${sample_alias}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']
@@ -197,7 +199,9 @@ describe('Aliases', () => {
       // confirm uncommitted_operations is 0 after flush
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/${sample_alias}/_stats/translog`,
+        url: `${Cypress.expose(
+          'openSearchUrl'
+        )}/${sample_alias}/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']

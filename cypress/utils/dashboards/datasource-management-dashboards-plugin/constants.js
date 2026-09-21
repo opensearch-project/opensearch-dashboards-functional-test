@@ -5,14 +5,14 @@
 
 export const DS_API_PREFIX = '/api/saved_objects';
 export const OSD_TEST_DOMAIN_ENDPOINT_URL = 'https://opensearch.org';
-export const OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH = Cypress.env(
+export const OSD_TEST_DATA_SOURCE_ENDPOINT_NO_AUTH = Cypress.expose(
   'remoteDataSourceNoAuthUrl'
 );
-export const OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH = Cypress.env(
+export const OSD_TEST_DATA_SOURCE_ENDPOINT_BASIC_AUTH = Cypress.expose(
   'remoteDataSourceBasicAuthUrl'
 );
-export const USERNAME = Cypress.env('remoteDataSourceBasicAuthUsername');
-export const PASSWORD = Cypress.env('remoteDataSourceBasicAuthPassword');
+export const USERNAME = Cypress.expose('remoteDataSourceBasicAuthUsername');
+export const PASSWORD = Cypress.expose('remoteDataSourceBasicAuthPassword');
 
 export const OSD_INVALID_ENDPOINT_URL = 'test';
 export const DS_API = {

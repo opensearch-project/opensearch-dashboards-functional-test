@@ -4,7 +4,7 @@
  */
 import { BASE_PATH } from '../../../utils/constants';
 
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant basic spec', () => {
     before(() => {
       cy.setDefaultDataSourceForAssistant();
@@ -15,7 +15,7 @@ if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
     });
 
     after(() => {
-      cy.exec('cat /tmp/assistant-llm.log || true', {
+      cy.execShell('cat /tmp/assistant-llm.log || true', {
         failOnNonZeroExit: false,
       }).then((result) => {
         cy.log('Dummy LLM logs:', result.stdout);

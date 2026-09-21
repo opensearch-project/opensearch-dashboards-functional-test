@@ -243,7 +243,7 @@ context('Forecaster with custom flattened result index', () => {
     // the forecast chart is not visible. Skip this test for 3.1.0 and older versions.
     cy.request({
       method: 'GET',
-      url: `${Cypress.env('openSearchUrl')}/`,
+      url: `${Cypress.expose('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
       const versionParts = fullVersion.split('.').map(Number);

@@ -14,7 +14,7 @@ const miscUtils = new MiscUtils(cy);
 const baseURL = new URL(Cypress.config().baseUrl);
 const path = baseURL.pathname.replace(/\/$/, '');
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('dashboard data source sample data validation', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';

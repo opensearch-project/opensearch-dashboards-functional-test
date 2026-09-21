@@ -117,7 +117,7 @@ describe('Daily interval forecaster', () => {
 
     cy.request({
       method: 'GET',
-      url: `${Cypress.env('openSearchUrl')}/`,
+      url: `${Cypress.expose('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
       const majorMinorVersion = fullVersion.split('.').slice(0, 2).join('.');

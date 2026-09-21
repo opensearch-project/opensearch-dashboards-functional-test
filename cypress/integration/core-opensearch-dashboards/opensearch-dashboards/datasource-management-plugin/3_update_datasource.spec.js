@@ -38,7 +38,7 @@ const clickOnTableRowTitleColumnByValue = (value) => {
   cy.get('tbody > tr > td').contains(value).click(FORCE_CLICK_OPTS);
 };
 
-if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Datasource Management: Update', () => {
     before(() => {
       // Clean up before creating new data sources for testing

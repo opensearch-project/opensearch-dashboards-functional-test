@@ -17,6 +17,6 @@ export const QUERY_INSIGHTS_METRICS = {
 };
 
 export const QUERY_INSIGHTS_ADMIN_AUTH = {
-  username: Cypress.env('username'),
-  password: Cypress.env('password'),
+  username: Cypress.expose('username'),
+  password: Cypress.expose('password'),
 };

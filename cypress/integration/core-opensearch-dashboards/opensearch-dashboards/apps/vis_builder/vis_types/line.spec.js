@@ -14,7 +14,7 @@ import {
 } from '../../../../../../utils/constants';
 import { CURRENT_TENANT } from '../../../../../../utils/commands';
 
-if (Cypress.env('VISBUILDER_ENABLED')) {
+if (Cypress.expose('VISBUILDER_ENABLED')) {
   describe('Vis Builder: Line Chart', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';

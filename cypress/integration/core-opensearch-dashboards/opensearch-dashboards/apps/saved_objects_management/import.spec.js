@@ -22,7 +22,7 @@ const importViaFetch = (fixturePath, queryParams = '') => {
       const headers = { 'osd-xsrf': 'true' };
 
       // Add basic auth header if security is enabled
-      if (Cypress.env('SECURITY_ENABLED')) {
+      if (Cypress.expose('SECURITY_ENABLED')) {
         const credentials = btoa(
           `${ADMIN_AUTH.username}:${ADMIN_AUTH.password}`
         );
@@ -101,7 +101,7 @@ describe('Saved Objects Import', () => {
       formData.append('file', new Blob(['invalid']), 'test.txt');
 
       const headers = { 'osd-xsrf': 'true' };
-      if (Cypress.env('SECURITY_ENABLED')) {
+      if (Cypress.expose('SECURITY_ENABLED')) {
         const credentials = btoa(
           `${ADMIN_AUTH.username}:${ADMIN_AUTH.password}`
         );

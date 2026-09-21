@@ -16,7 +16,7 @@ import {
 import { CURRENT_TENANT } from '../../../../../utils/commands';
 import { updateVegaSpec } from './test_utils/utils';
 
-if (!Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+if (!Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
   describe('Vega Visualization (MDS disabled)', () => {
     before(() => {
       CURRENT_TENANT.newTenant = 'global';

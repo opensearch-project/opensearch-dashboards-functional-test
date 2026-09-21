@@ -32,8 +32,8 @@ export const UiSettingsTestCases = () => {
   };
 
   if (
-    Cypress.env('WORKSPACE_ENABLED') &&
-    Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+    Cypress.expose('WORKSPACE_ENABLED') &&
+    Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     describe('Workspace UI Settings', { testIsolation: false }, () => {
       before(() => {

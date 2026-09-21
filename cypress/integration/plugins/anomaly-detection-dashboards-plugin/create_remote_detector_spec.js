@@ -17,14 +17,14 @@ context('Create remote detector workflow', () => {
   const TEST_TIMESTAMP_NAME = 'timestamp'; // coming from single_index_response.json fixture
   const TEST_INDEX_NAME = 'sample-ad-index';
   const TEST_SECOND_INDEX_NAME = 'sample-ad-index-two';
-  const REMOTE_DATA_SOURCE_USERNAME = Cypress.env(
+  const REMOTE_DATA_SOURCE_USERNAME = Cypress.expose(
     'remoteDataSourceBasicAuthUsername'
   );
-  const REMOTE_DATA_SOURCE_PASSWORD = Cypress.env('password');
-  const isSecure = Cypress.env('SECURITY_ENABLED');
+  const REMOTE_DATA_SOURCE_PASSWORD = Cypress.expose('password');
+  const isSecure = Cypress.expose('SECURITY_ENABLED');
   const remoteBaseUrl = isSecure
-    ? Cypress.env('remoteDataSourceBasicAuthUrl')
-    : Cypress.env('remoteDataSourceNoAuthUrl');
+    ? Cypress.expose('remoteDataSourceBasicAuthUrl')
+    : Cypress.expose('remoteDataSourceNoAuthUrl');
   const auth = isSecure
     ? `-u ${REMOTE_DATA_SOURCE_USERNAME}:${REMOTE_DATA_SOURCE_PASSWORD}`
     : '';
@@ -39,7 +39,7 @@ context('Create remote detector workflow', () => {
   describe('Remote cluster tests', () => {
     before(function () {
       cy.visit(AD_URL.OVERVIEW, { timeout: 10000 });
-      cy.exec(
+      cy.execShell(
         `curl --silent --max-time 5 ${insecureOption} ${auth} ${remoteBaseUrl}/_cluster/health`,
         { failOnNonZeroExit: false }
       ).then((result) => {
@@ -61,7 +61,7 @@ context('Create remote detector workflow', () => {
           Cypress.log({ message: 'Cluster name not found - skipping tests' });
           this.skip();
         }
-        Cypress.env('remoteClusterName', response.body.cluster_name);
+        Cypress.expose('remoteClusterName', response.body.cluster_name);
         remoteClusterName = response.body.cluster_name;
       });
 
@@ -202,7 +202,7 @@ context('Create remote detector workflow', () => {
 
     it('Full creation - based on remote index', () => {
       // Define detector step
-      const remoteClusterName = Cypress.env('remoteClusterName');
+      const remoteClusterName = Cypress.expose('remoteClusterName');
 
       cy.visit(AD_URL.CREATE_AD);
       cy.getElementByTestId('defineOrEditDetectorTitle').should('exist');
@@ -300,7 +300,7 @@ context('Create remote detector workflow', () => {
     });
 
     it('Full creation - based on multiple indexes', () => {
-      const remoteClusterName = Cypress.env('remoteClusterName');
+      const remoteClusterName = Cypress.expose('remoteClusterName');
 
       // Define detector step
       cy.visit(AD_URL.CREATE_AD);

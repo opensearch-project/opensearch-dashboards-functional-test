@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-const isWorkspaceEnabled = Cypress.env('WORKSPACE_ENABLED');
+const isWorkspaceEnabled = Cypress.expose('WORKSPACE_ENABLED');
 const workspaceName = `test_nav_menu`;
 const workspaceDescription =
   'This is a test workspace for left navigation menu.';

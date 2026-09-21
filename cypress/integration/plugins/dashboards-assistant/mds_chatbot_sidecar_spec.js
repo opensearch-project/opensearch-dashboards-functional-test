@@ -4,7 +4,7 @@
  */
 import { BASE_PATH } from '../../../utils/constants';
 
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')) {
   // Fix 8px error after this PR(https://github.com/opensearch-project/OpenSearch-Dashboards/pull/10600)
   const APPLIED_PADDING_RIGHT = '468px';
 

@@ -8,7 +8,7 @@ import {
   SEC_UI_TENANTS_PATH,
 } from '../../../utils/constants';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Tenants page', () => {
     it('should load Tenants page properly', () => {
       cy.mockTenantsAction(

@@ -94,7 +94,7 @@ describe('Data stream', () => {
       // index a test doc
       cy.request({
         method: 'POST',
-        url: `${Cypress.env('openSearchUrl')}/ds-/_doc`,
+        url: `${Cypress.expose('openSearchUrl')}/ds-/_doc`,
         headers: {
           'content-type': 'application/json;charset=UTF-8',
         },
@@ -104,7 +104,7 @@ describe('Data stream', () => {
       // confirm uncommitted_operations is not 0 after indexing doc
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/ds-/_stats/translog`,
+        url: `${Cypress.expose('openSearchUrl')}/ds-/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']
@@ -144,7 +144,7 @@ describe('Data stream', () => {
       // confirm uncommitted_operations is 0 after flush
       cy.request({
         method: 'GET',
-        url: `${Cypress.env('openSearchUrl')}/ds-/_stats/translog`,
+        url: `${Cypress.expose('openSearchUrl')}/ds-/_stats/translog`,
       }).then((response) => {
         let response_obj = JSON.parse(
           response['allRequestResponses'][0]['Response Body']

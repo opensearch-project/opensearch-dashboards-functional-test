@@ -125,7 +125,7 @@ Cypress.Commands.add('enableRegisterModelViaURL', () => {
 });
 
 Cypress.Commands.add('disableConnectorAccessControl', () => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+  cy.request('PUT', `${Cypress.expose('openSearchUrl')}/_cluster/settings`, {
     transient: {
       'plugins.ml_commons.connector_access_control_enabled': false,
     },
@@ -135,7 +135,7 @@ Cypress.Commands.add('disableConnectorAccessControl', () => {
 Cypress.Commands.add(
   'setTrustedConnectorEndpointsRegex',
   (trustedConnectorEndpointsRegex) => {
-    cy.request('PUT', `${Cypress.env('openSearchUrl')}/_cluster/settings`, {
+    cy.request('PUT', `${Cypress.expose('openSearchUrl')}/_cluster/settings`, {
       transient: {
         'plugins.ml_commons.trusted_connector_endpoints_regex':
           trustedConnectorEndpointsRegex,

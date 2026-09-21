@@ -5,7 +5,7 @@
 import { STACK_MANAGEMENT_PATH } from '../../../utils/dashboards/constants';
 import { CURRENT_TENANT } from '../../../utils/commands';
 
-if (Cypress.env('SECURITY_ENABLED')) {
+if (Cypress.expose('SECURITY_ENABLED')) {
   describe('Copy Link functionality working', () => {
     it('Tests the link copys and can be routed to in Safari', () => {
       CURRENT_TENANT.newTenant = 'global';

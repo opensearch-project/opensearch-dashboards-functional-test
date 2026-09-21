@@ -5,7 +5,7 @@
 import { BASE_PATH } from '../../../utils/constants';
 import { setStorageItem } from '../../../utils/plugins/dashboards-assistant/helpers';
 
-if (Cypress.env('DASHBOARDS_ASSISTANT_ENABLED')) {
+if (Cypress.expose('DASHBOARDS_ASSISTANT_ENABLED')) {
   describe('Assistant conversation history spec', () => {
     let restoreShowHome;
     let restoreNewThemeModal;

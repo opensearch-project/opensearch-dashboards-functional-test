@@ -26,7 +26,7 @@ describe('Forecaster list page mock', () => {
     // Get OpenSearch version.
     cy.request({
       method: 'GET',
-      url: `${Cypress.env('openSearchUrl')}/`,
+      url: `${Cypress.expose('openSearchUrl')}/`,
     }).then((response) => {
       const fullVersion = response.body.version.number;
       const versionParts = fullVersion.split('.').map(Number);

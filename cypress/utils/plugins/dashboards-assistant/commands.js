@@ -213,20 +213,20 @@ Cypress.Commands.add('putAgentIdConfig', ({ type, agentName, agentId }) => {
   )}`;
   // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
-    Cypress.env('SECURITY_ENABLED') &&
-    !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+    Cypress.expose('SECURITY_ENABLED') &&
+    !Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     if (Cypress.platform === 'win32') {
-      return cy.exec(
-        `curl -k --cert "${Cypress.env(
+      return cy.execShell(
+        `curl -k --cert "${Cypress.expose(
           'SECURITY_CERT_PATH'
-        )}" --key "${Cypress.env(
+        )}" --key "${Cypress.expose(
           'SECURITY_KEY_PATH'
         )}" -XPUT "${endpoint}" -H "Content-Type: application/json" -d "{\\"type\\":\\"os_chat_root_agent\\",\\"configuration\\":{\\"agent_id\\":\\"${agentId}\\"}}"`
       );
     } else {
-      return cy.exec(
+      return cy.execShell(
         `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XPUT '${endpoint}'  -H 'Content-Type: application/json' -d '{"type":"os_chat_root_agent","configuration":{"agent_id":"${agentId}"}}'`
       );
     }
@@ -247,20 +247,20 @@ Cypress.Commands.add('deleteAgentConfig', ({ agentName }) => {
   )}`;
   // When enabling the DATASOURCE-MANAGEment-ENABLED flag, we need to config the root agent ID in a no auth data source.
   if (
-    Cypress.env('SECURITY_ENABLED') &&
-    !Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')
+    Cypress.expose('SECURITY_ENABLED') &&
+    !Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')
   ) {
     // The .plugins-ml-config index is a system index and need to call the API by using certificate file
     if (Cypress.platform === 'win32') {
-      return cy.exec(
-        `curl -k --cert "${Cypress.env(
+      return cy.execShell(
+        `curl -k --cert "${Cypress.expose(
           'SECURITY_CERT_PATH'
-        )}" --key "${Cypress.env(
+        )}" --key "${Cypress.expose(
           'SECURITY_KEY_PATH'
         )}" -XDELETE "${endpoint}" -H "Content-Type: application/json"`
       );
     } else {
-      return cy.exec(
+      return cy.execShell(
         `curl -k --cert <(cat <<EOF \n${certPublicKeyContent}\nEOF\n) --key <(cat <<EOF\n${certPrivateKeyContent}\nEOF\n) -XDELETE '${endpoint}'  -H 'Content-Type: application/json'`
       );
     }
@@ -296,19 +296,19 @@ Cypress.Commands.add('startDummyServer', () => {
   // But in out case, we need to reuse release e2e template and let's make it a tradeoff.
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
-    cy.exec(
+    cy.execShell(
       'bash -c "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & echo $(cat /proc/$!/winpid) > /tmp/assistant-llm.winpid && sleep 1"',
       { timeout: 10000 }
     );
   } else {
-    cy.exec(
+    cy.execShell(
       "nohup yarn start-assistant-dummy-llm-server > /tmp/assistant-llm.log 2>&1 & sleep 1 && ps -ef | grep [a]ssistant-dummy-llm.js | head -n 1 | awk '{print $2}' > /tmp/assistant-llm.pid",
       { timeout: 10000 }
     );
   }
   // Wait for server to start and verify it's running
   cy.wait(3000);
-  cy.exec(
+  cy.execShell(
     'curl -s -o /dev/null -w "%{http_code}" http://localhost:3000 || echo "failed"',
     {
       failOnNonZeroExit: false,
@@ -321,12 +321,12 @@ Cypress.Commands.add('startDummyServer', () => {
 Cypress.Commands.add('stopDummyServer', () => {
   const isWindows = Cypress.platform === 'win32';
   if (isWindows) {
-    cy.exec(
+    cy.execShell(
       'bash -c "pid=$(cat /tmp/assistant-llm.winpid); while child=$(wmic process where \\"ParentProcessId=$pid\\" get ProcessId 2>/dev/null | tail -2 | head -1 | tr -d \' \\r\') && [ -n \\"$child\\" ]; do pid=$child; done; taskkill //F //PID $pid"',
       { failOnNonZeroExit: false }
     );
   } else {
-    cy.exec('kill -9 $(cat /tmp/assistant-llm.pid) || true', {
+    cy.execShell('kill -9 $(cat /tmp/assistant-llm.pid) || true', {
       failOnNonZeroExit: false,
     });
   }
@@ -345,7 +345,7 @@ Cypress.Commands.add('deleteConversation', (conversationId, dataSourceId) => {
 });
 
 Cypress.Commands.add('setDefaultDataSourceForAssistant', () => {
-  if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+  if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
     cy.deleteAllDataSources();
     // create data source
     cy.createDataSourceNoAuth().then((result) => {
@@ -358,7 +358,7 @@ Cypress.Commands.add('setDefaultDataSourceForAssistant', () => {
 });
 
 Cypress.Commands.add('clearDataSourceForAssistant', () => {
-  if (Cypress.env('DATASOURCE_MANAGEMENT_ENABLED')) {
+  if (Cypress.expose('DATASOURCE_MANAGEMENT_ENABLED')) {
     cy.deleteAllDataSources();
   }
 });

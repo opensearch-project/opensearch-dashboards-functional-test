@@ -31,10 +31,10 @@ describe('Experiment Create', () => {
     const judgmentName = `UBI_Judgment_${timestamp}`;
 
     // Store names in Cypress environment variables for later use
-    Cypress.env('querySetName', querySetName);
-    Cypress.env('configName1', configName1);
-    Cypress.env('configName2', configName2);
-    Cypress.env('judgmentName', judgmentName);
+    Cypress.expose('querySetName', querySetName);
+    Cypress.expose('configName1', configName1);
+    Cypress.expose('configName2', configName2);
+    Cypress.expose('judgmentName', judgmentName);
 
     // Create a query set for testing
     cy.visit(
@@ -173,9 +173,9 @@ describe('Experiment Create', () => {
 
   it('Should create a query set comparison experiment', () => {
     // Get stored resource names from environment variables
-    const querySetName = Cypress.env('querySetName');
-    const configName1 = Cypress.env('configName1');
-    const configName2 = Cypress.env('configName2');
+    const querySetName = Cypress.expose('querySetName');
+    const configName1 = Cypress.expose('configName1');
+    const configName2 = Cypress.expose('configName2');
 
     // Navigate to query set comparison page
     cy.visit(
@@ -204,9 +204,9 @@ describe('Experiment Create', () => {
 
   it('Should create a search evaluation experiment', () => {
     // Get stored resource names from environment variables
-    const querySetName = Cypress.env('querySetName');
-    const configName1 = Cypress.env('configName1');
-    const judgmentName = Cypress.env('judgmentName');
+    const querySetName = Cypress.expose('querySetName');
+    const configName1 = Cypress.expose('configName1');
+    const judgmentName = Cypress.expose('judgmentName');
 
     // The combo boxes on this form (QuerySetsComboBox, SearchConfigForm,
     // JudgmentsComboBox) fetch their options once on mount and briefly show

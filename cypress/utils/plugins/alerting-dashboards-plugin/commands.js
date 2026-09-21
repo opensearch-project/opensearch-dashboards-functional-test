@@ -33,7 +33,7 @@ import { ALERTING_API, BASE_PATH } from '../../constants';
 
 Cypress.Commands.add(
   'createMonitor',
-  (monitorJSON, openSearchUrl = Cypress.env('openSearchUrl')) => {
+  (monitorJSON, openSearchUrl = Cypress.expose('openSearchUrl')) => {
     cy.request(
       'POST',
       `${openSearchUrl}${ALERTING_API.MONITOR_BASE}`,
@@ -45,12 +45,12 @@ Cypress.Commands.add(
 Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
   cy.request(
     'POST',
-    `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}`,
+    `${Cypress.expose('openSearchUrl')}${ALERTING_API.MONITOR_BASE}`,
     monitorJSON
   ).then((response) => {
     cy.request(
       'POST',
-      `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
+      `${Cypress.expose('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
         response.body._id
       }/_execute`
     ).then(({ body }) => body);
@@ -60,7 +60,7 @@ Cypress.Commands.add('createAndExecuteMonitor', (monitorJSON) => {
 Cypress.Commands.add('executeMonitor', (monitorID) => {
   cy.request(
     'POST',
-    `${Cypress.env('openSearchUrl')}${
+    `${Cypress.expose('openSearchUrl')}${
       ALERTING_API.MONITOR_BASE
     }/${monitorID}/_execute`
   ).then(({ body }) => body);
@@ -69,7 +69,7 @@ Cypress.Commands.add('executeMonitor', (monitorID) => {
 Cypress.Commands.add('executeCompositeMonitor', (monitorID) => {
   cy.request(
     'POST',
-    `${Cypress.env('openSearchUrl')}${
+    `${Cypress.expose('openSearchUrl')}${
       ALERTING_API.WORKFLOW_BASE
     }/${monitorID}/_execute`
   ).then(({ body }) => body);
@@ -77,7 +77,7 @@ Cypress.Commands.add('executeCompositeMonitor', (monitorID) => {
 
 Cypress.Commands.add(
   'deleteAllAlerts',
-  (openSearchUrl = Cypress.env('openSearchUrl')) => {
+  (openSearchUrl = Cypress.expose('openSearchUrl')) => {
     cy.request({
       method: 'POST',
       url: `${openSearchUrl}/.opendistro-alerting-alert*/_delete_by_query`,
@@ -104,12 +104,12 @@ Cypress.Commands.add('deleteMonitorByName', (monitorName) => {
   };
   cy.request(
     'GET',
-    `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/_search`,
+    `${Cypress.expose('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/_search`,
     body
   ).then((response) => {
     cy.request(
       'DELETE',
-      `${Cypress.env('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
+      `${Cypress.expose('openSearchUrl')}${ALERTING_API.MONITOR_BASE}/${
         response.body.hits.hits[0]._id
       }`
     ).then(({ body }) => body);
@@ -118,7 +118,7 @@ Cypress.Commands.add('deleteMonitorByName', (monitorName) => {
 
 Cypress.Commands.add(
   'deleteAllMonitors',
-  (openSearchUrl = Cypress.env('openSearchUrl')) => {
+  (openSearchUrl = Cypress.expose('openSearchUrl')) => {
     const body = {
       size: 200,
       query: {
@@ -156,7 +156,7 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('createIndexByName', (indexName) => {
-  cy.request('PUT', `${Cypress.env('openSearchUrl')}/${indexName}`).then(
+  cy.request('PUT', `${Cypress.expose('openSearchUrl')}/${indexName}`).then(
     ({ body }) => body
   );
 });
@@ -164,7 +164,7 @@ Cypress.Commands.add('createIndexByName', (indexName) => {
 Cypress.Commands.add('deleteIndexByName', (indexName) => {
   cy.request({
     method: 'DELETE',
-    url: `${Cypress.env('openSearchUrl')}/${indexName}`,
+    url: `${Cypress.expose('openSearchUrl')}/${indexName}`,
     failOnStatusCode: false,
   }).then(({ body }) => body);
 });
@@ -174,7 +174,7 @@ Cypress.Commands.add(
   (indexName, documentId, documentBody) => {
     cy.request(
       'POST',
-      `${Cypress.env('openSearchUrl')}/${indexName}/_doc/${documentId}`,
+      `${Cypress.expose('openSearchUrl')}/${indexName}/_doc/${documentId}`,
       documentBody
     ).then(({ body }) => body);
   }

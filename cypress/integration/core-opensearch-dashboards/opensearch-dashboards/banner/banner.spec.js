@@ -19,7 +19,7 @@ import '../../../../utils/plugins/banner/commands';
 describe('Banner Plugin', () => {
   before(() => {
     // Skip the entire test suite if BANNER_ENABLED is not true
-    if (Cypress.env('BANNER_ENABLED') !== true) {
+    if (Cypress.expose('BANNER_ENABLED') !== true) {
       this.skip();
     }
   });
