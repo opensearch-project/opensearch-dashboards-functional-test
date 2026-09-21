@@ -66,7 +66,9 @@ describe('View anomaly events in flyout', () => {
 
   afterEach(() => {});
 
-  it('Action does not exist if there are no VisLayers for a visualization', () => {
+  // TODO: Re-enable once the visualization panel is available for this assertion.
+  // https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/issues/1244
+  it.skip('Action does not exist if there are no VisLayers for a visualization', () => {
     cy.getVisPanelByTitle(visualizationName)
       .openVisContextMenu()
       .getMenuItems()

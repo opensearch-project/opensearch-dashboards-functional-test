@@ -28,6 +28,29 @@ context('Sample detectors', () => {
   });
 
   it('Host health sample detector - create and delete', () => {
+    const responses = [];
+    cy.intercept('POST', '**/api/anomaly_detectors/**', (req) => {
+      const response = {
+        path: new URL(req.url).pathname,
+        status: 'No response received',
+      };
+      responses.push(response);
+      req.on('response', (res) => {
+        response.status = res.statusCode;
+        response.body = res.body;
+      });
+    });
+
+    // Preserve the backend error hidden by the sample-creation toast.
+    cy.on('fail', (error) => {
+      error.message += `\nHost health creation responses:\n${JSON.stringify(
+        responses,
+        null,
+        2
+      )}`;
+      throw error;
+    });
+
     createSampleDetector('createHostHealthSampleDetectorButton');
   });
 });
