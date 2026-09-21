@@ -22,7 +22,9 @@ import {
 } from '../../../../utils/constants';
 import { AD_URL } from '../../../../utils/plugins/anomaly-detection-dashboards-plugin/constants';
 
-describe('Anomaly detection integration with vis augmenter', () => {
+// TODO: Re-enable once the shared dashboard setup is stable in CI.
+// https://github.com/opensearch-project/anomaly-detection-dashboards-plugin/issues/1244
+describe.skip('Anomaly detection integration with vis augmenter', () => {
   const indexName = 'ad-vis-augmenter-sample-index';
   const indexPatternName = 'ad-vis-augmenter-sample-*';
   const dashboardName = 'AD Vis Augmenter Dashboard';
