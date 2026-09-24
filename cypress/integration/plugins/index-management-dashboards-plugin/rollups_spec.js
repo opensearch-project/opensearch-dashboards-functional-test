@@ -210,42 +210,6 @@ describe('Rollups', () => {
     });
   });
 
-  describe('can be deleted', () => {
-    before(() => {
-      cy.deleteAllIndices();
-      cy.deleteIMJobs();
-      cy.createRollup(ROLLUP_ID, sampleRollup);
-    });
-
-    it('successfully', () => {
-      // Confirm we have our initial rollup
-      cy.contains(ROLLUP_ID);
-
-      // Select checkbox for our rollup job
-      cy.get(`#_selection_column_${ROLLUP_ID}-checkbox`).check({ force: true });
-
-      // Click on Actions popover menu
-      cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
-
-      // Click Delete button
-      cy.get(`[data-test-subj="deleteButton"]`).click({ force: true });
-
-      // Type "delete" to confirm deletion
-      cy.get(`input[placeholder="delete"]`).type('delete', { force: true });
-
-      // Click the delete confirmation button in modal
-      cy.get(`[data-test-subj="confirmModalConfirmButton"]`).click();
-
-      // Confirm we got deleted toaster
-      cy.contains(`"${ROLLUP_ID}" successfully deleted!`);
-
-      // Confirm showing empty loading state
-      cy.contains(
-        'Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need'
-      );
-    });
-  });
-
   describe('can be enabled and disabled', () => {
     before(() => {
       cy.deleteAllIndices();
@@ -308,6 +272,42 @@ describe('Rollups', () => {
           cy.contains(`${ROLLUP_ID} is disabled`);
         }
       });
+    });
+  });
+
+  describe('can be deleted', () => {
+    before(() => {
+      cy.deleteAllIndices();
+      cy.deleteIMJobs();
+      cy.createRollup(ROLLUP_ID, sampleRollup);
+    });
+
+    it('successfully', () => {
+      // Confirm we have our initial rollup
+      cy.contains(ROLLUP_ID);
+
+      // Select checkbox for our rollup job
+      cy.get(`#_selection_column_${ROLLUP_ID}-checkbox`).check({ force: true });
+
+      // Click on Actions popover menu
+      cy.get(`[data-test-subj="actionButton"]`).click({ force: true });
+
+      // Click Delete button
+      cy.get(`[data-test-subj="deleteButton"]`).click({ force: true });
+
+      // Type "delete" to confirm deletion
+      cy.get(`input[placeholder="delete"]`).type('delete', { force: true });
+
+      // Click the delete confirmation button in modal
+      cy.get(`[data-test-subj="confirmModalConfirmButton"]`).click();
+
+      // Confirm we got deleted toaster
+      cy.contains(`"${ROLLUP_ID}" successfully deleted!`);
+
+      // Confirm showing empty loading state
+      cy.contains(
+        'Rollup jobs help you conserve storage space for historical time series data while preserving the specific information you need'
+      );
     });
   });
 });
