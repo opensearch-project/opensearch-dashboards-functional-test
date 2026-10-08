@@ -91,5 +91,8 @@
         "ajv": ">=8.18.0"
       }
     }
+  },
+  "resolutions": {
+    "brace-expansion": "2.1.3"
   }
 }
