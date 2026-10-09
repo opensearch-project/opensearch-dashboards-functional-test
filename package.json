@@ -93,6 +93,7 @@
     }
   },
   "resolutions": {
+    "qs": "6.15.2",
     "brace-expansion": "2.1.3"
   }
 }
