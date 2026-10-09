@@ -93,6 +93,7 @@
     }
   },
   "resolutions": {
+    "tmp": "0.2.6",
     "brace-expansion": "2.1.3"
   }
 }
