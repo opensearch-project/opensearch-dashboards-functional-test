@@ -93,6 +93,7 @@
     }
   },
   "resolutions": {
+    "js-yaml": "3.15.0",
     "brace-expansion": "2.1.3"
   }
 }
