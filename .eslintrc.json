@@ -20,5 +20,11 @@
       // turn off no-unnecessary-waiting for now due to the issue: https://github.com/cypress-io/eslint-plugin-cypress/issues/43
       "cypress/no-unnecessary-waiting": "off"
     },
+    "overrides": [
+      {
+        "files": ["scripts/extract-zip-shim/*.js"],
+        "parserOptions": { "ecmaVersion": 2020 }
+      }
+    ],
     "ignorePatterns": ["**/*.d.ts"]
 }
