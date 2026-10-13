@@ -65,19 +65,19 @@ describe('discover histogram', { scrollBehavior: false }, () => {
   });
 
   it('should visualize monthly data with different day intervals', () => {
-    const fromTime = 'Nov 01, 2017 @ 00:00:00.000';
+    const fromTime = 'Nov 1, 2017 @ 00:00:00.000';
     const toTime = 'Mar 21, 2018 @ 00:00:00.000';
     cy.prepareTest(fromTime, toTime, 'Month');
     cy.get('.echChart canvas:last-of-type').should('be.visible');
   });
   it('should visualize weekly data with within DST changes', () => {
-    const fromTime = 'Mar 01, 2018 @ 00:00:00.000';
-    const toTime = 'May 01, 2018 @ 00:00:00.000';
+    const fromTime = 'Mar 1, 2018 @ 00:00:00.000';
+    const toTime = 'May 1, 2018 @ 00:00:00.000';
     cy.prepareTest(fromTime, toTime, 'Week');
     cy.get('.echChart canvas:last-of-type').should('be.visible');
   });
   it('should visualize monthly data with different years scaled to 30 days', () => {
-    const fromTime = 'Jan 01, 2010 @ 00:00:00.000';
+    const fromTime = 'Jan 1, 2010 @ 00:00:00.000';
     const toTime = 'Mar 21, 2019 @ 00:00:00.000';
     cy.prepareTest(fromTime, toTime, 'Day');
     cy.get('.echChart canvas:last-of-type').should('be.visible');
