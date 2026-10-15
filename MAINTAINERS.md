@@ -6,7 +6,6 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 
 | Maintainer        | GitHub ID                                           | Affiliation |
 |-------------------| --------------------------------------------------- | ----------- |
-| Kawika Avilla     | [kavilla](https://github.com/kavilla)               | Amazon      |
 | Tyler Ohlsen      | [ohltyler](https://github.com/ohltyler)             | Amazon      |
 | Cong Wang         | [CCongWang](https://github.com/CCongWang)           | Amazon      |
 | Ashwin P Chandran | [ashwin-pc](https://github.com/ashwin-pc)           | Amazon      |
@@ -35,3 +34,4 @@ This document contains a list of maintainers in this repo. See [opensearch-proje
 | Manideep Pabba | [mpabba3003](https://github.com/mpabba3003)       | Amazon      |
 | Tianle Huang   | [tianleh](https://github.com/tianleh)             | Amazon      |
 | Tianyu Gao     | [raintygao](https://github.com/raintygao)         | Amazon      |
+| Kawika Avilla     | [kavilla](https://github.com/kavilla)               | Amazon      |
