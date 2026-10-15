@@ -32,6 +32,11 @@ describe('Testing services table', () => {
 
   it('Opens service flyout', () => {
     cy.contains('6.42').should('exist');
+    // Each services refetch regenerates row ids and remounts the rows, so wait
+    // for the table to finish loading before querying the button to click
+    cy.get('.euiBasicTable-loading, .ouiBasicTable-loading').should(
+      'not.exist'
+    );
     cy.get('button[data-test-subj^="service-flyout-action-btn"]')
       .first()
       .click();
