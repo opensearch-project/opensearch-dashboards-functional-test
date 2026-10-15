@@ -82,12 +82,14 @@ describe('Cypress', () => {
     openEditPage();
 
     // update the report name
-    cy.get('#reportSettingsName').type('{selectall}{backspace} update name');
+    cy.get('#reportSettingsName')
+      .scrollIntoView()
+      .type('{selectall}{backspace} update name', { force: true });
 
     // update report description
-    cy.get('#reportSettingsDescription').type(
-      '{selectall}{backspace} update description'
-    );
+    cy.get('#reportSettingsDescription')
+      .scrollIntoView()
+      .type('{selectall}{backspace} update description', { force: true });
 
     clickSaveChanges();
   });
