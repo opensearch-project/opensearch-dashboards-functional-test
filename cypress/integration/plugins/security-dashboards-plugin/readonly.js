@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import roleWithoutTestJson from '../../../fixtures/plugins/security-dashboards-plugin/roles/roleWithoutTest';
 import { BASE_PATH } from '../../../utils/base_constants';
 import { ADMIN_AUTH, CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
@@ -11,14 +10,21 @@ import { switchTenantTo } from './switch_tenant';
 const TEST_CONFIG = {
   role: {
     name: 'test_readonly_role',
-    json: Object.assign({}, roleWithoutTestJson, {
+    json: {
+      cluster_permissions: [],
+      index_permissions: [
+        {
+          index_patterns: ['opensearch_dashboards_sample_data_logs'],
+          allowed_actions: ['read'],
+        },
+      ],
       tenant_permissions: [
         {
           tenant_patterns: ['test_readonly_tenant'],
           allowed_actions: ['kibana_all_read'],
         },
       ],
-    }),
+    },
   },
   tenant: {
     name: 'test_readonly_tenant',
@@ -39,6 +45,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.createInternalUser(TEST_CONFIG.user.username, {
         password: TEST_CONFIG.user.password,
+        opendistro_security_roles: ['base_dashboards_user_read_only'],
       });
 
       cy.createRole(TEST_CONFIG.role.name, TEST_CONFIG.role.json);
@@ -46,6 +53,16 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.createRoleMapping(TEST_CONFIG.role.name, {
         users: [ADMIN_AUTH.username, TEST_CONFIG.user.username],
       });
+
+      cy.request({
+        url: `${Cypress.env('openSearchUrl')}/_plugins/_security/authinfo`,
+        auth: TEST_CONFIG.user,
+      })
+        .its('body.roles')
+        .should('have.members', [
+          'base_dashboards_user_read_only',
+          TEST_CONFIG.role.name,
+        ]);
 
       /* Add sample data to testing tenant */
       CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
@@ -80,6 +97,26 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.getElementByTestId('dashboardClone').should('exist');
       cy.getElementByTestId('dashboardEditMode').should('exist');
+    });
+
+    it('should reject saved-object writes with the read-only base role', () => {
+      cy.request({
+        method: 'POST',
+        url: `${
+          Cypress.config().baseUrl
+        }/api/saved_objects/index-pattern/base-role-denied`,
+        auth: TEST_CONFIG.user,
+        headers: {
+          'osd-xsrf': true,
+          securitytenant: TEST_CONFIG.tenant.name,
+        },
+        body: {
+          attributes: { title: 'opensearch_dashboards_sample_data_logs' },
+        },
+        failOnStatusCode: false,
+      })
+        .its('status')
+        .should('eq', 403);
     });
 
     it('should not be able to modify the dashboard when is performing as a custom readonly tenant', () => {
