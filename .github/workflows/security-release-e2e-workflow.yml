@@ -15,6 +15,7 @@ jobs:
           tests:
             - 'cypress/**/security/**'
             - 'cypress/**/security-dashboards-plugin/**'
+            - '.github/workflows/security-release-e2e-workflow.yml'
             - '.github/workflows/release-e2e-workflow-template.yml'
 
   tests:
@@ -23,4 +24,7 @@ jobs:
     uses: ./.github/workflows/release-e2e-workflow-template.yml
     with:
       test-name: Security
+      osd-serve-args: >-
+        --opensearch_security.multitenancy.enable_aggregation_view=false
+        --opensearch_security.readonly_mode.roles='["kibana_read_only","base_dashboards_user_read_only"]'
       test-command: env CYPRESS_NO_COMMAND_LOG=1 yarn cypress:run-with-security --browser chromium --spec 'cypress/integration/plugins/security/*,cypress/integration/plugins/security-dashboards-plugin/*'
