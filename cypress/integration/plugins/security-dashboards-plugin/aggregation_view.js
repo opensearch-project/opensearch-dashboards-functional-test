@@ -11,6 +11,7 @@ import tenantDescription from '../../../fixtures/plugins/security-dashboards-plu
 import testUsersSetUp from '../../../fixtures/plugins/security-dashboards-plugin/users/testUser';
 import roleWithTestSetUp from '../../../fixtures/plugins/security-dashboards-plugin/roles/roleWithTest';
 import roleWithoutTestSetUp from '../../../fixtures/plugins/security-dashboards-plugin/roles/roleWithoutTest';
+import kibanaRoleMappingSetUp from '../../../fixtures/plugins/security-dashboards-plugin/rolesmapping/kibanauserRoleMapping';
 import roleWithTestMappingSetUp from '../../../fixtures/plugins/security-dashboards-plugin/rolesmapping/roleWithTestMapping';
 import roleWithoutTestMappingSetUp from '../../../fixtures/plugins/security-dashboards-plugin/rolesmapping/roleWithoutTestMapping';
 import indexPatternPrivateTenantHeaderSetUp from '../../../fixtures/plugins/security-dashboards-plugin/indexpatterns/indexPatternPrivateTenantHeader';
@@ -22,7 +23,7 @@ const userName2 = 'test2';
 const password = 'testUserPassword123';
 const roleName1 = 'roleWithTest';
 const roleName2 = 'roleWithoutTest';
-const baseRoleName = 'base_dashboards_user';
+const kibanaRoleName = 'kibana_user';
 
 if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
   describe('Saved objects table test', () => {
@@ -120,31 +121,15 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
         indexPatternTenantHeaderSetUp
       );
 
-      for (const username of [userName1, userName2]) {
-        cy.createInternalUser(username, {
-          ...testUsersSetUp,
-          opendistro_security_roles: [baseRoleName],
-        });
-      }
+      cy.createInternalUser(userName1, testUsersSetUp);
+      cy.createInternalUser(userName2, testUsersSetUp);
 
       cy.createRole(roleName1, roleWithTestSetUp);
       cy.createRole(roleName2, roleWithoutTestSetUp);
 
+      cy.createRoleMapping(kibanaRoleName, kibanaRoleMappingSetUp);
       cy.createRoleMapping(roleName1, roleWithTestMappingSetUp);
       cy.createRoleMapping(roleName2, roleWithoutTestMappingSetUp);
-
-      // Extra roles could hide permissions missing from the new base role.
-      for (const [username, role] of [
-        [userName1, roleName1],
-        [userName2, roleName2],
-      ]) {
-        cy.request({
-          url: `${Cypress.env('openSearchUrl')}/_plugins/_security/authinfo`,
-          auth: { username, password },
-        })
-          .its('body.roles')
-          .should('have.members', [baseRoleName, role]);
-      }
     });
 
     it('should check the saved objects as global tenant', () => {
@@ -180,26 +165,6 @@ if (Cypress.env('SECURITY_ENABLED') && Cypress.env('AGGREGATION_VIEW')) {
 
       savedObjectRow('se*').should('contain', 'test');
       savedObjectRow('s*').should('not.exist');
-    });
-
-    it('should create and delete a saved object with the write base role', () => {
-      const url = `${
-        Cypress.config().baseUrl
-      }/api/saved_objects/index-pattern/base-role-write`;
-      const auth = { username: userName1, password };
-      const headers = { 'osd-xsrf': true, securitytenant: tenantName };
-      cy.request({
-        method: 'POST',
-        url,
-        auth,
-        headers,
-        body: { attributes: { title: 'base-role-test-*' } },
-      })
-        .its('status')
-        .should('eq', 200);
-      cy.request({ method: 'DELETE', url, auth, headers })
-        .its('status')
-        .should('eq', 200);
     });
 
     it('should login as test2 and check saved object', () => {

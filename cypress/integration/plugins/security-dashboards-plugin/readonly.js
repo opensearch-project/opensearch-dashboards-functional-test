@@ -123,7 +123,11 @@ if (Cypress.env('SECURITY_ENABLED')) {
       ADMIN_AUTH.newUser = TEST_CONFIG.user.username;
       ADMIN_AUTH.newPassword = TEST_CONFIG.user.password;
 
+      cy.intercept('POST', '/api/saved_objects/_bulk_get').as(
+        'readSavedObjects'
+      );
       cy.visit(BASE_PATH);
+      cy.wait('@readSavedObjects').its('response.statusCode').should('eq', 200);
       cy.waitForLoader();
 
       cy.visitDashboard('[Logs] Web Traffic');
