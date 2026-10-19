@@ -45,7 +45,10 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       cy.createInternalUser(TEST_CONFIG.user.username, {
         password: TEST_CONFIG.user.password,
-        opendistro_security_roles: ['base_dashboards_user_read_only'],
+      });
+
+      cy.createRoleMapping('base_dashboards_user_read_only', {
+        users: [TEST_CONFIG.user.username],
       });
 
       cy.createRole(TEST_CONFIG.role.name, TEST_CONFIG.role.json);
