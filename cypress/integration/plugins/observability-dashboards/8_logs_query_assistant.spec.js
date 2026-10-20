@@ -7,28 +7,36 @@
 
 import { BASE_PATH, PANELS_TIMEOUT } from '../../../utils/constants';
 
-const isQueryAssistantPPlAgentAvailable = () => {
-  return cy
-    .request({
-      method: 'POST',
-      url: '/api/console/proxy?path=_plugins/_ml/config/os_query_assist_ppl&method=GET&dataSourceId=',
-      headers: { 'osd-xsrf': true },
-      failOnStatusCode: false,
-    })
-    .then((response) => {
-      return !!(
-        response &&
-        response.body &&
-        response.body.configuration &&
-        response.body.configuration.agent_id
-      );
-    });
+// Returns the os_query_assist_ppl config response.
+const getQueryAssistantPPLAgentConfig = () => {
+  return cy.request({
+    method: 'POST',
+    url: '/api/console/proxy?path=_plugins/_ml/config/os_query_assist_ppl&method=GET&dataSourceId=',
+    headers: { 'osd-xsrf': true },
+    failOnStatusCode: false,
+  });
 };
+
+// Returns the agent id from the config response, or undefined.
+const getAgentId = (response) =>
+  response &&
+  response.body &&
+  response.body.configuration &&
+  response.body.configuration.agent_id;
 
 describe('Testing query assistant', () => {
   before(function () {
-    isQueryAssistantPPlAgentAvailable().then((isAvailable) => {
-      if (!isAvailable) {
+    getQueryAssistantPPLAgentConfig().then((response) => {
+      const agentId = getAgentId(response);
+      // Managed service always configures the agent, so a missing agent is a failure.
+      if (Cypress.env('MANAGED_SERVICE_ENDPOINT')) {
+        expect(
+          agentId,
+          `os_query_assist_ppl agent_id (status ${
+            response.status
+          }, body ${JSON.stringify(response.body)})`
+        ).to.be.a('string').and.not.be.empty;
+      } else if (!agentId) {
         this.skip();
       }
     });
