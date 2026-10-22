@@ -136,7 +136,15 @@ if (Cypress.env('SECURITY_ENABLED')) {
         cy.intercept('GET', '**/api/saved_objects/_find*').as(
           'firstTenantRead'
         );
-        cy.visit(`${BASE_PATH}/app/dashboards`);
+        cy.visit(`${BASE_PATH}/app/dashboards`, {
+          onBeforeLoad(window) {
+            window.sessionStorage.setItem(
+              'opendistro::security::tenant::show_popup',
+              false
+            );
+            window.localStorage.setItem('home:newThemeModal:show', false);
+          },
+        });
         cy.wait('@firstTenantRead')
           .its('response.statusCode')
           .should('eq', 200);
