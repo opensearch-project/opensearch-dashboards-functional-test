@@ -149,6 +149,12 @@ if (Cypress.env('SECURITY_ENABLED')) {
           .its('response.statusCode')
           .should('eq', 200);
         cy.get('#user-icon-btn').should('be.visible');
+        if (readOnly) {
+          cy.location('pathname').should(
+            'eq',
+            new URL(`${BASE_PATH}/app/home`).pathname
+          );
+        }
         cy.request({ url: `${BASE_PATH}/api/v1/auth/authinfo`, auth, headers })
           .its('body.user_requested_tenant')
           .should('eq', tenant);
@@ -240,7 +246,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       /* Add sample data to testing tenant */
       CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
-      cy.visit(BASE_PATH, {
+      cy.visit(`${BASE_PATH}/app/home`, {
         onBeforeLoad(window) {
           window.sessionStorage.setItem(
             'opendistro::security::tenant::show_popup',
