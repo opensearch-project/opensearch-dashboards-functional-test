@@ -5,7 +5,6 @@
 
 import { BASE_PATH } from '../../../utils/base_constants';
 import { ADMIN_AUTH, CURRENT_TENANT } from '../../../utils/commands';
-import { switchTenantTo } from './switch_tenant';
 
 const TEST_CONFIG = {
   role: {
@@ -246,6 +245,26 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
       /* Add sample data to testing tenant */
       CURRENT_TENANT.newTenant = TEST_CONFIG.tenant.name;
+      // Select the session tenant before seeding; this suite tests permissions, not the switcher UI.
+      cy.login();
+      cy.request({
+        method: 'POST',
+        url: `${BASE_PATH}/api/v1/multitenancy/tenant`,
+        headers: { 'osd-xsrf': true },
+        body: {
+          username: ADMIN_AUTH.username,
+          tenant: TEST_CONFIG.tenant.name,
+        },
+      })
+        .its('status')
+        .should('eq', 200);
+      cy.request(`${BASE_PATH}/api/v1/multitenancy/tenant`)
+        .its('body')
+        .should('eq', TEST_CONFIG.tenant.name);
+      cy.request(`${BASE_PATH}/api/v1/auth/authinfo`)
+        .its('body.user_requested_tenant')
+        .should('eq', TEST_CONFIG.tenant.name);
+      cy.loadSampleData('logs');
       cy.visit(`${BASE_PATH}/app/home`, {
         onBeforeLoad(window) {
           window.sessionStorage.setItem(
@@ -265,8 +284,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
         },
       });
       cy.waitForLoader();
-      switchTenantTo(TEST_CONFIG.tenant.name);
-      cy.loadSampleData('logs');
     });
 
     it('should be able to modify the dashboard as admin', () => {
