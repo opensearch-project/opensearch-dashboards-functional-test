@@ -4,18 +4,30 @@
  */
 
 export function switchTenantTo(newTenant) {
-  cy.getElementByTestId('account-popover').click({ force: true });
+  const switchId = Cypress._.uniqueId('tenantSwitch');
+  const requestedTenant =
+    newTenant === 'global'
+      ? ''
+      : newTenant === 'private'
+      ? '__user__'
+      : newTenant;
+  let previousDocument;
+  cy.document().then((document) => {
+    previousDocument = document;
+  });
   cy.intercept({
     method: 'GET',
     url: '/api/v1/auth/dashboardsinfo*',
-  }).as('waitForDashboardsInfo');
+  }).as(`${switchId}DashboardsInfo`);
 
   cy.intercept({
     method: 'GET',
     url: '/api/v1/configuration/account*',
-  }).as('waitForAccountInfo');
+  }).as(`${switchId}AccountInfo`);
 
+  cy.getElementByTestId('account-popover').click({ force: true });
   cy.getElementByTestId('switch-tenants').click({ force: true });
+  cy.wait([`@${switchId}AccountInfo`, `@${switchId}DashboardsInfo`]);
 
   if (['global', 'private'].includes(newTenant)) {
     cy.get('[id="' + newTenant + '"][name="tenantSwitchRadios"]').should(
@@ -40,15 +52,19 @@ export function switchTenantTo(newTenant) {
   cy.intercept({
     method: 'POST',
     url: '/api/v1/multitenancy/tenant*',
-  }).as('waitForUpdatingTenants');
+  }).as(`${switchId}Update`);
   cy.getElementByTestId('tenant-switch-modal')
     .find('[data-test-subj="confirm"]')
     .click({ force: true });
 
-  cy.wait('@waitForUpdatingTenants');
+  cy.wait(`@${switchId}Update`).then(({ request, response }) => {
+    expect(request.body.tenant).to.eq(requestedTenant);
+    expect(response.statusCode).to.eq(200);
+  });
 
-  // Make sure dashboards has really reloaded.
-  // @waitForReloadAfterTenantSwitch should be triggered twice
-  cy.wait('@waitForDashboardsInfo');
-  cy.wait('@waitForDashboardsInfo');
+  // Request counts do not prove a reload, especially when switching twice in one test.
+  cy.document().should((document) => {
+    expect(document).not.to.eq(previousDocument);
+  });
+  cy.getElementByTestId('account-popover').should('be.visible');
 }
