@@ -82,12 +82,15 @@ if (Cypress.env('SECURITY_ENABLED')) {
     beforeEach(() => {
       ADMIN_AUTH.newUser = name;
       ADMIN_AUTH.newPassword = password;
-      CURRENT_TENANT.newTenant = tenants[0];
       cy.clearCookies();
       cy.login();
       cy.request(`${Cypress.env('openSearchUrl')}/_plugins/_security/authinfo`)
         .its('body.roles')
         .should('have.members', [baseRole, name]);
+    });
+
+    const visitTenant = (tenant) => {
+      CURRENT_TENANT.newTenant = tenant;
       cy.visit(`${BASE_PATH}/app/home`, {
         onBeforeLoad(window) {
           window.sessionStorage.setItem(
@@ -105,8 +108,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.waitForLoader();
       cy.request(`${BASE_PATH}/api/v1/auth/authinfo`)
         .its('body.user_requested_tenant')
-        .should('eq', tenants[0]);
-    });
+        .should('eq', tenant);
+    };
 
     after(() => {
       ADMIN_AUTH.newUser = Cypress.env('username');
@@ -155,12 +158,22 @@ if (Cypress.env('SECURITY_ENABLED')) {
       });
     });
 
-    it('switches tenants despite a different tenant in the copied URL and keeps objects isolated', () => {
-      cy.location('search').should('contain', `security_tenant=${tenants[0]}`);
-      cy.request(`${objectUrl}/${name}`)
-        .its('body.attributes.title')
-        .should('eq', `${tenants[0]}-*`);
-      [tenants[1], tenants[0]].forEach((tenant) => {
+    // Cypress can replay a stale cookie on repeated same-path navigations.
+    // Exercise both directions with a fresh session instead of an A -> B -> A loop.
+    [0, 1].forEach((initial) => {
+      const initialTenant = tenants[initial];
+      const tenant = tenants[1 - initial];
+      it(`switches from tenant ${initial + 1} to tenant ${
+        2 - initial
+      } despite the copied URL and keeps objects isolated`, () => {
+        visitTenant(initialTenant);
+        cy.location('search').should(
+          'contain',
+          `security_tenant=${initialTenant}`
+        );
+        cy.request(`${objectUrl}/${name}`)
+          .its('body.attributes.title')
+          .should('eq', `${initialTenant}-*`);
         switchTenantTo(tenant);
         cy.request(`${BASE_PATH}/api/v1/auth/authinfo`)
           .its('body.user_requested_tenant')
@@ -169,9 +182,8 @@ if (Cypress.env('SECURITY_ENABLED')) {
         cy.request(`${objectUrl}/${name}`)
           .its('body.attributes.title')
           .should('eq', `${tenant}-*`);
-        const otherTenant = tenant === tenants[0] ? tenants[1] : tenants[0];
         cy.request({
-          url: `${objectUrl}/${otherTenant}`,
+          url: `${objectUrl}/${initialTenant}`,
           failOnStatusCode: false,
         })
           .its('status')
@@ -180,6 +192,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('does not offer an unauthorized tenant in the switcher', () => {
+      visitTenant(tenants[0]);
       cy.getElementByTestId('account-popover').click();
       cy.getElementByTestId('switch-tenants').click();
       cy.getElementByTestId('tenant-switch-modal')
@@ -196,6 +209,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
     });
 
     it('cannot read unauthorized tenant objects using a URL or request header', () => {
+      visitTenant(tenants[0]);
       [
         { qs: { security_tenant: tenants[2] } },
         { headers: { securitytenant: tenants[2] } },
