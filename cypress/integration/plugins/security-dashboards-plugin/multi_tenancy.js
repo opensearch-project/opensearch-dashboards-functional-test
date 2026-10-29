@@ -55,6 +55,14 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.deleteIndexPattern('index-pattern1', { failOnStatusCode: false });
       cy.deleteIndexPattern('index-pattern2', { failOnStatusCode: false });
     });
+    afterEach(() => {
+      // Restore tenancy even when an assertion fails after disabling it.
+      setTenancyConfig({
+        multitenancy_enabled: true,
+        private_tenant_enabled: true,
+        default_tenant: 'Private',
+      });
+    });
     it('Test 1 Disable Multi Tenancy ', () => {
       CURRENT_TENANT.newTenant = 'private';
 
@@ -90,16 +98,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.waitForLoader();
 
       cy.contains('s*');
-
-      // Enable Multi-tenancy before closing test.
-      setTenancyConfig({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'Private',
-      });
-
-      cy.reload();
-      cy.waitForLoader();
     });
     it('Test 2 Disable Private Tenancy ', () => {
       CURRENT_TENANT.newTenant = 'private';
@@ -114,7 +112,6 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('#user-icon-btn').click();
       cy.contains('button', 'Switch tenants').click();
       cy.get('#private').should('be.enabled');
-      cy.contains('button', 'Cancel').click();
 
       // Disable private tenant via API.
       setTenancyConfig({
@@ -130,23 +127,12 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.get('#user-icon-btn').click();
       cy.contains('button', 'Switch tenants').click();
       cy.get('#private').should('be.disabled');
-      cy.contains('button', 'Cancel').click();
 
       // Saved index pattern should only have the ones saved in Global tenant.
       cy.visit(SAVED_OBJECTS_PATH);
       cy.waitForLoader();
 
       cy.contains('s*');
-
-      // Enable private tenant before exiting test.
-      setTenancyConfig({
-        multitenancy_enabled: true,
-        private_tenant_enabled: true,
-        default_tenant: 'Private',
-      });
-
-      cy.reload();
-      cy.waitForLoader();
     });
   });
 }
