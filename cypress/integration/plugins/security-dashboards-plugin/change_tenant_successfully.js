@@ -8,12 +8,13 @@ import { ADMIN_AUTH, CURRENT_TENANT } from '../../../utils/commands';
 import { switchTenantTo } from './switch_tenant';
 
 if (Cypress.env('SECURITY_ENABLED')) {
-  describe('Tenant switching and isolation with the base Dashboards role', () => {
+  describe('Tenant switching, isolation, and mixed permissions with the base Dashboards role', () => {
     const baseRole = 'base_dashboards_user';
     const name = `tenant_switch_${Date.now()}`;
     const tenants = [`${name}_a`, `${name}_b`, `${name}_denied`];
     const password = 'testUserPassword123!';
     const objectUrl = `${BASE_PATH}/api/saved_objects/index-pattern`;
+    const dashboardUrl = `${BASE_PATH}/api/saved_objects/dashboard/${name}`;
     const securityUrl = `${Cypress.env(
       'openSearchUrl'
     )}/_plugins/_security/api`;
@@ -33,6 +34,21 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.login();
       tenants.forEach((tenant) => {
         cy.createTenant(tenant, { description: 'Base-role tenant isolation' });
+        cy.request({
+          method: 'POST',
+          url: dashboardUrl,
+          headers: { 'osd-xsrf': true, securitytenant: tenant },
+          body: {
+            attributes: {
+              title: tenant,
+              panelsJSON: '[]',
+              optionsJSON: '{}',
+              timeRestore: false,
+            },
+          },
+        })
+          .its('status')
+          .should('eq', 200);
         // A shared ID exposes incorrect tenant routing; a unique ID detects cross-tenant reads.
         [name, tenant].forEach((id) => {
           cy.request({
@@ -51,8 +67,12 @@ if (Cypress.env('SECURITY_ENABLED')) {
         index_permissions: [],
         tenant_permissions: [
           {
-            tenant_patterns: tenants.slice(0, 2),
+            tenant_patterns: [tenants[0]],
             allowed_actions: ['kibana_all_write'],
+          },
+          {
+            tenant_patterns: [tenants[1]],
+            allowed_actions: ['kibana_all_read'],
           },
         ],
       });
@@ -91,7 +111,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
 
     const visitTenant = (tenant) => {
       CURRENT_TENANT.newTenant = tenant;
-      cy.visit(`${BASE_PATH}/app/home`, {
+      cy.visit(`${BASE_PATH}/app/dashboards`, {
         onBeforeLoad(window) {
           window.sessionStorage.setItem(
             'opendistro::security::tenant::show_popup',
@@ -111,6 +131,53 @@ if (Cypress.env('SECURITY_ENABLED')) {
         .should('eq', tenant);
     };
 
+    const assertTenantPermissions = (tenant) => {
+      const writable = tenant === tenants[0];
+      // Wait for this tenant's listing before asserting that Create is absent.
+      cy.contains('a', tenant).should('be.visible');
+      cy.get(
+        '[data-test-subj="newItemButton"], [data-test-subj="createMenuDropdown"]'
+      ).should(writable ? 'be.visible' : 'not.exist');
+      // No tenant header: mutations must use the session selected through the UI.
+      const request = {
+        headers: { 'osd-xsrf': true },
+        failOnStatusCode: false,
+      };
+      const createdUrl = `${objectUrl}/${name}_created`;
+      cy.request({
+        ...request,
+        method: 'POST',
+        url: createdUrl,
+        body: { attributes: { title: 'mixed-permissions-created-*' } },
+      })
+        .its('status')
+        .should('eq', writable ? 200 : 403);
+      // The denied update/delete target an existing object, not a missing one.
+      const targetUrl = writable ? createdUrl : `${objectUrl}/${tenant}`;
+      cy.request({
+        ...request,
+        method: 'PUT',
+        url: targetUrl,
+        body: { attributes: { title: 'mixed-permissions-updated-*' } },
+      })
+        .its('status')
+        .should('eq', writable ? 200 : 403);
+      cy.request(targetUrl)
+        .its('body.attributes.title')
+        .should('eq', writable ? 'mixed-permissions-updated-*' : `${tenant}-*`);
+      cy.request({ ...request, method: 'DELETE', url: targetUrl })
+        .its('status')
+        .should('eq', writable ? 200 : 403);
+      cy.request({ url: createdUrl, failOnStatusCode: false })
+        .its('status')
+        .should('eq', 404);
+      if (!writable) {
+        cy.request(targetUrl)
+          .its('body.attributes.title')
+          .should('eq', `${tenant}-*`);
+      }
+    };
+
     after(() => {
       ADMIN_AUTH.newUser = Cypress.env('username');
       ADMIN_AUTH.newPassword = Cypress.env('password');
@@ -118,7 +185,15 @@ if (Cypress.env('SECURITY_ENABLED')) {
       cy.clearCookies();
       cy.login();
       tenants.forEach((tenant) => {
-        [name, tenant].forEach((id) => {
+        cy.request({
+          method: 'DELETE',
+          url: dashboardUrl,
+          headers: { 'osd-xsrf': true, securitytenant: tenant },
+          failOnStatusCode: false,
+        })
+          .its('status')
+          .should('be.oneOf', [200, 404]);
+        [name, tenant, `${name}_created`].forEach((id) => {
           cy.request({
             method: 'DELETE',
             url: `${objectUrl}/${id}`,
@@ -174,6 +249,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         cy.request(`${objectUrl}/${name}`)
           .its('body.attributes.title')
           .should('eq', `${initialTenant}-*`);
+        assertTenantPermissions(initialTenant);
         switchTenantTo(tenant);
         cy.request(`${BASE_PATH}/api/v1/auth/authinfo`)
           .its('body.user_requested_tenant')
@@ -182,6 +258,7 @@ if (Cypress.env('SECURITY_ENABLED')) {
         cy.request(`${objectUrl}/${name}`)
           .its('body.attributes.title')
           .should('eq', `${tenant}-*`);
+        assertTenantPermissions(tenant);
         cy.request({
           url: `${objectUrl}/${initialTenant}`,
           failOnStatusCode: false,
