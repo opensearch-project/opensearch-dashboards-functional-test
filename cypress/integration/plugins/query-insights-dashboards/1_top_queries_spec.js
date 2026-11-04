@@ -49,7 +49,20 @@ const getHeaders = () =>
 const expectSortedBy = (label) => {
   const extract = ($rows, colIdx) =>
     [...$rows].map(($r) => {
-      const txt = Cypress.$($r).find('td').eq(colIdx).text().trim();
+      // Read the cell content only. EUI renders a CSS-hidden `.euiTableRowCell__mobileHeader`
+      // holding the column label as a sibling of the content, and .text() ignores CSS, so the
+      // raw <td> text would be e.g. "TimestampSep 2, 2026 @ 1:00:02 PM".
+      const txt = Cypress.$($r)
+        .find('td')
+        .eq(colIdx)
+        .find('.euiTableCellContent')
+        .text()
+        .trim();
+      // Plain numbers first: Date.parse('4') is a valid date, so Query Count must not fall
+      // through to the date branch.
+      if (/^-?\d+(\.\d+)?$/.test(txt)) return parseFloat(txt);
+      // Timestamps before the unit heuristic: "Sep 2, 2026 @ 1:00:02 PM" matches /s/i.
+      if (/^[A-Za-z]{3} \d{1,2}, \d{4} @ /.test(txt)) return Date.parse(txt);
       if (/ms|s|B|KB|MB|GB|TB/i.test(txt))
         return parseFloat(txt.replace(/[^\d.]/g, '')) || 0;
       const ms = Date.parse(txt);
@@ -59,33 +72,34 @@ const expectSortedBy = (label) => {
     });
 
   // Target the main data table (last table on page)
-  cy.get('.euiBasicTable')
-    .last()
-    .find('.euiTableHeaderCell')
-    .contains(label)
-    .click();
-  cy.get('.euiBasicTable')
-    .last()
-    .find('.euiTableRow')
-    .then(($r) => {
-      const v = extract($r);
-      const asc = [...v].sort((a, b) => a - b);
-      expect(v, `${label} asc`).to.deep.equal(asc);
-    });
+  const headerCell = () =>
+    cy
+      .get('.euiBasicTable')
+      .last()
+      .find('.euiTableHeaderCell')
+      .contains(label)
+      .closest('.euiTableHeaderCell');
 
-  cy.get('.euiBasicTable')
-    .last()
-    .find('.euiTableHeaderCell')
-    .contains(label)
-    .click();
-  cy.get('.euiBasicTable')
-    .last()
-    .find('.euiTableRow')
-    .then(($r) => {
-      const v = extract($r);
-      const desc = [...v].sort((a, b) => b - a);
-      expect(v, `${label} desc`).to.deep.equal(desc);
-    });
+  const expectSortedInDirection = (direction) => {
+    headerCell().click();
+    headerCell()
+      .invoke('index')
+      .then((colIdx) => {
+        cy.get('.euiBasicTable')
+          .last()
+          .find('.euiTableRow')
+          .then(($r) => {
+            const values = extract($r, colIdx);
+            const sorted = [...values].sort((a, b) =>
+              direction === 'asc' ? a - b : b - a
+            );
+            expect(values, `${label} ${direction}`).to.deep.equal(sorted);
+          });
+      });
+  };
+
+  expectSortedInDirection('asc');
+  expectSortedInDirection('desc');
 };
 
 const setTypeFilter = (mode /* 'query' | 'group' | 'both' */) => {
@@ -288,6 +302,20 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
   const totalRowCount = mixedRows.length;
 
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
@@ -311,6 +339,10 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       'Avg CPU Time / CPU Time',
       'Avg Memory Usage / Memory Usage',
       'Indices',
+      'X-Opaque-Id',
+      'Username',
+      'User Roles',
+      'Backend Roles',
       'WLM Group',
     ];
     getHeaders().should('deep.equal', expected);
@@ -332,6 +364,10 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       'CPU Time',
       'Memory Usage',
       'Indices',
+      'X-Opaque-Id',
+      'Username',
+      'User Roles',
+      'Backend Roles',
       'WLM Group',
     ];
     getHeaders().should('deep.equal', expected);
@@ -382,6 +418,10 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
       'Avg CPU Time / CPU Time',
       'Avg Memory Usage / Memory Usage',
       'Indices',
+      'X-Opaque-Id',
+      'Username',
+      'User Roles',
+      'Backend Roles',
       'WLM Group',
     ];
     getHeaders().should('deep.equal', expected);
@@ -397,6 +437,20 @@ describe('Query Insights — Dynamic Columns with Intercepted Top Queries (MIXED
 // ---- QUERY ONLY fixture (no Type toggle)
 describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(QUERY_ONLY) });
     }).as('topQueries');
@@ -409,6 +463,10 @@ describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
   });
 
   it('renders only query headers (without changing Type filter)', () => {
+    // User-info columns are version-gated only: with the cluster version stubbed to 3.8.0
+    // (>= 3.5) the Username / User Roles / Backend Roles columns render regardless of whether
+    // the QUERY_ONLY fixture rows carry username data (rows without it show '-'). Application
+    // ID is unconditional.
     const expected = [
       'Id',
       'Type',
@@ -418,6 +476,10 @@ describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
       'CPU Time',
       'Memory Usage',
       'Indices',
+      'X-Opaque-Id',
+      'Username',
+      'User Roles',
+      'Backend Roles',
       'WLM Group',
     ];
     // assertRowCountEquals uses .should('have.length', N) which retries until items
@@ -431,6 +493,20 @@ describe('Query Insights — Dynamic Columns (QUERY ONLY fixture)', () => {
 // ---- GROUP ONLY fixture (no Type toggle)
 describe('Query Insights — Dynamic Columns (GROUP ONLY fixture)', () => {
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(GROUP_ONLY) });
     }).as('topQueries');
@@ -467,6 +543,20 @@ describe('Query Insights — Dynamic Columns (GROUP ONLY fixture)', () => {
 
 describe('Query Insights — Stats & Visualizations Panel', () => {
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
@@ -674,6 +764,20 @@ describe('Query Insights — DynamicSearchBar', () => {
   const SEARCH_PLACEHOLDER = 'e.g. latency >= 100 AND type = query';
 
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');
@@ -815,6 +919,20 @@ describe('Query Insights — DynamicSearchBar', () => {
 
 describe('Query Insights — Column Visibility', () => {
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.5); stub the version so column
+    // assertions are deterministic regardless of the live CI cluster version.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
     cy.intercept('GET', '**/api/top_queries/**', (req) => {
       req.reply({ statusCode: 200, body: makeTimestampedBody(MIXED) });
     }).as('topQueries');

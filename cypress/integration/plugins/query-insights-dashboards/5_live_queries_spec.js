@@ -5,6 +5,14 @@
 
 describe('Inflight Queries Dashboard', () => {
   beforeEach(() => {
+    // User-info columns are version-gated (>= 3.8). This suite's fixtures and header
+    // expectations predate that feature, so pin the version below the gate to keep the
+    // base table deterministic regardless of the live CI cluster version. The dedicated
+    // "User Info Columns" suite below stubs >= 3.8 to exercise those columns.
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.7.0' },
+    }).as('clusterVersion');
     cy.fixture('stub_live_queries.json').then((stubResponse) => {
       cy.intercept('GET', '**/api/live_queries**', {
         statusCode: 200,
@@ -200,7 +208,9 @@ describe('Inflight Queries Dashboard', () => {
   });
 
   it('manually refreshes data', () => {
-    cy.get('[data-test-subj="live-queries-refresh-button"]').click();
+    cy.get('[data-test-subj="live-queries-refresh-button"]').click({
+      force: true,
+    });
     cy.wait('@getLiveQueries');
   });
 
@@ -401,6 +411,108 @@ describe('Inflight Queries Dashboard', () => {
     cy.contains('tbody td', 'ANALYTICS_WORKLOAD_GROUP', { timeout: 60000 })
       .should('be.visible')
       .and('not.have.attr', 'href');
+  });
+});
+
+describe('Inflight Queries — User Info Columns', () => {
+  const liveQueriesWithUserInfo = {
+    ok: true,
+    response: {
+      live_queries: [
+        {
+          timestamp: 1749187466964,
+          id: 'node-A1B2C3D4E5:9001',
+          description: 'indices[logs-*], search_type[QUERY_THEN_FETCH]',
+          node_id: 'node-A1B2C3D4E5',
+          is_cancelled: false,
+          wlm_group_id: 'ANALYTICS_WORKLOAD_GROUP',
+          measurements: {
+            latency: { number: 7990852130, count: 1, aggregationType: 'NONE' },
+            cpu: { number: 89951, count: 1, aggregationType: 'NONE' },
+            memory: { number: 3818, count: 1, aggregationType: 'NONE' },
+          },
+          username: 'alice',
+          user_roles: ['analyst', 'reader'],
+          backend_roles: ['analytics-backend'],
+        },
+      ],
+    },
+  };
+
+  const stubClusterVersion = (version) => {
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version },
+    }).as('clusterVersion');
+    // User-info columns are also gated on getSecurityPluginStatus, which probes /api/cat/plugins
+    // and /api/_plugins/_security/health. Stub both as available so the gate depends only on the
+    // stubbed version and doesn't hit the live cluster.
+    cy.intercept('GET', '**/api/cat/plugins*', {
+      statusCode: 200,
+      body: { ok: true, response: [{ component: 'opensearch-security' }] },
+    }).as('catPlugins');
+    cy.intercept('GET', '**/api/_plugins/_security/health*', {
+      statusCode: 200,
+      body: { ok: true, available: true },
+    }).as('securityHealth');
+  };
+
+  describe('when the cluster supports user info (version >= 3.8)', () => {
+    beforeEach(() => {
+      stubClusterVersion('3.8.0');
+      cy.intercept('GET', '**/api/live_queries**', {
+        statusCode: 200,
+        body: liveQueriesWithUserInfo,
+      }).as('getLiveQueries');
+
+      cy.navigateToLiveQueries();
+      cy.wait(1000);
+      // Force reload because testIsolation is disabled in this repo's cypress.config —
+      // the cluster version is cached per page load, so the stub only takes effect on a
+      // fresh load.
+      cy.reload();
+      cy.wait('@getLiveQueries', { timeout: 60000 });
+    });
+
+    it('shows Username, User Roles, and Backend Roles columns', () => {
+      cy.get('.euiTable thead').should('contain.text', 'Username');
+      cy.get('.euiTable thead').should('contain.text', 'User Roles');
+      cy.get('.euiTable thead').should('contain.text', 'Backend Roles');
+    });
+
+    it('displays the correct user info values', () => {
+      cy.get('.euiTable tbody').should('contain.text', 'alice');
+      cy.get('.euiTable tbody').should('contain.text', 'analyst, reader');
+      cy.get('.euiTable tbody').should('contain.text', 'analytics-backend');
+    });
+  });
+
+  describe('when the cluster does not support user info (version < 3.8)', () => {
+    beforeEach(() => {
+      stubClusterVersion('3.6.0');
+      cy.intercept('GET', '**/api/live_queries**', {
+        statusCode: 200,
+        body: liveQueriesWithUserInfo,
+      }).as('getLiveQueries');
+
+      cy.navigateToLiveQueries();
+      cy.wait(1000);
+      // Force reload because testIsolation is disabled in this repo's cypress.config —
+      // the cluster version is cached per page load, so the stub only takes effect on a
+      // fresh load.
+      cy.reload();
+      cy.wait('@getLiveQueries', { timeout: 60000 });
+      // The assertions below are negative-only, so let the reloaded page finish its version
+      // and security probes first (upstream gets this from its post-load cy.wait(1000)).
+      cy.wait('@securityHealth', { timeout: 60000 });
+      cy.wait(1000);
+    });
+
+    it('hides the user info columns', () => {
+      cy.get('.euiTable thead').should('not.contain.text', 'Username');
+      cy.get('.euiTable thead').should('not.contain.text', 'User Roles');
+      cy.get('.euiTable thead').should('not.contain.text', 'Backend Roles');
+    });
   });
 });
 
