@@ -256,5 +256,11 @@ When upstream lands a UI change with matching cypress updates:
    listed above.
 4. Run `yarn lint --fix` and `yarn cypress:run-with-security --spec
    'cypress/integration/plugins/query-insights-dashboards/<spec>'`
-   against a local OS+QI dev cluster to verify.
+   against a local OS+QI dev cluster to verify. The release integ
+   tests run every spec both with and without security, so also run
+   `yarn cypress:run-without-security` against a cluster without the
+   security plugin. The PR workflow
+   (`.github/workflows/query-insights-dashboards-e2e-workflow.yml`)
+   runs both modes. `scripts/query-insights/run-tests.sh` picks the mode
+   from the `SECURITY_ENABLED` env var that the workflow template sets.
 5. Update this file if the set of required adjustments changed.

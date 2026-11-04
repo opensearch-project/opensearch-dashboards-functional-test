@@ -15,6 +15,8 @@ jobs:
           tests:
             - 'cypress/**/query-insights-dashboards/**'
             - '.github/workflows/release-e2e-workflow-template.yml'
+            - '.github/workflows/query-insights-dashboards-e2e-workflow.yml'
+            - 'scripts/query-insights/**'
 
   tests:
     needs: changes
@@ -23,3 +25,15 @@ jobs:
     with:
       test-name: Query Insights Dashboards
       test-command: bash scripts/query-insights/run-tests.sh
+
+  # The release integ tests run every QI spec both with and without security, and the plugin
+  # renders different columns depending on whether the security plugin is available.
+  tests-without-security:
+    needs: changes
+    if: ${{ needs.changes.outputs.tests == 'true' }}
+    uses: ./.github/workflows/release-e2e-workflow-template.yml
+    with:
+      test-name: Query Insights Dashboards without security
+      test-command: bash scripts/query-insights/run-tests.sh
+      security-enabled: false
+      artifact-name-suffix: '-without-security'
