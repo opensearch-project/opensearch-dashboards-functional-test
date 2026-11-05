@@ -4,7 +4,10 @@
  */
 
 import sampleDocument from '../../../fixtures/plugins/query-insights-dashboards/sample_document.json';
-import { QUERY_INSIGHTS_METRICS as METRICS } from '../../../utils/plugins/query-insights-dashboards/constants';
+import {
+  QUERY_INSIGHTS_METRICS as METRICS,
+  QUERY_INSIGHTS_OVERVIEW_PATH,
+} from '../../../utils/plugins/query-insights-dashboards/constants';
 
 const indexName = 'sample_index';
 
@@ -228,4 +231,109 @@ describe('Top Queries Details Page', () => {
   });
 
   after(() => clearAll());
+});
+
+// User info fields (Username / User Roles / Backend Roles) in the details summary panel are
+// version-gated at >= 3.5. This block stubs /api/cluster/version and /api/top_queries so the
+// panel renders deterministically regardless of the live cluster's security configuration.
+describe('Top Queries Details Page — User Info Summary', () => {
+  const queryWithUserInfo = {
+    id: 'user-info-query-1',
+    timestamp: Date.now() - 5000,
+    measurements: {
+      latency: { number: 5000000, count: 1 },
+      cpu: { number: 3000000, count: 1 },
+      memory: { number: 4096, count: 1 },
+    },
+    indices: ['analytics-data'],
+    search_type: 'query_then_fetch',
+    node_id: 'node1',
+    total_shards: 2,
+    group_by: 'NONE',
+    source: { query: { match_all: {} } },
+    phase_latency_map: {},
+    task_resource_usages: [],
+    labels: { 'X-Opaque-Id': 'analytics-app' },
+    username: 'alice',
+    user_roles: ['analyst', 'readall'],
+    backend_roles: ['analytics-backend', 'ops'],
+  };
+
+  const topQueriesBody = {
+    ok: true,
+    response: { top_queries: [queryWithUserInfo] },
+  };
+
+  beforeEach(() => {
+    cy.intercept('GET', '**/api/cluster/version', {
+      statusCode: 200,
+      body: { version: '3.8.0' },
+    }).as('clusterVersion');
+    cy.intercept('GET', '**/api/top_queries/**', {
+      statusCode: 200,
+      body: topQueriesBody,
+    }).as('topQueries');
+
+    // Navigate directly to /query-details by the stubbed query id instead of clicking the
+    // first row of `.euiBasicTable:last` in the overview (same reason as
+    // navigateToQueryDetails: that selector can land on a Stats & Visualizations chart row).
+    // The stubbed query is not in the real cluster, so navigateToQueryDetails itself can't
+    // be used here. Force reload because testIsolation is disabled in this repo's
+    // cypress.config — the cluster version is cached per page load, and a hash-only
+    // cy.visit() would otherwise keep the previous page's state.
+    const to = new Date().toISOString();
+    const from = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+    const basePath = QUERY_INSIGHTS_OVERVIEW_PATH.split('#')[0];
+    cy.visit(
+      `${basePath}#/query-details?from=${encodeURIComponent(
+        from
+      )}&to=${encodeURIComponent(to)}&id=${encodeURIComponent(
+        queryWithUserInfo.id
+      )}&verbose=true`
+    );
+    cy.reload();
+    cy.wait('@topQueries', { timeout: 60000 });
+    cy.url().should('include', '/query-details');
+  });
+
+  it('shows Username, User Roles, and Backend Roles labels in the summary panel', () => {
+    cy.get('[data-test-subj="query-details-summary-section"]').within(() => {
+      cy.contains('h4', 'Username').should('be.visible');
+      cy.contains('h4', 'User Roles').should('be.visible');
+      cy.contains('h4', 'Backend Roles').should('be.visible');
+    });
+  });
+
+  it('displays the correct user info values in the summary panel', () => {
+    cy.get('[data-test-subj="query-details-summary-section"]').within(() => {
+      cy.contains('h4', 'Username')
+        .parent()
+        .next()
+        .invoke('text')
+        .should('equal', 'alice');
+      cy.contains('h4', 'User Roles')
+        .parent()
+        .next()
+        .invoke('text')
+        .should('equal', 'analyst, readall');
+      cy.contains('h4', 'Backend Roles')
+        .parent()
+        .next()
+        .invoke('text')
+        .should('equal', 'analytics-backend, ops');
+    });
+  });
+
+  // Regression guard: the details panel reads the X-Opaque-Id from the X-Opaque-Id
+  // label, matching the Top N table behavior.
+  it('shows X-Opaque-Id from the label', () => {
+    cy.get('[data-test-subj="query-details-summary-section"]').within(() => {
+      cy.contains('h4', 'X-Opaque-Id').should('be.visible');
+      cy.contains('h4', 'X-Opaque-Id')
+        .parent()
+        .next()
+        .invoke('text')
+        .should('equal', 'analytics-app');
+    });
+  });
 });

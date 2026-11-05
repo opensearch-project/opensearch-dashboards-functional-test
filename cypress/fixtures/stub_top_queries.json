@@ -15,6 +15,8 @@
         "labels": {
           "X-Opaque-Id": "90eb5c3b-8448-4af3-84ce-a941eee9ed5f"
         },
+        "username": "admin",
+        "user_roles": ["all_access", "analyst"],
         "measurements": {
           "cpu": { "number": 1340000, "count": 1, "aggregationType": "NONE" },
           "latency": { "number": 22, "count": 1, "aggregationType": "NONE" },
@@ -49,8 +51,10 @@
         "failed": true,
         "total_shards": 1,
         "labels": {
-          "X-Opaque-Id": "90eb5c3b-8448-4af3-84ce-a941eee9ed5f"
+          "X-Opaque-Id": "search-service"
         },
+        "username": "search_user",
+        "user_roles": ["readall"],
         "measurements": {
           "memory": { "number": 170320, "count": 1, "aggregationType": "NONE" },
           "cpu": { "number": 2100000, "count": 1, "aggregationType": "NONE" },
@@ -70,6 +74,8 @@
         "labels": {
           "X-Opaque-Id": "8a936346-8d19-409c-9fe6-8b890eca1f7c"
         },
+        "username": "admin",
+        "user_roles": ["all_access"],
         "measurements": {
           "cpu": { "number": 990000, "count": 1, "aggregationType": "NONE" },
           "latency": { "number": 18, "count": 1, "aggregationType": "NONE" },
