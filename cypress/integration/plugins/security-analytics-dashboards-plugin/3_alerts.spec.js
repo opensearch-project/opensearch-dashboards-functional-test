@@ -30,6 +30,40 @@ function getFormattedDate(date) {
 const date = getFormattedDate(new Date(Date.now())); //moment(moment.now()).format('MM/DD/YY');
 const docCount = 4;
 
+// The alerts table keeps showing its rows while it reloads, but ignores clicks on them until the
+// reload finishes. Intercept the request with the given query param before the action that reloads
+// the table, and wait for the reload after it.
+const interceptAlertsReload = (queryParam) =>
+  setupIntercept(
+    cy,
+    `/_plugins/_security_analytics/alerts\\?.*${queryParam}=`,
+    'alertsReload',
+    'GET'
+  );
+const waitForAlertsReload = () => {
+  cy.wait('@alertsReload');
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+};
+
+// Clicks "View details" of the first alert, again if the click got ignored because the table was
+// reloading. The flyout is rendered by the click, so it's either open right after it or not at all.
+const openFirstAlertDetails = (attemptsLeft = 5) => {
+  cy.get('.ouiBasicTable-loading').should('not.exist');
+  cy.get('tbody > tr')
+    .first()
+    .find('[aria-label="View details"]')
+    .click({ force: true });
+  cy.get('body').then(($body) => {
+    if (
+      !$body.find('[data-test-subj="alert-details-flyout"]').length &&
+      attemptsLeft > 1
+    ) {
+      cy.wait(1000);
+      openFirstAlertDetails(attemptsLeft - 1);
+    }
+  });
+};
+
 let testDetectorCfg;
 
 describe('Alerts', () => {
@@ -426,18 +460,20 @@ describe('Alerts', () => {
   });
 
   it('can be acknowledged via flyout button', () => {
-    // Filter the table to show only "Active" alerts
+    // Filter the table to show only "Active" alerts. The status filter reloads the alerts from the
+    // server, so wait for that reload before clicking a row.
+    interceptAlertsReload('alertStates');
     cy.get('[data-text="Status"]').click({ force: true });
     cy.get('[class="euiFilterSelect__items"]').within(() => {
       cy.contains('Active').click({ force: true });
     });
+    waitForAlertsReload();
 
-    cy.get('tbody > tr')
-      .first()
-      .within(() => {
-        // Click the "View details" button for the first alert
-        cy.get('[aria-label="View details"]').click({ force: true });
-      });
+    // Close the status filter, which covers the actions of the first rows
+    cy.get('[data-text="Status"]').click({ force: true });
+    cy.get('[class="euiFilterSelect__items"]').should('not.exist');
+
+    openFirstAlertDetails();
 
     cy.get('[data-test-subj="alert-details-flyout"]').within(() => {
       // Confirm the alert is currently "Active"
