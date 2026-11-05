@@ -157,6 +157,54 @@ one. Current cases:
   checkboxes so the table contains only cancellable rows.
 - `6_profiler_spec.js#beforeEach` — adds `cy.reload()` after `cy.visit`
   so the editor state (collapsed pane / leftover output) is fresh.
+- `2_query_details_spec.js#Top Queries Details Page — User Info Summary`
+  — upstream clicks the first row of the overview's last `.euiBasicTable`
+  to reach the details page. Here the `beforeEach` visits
+  `#/query-details?id=<stubbed id>` directly (for the same reason as
+  `navigateToQueryDetails`, see below), then `cy.reload()`s. The helper
+  itself can't be used because the stubbed query doesn't exist on the
+  real cluster.
+- `8_user_info_security_spec.js` — wrapped in
+  `if (Cypress.env('SECURITY_ENABLED')) { ... }` like the security
+  plugin specs, because user info only exists on a security-enabled
+  cluster and this repo also runs every spec without security. Both
+  `beforeEach` blocks add `cy.reload()`, and the "< 3.5" block also
+  waits on `@clusterVersion`. Upstream runs this spec alone on a fresh
+  cluster. Here it runs on the same cluster after specs 1-6, whose
+  grouping helpers persist `exporter.type=none`, so `before()` also
+  sets `exporter.type=local_index` and `grouping.group_by=none` (the
+  fresh-cluster defaults) so the seeded rows stay readable after their
+  window rotates, and asserts that the settings update returned 200.
+  Instead of a fixed `cy.wait(65000)`, it polls `/_insights/top_queries`
+  until a queue drain surfaces the seeded `admin-console` record. It
+  re-seeds on each retry, because latency was disabled by earlier specs,
+  so its stale window start can make the first drain discard a batch.
+  It also deletes the seeded `user-info-e2e` index in an `after()` hook.
+- `5_live_queries_spec.js#Inflight Queries — User Info Columns` — the
+  "< 3.8" block's assertions are negative-only, so after the reload it
+  also waits on `@securityHealth` plus `cy.wait(1000)`. That way the
+  reloaded page has resolved its version and security gates before the
+  headers are checked.
+
+### Stubbing `/api/cluster/version`
+
+The plugin caches the cluster version in a module-level variable
+(`getVersionOnce` in `public/utils/version-utils.ts`), so a
+`cy.intercept('GET', '**/api/cluster/version', ...)` stub only takes
+effect on a full page load. Under `testIsolation: false`, a `cy.visit()`
+to the same URL or a hash-only change keeps the previous page's cached
+version. Any `beforeEach` that stubs the version must `cy.reload()`
+before asserting on version-gated UI.
+
+For reference, the user-info fields are gated as follows:
+
+- Top N: Username and User Roles at >= 3.5, Backend Roles at >= 3.6.
+- Query Details: all three at >= 3.5.
+- Live Queries: all three at >= 3.8.
+
+Top N and Live Queries also require the security plugin. The plugin
+probes it via `/api/cat/plugins` and `/api/_plugins/_security/health`,
+and the specs stub both of those alongside the version.
 
 ### Helpers we keep that upstream doesn't have
 
