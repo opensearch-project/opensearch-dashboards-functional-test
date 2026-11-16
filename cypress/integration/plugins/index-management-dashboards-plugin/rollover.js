@@ -14,6 +14,20 @@ const rolloverDataStream = 'data-stream-rollover';
 const validIndex = 'index-000001';
 const invalidIndex = 'index-test-rollover';
 
+const visitRolloverPage = (source, readyText) => {
+  cy.intercept('POST', '**/api/ism/apiCaller').as('apiCaller');
+  cy.visit(`${BASE_PATH}/app/${IM_PLUGIN_NAME}#/rollover/${source}`);
+  // Only the hash changes between tests, so cy.visit alone may not reload the
+  // app and can leave the previous test's rollover page rendered. Force a full
+  // load and wait for the page to fetch its data before interacting.
+  cy.reload();
+  cy.wait('@apiCaller', { timeout: 60000 });
+  cy.contains(readyText, { timeout: 60000 });
+  cy.get('[data-test-subj="rolloverSubmitButton"]', { timeout: 60000 }).should(
+    'not.be.disabled'
+  );
+};
+
 describe('Rollover', () => {
   before(() => {
     // Set welcome screen tracking to false
@@ -52,40 +66,31 @@ describe('Rollover', () => {
 
   describe('rollover', () => {
     it('rollover data stream successfully', () => {
-      // Visit ISM OSD
-      cy.visit(
-        `${BASE_PATH}/app/${IM_PLUGIN_NAME}#/rollover/${rolloverDataStream}`
-      );
-      cy.contains('Configure source', { timeout: 60000 });
+      visitRolloverPage(rolloverDataStream, 'Configure source');
 
       // click create
-      cy.get('[data-test-subj="rolloverSubmitButton"]').click({ force: true });
+      cy.get('[data-test-subj="rolloverSubmitButton"]').click();
 
       cy.contains(/has been successfully rolled over./);
     });
 
     it('rollover valid alias successfully', () => {
-      // Visit ISM OSD
-      cy.visit(
-        `${BASE_PATH}/app/${IM_PLUGIN_NAME}#/rollover/${rolloverValidAlias}`
-      );
-      cy.contains('Configure new rollover index', { timeout: 60000 });
+      visitRolloverPage(rolloverValidAlias, 'Configure new rollover index');
 
       // click create
-      cy.get('[data-test-subj="rolloverSubmitButton"]').click({ force: true });
+      cy.get('[data-test-subj="rolloverSubmitButton"]').click();
 
       cy.contains(/has been successfully rolled over./);
     });
 
     it('rollover invalid alias successfully', () => {
-      // Visit ISM OSD
-      cy.visit(
-        `${BASE_PATH}/app/${IM_PLUGIN_NAME}#/rollover/${rolloverAliasNeedTargetIndex}`
+      visitRolloverPage(
+        rolloverAliasNeedTargetIndex,
+        'Configure new rollover index'
       );
-      cy.contains('Configure new rollover index', { timeout: 60000 });
 
       // click create
-      cy.get('[data-test-subj="rolloverSubmitButton"]').click({ force: true });
+      cy.get('[data-test-subj="rolloverSubmitButton"]').click();
 
       cy.contains('Invalid index name.');
 
@@ -94,7 +99,7 @@ describe('Rollover', () => {
       );
 
       // click create
-      cy.get('[data-test-subj="rolloverSubmitButton"]').click({ force: true });
+      cy.get('[data-test-subj="rolloverSubmitButton"]').click();
 
       cy.contains(/has been successfully rolled over./);
     });
