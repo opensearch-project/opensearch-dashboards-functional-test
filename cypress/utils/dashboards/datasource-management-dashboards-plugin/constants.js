@@ -24,6 +24,9 @@ export const DS_NO_AUTH_LABEL = 'RemoteDataSourceNoAuth';
 
 export const DEFAULT_DS_TITLE = 'DefaultDataSource';
 
+export const DS_BASIC_AUTH_HEADER = `Basic ${btoa(`${USERNAME}:${PASSWORD}`)}`;
+export const DS_BASIC_AUTH_LABEL = 'RemoteDataSourceBasicAuth';
+
 export const TIMEOUT_OPTS = { timeout: 60000 };
 export const FORCE_CLICK_OPTS = { force: true };
 export const DATASOURCE_DELAY = 1000;
